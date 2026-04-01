@@ -1,6 +1,9 @@
 // Modern Theme 2026 - Variables
 // Contemporary design with glassmorphism, depth, and adaptive colors
-// Variables are imported by ThemeHelper - parent theme is set via $baseTheme below
+// Variables are imported by ThemeHelper
+
+// Set Clean Theme as parent
+$baseTheme: "Clean";
 
 // ============================================
 // COLOR SYSTEM - Adaptive with Presets

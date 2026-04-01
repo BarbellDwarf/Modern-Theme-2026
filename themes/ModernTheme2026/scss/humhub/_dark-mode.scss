@@ -1,0 +1,421 @@
+// Modern Theme 2026 - Dark Mode Support
+// Proper dark mode colors and styles
+
+[data-bs-theme="dark"] {
+    // Dark mode color overrides
+    --primary: #5a8eeb;
+    --primary-dark: #1e6ad6;
+    --primary-light: #a3c3f5;
+    --secondary: #a78bfa;
+    --secondary-dark: #7c3aed;
+    
+    // Dark mode backgrounds
+    --bg-base: #0f172a;
+    --bg-elevated: #1e293b;
+    --bg-surface: #334155;
+    --bg-hover: #475569;
+    
+    // Dark mode text colors
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #94a3b8;
+    --text-disabled: #64748b;
+    
+    // Dark mode borders
+    --border-color: #334155;
+    --border-color-light: #475569;
+    
+    // Dark mode shadows (softer for dark backgrounds)
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+    
+    // Semantic colors for dark mode
+    --success: #34d399;
+    --info: #38bdf8;
+    --warning: #fbbf24;
+    --danger: #f87171;
+    
+    // Apply dark background to body
+    body {
+        background-color: var(--bg-base);
+        color: var(--text-primary);
+    }
+    
+    // Dark mode panels/cards
+    .panel,
+    .card {
+        background-color: var(--bg-elevated);
+        border-color: var(--border-color);
+        color: var(--text-primary);
+        box-shadow: var(--shadow-sm);
+        
+        .panel-heading,
+        .card-header {
+            background-color: var(--bg-surface);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        .panel-body,
+        .card-body {
+            background-color: var(--bg-elevated);
+            color: var(--text-primary);
+        }
+        
+        .panel-footer,
+        .card-footer {
+            background-color: var(--bg-surface);
+            border-color: var(--border-color);
+            color: var(--text-secondary);
+        }
+    }
+    
+    // Dark mode buttons
+    .btn {
+        &.btn-default {
+            background-color: var(--bg-surface);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+            
+            &:hover {
+                background-color: var(--bg-hover);
+                border-color: var(--border-color-light);
+            }
+        }
+        
+        &.btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+            
+            &:hover {
+                background-color: var(--primary-dark);
+            }
+        }
+    }
+    
+    // Dark mode forms
+    .form-control,
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    textarea,
+    select {
+        background-color: var(--bg-surface);
+        border-color: var(--border-color);
+        color: var(--text-primary);
+        
+        &:focus {
+            background-color: var(--bg-elevated);
+            border-color: var(--primary);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 3px rgba(90, 142, 235, 0.2);
+        }
+        
+        &::placeholder {
+            color: var(--text-tertiary);
+        }
+    }
+    
+    // Dark mode navigation
+    #topbar,
+    .navbar {
+        background-color: var(--bg-elevated);
+        border-color: var(--border-color);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        
+        .nav-link {
+            color: var(--text-secondary);
+            
+            &:hover {
+                color: var(--text-primary);
+                background-color: var(--bg-hover);
+            }
+            
+            &.active {
+                color: var(--primary-light);
+            }
+        }
+    }
+    
+    // Dark mode sidebar
+    #layout-sidebar-left,
+    #layout-sidebar-right {
+        background-color: var(--bg-base);
+        
+        .nav-pills {
+            .nav-link {
+                color: var(--text-secondary);
+                
+                &:hover {
+                    background-color: var(--bg-surface);
+                    color: var(--text-primary);
+                }
+                
+                &.active {
+                    background-color: var(--primary);
+                    color: #fff;
+                }
+            }
+        }
+    }
+    
+    // Dark mode dropdowns
+    .dropdown-menu {
+        background-color: var(--bg-elevated);
+        border-color: var(--border-color);
+        box-shadow: var(--shadow-lg);
+        
+        .dropdown-item {
+            color: var(--text-primary);
+            
+            &:hover {
+                background-color: var(--bg-surface);
+                color: var(--text-primary);
+            }
+            
+            &:active {
+                background-color: var(--primary);
+                color: #fff;
+            }
+        }
+        
+        .dropdown-divider {
+            border-color: var(--border-color);
+        }
+    }
+    
+    // Dark mode modals
+    .modal-content {
+        background-color: var(--bg-elevated);
+        border-color: var(--border-color);
+        color: var(--text-primary);
+        
+        .modal-header {
+            border-color: var(--border-color);
+            
+            .modal-title {
+                color: var(--text-primary);
+            }
+            
+            .close,
+            .btn-close {
+                color: var(--text-primary);
+                opacity: 0.7;
+                
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+        
+        .modal-body {
+            color: var(--text-primary);
+        }
+        
+        .modal-footer {
+            border-color: var(--border-color);
+        }
+    }
+    
+    // Dark mode backdrop
+    .modal-backdrop {
+        background-color: rgba(15, 23, 42, 0.8);
+    }
+    
+    // Dark mode stream/wall entries
+    .s-wall-entry {
+        background-color: var(--bg-elevated);
+        border-color: var(--border-color);
+        color: var(--text-primary);
+        
+        &:hover {
+            background-color: var(--bg-surface);
+        }
+    }
+    
+    // Dark mode badges
+    .badge,
+    .label {
+        &.badge-default,
+        &.label-default {
+            background-color: var(--bg-surface);
+            color: var(--text-primary);
+        }
+        
+        &.badge-primary,
+        &.label-primary {
+            background-color: var(--primary);
+            color: #fff;
+        }
+        
+        &.badge-success,
+        &.label-success {
+            background-color: var(--success);
+            color: #0f172a;
+        }
+        
+        &.badge-info,
+        &.label-info {
+            background-color: var(--info);
+            color: #0f172a;
+        }
+        
+        &.badge-warning,
+        &.label-warning {
+            background-color: var(--warning);
+            color: #0f172a;
+        }
+        
+        &.badge-danger,
+        &.label-danger {
+            background-color: var(--danger);
+            color: #fff;
+        }
+    }
+    
+    // Dark mode links
+    a {
+        color: var(--primary-light);
+        
+        &:hover {
+            color: var(--primary);
+        }
+    }
+    
+    // Dark mode tables
+    .table {
+        color: var(--text-primary);
+        
+        th {
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        td {
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        &.table-striped {
+            tbody tr:nth-of-type(odd) {
+                background-color: rgba(51, 65, 85, 0.3);
+            }
+        }
+        
+        &.table-hover {
+            tbody tr:hover {
+                background-color: var(--bg-surface);
+            }
+        }
+    }
+    
+    // Dark mode alerts
+    .alert {
+        border-color: var(--border-color);
+        
+        &.alert-info {
+            background-color: rgba(56, 189, 248, 0.1);
+            border-color: var(--info);
+            color: var(--info);
+        }
+        
+        &.alert-success {
+            background-color: rgba(52, 211, 153, 0.1);
+            border-color: var(--success);
+            color: var(--success);
+        }
+        
+        &.alert-warning {
+            background-color: rgba(251, 191, 36, 0.1);
+            border-color: var(--warning);
+            color: var(--warning);
+        }
+        
+        &.alert-danger {
+            background-color: rgba(248, 113, 113, 0.1);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+    }
+    
+    // Dark mode tooltips
+    .tooltip {
+        .tooltip-inner {
+            background-color: var(--bg-elevated);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-md);
+        }
+        
+        &.bs-tooltip-top .tooltip-arrow::before {
+            border-top-color: var(--bg-elevated);
+        }
+        
+        &.bs-tooltip-bottom .tooltip-arrow::before {
+            border-bottom-color: var(--bg-elevated);
+        }
+        
+        &.bs-tooltip-start .tooltip-arrow::before {
+            border-left-color: var(--bg-elevated);
+        }
+        
+        &.bs-tooltip-end .tooltip-arrow::before {
+            border-right-color: var(--bg-elevated);
+        }
+    }
+    
+    // Dark mode popovers
+    .popover {
+        background-color: var(--bg-elevated);
+        border-color: var(--border-color);
+        box-shadow: var(--shadow-lg);
+        
+        .popover-header {
+            background-color: var(--bg-surface);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        .popover-body {
+            color: var(--text-primary);
+        }
+        
+        &.bs-popover-top > .popover-arrow::after {
+            border-top-color: var(--bg-elevated);
+        }
+        
+        &.bs-popover-bottom > .popover-arrow::after {
+            border-bottom-color: var(--bg-elevated);
+        }
+        
+        &.bs-popover-start > .popover-arrow::after {
+            border-left-color: var(--bg-elevated);
+        }
+        
+        &.bs-popover-end > .popover-arrow::after {
+            border-right-color: var(--bg-elevated);
+        }
+    }
+    
+    // Dark mode code blocks
+    code {
+        background-color: var(--bg-surface);
+        color: var(--primary-light);
+    }
+    
+    pre {
+        background-color: var(--bg-surface);
+        border-color: var(--border-color);
+        color: var(--text-primary);
+    }
+    
+    // Dark mode horizontal rules
+    hr {
+        border-color: var(--border-color);
+        opacity: 0.3;
+    }
+}

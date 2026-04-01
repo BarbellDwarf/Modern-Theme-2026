@@ -1,0 +1,338 @@
+// Modern Theme 2026 - Space Chooser Improvements
+// Make space chooser button more obvious and user-friendly
+
+// Space chooser button improvements
+.space-chooser-button,
+#space-menu-nav,
+.space-menu-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: $border-radius-md;
+    transition: all $transition-base;
+    cursor: pointer;
+    position: relative;
+    
+    // Add subtle background to make it look clickable
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    // Space logo/image
+    .space-logo,
+    .space-image,
+    img {
+        width: 32px;
+        height: 32px;
+        border-radius: $border-radius-sm;
+        flex-shrink: 0;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        transition: all $transition-base;
+    }
+    
+    // Space name (add if not present)
+    .space-name {
+        font-weight: 500;
+        font-size: $font-size-sm;
+        color: inherit;
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        
+        @media (max-width: 991px) {
+            display: none; // Hide on smaller screens to save space
+        }
+    }
+    
+    // Add dropdown indicator icon
+    &::after {
+        content: '\f0d7'; // FontAwesome chevron-down
+        font-family: FontAwesome, 'Font Awesome 5 Free';
+        font-weight: 900;
+        font-size: 12px;
+        margin-left: 4px;
+        opacity: 0.7;
+        transition: all $transition-base;
+    }
+    
+    // Hover state - make it obvious it's interactive
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: $shadow-sm;
+        transform: translateY(-1px);
+        
+        .space-logo,
+        .space-image,
+        img {
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: $shadow-xs;
+        }
+        
+        &::after {
+            opacity: 1;
+            transform: translateY(1px);
+        }
+    }
+    
+    // Active/open state
+    &.active,
+    &[aria-expanded="true"] {
+        background-color: rgba(255, 255, 255, 0.15);
+        border-color: var(--primary);
+        box-shadow: $shadow-md;
+        
+        &::after {
+            transform: rotate(180deg);
+        }
+    }
+    
+    // Focus state for accessibility
+    &:focus,
+    &:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+    }
+}
+
+// Space chooser dropdown menu improvements
+.space-chooser-menu,
+.space-menu-dropdown {
+    min-width: 280px;
+    max-width: 400px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 8px;
+    border-radius: $border-radius-lg;
+    box-shadow: $shadow-xl;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    
+    // Search input at top
+    .space-search {
+        margin-bottom: 8px;
+        padding: 8px 12px;
+        border-radius: $border-radius-md;
+        border: 1px solid var(--border-color);
+        width: 100%;
+        font-size: $font-size-sm;
+        
+        &:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 106, 214, 0.1);
+        }
+    }
+    
+    // Space list items
+    .space-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: $border-radius-md;
+        cursor: pointer;
+        transition: all $transition-fast;
+        text-decoration: none;
+        color: inherit;
+        
+        .space-logo,
+        .space-image,
+        img {
+            width: 36px;
+            height: 36px;
+            border-radius: $border-radius-sm;
+            flex-shrink: 0;
+            border: 2px solid transparent;
+            transition: all $transition-base;
+        }
+        
+        .space-info {
+            flex: 1;
+            min-width: 0;
+            
+            .space-name {
+                font-weight: 500;
+                font-size: $font-size-sm;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                margin-bottom: 2px;
+            }
+            
+            .space-description {
+                font-size: $font-size-xs;
+                color: var(--text-secondary);
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+        
+        // Current space indicator
+        &.active {
+            background-color: rgba(30, 106, 214, 0.1);
+            
+            .space-logo,
+            .space-image,
+            img {
+                border-color: var(--primary);
+            }
+            
+            &::after {
+                content: '\f00c'; // FontAwesome check
+                font-family: FontAwesome, 'Font Awesome 5 Free';
+                font-weight: 900;
+                color: var(--primary);
+                margin-left: auto;
+            }
+        }
+        
+        &:hover {
+            background-color: var(--bg-hover);
+            transform: translateX(4px);
+            
+            .space-logo,
+            .space-image,
+            img {
+                box-shadow: $shadow-xs;
+            }
+        }
+    }
+    
+    // Section headers in dropdown
+    .space-section-header {
+        font-size: $font-size-xs;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--text-tertiary);
+        padding: 8px 12px 4px;
+        margin-top: 8px;
+        
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+    
+    // Divider
+    .dropdown-divider {
+        margin: 8px 0;
+        opacity: 0.5;
+    }
+    
+    // "Create new space" button at bottom
+    .create-space-button {
+        margin-top: 8px;
+        padding: 10px 12px;
+        text-align: center;
+        border-radius: $border-radius-md;
+        border: 2px dashed var(--border-color);
+        color: var(--text-secondary);
+        font-weight: 500;
+        font-size: $font-size-sm;
+        cursor: pointer;
+        transition: all $transition-base;
+        
+        i {
+            margin-right: 6px;
+        }
+        
+        &:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background-color: rgba(30, 106, 214, 0.05);
+        }
+    }
+}
+
+// Mobile space chooser adjustments
+@media (max-width: 767px) {
+    .space-chooser-button,
+    #space-menu-nav {
+        padding: 4px 8px;
+        
+        .space-logo,
+        .space-image,
+        img {
+            width: 28px;
+            height: 28px;
+        }
+        
+        // Keep dropdown icon visible on mobile
+        &::after {
+            font-size: 10px;
+        }
+    }
+    
+    .space-chooser-menu,
+    .space-menu-dropdown {
+        min-width: calc(100vw - 32px);
+        max-width: calc(100vw - 32px);
+        max-height: 60vh;
+    }
+}
+
+// Dark mode adjustments for space chooser
+[data-bs-theme="dark"] {
+    .space-chooser-button,
+    #space-menu-nav {
+        background-color: rgba(255, 255, 255, 0.03);
+        border-color: rgba(255, 255, 255, 0.08);
+        
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        &.active,
+        &[aria-expanded="true"] {
+            background-color: rgba(255, 255, 255, 0.12);
+        }
+    }
+    
+    .space-chooser-menu,
+    .space-menu-dropdown {
+        background-color: var(--bg-elevated);
+        border: 1px solid var(--border-color);
+        
+        .space-item {
+            &:hover {
+                background-color: var(--bg-surface);
+            }
+            
+            &.active {
+                background-color: rgba(90, 142, 235, 0.15);
+            }
+        }
+        
+        .create-space-button {
+            border-color: var(--border-color);
+            
+            &:hover {
+                border-color: var(--primary-light);
+                color: var(--primary-light);
+                background-color: rgba(90, 142, 235, 0.1);
+            }
+        }
+    }
+}
+
+// Add tooltip hint for first-time users
+.space-chooser-button,
+#space-menu-nav {
+    position: relative;
+    
+    // Optional: Add a subtle pulsing animation on first load to draw attention
+    &.first-visit {
+        animation: pulse-hint 2s ease-in-out 3;
+    }
+}
+
+@keyframes pulse-hint {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(30, 106, 214, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(30, 106, 214, 0);
+    }
+}

@@ -1,0 +1,125 @@
+// Modern Theme 2026 - Base Layout
+// Container widths and responsive layout
+
+// Better container widths for modern displays
+.container {
+    @media (min-width: 768px) {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+    
+    @media (min-width: 992px) {
+        width: 100%;
+        max-width: 1400px;
+        padding-left: 32px;
+        padding-right: 32px;
+    }
+    
+    @media (min-width: 1400px) {
+        width: 100%;
+        max-width: 1600px;
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+    
+    @media (min-width: 1920px) {
+        max-width: 1800px;
+    }
+}
+
+// Layout container improvements
+.layout-container {
+    @media (min-width: 768px) {
+        max-width: 100%;
+    }
+}
+
+// Content area utilization
+#layout-content {
+    @media (min-width: 992px) {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+// Mobile compact layout
+@media (max-width: 767px) {
+    .container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    
+    body {
+        font-size: 14px;
+    }
+    
+    // Compact panels on mobile
+    .panel,
+    .card {
+        margin-bottom: 12px;
+        
+        .panel-body,
+        .card-body {
+            padding: 12px;
+        }
+    }
+    
+    // Tighter spacing on mobile
+    .s-wall-entry {
+        padding: 12px;
+        margin-bottom: 8px;
+    }
+}
+
+// Tablet optimizations
+@media (min-width: 768px) and (max-width: 991px) {
+    .container {
+        max-width: 100%;
+    }
+    
+    .panel,
+    .card {
+        margin-bottom: 16px;
+    }
+}
+
+// Wide screen optimizations  
+@media (min-width: 1400px) {
+    // Better sidebar utilization
+    #layout-sidebar-left {
+        width: 280px;
+    }
+    
+    #layout-sidebar-right {
+        width: 320px;
+    }
+    
+    // More breathing room for content
+    .panel,
+    .card {
+        margin-bottom: 24px;
+        
+        .panel-body,
+        .card-body {
+            padding: 24px;
+        }
+    }
+    
+    .s-wall-entry {
+        padding: 20px;
+        margin-bottom: 16px;
+    }
+}
+
+// Ultra-wide (4K+) optimizations
+@media (min-width: 2560px) {
+    .container {
+        max-width: 2000px;
+    }
+    
+    body {
+        font-size: 17px;
+    }
+}

@@ -8,6 +8,7 @@
 namespace humhub\modules\modernTheme2026;
 
 use humhub\components\View;
+use humhub\modules\modernTheme2026\widgets\MobileBottomNav;
 use Yii;
 
 class Events
@@ -28,6 +29,31 @@ class Events
         
         // Register custom assets if needed
         // ModernTheme2026Asset::register($view);
+    }
+
+    /**
+     * Render mobile bottom navigation before body end
+     * Only renders for logged-in users on non-AJAX requests
+     */
+    public static function onViewEndBody($event)
+    {
+        // Don't render on AJAX requests
+        if (Yii::$app->request->isAjax) {
+            return;
+        }
+
+        $module = static::getModuleIfThemeActive();
+        if (!$module) {
+            return;
+        }
+
+        // Don't render for guest users
+        if (Yii::$app->user->isGuest) {
+            return;
+        }
+
+        // Render the mobile bottom navigation widget
+        echo MobileBottomNav::widget();
     }
 
     protected static function getModuleIfThemeActive(): ?Module

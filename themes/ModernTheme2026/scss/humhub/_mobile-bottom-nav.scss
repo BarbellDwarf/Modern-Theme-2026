@@ -45,9 +45,22 @@
                 font-size: 22px;
                 margin-bottom: 4px;
                 transition: all $transition-fast;
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 
                 i {
                     display: block;
+                }
+                
+                // Profile avatar styling
+                .nav-avatar {
+                    width: 24px;
+                    height: 24px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    border: 2px solid var(--primary);
                 }
             }
             

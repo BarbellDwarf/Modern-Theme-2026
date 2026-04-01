@@ -18,5 +18,10 @@ return [
             'event' => View::EVENT_BEGIN_BODY,
             'callback' => [Events::class, 'onViewBeginBody'],
         ],
+        [
+            'class' => View::class,
+            'event' => View::EVENT_END_BODY,
+            'callback' => [Events::class, 'onViewEndBody'],
+        ],
     ],
 ];

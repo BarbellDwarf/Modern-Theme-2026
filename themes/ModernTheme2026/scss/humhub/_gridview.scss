@@ -1,0 +1,224 @@
+// Modern Theme 2026 - GridView (Tables)
+// Enhanced table and grid view styling
+
+.grid-view,
+.gridview {
+    margin: space(4) 0;
+    
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: $border-radius-lg;
+        overflow: hidden;
+        @include shadow('sm');
+        background-color: var(--bg-elevated);
+        
+        thead {
+            background-color: var(--bg-surface);
+            
+            th {
+                padding: space(3) space(4);
+                font-weight: 600;
+                font-size: $font-size-sm;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: var(--text-secondary);
+                border-bottom: 2px solid var(--border-color);
+                text-align: left;
+                white-space: nowrap;
+                
+                // Sortable column
+                a {
+                    color: var(--text-secondary);
+                    text-decoration: none;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: space(1);
+                    transition: color $transition-fast;
+                    
+                    &:hover {
+                        color: var(--text-primary);
+                    }
+                    
+                    // Sort indicator
+                    &.asc::after,
+                    &.desc::after {
+                        content: '';
+                        width: 0;
+                        height: 0;
+                        border-left: 4px solid transparent;
+                        border-right: 4px solid transparent;
+                    }
+                    
+                    &.asc::after {
+                        border-bottom: 6px solid currentColor;
+                    }
+                    
+                    &.desc::after {
+                        border-top: 6px solid currentColor;
+                    }
+                }
+            }
+        }
+        
+        tbody {
+            tr {
+                transition: background-color $transition-fast;
+                border-bottom: 1px solid var(--border-color);
+                
+                &:last-child {
+                    border-bottom: none;
+                }
+                
+                &:hover {
+                    background-color: var(--bg-hover);
+                }
+                
+                &.selected {
+                    background-color: rgba(30, 106, 214, 0.08);
+                }
+                
+                td {
+                    padding: space(3) space(4);
+                    font-size: $font-size-base;
+                    color: var(--text-primary);
+                    vertical-align: middle;
+                    
+                    // Action buttons in cells
+                    .btn {
+                        padding: space(1) space(2);
+                        font-size: $font-size-xs;
+                    }
+                }
+            }
+        }
+        
+        tfoot {
+            background-color: var(--bg-surface);
+            border-top: 2px solid var(--border-color);
+            
+            td {
+                padding: space(3) space(4);
+                font-size: $font-size-sm;
+                color: var(--text-secondary);
+            }
+        }
+    }
+    
+    // Pagination
+    .pagination {
+        margin-top: space(4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: space(2);
+        
+        li {
+            list-style: none;
+            
+            a,
+            span {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 36px;
+                height: 36px;
+                padding: 0 space(3);
+                border-radius: $border-radius-md;
+                font-size: $font-size-sm;
+                font-weight: 500;
+                color: var(--text-primary);
+                background-color: var(--bg-elevated);
+                border: 1px solid var(--border-color);
+                text-decoration: none;
+                transition: all $transition-fast;
+                
+                &:hover {
+                    background-color: var(--bg-hover);
+                    border-color: var(--primary);
+                    @include shadow('sm');
+                }
+            }
+            
+            &.active {
+                a,
+                span {
+                    background-color: var(--primary);
+                    border-color: var(--primary);
+                    color: #fff;
+                    @include shadow('md');
+                }
+            }
+            
+            &.disabled {
+                a,
+                span {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                    pointer-events: none;
+                }
+            }
+        }
+    }
+    
+    // Summary text
+    .summary {
+        margin-top: space(2);
+        text-align: center;
+        font-size: $font-size-sm;
+        color: var(--text-secondary);
+    }
+}
+
+// Compact table variant
+.table-compact {
+    .grid-view,
+    .gridview {
+        table {
+            thead th {
+                padding: space(2) space(3);
+                font-size: $font-size-xs;
+            }
+            
+            tbody td {
+                padding: space(2) space(3);
+                font-size: $font-size-sm;
+            }
+        }
+    }
+}
+
+// Responsive tables - horizontal scroll on mobile
+@media (max-width: 767px) {
+    .grid-view,
+    .gridview {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        
+        table {
+            min-width: 600px;
+            
+            thead th,
+            tbody td {
+                padding: space(2) space(3);
+                font-size: $font-size-sm;
+            }
+        }
+        
+        .pagination {
+            flex-wrap: wrap;
+            gap: space(1);
+            
+            li {
+                a,
+                span {
+                    min-width: 32px;
+                    height: 32px;
+                    padding: 0 space(2);
+                    font-size: $font-size-xs;
+                }
+            }
+        }
+    }
+}

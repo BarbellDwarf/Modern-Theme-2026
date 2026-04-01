@@ -1,0 +1,211 @@
+// Modern Theme 2026 - List Groups
+// Modern list styling for various list components
+
+.list-group {
+    display: flex;
+    flex-direction: column;
+    gap: space(2);
+    padding: 0;
+    margin: space(4) 0;
+    
+    .list-group-item {
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding: space(3) space(4);
+        background-color: var(--bg-elevated);
+        border: 1px solid var(--border-color);
+        border-radius: $border-radius-md;
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: all $transition-base;
+        @include shadow('xs');
+        
+        &:hover {
+            background-color: var(--bg-hover);
+            border-color: var(--primary);
+            transform: translateX(4px);
+            @include shadow('sm');
+        }
+        
+        &:active {
+            transform: translateX(2px);
+            @include shadow('xs');
+        }
+        
+        // Active state
+        &.active {
+            background-color: rgba(30, 106, 214, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+            @include shadow('md');
+            
+            &::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 4px;
+                background-color: var(--primary);
+                border-radius: $border-radius-sm 0 0 $border-radius-sm;
+            }
+        }
+        
+        // Disabled state
+        &.disabled,
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        // Icon in list item
+        i,
+        .fa {
+            margin-right: space(3);
+            width: 20px;
+            text-align: center;
+            color: var(--text-secondary);
+            transition: color $transition-fast;
+        }
+        
+        &:hover i,
+        &:hover .fa {
+            color: var(--primary);
+        }
+        
+        // Badge in list item
+        .badge,
+        .label {
+            margin-left: auto;
+        }
+    }
+    
+    // Flush variant (no gaps)
+    &.list-group-flush {
+        gap: 0;
+        
+        .list-group-item {
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
+            
+            &:first-child {
+                border-top: none;
+            }
+            
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+    }
+}
+
+// Horizontal list group
+.list-group-horizontal {
+    flex-direction: row;
+    
+    .list-group-item {
+        &:hover {
+            transform: translateY(-2px);
+        }
+        
+        &.active::before {
+            left: 0;
+            right: 0;
+            top: auto;
+            bottom: 0;
+            width: auto;
+            height: 4px;
+            border-radius: 0 0 $border-radius-sm $border-radius-sm;
+        }
+    }
+}
+
+// List with avatars/images
+.list-group-avatar {
+    .list-group-item {
+        gap: space(3);
+        
+        img,
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: $border-radius-full;
+            flex-shrink: 0;
+            border: 2px solid var(--border-color);
+            transition: border-color $transition-fast;
+        }
+        
+        &:hover img,
+        &:hover .avatar {
+            border-color: var(--primary);
+        }
+        
+        .list-content {
+            flex: 1;
+            min-width: 0;
+            
+            .list-title {
+                font-weight: 500;
+                margin-bottom: space(1);
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            
+            .list-subtitle {
+                font-size: $font-size-sm;
+                color: var(--text-secondary);
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+    }
+}
+
+// Compact list variant
+.list-group-compact {
+    gap: space(1);
+    
+    .list-group-item {
+        padding: space(2) space(3);
+        font-size: $font-size-sm;
+    }
+}
+
+// Dark mode adjustments
+[data-bs-theme="dark"] {
+    .list-group {
+        .list-group-item {
+            background-color: var(--bg-elevated);
+            border-color: var(--border-color);
+            
+            &:hover {
+                background-color: var(--bg-surface);
+            }
+            
+            &.active {
+                background-color: rgba(90, 142, 235, 0.15);
+            }
+        }
+    }
+}
+
+// Mobile adjustments
+@media (max-width: 767px) {
+    .list-group {
+        gap: space(1);
+        
+        .list-group-item {
+            padding: space(2) space(3);
+            font-size: $font-size-sm;
+        }
+    }
+    
+    .list-group-horizontal {
+        flex-direction: column;
+    }
+}

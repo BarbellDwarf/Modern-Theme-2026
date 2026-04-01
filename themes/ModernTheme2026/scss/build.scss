@@ -7,6 +7,12 @@
 // Import CSS custom properties for dynamic theming
 @import "root";
 
+// Performance optimizations (early)
+@import "performance";
+
+// Accessibility enhancements (early)
+@import "accessibility";
+
 // Import base layout overrides (MUST come before components)
 @import "humhub/base";
 
@@ -16,12 +22,15 @@
 @import "humhub/cards";
 @import "humhub/dropdown";
 @import "humhub/form";
+@import "humhub/gridview";
+@import "humhub/list-group";
 @import "humhub/nav";
 @import "humhub/topbar";
 @import "humhub/sidebar";
 @import "humhub/stream";
 @import "humhub/modal";
 @import "humhub/space-chooser";
+@import "humhub/mobile-bottom-nav";
 @import "humhub/reactions";
 @import "humhub/context-switcher";
 

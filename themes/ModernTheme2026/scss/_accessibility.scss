@@ -1,0 +1,346 @@
+// Modern Theme 2026 - Accessibility Enhancements
+// WCAG 2.1 AA compliance and beyond
+
+// Skip to content link (for screen readers and keyboard navigation)
+.skip-to-content {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background-color: var(--primary);
+    color: #fff;
+    padding: space(2) space(4);
+    text-decoration: none;
+    border-radius: 0 0 $border-radius-md 0;
+    z-index: 9999;
+    font-weight: 600;
+    transition: top $transition-fast;
+    
+    &:focus {
+        top: 0;
+        outline: 3px solid var(--primary-light);
+        outline-offset: 2px;
+    }
+}
+
+// Focus visible styles (keyboard navigation)
+*:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: $border-radius-sm;
+}
+
+// Remove outline for mouse users but keep for keyboard
+*:focus:not(:focus-visible) {
+    outline: none;
+}
+
+// Enhanced focus styles for interactive elements
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(30, 106, 214, 0.2);
+}
+
+// High contrast text for better readability
+body {
+    // Ensure minimum contrast ratios
+    color: var(--text-primary);
+    
+    // Enhance text contrast in dark mode
+    [data-bs-theme="dark"] & {
+        color: #f1f5f9; // Ensure 7:1 contrast ratio
+    }
+}
+
+// Link contrast
+a {
+    color: var(--primary);
+    
+    &:hover,
+    &:focus {
+        color: var(--primary-dark);
+        text-decoration: underline;
+    }
+    
+    // Ensure visited links are distinguishable
+    &:visited {
+        color: var(--secondary);
+    }
+}
+
+// Form labels and inputs
+label {
+    font-weight: 500;
+    margin-bottom: space(2);
+    color: var(--text-primary);
+    
+    // Required indicator
+    .required,
+    abbr[title] {
+        color: var(--danger);
+        text-decoration: none;
+    }
+}
+
+// Error messages
+.error,
+.invalid-feedback,
+.field-error {
+    color: var(--danger);
+    font-weight: 500;
+    margin-top: space(1);
+    font-size: $font-size-sm;
+    
+    // Ensure sufficient contrast
+    [data-bs-theme="dark"] & {
+        color: #f87171; // Lighter red for dark mode
+    }
+}
+
+// Success messages
+.success,
+.valid-feedback {
+    color: var(--success);
+    font-weight: 500;
+    margin-top: space(1);
+    font-size: $font-size-sm;
+    
+    [data-bs-theme="dark"] & {
+        color: #34d399; // Lighter green for dark mode
+    }
+}
+
+// Screen reader only text
+.sr-only,
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+// Focusable when navigated to via keyboard
+.sr-only-focusable:focus,
+.visually-hidden-focusable:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+}
+
+// Touch target size (minimum 44x44px for accessibility)
+button,
+a,
+input[type="checkbox"],
+input[type="radio"],
+.btn,
+.nav-link {
+    min-height: 44px;
+    min-width: 44px;
+    
+    @media (min-width: 768px) {
+        // Can be smaller on desktop
+        min-height: 36px;
+        min-width: auto;
+    }
+}
+
+// Ensure interactive elements are distinguishable
+button,
+a,
+.btn,
+.nav-link {
+    cursor: pointer;
+    
+    &:disabled,
+    &.disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+}
+
+// Loading states with accessible text
+.loading,
+.spinner {
+    position: relative;
+    
+    &::after {
+        content: attr(aria-label);
+        position: absolute;
+        left: -9999px;
+    }
+}
+
+// Table accessibility
+table {
+    // Ensure tables have proper headers
+    th {
+        font-weight: 600;
+        text-align: left;
+    }
+    
+    // Ensure cell padding for readability
+    td,
+    th {
+        padding: space(3);
+    }
+    
+    // Caption for screen readers
+    caption {
+        padding: space(2);
+        caption-side: top;
+        font-weight: 600;
+        text-align: left;
+        color: var(--text-primary);
+    }
+}
+
+// Modal accessibility
+.modal {
+    // Ensure focus is trapped within modal
+    &.show {
+        // Focus should be on modal when opened
+        .modal-dialog {
+            outline: none;
+        }
+    }
+    
+    // Ensure backdrop is not focusable
+    .modal-backdrop {
+        pointer-events: auto;
+    }
+}
+
+// Tooltip accessibility
+.tooltip {
+    // Ensure tooltips are readable
+    .tooltip-inner {
+        padding: space(2) space(3);
+        text-align: left;
+        font-size: $font-size-sm;
+        line-height: 1.5;
+        max-width: 300px;
+    }
+}
+
+// Dropdown accessibility
+.dropdown-menu {
+    // Ensure dropdown items are keyboard navigable
+    .dropdown-item {
+        &:focus-visible {
+            background-color: var(--bg-hover);
+            outline: 2px solid var(--primary);
+            outline-offset: -2px;
+        }
+    }
+}
+
+// Image alt text styling
+img:not([alt]) {
+    // Warn about missing alt text in development
+    outline: 3px solid var(--warning);
+    outline-offset: 2px;
+}
+
+// Reduced motion preferences
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+// High contrast mode adjustments
+@media (prefers-contrast: high) {
+    * {
+        border-width: 2px;
+    }
+    
+    .btn,
+    .panel,
+    .card {
+        border: 2px solid currentColor;
+    }
+}
+
+// Color blindness considerations
+// Ensure information isn't conveyed by color alone
+.badge,
+.label {
+    font-weight: 600;
+    
+    // Add icons for different states
+    &.badge-success::before,
+    &.label-success::before {
+        content: '✓ ';
+    }
+    
+    &.badge-danger::before,
+    &.label-danger::before {
+        content: '✗ ';
+    }
+    
+    &.badge-warning::before,
+    &.label-warning::before {
+        content: '⚠ ';
+    }
+    
+    &.badge-info::before,
+    &.label-info::before {
+        content: 'ℹ ';
+    }
+}
+
+// Keyboard navigation indicators
+.keyboard-user {
+    // Enhanced focus styles when user is using keyboard
+    *:focus {
+        outline: 3px solid var(--primary);
+        outline-offset: 3px;
+        box-shadow: 0 0 0 6px rgba(30, 106, 214, 0.2);
+    }
+}
+
+// Print styles
+@media print {
+    // Ensure content is readable when printed
+    * {
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+    
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+    
+    // Show URLs for links
+    a[href]::after {
+        content: " (" attr(href) ")";
+    }
+    
+    // Hide unnecessary elements
+    nav,
+    .navbar,
+    .dropdown,
+    .modal,
+    .tooltip {
+        display: none !important;
+    }
+}

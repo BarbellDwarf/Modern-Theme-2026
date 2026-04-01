@@ -1,0 +1,147 @@
+// Modern Theme 2026 - Performance Optimizations
+// CSS optimizations for better rendering performance
+
+// Use CSS containment for improved layout performance
+.panel,
+.card,
+.s-wall-entry,
+.list-group-item {
+    contain: layout style paint;
+}
+
+// Optimize animations with will-change
+.btn,
+.dropdown-toggle,
+.nav-link,
+.list-group-item {
+    &:hover {
+        will-change: transform, box-shadow;
+    }
+}
+
+// Remove will-change after animation completes
+.btn:not(:hover),
+.dropdown-toggle:not(:hover),
+.nav-link:not(:hover),
+.list-group-item:not(:hover) {
+    will-change: auto;
+}
+
+// Use transform for animations (GPU-accelerated)
+.modal {
+    &.fade .modal-dialog {
+        transform: translate(0, -50px);
+        transition: transform $transition-base;
+    }
+    
+    &.show .modal-dialog {
+        transform: translate(0, 0);
+    }
+}
+
+// Optimize backdrop blur (expensive operation)
+.navbar,
+#topbar {
+    // Only apply blur on larger screens
+    @media (min-width: 768px) {
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+    
+    // Skip blur on mobile for better performance
+    @media (max-width: 767px) {
+        background-color: var(--bg-elevated);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+}
+
+// Reduce paint areas with backface-visibility
+.panel,
+.card,
+.btn,
+.modal {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+// Optimize font rendering
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+// Optimize shadows (use single shadow instead of multiple when possible)
+.panel,
+.card {
+    // Simpler shadow for better performance
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    
+    &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+}
+
+// Optimize scroll performance
+.modal-body,
+.dropdown-menu,
+.list-group {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+}
+
+// Reduce repaints with transform instead of top/left
+.dropdown-menu {
+    transform: translateY(0);
+    
+    &.show {
+        transform: translateY(0);
+    }
+}
+
+// Lazy load images optimization
+img {
+    &[loading="lazy"] {
+        // Add placeholder while loading
+        background-color: var(--bg-surface);
+        min-height: 100px;
+    }
+}
+
+// Optimize animations - reduce motion for users who prefer it
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+// Use content-visibility for off-screen content
+.s-wall-entry {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 200px; // Estimated height
+}
+
+// Optimize critical rendering path - inline critical CSS
+// This is handled by the build system but we ensure styles are ordered correctly:
+// 1. Layout (containers, grid)
+// 2. Typography
+// 3. Colors
+// 4. Components
+// 5. Utilities
+
+// Reduce CPU usage for hover effects on touch devices
+@media (hover: none) and (pointer: coarse) {
+    .btn:hover,
+    .list-group-item:hover,
+    .nav-link:hover {
+        // Remove expensive hover effects on touch devices
+        transform: none;
+        will-change: auto;
+    }
+}

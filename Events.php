@@ -52,8 +52,15 @@ class Events
             return;
         }
 
+        // Debug: Log that we're rendering the widget
+        Yii::debug('Rendering MobileBottomNav widget', 'modern-theme-2026');
+
         // Render the mobile bottom navigation widget
-        echo MobileBottomNav::widget();
+        try {
+            echo MobileBottomNav::widget();
+        } catch (\Exception $e) {
+            Yii::error('Failed to render MobileBottomNav: ' . $e->getMessage(), 'modern-theme-2026');
+        }
     }
 
     protected static function getModuleIfThemeActive(): ?Module

@@ -12,14 +12,31 @@
 }
 
 #topbar {
-    // Add subtle glassmorphism on desktop
-    @media (min-width: 768px) {
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        background-color: rgba(255, 255, 255, 0.95);
-        
-        [data-bs-theme="dark"] & {
-            background-color: rgba(30, 41, 59, 0.95);
+    // Solid background for better readability when scrolling
+    background-color: var(--bg-base);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    
+    // Add sticky positioning to keep menu visible
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    
+    [data-bs-theme="dark"] & {
+        background-color: var(--bg-elevated);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    
+    // Optional: Add subtle backdrop blur on high-end devices only
+    @supports (backdrop-filter: blur(10px)) {
+        @media (min-width: 992px) {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            // Slightly transparent for glassmorphism effect
+            background-color: rgba(255, 255, 255, 0.98);
+            
+            [data-bs-theme="dark"] & {
+                background-color: rgba(30, 41, 59, 0.98);
+            }
         }
     }
     

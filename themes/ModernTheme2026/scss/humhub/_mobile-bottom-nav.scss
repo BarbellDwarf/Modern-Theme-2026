@@ -3,10 +3,12 @@
 
 // Bottom navigation bar (mobile only)
 .mobile-bottom-nav {
-    display: none; // Hidden on desktop
+    // Force hide on desktop, override any other rules
+    display: none !important;
     
     @media (max-width: 767px) {
-        display: flex;
+        // Force show on mobile with important to override any conflicts
+        display: flex !important;
         position: fixed;
         bottom: 0;
         left: 0;
@@ -170,12 +172,38 @@
 // Hide bottom nav when keyboard is open (optional)
 @media (max-width: 767px) and (max-height: 500px) {
     .mobile-bottom-nav {
-        display: none;
+        display: none !important;
     }
     
     body {
         padding-bottom: 0;
     }
+}
+
+// Adjust body padding for fixed bottom nav
+@media (max-width: 767px) {
+    body {
+        padding-bottom: calc(64px + env(safe-area-inset-bottom, 0)) !important;
+    }
+}
+
+// Force show on mobile devices (fallback for apps that don't respect media queries)
+body.mobile .mobile-bottom-nav,
+body[data-mobile="true"] .mobile-bottom-nav,
+.mobile-app .mobile-bottom-nav {
+    display: flex !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+}
+
+// Also adjust body padding if mobile class is present
+body.mobile,
+body[data-mobile="true"],
+.mobile-app {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0)) !important;
 }
 
 // Tablet landscape - optional bottom nav

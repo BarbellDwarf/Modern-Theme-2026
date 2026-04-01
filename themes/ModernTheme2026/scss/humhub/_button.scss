@@ -1,0 +1,160 @@
+// Modern Theme 2026 - Buttons
+// Contemporary button styles with depth and smooth interactions
+
+.btn {
+  @include button-base;
+  
+  // Add subtle shadow for depth
+  @include shadow('sm');
+  
+  &:hover:not(:disabled):not(.disabled) {
+    @include shadow('md');
+  }
+  
+  &:active:not(:disabled):not(.disabled) {
+    @include shadow('xs');
+    transform: translateY(0);
+  }
+}
+
+// Button Variants
+.btn-primary {
+  @include button-variant(var(--color-primary), $primary-dark);
+}
+
+.btn-secondary {
+  @include button-variant(var(--color-secondary), $secondary-dark);
+}
+
+.btn-success {
+  @include button-variant(var(--color-success), darken($success, 10%));
+}
+
+.btn-info {
+  @include button-variant(var(--color-info), darken($info, 10%));
+}
+
+.btn-warning {
+  @include button-variant(var(--color-warning), darken($warning, 10%));
+}
+
+.btn-danger {
+  @include button-variant(var(--color-danger), darken($danger, 10%));
+}
+
+// Outline buttons
+.btn-outline-primary {
+  @include button-base;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: transparent;
+  
+  &:hover:not(:disabled):not(.disabled) {
+    background: var(--color-primary);
+    color: white;
+    @include shadow('sm');
+  }
+}
+
+// Ghost buttons
+.btn-link {
+  @include button-base;
+  color: var(--color-link);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: $space-2 $space-3;
+  
+  &:hover:not(:disabled):not(.disabled) {
+    background: var(--color-bg-secondary);
+    box-shadow: none;
+  }
+}
+
+// Button sizes
+.btn-sm {
+  padding: $space-1 $space-3;
+  font-size: var(--font-size-xs);
+  border-radius: var(--radius-sm);
+}
+
+.btn-lg {
+  padding: $space-3 $space-6;
+  font-size: var(--font-size-lg);
+  border-radius: var(--radius-lg);
+}
+
+// Button groups
+.btn-group {
+  display: inline-flex;
+  gap: $space-2;
+  
+  .btn {
+    border-radius: var(--radius);
+    
+    &:first-child {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    
+    &:last-child {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+    
+    &:not(:first-child):not(:last-child) {
+      border-radius: 0;
+    }
+  }
+}
+
+// Icon buttons
+.btn-icon {
+  padding: $space-2;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  
+  i, svg {
+    margin: 0 !important;
+  }
+}
+
+// Floating action button
+.btn-floating {
+  position: fixed;
+  bottom: var(--space-8);
+  right: var(--space-8);
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  @include shadow('lg');
+  z-index: $z-sticky;
+  
+  &:hover {
+    @include shadow('xl');
+  }
+}
+
+// Loading state
+.btn.loading {
+  position: relative;
+  color: transparent !important;
+  
+  &::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin: -8px 0 0 -8px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spinner 0.6s linear infinite;
+  }
+}

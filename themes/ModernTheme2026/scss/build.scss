@@ -1,0 +1,28 @@
+// Modern Theme 2026 - Build File
+// Variables are imported separately by the \humhub\helpers\ThemeHelper class
+
+// Import parent theme declaration
+@import "parent";
+
+// Import mixins
+@import "mixins";
+
+// Import CSS custom properties for dynamic theming
+@import "root";
+
+// Import component overrides
+@import "humhub/badge";
+@import "humhub/button";
+@import "humhub/cards";
+@import "humhub/dropdown";
+@import "humhub/form";
+@import "humhub/nav";
+@import "humhub/topbar";
+@import "humhub/sidebar";
+@import "humhub/stream";
+@import "humhub/modal";
+@import "humhub/reactions";
+@import "humhub/context-switcher";
+
+// Mobile overrides (must come last)
+@import "humhub/mobile";

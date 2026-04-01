@@ -1,0 +1,35 @@
+# IDE and Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Composer
+/vendor/
+composer.lock
+
+# Build artifacts
+*.css
+*.css.map
+*.min.js
+
+# HumHub runtime
+/runtime/
+/assets/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.orig
+
+# OS files
+Thumbs.db
+ehthumbs.db
+
+# Generated SCSS config files
+config-generated-*.scss

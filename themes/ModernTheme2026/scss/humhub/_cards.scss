@@ -1,0 +1,162 @@
+// Modern Theme 2026 - Cards & Panels
+// Modern card designs with glassmorphism and depth
+
+.panel, .card {
+  @include card;
+  margin-bottom: var(--space-6);
+  
+  // Hover effect for interactive cards
+  &.card-hover, &.panel-hover {
+    cursor: pointer;
+    @include card-hover;
+  }
+}
+
+.panel-heading, .card-header {
+  padding: var(--space-4) var(--space-6);
+  margin: calc(var(--space-6) * -1) calc(var(--space-6) * -1) var(--space-4);
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-primary);
+}
+
+.panel-body, .card-body {
+  padding: var(--space-6);
+}
+
+.panel-footer, .card-footer {
+  padding: var(--space-4) var(--space-6);
+  margin: var(--space-4) calc(var(--space-6) * -1) calc(var(--space-6) * -1);
+  background: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+// Glass card variant
+.panel-glass, .card-glass {
+  @include glass-card;
+  
+  .panel-heading, .card-header {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+// Bordered variant
+.panel-bordered, .card-bordered {
+  border: 2px solid var(--color-border);
+  
+  &:hover {
+    border-color: var(--color-primary);
+  }
+}
+
+// Compact variant
+.panel-compact, .card-compact {
+  padding: var(--space-4);
+  
+  .panel-heading, .card-header {
+    padding: var(--space-3) var(--space-4);
+    margin: calc(var(--space-4) * -1) calc(var(--space-4) * -1) var(--space-3);
+  }
+  
+  .panel-body, .card-body {
+    padding: var(--space-4);
+  }
+}
+
+// Primary colored panel
+.panel-primary {
+  border-color: var(--color-primary);
+  
+  .panel-heading {
+    background: var(--color-primary);
+    color: white;
+    border-bottom-color: var(--color-primary-dark);
+  }
+}
+
+// Activity stream cards
+.wall-entry, .stream-entry {
+  @include card-hover;
+  margin-bottom: var(--space-4);
+  
+  .wall-entry-controls, .stream-entry-controls {
+    opacity: 0;
+    @include transition(opacity, var(--transition-fast));
+  }
+  
+  &:hover {
+    .wall-entry-controls, .stream-entry-controls {
+      opacity: 1;
+    }
+  }
+}
+
+// Media object in cards
+.media {
+  display: flex;
+  gap: var(--space-4);
+  
+  .media-left, .media-right {
+    flex-shrink: 0;
+  }
+  
+  .media-body {
+    flex: 1;
+    min-width: 0; // Allows text truncation
+  }
+}
+
+// Card list variant
+.card-list {
+  .card, .panel {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    margin-bottom: 0;
+    
+    &:first-child {
+      border-top-left-radius: var(--radius-lg);
+      border-top-right-radius: var(--radius-lg);
+      border-top: 1px solid var(--color-border);
+    }
+    
+    &:last-child {
+      border-bottom-left-radius: var(--radius-lg);
+      border-bottom-right-radius: var(--radius-lg);
+    }
+    
+    + .card, + .panel {
+      border-top: none;
+    }
+  }
+}
+
+// Empty state cards
+.empty-state {
+  @include center-flex;
+  flex-direction: column;
+  padding: var(--space-12);
+  text-align: center;
+  color: var(--color-text-muted);
+  
+  i, svg {
+    font-size: 48px;
+    margin-bottom: var(--space-4);
+    opacity: 0.5;
+  }
+  
+  h4 {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-2);
+  }
+  
+  p {
+    max-width: 400px;
+    margin-bottom: var(--space-4);
+  }
+}

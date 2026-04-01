@@ -1,0 +1,94 @@
+// Modern Theme 2026 - Navigation Components
+// Tabs, pills, and navigation lists
+
+.nav-tabs {
+  border-bottom: 2px solid var(--color-border);
+  display: flex;
+  gap: var(--space-1);
+  
+  .nav-item {
+    .nav-link {
+      padding: var(--space-3) var(--space-4);
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--color-text-secondary);
+      font-weight: $font-weight-medium;
+      @include transition(all, var(--transition-fast));
+      border-radius: var(--radius) var(--radius) 0 0;
+      margin-bottom: -2px;
+      
+      &:hover {
+        background: var(--color-bg-secondary);
+        color: var(--color-text-primary);
+      }
+      
+      &.active {
+        color: var(--color-primary);
+        border-bottom-color: var(--color-primary);
+        background: transparent;
+      }
+    }
+  }
+}
+
+.nav-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  
+  .nav-item {
+    .nav-link {
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-full);
+      color: var(--color-text-secondary);
+      font-weight: $font-weight-medium;
+      @include transition(all, var(--transition-fast));
+      
+      &:hover {
+        background: var(--color-bg-secondary);
+        color: var(--color-text-primary);
+      }
+      
+      &.active {
+        background: var(--color-primary);
+        color: white;
+        @include shadow('sm');
+      }
+    }
+  }
+}
+
+// Breadcrumbs
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  padding: var(--space-3) 0;
+  margin-bottom: var(--space-4);
+  list-style: none;
+  background: transparent;
+  border-radius: 0;
+  
+  .breadcrumb-item {
+    display: flex;
+    align-items: center;
+    
+    + .breadcrumb-item::before {
+      content: "/";
+      padding: 0 var(--space-2);
+      color: var(--color-text-muted);
+    }
+    
+    a {
+      color: var(--color-text-secondary);
+      
+      &:hover {
+        color: var(--color-primary);
+      }
+    }
+    
+    &.active {
+      color: var(--color-text-primary);
+      font-weight: $font-weight-medium;
+    }
+  }
+}

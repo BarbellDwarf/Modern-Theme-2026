@@ -1,0 +1,364 @@
+// Modern Theme 2026 - Mixins
+// Reusable SCSS mixins for consistency
+
+// ============================================
+// SHADOW MIXINS
+// ============================================
+
+@mixin shadow($level: 'sm') {
+  @if $level == 'xs' {
+    box-shadow: var(--shadow-xs);
+  } @else if $level == 'sm' {
+    box-shadow: var(--shadow-sm);
+  } @else if $level == 'md' {
+    box-shadow: var(--shadow-md);
+  } @else if $level == 'lg' {
+    box-shadow: var(--shadow-lg);
+  } @else if $level == 'xl' {
+    box-shadow: var(--shadow-xl);
+  } @else if $level == '2xl' {
+    box-shadow: var(--shadow-2xl);
+  } @else if $level == 'inner' {
+    box-shadow: var(--shadow-inner);
+  }
+}
+
+@mixin shadow-hover($from: 'sm', $to: 'md') {
+  @include shadow($from);
+  transition: box-shadow var(--transition-base) $transition-timing;
+  
+  &:hover {
+    @include shadow($to);
+  }
+}
+
+// ============================================
+// GLASSMORPHISM EFFECT
+// ============================================
+
+@mixin glass-effect($opacity: 0.8, $blur: 12px) {
+  background: rgba(255, 255, 255, $opacity);
+  backdrop-filter: blur($blur);
+  -webkit-backdrop-filter: blur($blur);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+@mixin glass-effect-dark($opacity: 0.7, $blur: 12px) {
+  background: rgba(0, 0, 0, $opacity);
+  backdrop-filter: blur($blur);
+  -webkit-backdrop-filter: blur($blur);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+// ============================================
+// RESPONSIVE BREAKPOINTS
+// ============================================
+
+@mixin responsive($breakpoint) {
+  @if $breakpoint == 'sm' {
+    @media (min-width: $breakpoint-sm) {
+      @content;
+    }
+  } @else if $breakpoint == 'md' {
+    @media (min-width: $breakpoint-md) {
+      @content;
+    }
+  } @else if $breakpoint == 'lg' {
+    @media (min-width: $breakpoint-lg) {
+      @content;
+    }
+  } @else if $breakpoint == 'xl' {
+    @media (min-width: $breakpoint-xl) {
+      @content;
+    }
+  } @else if $breakpoint == '2xl' {
+    @media (min-width: $breakpoint-2xl) {
+      @content;
+    }
+  }
+}
+
+@mixin mobile-only {
+  @media (max-width: $breakpoint-md - 1) {
+    @content;
+  }
+}
+
+@mixin tablet-and-up {
+  @media (min-width: $breakpoint-md) {
+    @content;
+  }
+}
+
+@mixin desktop-and-up {
+  @media (min-width: $breakpoint-lg) {
+    @content;
+  }
+}
+
+// ============================================
+// TYPOGRAPHY MIXINS
+// ============================================
+
+@mixin heading($size: 'h1') {
+  font-family: var(--font-family-headings);
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  color: var(--color-text-primary);
+  
+  @if $size == 'h1' {
+    font-size: var(--font-size-5xl);
+  } @else if $size == 'h2' {
+    font-size: var(--font-size-4xl);
+  } @else if $size == 'h3' {
+    font-size: var(--font-size-3xl);
+  } @else if $size == 'h4' {
+    font-size: var(--font-size-2xl);
+  } @else if $size == 'h5' {
+    font-size: var(--font-size-xl);
+  } @else if $size == 'h6' {
+    font-size: var(--font-size-lg);
+  }
+}
+
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin text-clamp($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// ============================================
+// TRANSITION MIXINS
+// ============================================
+
+@mixin transition($properties: all, $duration: $transition-speed-base, $timing: $transition-timing) {
+  transition: $properties $duration $timing;
+}
+
+@mixin smooth-hover {
+  @include transition(all, var(--transition-base));
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+// ============================================
+// BUTTON MIXINS
+// ============================================
+
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: $btn-padding-y $btn-padding-x;
+  border-radius: $btn-border-radius;
+  font-weight: $font-weight-medium;
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  @include transition(all, var(--transition-base));
+  
+  &:hover {
+    text-decoration: none;
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &:disabled,
+  &.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+}
+
+@mixin button-variant($bg, $hover-bg: darken($bg, 8%), $text: #fff) {
+  @include button-base;
+  background-color: $bg;
+  color: $text;
+  @include shadow('sm');
+  
+  &:hover:not(:disabled):not(.disabled) {
+    background-color: $hover-bg;
+    @include shadow('md');
+  }
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba($bg, 0.3), var(--shadow-sm);
+  }
+}
+
+// ============================================
+// CARD/PANEL MIXINS
+// ============================================
+
+@mixin card {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  @include shadow('sm');
+  @include transition(all, var(--transition-base));
+}
+
+@mixin card-hover {
+  @include card;
+  
+  &:hover {
+    @include shadow('md');
+    transform: translateY(-2px);
+  }
+}
+
+@mixin glass-card {
+  @include glass-effect(0.9);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  @include shadow('md');
+}
+
+// ============================================
+// FORM MIXINS
+// ============================================
+
+@mixin input-base {
+  display: block;
+  width: 100%;
+  padding: $input-padding-y $input-padding-x;
+  font-size: var(--font-size-base);
+  font-weight: $font-weight-normal;
+  line-height: $line-height-normal;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  @include transition(border-color, var(--transition-fast));
+  
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: $input-focus-shadow;
+  }
+  
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+  
+  &:disabled,
+  &[readonly] {
+    background-color: var(--color-bg-secondary);
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+// ============================================
+// UTILITY MIXINS
+// ============================================
+
+@mixin center-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@mixin clearfix {
+  &::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+// ============================================
+// ANIMATION MIXINS
+// ============================================
+
+@mixin fade-in($duration: var(--transition-base)) {
+  animation: fadeIn $duration ease-in-out;
+}
+
+@mixin scale-in($duration: var(--transition-base)) {
+  animation: scaleIn $duration $transition-timing-bounce;
+}
+
+@mixin slide-up($duration: var(--transition-base)) {
+  animation: slideUp $duration $transition-timing;
+}
+
+// Keyframe animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}

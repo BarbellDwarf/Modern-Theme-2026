@@ -1,0 +1,57 @@
+// Modern Theme 2026 - Dropdowns
+// Modern dropdown menus with smooth animations
+
+.dropdown-menu {
+  @include glass-effect(0.98);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  @include shadow('lg');
+  padding: var(--space-2);
+  min-width: 200px;
+  @include fade-in(var(--transition-fast));
+  @include scale-in(var(--transition-base));
+  
+  .dropdown-item {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius);
+    color: var(--color-text-secondary);
+    @include transition(all, var(--transition-fast));
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    
+    &:hover {
+      background: var(--color-bg-secondary);
+      color: var(--color-text-primary);
+    }
+    
+    &:active {
+      background: var(--color-primary-lightest);
+      color: var(--color-primary);
+    }
+    
+    &.active {
+      background: var(--color-primary);
+      color: white;
+    }
+    
+    i {
+      width: 20px;
+      text-align: center;
+    }
+  }
+  
+  .dropdown-divider {
+    margin: var(--space-2) 0;
+    border-top: 1px solid var(--color-border-light);
+  }
+  
+  .dropdown-header {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-xs);
+    font-weight: $font-weight-semibold;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: $letter-spacing-wide;
+  }
+}

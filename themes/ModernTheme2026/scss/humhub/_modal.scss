@@ -1,0 +1,77 @@
+// Modern Theme 2026 - Modals
+// Modern modals with backdrop blur
+
+.modal-backdrop {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  @include fade-in();
+}
+
+.modal {
+  @include fade-in();
+}
+
+.modal-dialog {
+  @include scale-in();
+}
+
+.modal-content {
+  border: none;
+  border-radius: var(--radius-xl);
+  @include shadow('2xl');
+  overflow: hidden;
+  
+  .modal-header {
+    padding: var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg-primary);
+    
+    .modal-title {
+      font-size: var(--font-size-xl);
+      font-weight: $font-weight-semibold;
+      color: var(--color-text-primary);
+    }
+    
+    .close {
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius);
+      background: transparent;
+      border: none;
+      color: var(--color-text-muted);
+      @include transition(all, var(--transition-fast));
+      
+      &:hover {
+        background: var(--color-bg-secondary);
+        color: var(--color-text-primary);
+      }
+    }
+  }
+  
+  .modal-body {
+    padding: var(--space-6);
+    background: var(--color-bg-primary);
+  }
+  
+  .modal-footer {
+    padding: var(--space-4) var(--space-6);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-bg-secondary);
+    display: flex;
+    gap: var(--space-2);
+    justify-content: flex-end;
+  }
+}
+
+// Size variants
+.modal-lg {
+  max-width: 900px;
+}
+
+.modal-sm {
+  max-width: 400px;
+}

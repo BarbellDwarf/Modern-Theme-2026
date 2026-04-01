@@ -1,0 +1,213 @@
+// Modern Theme 2026 - Forms
+// Modern form inputs with better focus states
+
+.form-control, input[type="text"], input[type="email"], input[type="password"],
+input[type="number"], input[type="tel"], input[type="url"], input[type="search"],
+textarea, select {
+  @include input-base;
+}
+
+// Form groups
+.form-group {
+  margin-bottom: var(--space-4);
+  
+  label {
+    display: block;
+    margin-bottom: var(--space-2);
+    font-weight: $font-weight-medium;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+  }
+  
+  .help-block, .form-text {
+    display: block;
+    margin-top: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+}
+
+// Validation states
+.has-error, .is-invalid {
+  .form-control {
+    border-color: var(--color-danger);
+    
+    &:focus {
+      border-color: var(--color-danger);
+      box-shadow: 0 0 0 3px rgba($danger, 0.1);
+    }
+  }
+  
+  .help-block, .invalid-feedback {
+    color: var(--color-danger);
+  }
+}
+
+.has-success, .is-valid {
+  .form-control {
+    border-color: var(--color-success);
+    
+    &:focus {
+      border-color: var(--color-success);
+      box-shadow: 0 0 0 3px rgba($success, 0.1);
+    }
+  }
+  
+  .help-block, .valid-feedback {
+    color: var(--color-success);
+  }
+}
+
+// Floating labels
+.form-floating {
+  position: relative;
+  
+  .form-control {
+    padding: $space-4 $space-3 $space-2;
+    
+    &:focus, &:not(:placeholder-shown) {
+      ~ label {
+        top: 0;
+        font-size: var(--font-size-xs);
+        color: var(--color-primary);
+      }
+    }
+  }
+  
+  label {
+    position: absolute;
+    top: 50%;
+    left: $space-3;
+    transform: translateY(-50%);
+    pointer-events: none;
+    @include transition(all, var(--transition-fast));
+  }
+}
+
+// Checkboxes and radios
+.checkbox, .radio {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  
+  input[type="checkbox"], input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    cursor: pointer;
+    
+    &:checked {
+      accent-color: var(--color-primary);
+    }
+  }
+  
+  label {
+    margin: 0;
+    cursor: pointer;
+  }
+}
+
+// Switch toggle
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 24px;
+  
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    
+    &:checked + .slider {
+      background-color: var(--color-primary);
+      
+      &::before {
+        transform: translateX(24px);
+      }
+    }
+    
+    &:focus + .slider {
+      box-shadow: 0 0 0 3px rgba($primary, 0.2);
+    }
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--color-gray-300);
+    @include transition(background-color, var(--transition-base));
+    border-radius: var(--radius-full);
+    
+    &::before {
+      content: "";
+      position: absolute;
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      @include transition(transform, var(--transition-base));
+      border-radius: 50%;
+      @include shadow('sm');
+    }
+  }
+}
+
+// Select styling
+select.form-control {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right $space-3 center;
+  background-size: 16px 12px;
+  padding-right: $space-8;
+}
+
+// File input
+input[type="file"] {
+  display: block;
+  width: 100%;
+  padding: $space-3;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius);
+  @include transition(border-color, var(--transition-fast));
+  
+  &:hover {
+    border-color: var(--color-primary);
+  }
+}
+
+// Search input with icon
+.input-group {
+  position: relative;
+  display: flex;
+  
+  .form-control {
+    flex: 1;
+  }
+  
+  .input-group-addon, .input-group-text {
+    display: flex;
+    align-items: center;
+    padding: $input-padding-y $space-3;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    
+    &:first-child {
+      border-right: none;
+      border-radius: var(--radius) 0 0 var(--radius);
+    }
+    
+    &:last-child {
+      border-left: none;
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+  }
+}

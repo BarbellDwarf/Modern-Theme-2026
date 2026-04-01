@@ -1,0 +1,261 @@
+// Modern Theme 2026 - Theme Styles
+// Main theme customizations
+
+// ============================================
+// GLOBAL STYLES
+// ============================================
+
+body {
+  font-family: var(--font-family-base);
+  color: var(--color-text-primary);
+  background: var(--color-bg-secondary);
+  line-height: $line-height-normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ============================================
+// HEADINGS
+// ============================================
+
+h1, .h1 {
+  @include heading('h1');
+  margin-bottom: var(--space-6);
+}
+
+h2, .h2 {
+  @include heading('h2');
+  margin-bottom: var(--space-5);
+}
+
+h3, .h3 {
+  @include heading('h3');
+  margin-bottom: var(--space-4);
+}
+
+h4, .h4 {
+  @include heading('h4');
+  margin-bottom: var(--space-4);
+}
+
+h5, .h5 {
+  @include heading('h5');
+  margin-bottom: var(--space-3);
+}
+
+h6, .h6 {
+  @include heading('h6');
+  margin-bottom: var(--space-3);
+}
+
+// ============================================
+// LINKS
+// ============================================
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+  @include transition(color, var(--transition-fast));
+  
+  &:hover {
+    color: var(--color-link-hover);
+    text-decoration: none;
+  }
+  
+  &:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+// ============================================
+// LAYOUT IMPROVEMENTS
+// ============================================
+
+.container, .container-fluid {
+  @include responsive('lg') {
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
+  }
+}
+
+// Main content area
+#main-content {
+  min-height: calc(100vh - 120px);
+}
+
+// ============================================
+// UTILITY CLASSES
+// ============================================
+
+// Shadows
+.shadow-xs { @include shadow('xs'); }
+.shadow-sm { @include shadow('sm'); }
+.shadow-md { @include shadow('md'); }
+.shadow-lg { @include shadow('lg'); }
+.shadow-xl { @include shadow('xl'); }
+.shadow-2xl { @include shadow('2xl'); }
+.shadow-inner { @include shadow('inner'); }
+.shadow-none { box-shadow: none !important; }
+
+// Glassmorphism
+.glass {
+  @include glass-effect();
+}
+
+.glass-dark {
+  @include glass-effect-dark();
+}
+
+// Text utilities
+.text-truncate {
+  @include text-truncate;
+}
+
+// Transitions
+.transition-fast {
+  @include transition(all, var(--transition-fast));
+}
+
+.transition-base {
+  @include transition(all, var(--transition-base));
+}
+
+.transition-slow {
+  @include transition(all, var(--transition-slow));
+}
+
+// ============================================
+// ACCESSIBILITY
+// ============================================
+
+.sr-only, .visually-hidden {
+  @include visually-hidden;
+}
+
+// Focus visible (keyboard navigation)
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+// Skip to content link
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-primary);
+  color: white;
+  z-index: 9999;
+  
+  &:focus {
+    top: 0;
+  }
+}
+
+// ============================================
+// LOADING STATES
+// ============================================
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-secondary) 25%,
+    var(--color-bg-tertiary) 50%,
+    var(--color-bg-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: var(--radius);
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.loading-spinner {
+  @include center-flex;
+  
+  &::after {
+    content: "";
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spinner 0.8s linear infinite;
+  }
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ============================================
+// SMOOTH SCROLLING
+// ============================================
+
+html {
+  scroll-behavior: smooth;
+}
+
+// Custom scrollbar (webkit browsers)
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-gray-400);
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-bg-secondary);
+  
+  &:hover {
+    background: var(--color-gray-500);
+  }
+}
+
+// ============================================
+// PRINT STYLES
+// ============================================
+
+@media print {
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+  
+  img {
+    page-break-inside: avoid;
+  }
+  
+  h2, h3, p {
+    orphans: 3;
+    widows: 3;
+  }
+  
+  h2, h3 {
+    page-break-after: avoid;
+  }
+}

@@ -1,0 +1,43 @@
+// Modern Theme 2026 - Badges
+// Modern badges with better contrast
+
+.badge, .label {
+  display: inline-flex;
+  align-items: center;
+  padding: $space-1 $space-2;
+  font-size: var(--font-size-xs);
+  font-weight: $font-weight-medium;
+  line-height: 1;
+  border-radius: var(--radius);
+  @include transition(all, var(--transition-fast));
+}
+
+.badge-primary, .label-primary {
+  background: var(--color-primary);
+  color: white;
+}
+
+.badge-success, .label-success {
+  background: var(--color-success);
+  color: white;
+}
+
+.badge-info, .label-info {
+  background: var(--color-info);
+  color: white;
+}
+
+.badge-warning, .label-warning {
+  background: var(--color-warning);
+  color: var(--color-gray-900);
+}
+
+.badge-danger, .label-danger {
+  background: var(--color-danger);
+  color: white;
+}
+
+// Pill variant
+.badge-pill {
+  border-radius: var(--radius-full);
+}

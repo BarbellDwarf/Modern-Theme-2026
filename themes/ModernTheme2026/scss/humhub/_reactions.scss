@@ -1,0 +1,146 @@
+// Modern Theme 2026 - Emoji Reactions
+// Modern reaction picker and display
+
+.reaction-picker {
+  display: inline-flex;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-full);
+  @include shadow('lg');
+  @include glass-effect(0.98);
+  @include scale-in();
+  z-index: $z-dropdown;
+  
+  .reaction-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    @include transition(all, var(--transition-base));
+    font-size: 24px;
+    
+    &:hover {
+      background: var(--color-bg-secondary);
+      transform: scale(1.2);
+      @include shadow('md');
+    }
+    
+    &:active {
+      transform: scale(1.1);
+    }
+  }
+}
+
+// Reaction display under posts
+.reaction-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  
+  .reaction-count {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: $space-1 $space-2;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: $font-weight-medium;
+    color: var(--color-text-secondary);
+    @include transition(all, var(--transition-fast));
+    cursor: pointer;
+    
+    &:hover {
+      background: var(--color-bg-primary);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      @include shadow('sm');
+    }
+    
+    &.user-reacted {
+      background: var(--color-primary-lightest);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      font-weight: $font-weight-semibold;
+    }
+    
+    .emoji {
+      font-size: 18px;
+      line-height: 1;
+    }
+    
+    .count {
+      font-size: var(--font-size-sm);
+      min-width: 16px;
+      text-align: center;
+    }
+  }
+}
+
+// Like button with reaction picker
+.like-link-container {
+  position: relative;
+  
+  .like-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: $space-2 $space-3;
+    border-radius: var(--radius-full);
+    color: var(--color-text-secondary);
+    @include transition(all, var(--transition-fast));
+    
+    &:hover {
+      background: var(--color-bg-secondary);
+      color: var(--color-primary);
+      
+      ~ .reaction-picker {
+        display: flex;
+      }
+    }
+    
+    &.liked {
+      color: var(--color-primary);
+      font-weight: $font-weight-medium;
+    }
+  }
+  
+  // Show picker on hover (desktop)
+  @include desktop-and-up {
+    &:hover .reaction-picker {
+      display: flex;
+    }
+  }
+  
+  // Show picker on tap (mobile)
+  @include mobile-only {
+    .reaction-picker {
+      display: none;
+      
+      &.active {
+        display: flex;
+      }
+    }
+  }
+}
+
+// Reaction animation
+@keyframes reactionBounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+}
+
+.reaction-item.animating {
+  animation: reactionBounce var(--transition-base) $transition-timing-bounce;
+}

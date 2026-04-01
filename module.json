@@ -1,0 +1,16 @@
+{
+    "id": "modern-theme-2026",
+    "name": "Modern Theme 2026",
+    "description": "Contemporary theme with glassmorphism, subtle depth, smooth animations, and 2026 design trends. Features adaptive color palettes, enhanced mobile experience, and improved accessibility.",
+    "keywords": ["theme", "modern", "2026", "glassmorphism", "contemporary", "clean", "depth"],
+    "version": "1.0.0",
+    "humhub": {
+        "minVersion": "1.18.0"
+    },
+    "authors": [
+        {
+            "name": "Modern Theme 2026 Team",
+            "role": "Developer"
+        }
+    ]
+}

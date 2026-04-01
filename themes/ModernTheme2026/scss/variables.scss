@@ -1,0 +1,241 @@
+// Modern Theme 2026 - Variables
+// Contemporary design with glassmorphism, depth, and adaptive colors
+// Variables are imported by ThemeHelper - parent theme is set via $baseTheme below
+
+// ============================================
+// COLOR SYSTEM - Adaptive with Presets
+// ============================================
+
+// Primary Brand Colors (Professional Blue - Default Palette)
+$primary: #1e6ad6 !default;
+$primary-dark: #0f4a9c !default;
+$primary-light: #5a8eeb !default;
+$primary-lighter: #a3c3f5 !default;
+$primary-lightest: #e3eef9 !default;
+
+// Secondary/Accent Colors
+$secondary: #7c3aed !default;
+$secondary-dark: #5b21b6 !default;
+$secondary-light: #a78bfa !default;
+
+// Semantic Colors
+$success: #10b981 !default;
+$success-light: #6ee7b7 !default;
+$info: #0ea5e9 !default;
+$info-light: #7dd3fc !default;
+$warning: #f59e0b !default;
+$warning-light: #fcd34d !default;
+$danger: #ef4444 !default;
+$danger-light: #fca5a5 !default;
+
+// Neutral Grays (10-level scale)
+$gray-50: #f9fafb !default;
+$gray-100: #f3f4f6 !default;
+$gray-200: #e5e7eb !default;
+$gray-300: #d1d5db !default;
+$gray-400: #9ca3af !default;
+$gray-500: #6b7280 !default;
+$gray-600: #4b5563 !default;
+$gray-700: #374151 !default;
+$gray-800: #1f2937 !default;
+$gray-900: #111827 !default;
+
+// Background Colors
+$body-bg: #ffffff !default;
+$body-bg-secondary: $gray-50 !default;
+$body-bg-tertiary: $gray-100 !default;
+
+// Text Colors
+$text-color-primary: $gray-900 !default;
+$text-color-secondary: $gray-600 !default;
+$text-color-muted: $gray-500 !default;
+$text-color-light: $gray-400 !default;
+$text-color-inverse: #ffffff !default;
+
+// Link Colors
+$link-color: $primary !default;
+$link-hover-color: $primary-dark !default;
+
+// Border Colors
+$border-color: $gray-200 !default;
+$border-color-light: $gray-100 !default;
+$border-color-dark: $gray-300 !default;
+
+// ============================================
+// SHADOW SYSTEM - 5 Levels of Elevation
+// ============================================
+
+// Glassmorphism / Backdrop Blur
+$glass-blur: 12px !default;
+$glass-opacity: 0.8 !default;
+
+// Shadow Levels (Contemporary subtle shadows)
+$shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !default;
+$shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.04) !default;
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04) !default;
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04) !default;
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.02) !default;
+$shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.15) !default;
+
+// Inner shadows for depth
+$shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06) !default;
+
+// ============================================
+// TYPOGRAPHY SYSTEM
+// ============================================
+
+// Font Families (System font stack)
+$font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
+$font-family-headings: $font-family-base !default;
+$font-family-monospace: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
+
+// Font Sizes (Fluid type scale)
+$font-size-xs: 0.75rem !default;    // 12px
+$font-size-sm: 0.875rem !default;   // 14px
+$font-size-base: 1rem !default;     // 16px
+$font-size-lg: 1.125rem !default;   // 18px
+$font-size-xl: 1.25rem !default;    // 20px
+$font-size-2xl: 1.5rem !default;    // 24px
+$font-size-3xl: 1.875rem !default;  // 30px
+$font-size-4xl: 2.25rem !default;   // 36px
+$font-size-5xl: 3rem !default;      // 48px
+
+// Font Weights
+$font-weight-light: 300 !default;
+$font-weight-normal: 400 !default;
+$font-weight-medium: 500 !default;
+$font-weight-semibold: 600 !default;
+$font-weight-bold: 700 !default;
+
+// Line Heights
+$line-height-tight: 1.25 !default;
+$line-height-snug: 1.375 !default;
+$line-height-normal: 1.5 !default;
+$line-height-relaxed: 1.625 !default;
+$line-height-loose: 2 !default;
+
+// Letter Spacing
+$letter-spacing-tighter: -0.05em !default;
+$letter-spacing-tight: -0.025em !default;
+$letter-spacing-normal: 0em !default;
+$letter-spacing-wide: 0.025em !default;
+$letter-spacing-wider: 0.05em !default;
+
+// ============================================
+// SPACING SYSTEM (4px base grid)
+// ============================================
+
+$space-0: 0 !default;
+$space-1: 0.25rem !default;   // 4px
+$space-2: 0.5rem !default;    // 8px
+$space-3: 0.75rem !default;   // 12px
+$space-4: 1rem !default;      // 16px
+$space-5: 1.25rem !default;   // 20px
+$space-6: 1.5rem !default;    // 24px
+$space-8: 2rem !default;      // 32px
+$space-10: 2.5rem !default;   // 40px
+$space-12: 3rem !default;     // 48px
+$space-16: 4rem !default;     // 64px
+$space-20: 5rem !default;     // 80px
+$space-24: 6rem !default;     // 96px
+
+// ============================================
+// BORDER RADIUS (Contemporary rounded)
+// ============================================
+
+$border-radius-none: 0 !default;
+$border-radius-sm: 0.25rem !default;   // 4px
+$border-radius: 0.5rem !default;        // 8px
+$border-radius-md: 0.625rem !default;   // 10px
+$border-radius-lg: 0.75rem !default;    // 12px
+$border-radius-xl: 1rem !default;       // 16px
+$border-radius-2xl: 1.5rem !default;    // 24px
+$border-radius-full: 9999px !default;   // Pill shape
+
+// ============================================
+// TRANSITIONS & ANIMATIONS
+// ============================================
+
+$transition-speed-fast: 150ms !default;
+$transition-speed-base: 250ms !default;
+$transition-speed-slow: 350ms !default;
+$transition-speed-slower: 500ms !default;
+
+$transition-timing: cubic-bezier(0.4, 0, 0.2, 1) !default;
+$transition-timing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55) !default;
+
+// ============================================
+// Z-INDEX LAYERS
+// ============================================
+
+$z-dropdown: 1000 !default;
+$z-sticky: 1020 !default;
+$z-fixed: 1030 !default;
+$z-modal-backdrop: 1040 !default;
+$z-modal: 1050 !default;
+$z-popover: 1060 !default;
+$z-tooltip: 1070 !default;
+
+// ============================================
+// BREAKPOINTS (Responsive)
+// ============================================
+
+$breakpoint-xs: 0 !default;
+$breakpoint-sm: 576px !default;
+$breakpoint-md: 768px !default;
+$breakpoint-lg: 992px !default;
+$breakpoint-xl: 1200px !default;
+$breakpoint-2xl: 1400px !default;
+
+// ============================================
+// COMPONENT-SPECIFIC VARIABLES
+// ============================================
+
+// Buttons
+$btn-padding-y: $space-2 !default;
+$btn-padding-x: $space-4 !default;
+$btn-border-radius: $border-radius !default;
+$btn-transition: all $transition-speed-base $transition-timing !default;
+
+// Cards & Panels
+$card-bg: $body-bg !default;
+$card-border-color: $border-color !default;
+$card-border-radius: $border-radius-lg !default;
+$card-padding: $space-6 !default;
+$card-shadow: $shadow-sm !default;
+$card-shadow-hover: $shadow-md !default;
+
+// Forms
+$input-padding-y: $space-2 !default;
+$input-padding-x: $space-3 !default;
+$input-border-color: $border-color !default;
+$input-border-radius: $border-radius !default;
+$input-focus-border-color: $primary !default;
+$input-focus-shadow: 0 0 0 3px rgba($primary, 0.1) !default;
+
+// Navigation
+$navbar-height: 60px !default;
+$sidebar-width: 260px !default;
+$sidebar-collapsed-width: 72px !default;
+
+// Context Switcher
+$context-switcher-width: 320px !default;
+$context-switcher-max-height: 500px !default;
+
+// ============================================
+// PRESET COLOR PALETTES
+// ============================================
+
+// Professional Blue (Default - already defined above)
+
+// Creative Purple Palette
+$palette-purple-primary: #7c3aed !default;
+$palette-purple-secondary: #ec4899 !default;
+
+// Fresh Green Palette
+$palette-green-primary: #10b981 !default;
+$palette-green-secondary: #14b8a6 !default;
+
+// Neutral Gray Palette
+$palette-neutral-primary: #6b7280 !default;
+$palette-neutral-secondary: #374151 !default;

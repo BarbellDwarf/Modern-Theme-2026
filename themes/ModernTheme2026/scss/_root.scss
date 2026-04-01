@@ -1,0 +1,152 @@
+// Modern Theme 2026 - CSS Custom Properties
+// Dynamic color system for theme switching
+
+:root {
+  // ============================================
+  // COLOR TOKENS
+  // ============================================
+  
+  // Primary Colors
+  --color-primary: #{$primary};
+  --color-primary-dark: #{$primary-dark};
+  --color-primary-light: #{$primary-light};
+  --color-primary-lighter: #{$primary-lighter};
+  --color-primary-lightest: #{$primary-lightest};
+  
+  // Secondary Colors
+  --color-secondary: #{$secondary};
+  --color-secondary-dark: #{$secondary-dark};
+  --color-secondary-light: #{$secondary-light};
+  
+  // Semantic Colors
+  --color-success: #{$success};
+  --color-success-light: #{$success-light};
+  --color-info: #{$info};
+  --color-info-light: #{$info-light};
+  --color-warning: #{$warning};
+  --color-warning-light: #{$warning-light};
+  --color-danger: #{$danger};
+  --color-danger-light: #{$danger-light};
+  
+  // Neutrals
+  --color-gray-50: #{$gray-50};
+  --color-gray-100: #{$gray-100};
+  --color-gray-200: #{$gray-200};
+  --color-gray-300: #{$gray-300};
+  --color-gray-400: #{$gray-400};
+  --color-gray-500: #{$gray-500};
+  --color-gray-600: #{$gray-600};
+  --color-gray-700: #{$gray-700};
+  --color-gray-800: #{$gray-800};
+  --color-gray-900: #{$gray-900};
+  
+  // Background
+  --color-bg-primary: #{$body-bg};
+  --color-bg-secondary: #{$body-bg-secondary};
+  --color-bg-tertiary: #{$body-bg-tertiary};
+  
+  // Text
+  --color-text-primary: #{$text-color-primary};
+  --color-text-secondary: #{$text-color-secondary};
+  --color-text-muted: #{$text-color-muted};
+  --color-text-light: #{$text-color-light};
+  --color-text-inverse: #{$text-color-inverse};
+  
+  // Links
+  --color-link: #{$link-color};
+  --color-link-hover: #{$link-hover-color};
+  
+  // Borders
+  --color-border: #{$border-color};
+  --color-border-light: #{$border-color-light};
+  --color-border-dark: #{$border-color-dark};
+  
+  // ============================================
+  // SHADOW TOKENS
+  // ============================================
+  
+  --shadow-xs: #{$shadow-xs};
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+  --shadow-xl: #{$shadow-xl};
+  --shadow-2xl: #{$shadow-2xl};
+  --shadow-inner: #{$shadow-inner};
+  
+  // ============================================
+  // SPACING TOKENS
+  // ============================================
+  
+  --space-0: #{$space-0};
+  --space-1: #{$space-1};
+  --space-2: #{$space-2};
+  --space-3: #{$space-3};
+  --space-4: #{$space-4};
+  --space-5: #{$space-5};
+  --space-6: #{$space-6};
+  --space-8: #{$space-8};
+  --space-10: #{$space-10};
+  --space-12: #{$space-12};
+  --space-16: #{$space-16};
+  --space-20: #{$space-20};
+  --space-24: #{$space-24};
+  
+  // ============================================
+  // TYPOGRAPHY TOKENS
+  // ============================================
+  
+  --font-family-base: #{$font-family-base};
+  --font-family-headings: #{$font-family-headings};
+  --font-family-monospace: #{$font-family-monospace};
+  
+  --font-size-xs: #{$font-size-xs};
+  --font-size-sm: #{$font-size-sm};
+  --font-size-base: #{$font-size-base};
+  --font-size-lg: #{$font-size-lg};
+  --font-size-xl: #{$font-size-xl};
+  --font-size-2xl: #{$font-size-2xl};
+  --font-size-3xl: #{$font-size-3xl};
+  --font-size-4xl: #{$font-size-4xl};
+  --font-size-5xl: #{$font-size-5xl};
+  
+  // ============================================
+  // BORDER RADIUS TOKENS
+  // ============================================
+  
+  --radius-none: #{$border-radius-none};
+  --radius-sm: #{$border-radius-sm};
+  --radius: #{$border-radius};
+  --radius-md: #{$border-radius-md};
+  --radius-lg: #{$border-radius-lg};
+  --radius-xl: #{$border-radius-xl};
+  --radius-2xl: #{$border-radius-2xl};
+  --radius-full: #{$border-radius-full};
+  
+  // ============================================
+  // TRANSITION TOKENS
+  // ============================================
+  
+  --transition-fast: #{$transition-speed-fast};
+  --transition-base: #{$transition-speed-base};
+  --transition-slow: #{$transition-speed-slow};
+  --transition-slower: #{$transition-speed-slower};
+}
+
+// ============================================
+// THEME VARIANTS (for future color switching)
+// ============================================
+
+[data-theme="purple"] {
+  --color-primary: #{$palette-purple-primary};
+  --color-secondary: #{$palette-purple-secondary};
+}
+
+[data-theme="green"] {
+  --color-primary: #{$palette-green-primary};
+  --color-secondary: #{$palette-green-secondary};
+}
+
+[data-theme="neutral"] {
+  --color-primary: #{$palette-neutral-primary};
+  --color-secondary: #{$palette-neutral-secondary};
+}

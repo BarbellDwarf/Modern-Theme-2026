@@ -1,0 +1,82 @@
+// Modern Theme 2026 - Activity Stream
+// Modern stream/feed design
+
+.stream-container, .wall-stream {
+  .stream-entry, .wall-entry {
+    @include card-hover;
+    margin-bottom: var(--space-4);
+    position: relative;
+    
+    .stream-entry-content, .wall-entry-content {
+      padding: var(--space-4);
+    }
+    
+    .stream-entry-header, .wall-entry-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-3);
+      
+      .media-object {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-full);
+        object-fit: cover;
+        @include shadow('sm');
+      }
+      
+      .media-heading {
+        font-weight: $font-weight-semibold;
+        color: var(--color-text-primary);
+        margin-bottom: var(--space-1);
+      }
+      
+      .timestamp {
+        font-size: var(--font-size-sm);
+        color: var(--color-text-muted);
+      }
+    }
+    
+    .stream-entry-footer, .wall-entry-footer {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-3) var(--space-4);
+      border-top: 1px solid var(--color-border);
+      background: var(--color-bg-secondary);
+      
+      .like-link-container, .comment-link {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        color: var(--color-text-secondary);
+        font-size: var(--font-size-sm);
+        @include transition(color, var(--transition-fast));
+        
+        &:hover {
+          color: var(--color-primary);
+        }
+      }
+    }
+  }
+}
+
+// New post form
+.post-form, .wall-entry-form {
+  @include card;
+  margin-bottom: var(--space-4);
+  
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+  
+  .post-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border);
+  }
+}

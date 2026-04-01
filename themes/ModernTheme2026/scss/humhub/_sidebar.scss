@@ -1,0 +1,82 @@
+// Modern Theme 2026 - Sidebar Navigation
+// Improved left sidebar with better hierarchy
+
+.layout-nav-container {
+  width: $sidebar-width;
+  @include transition(width, var(--transition-base));
+}
+
+#left-navigation {
+  .panel {
+    background: var(--color-bg-primary);
+    border-radius: var(--radius-lg);
+    @include shadow('sm');
+    
+    .panel-heading {
+      font-size: var(--font-size-base);
+      font-weight: $font-weight-semibold;
+      color: var(--color-text-primary);
+      border-bottom: 1px solid var(--color-border);
+    }
+    
+    .panel-body {
+      padding: var(--space-2);
+    }
+  }
+  
+  .list-group {
+    .list-group-item {
+      padding: var(--space-3) var(--space-4);
+      border: none;
+      border-radius: var(--radius);
+      margin-bottom: var(--space-1);
+      color: var(--color-text-secondary);
+      @include transition(all, var(--transition-fast));
+      
+      &:hover {
+        background: var(--color-bg-secondary);
+        color: var(--color-text-primary);
+        transform: translateX(4px);
+      }
+      
+      &.active {
+        background: var(--color-primary-lightest);
+        color: var(--color-primary);
+        font-weight: $font-weight-semibold;
+        
+        &::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 3px;
+          height: 60%;
+          background: var(--color-primary);
+          border-radius: 0 var(--radius) var(--radius) 0;
+        }
+      }
+      
+      i {
+        margin-right: var(--space-2);
+        width: 20px;
+        text-align: center;
+      }
+    }
+  }
+}
+
+// Collapsible sidebar
+.layout-nav-container.collapsed {
+  width: $sidebar-collapsed-width;
+  
+  #left-navigation {
+    .panel-heading span {
+      display: none;
+    }
+    
+    .list-group-item span {
+      display: none;
+    }
+  }
+}

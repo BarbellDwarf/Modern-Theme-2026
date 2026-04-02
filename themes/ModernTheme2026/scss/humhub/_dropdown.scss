@@ -175,3 +175,15 @@
 .comment-controls .dropdown-menu {
   z-index: $z-dropdown + 20 !important;
 }
+
+// While a comment attachment dropdown is open, raise the whole stream entry
+// above sibling entries so the menu cannot be covered by the next card.
+.wall-entry.mt2026-dropdown-open,
+.stream-entry.mt2026-dropdown-open {
+  position: relative;
+  z-index: $z-dropdown + 30;
+}
+
+.comment_create .btn-group.show .dropdown-menu {
+  z-index: $z-dropdown + 40 !important;
+}

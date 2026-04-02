@@ -6,9 +6,10 @@ use yii\helpers\Url;
 /* @var $user \humhub\modules\user\models\User */
 /* @var $spaces array */
 /* @var $currentContext string */
+/* @var $currentSpace \humhub\modules\space\models\Space|null */
 /* @var $currentRoute string */
 ?>
-<div class="context-switcher" id="context-switcher">
+<li class="nav-item context-switcher" id="context-switcher">
 
     <!-- Toggle Button -->
     <button class="context-switcher-button"
@@ -18,14 +19,27 @@ use yii\helpers\Url;
             aria-controls="context-switcher-menu"
             id="context-switcher-btn">
         <span class="context-icon">
-            <i class="fa fa-th-large"></i>
+            <?php if ($currentSpace && $currentSpace->getProfileImage()->hasImage()): ?>
+                <?= Html::img($currentSpace->getProfileImage()->getUrl('_48'), ['alt' => Html::encode($currentSpace->name)]) ?>
+            <?php else: ?>
+                <span class="context-initial">
+                    <?= Html::encode(mb_strtoupper(mb_substr(($currentSpace->name ?? 'D'), 0, 1))) ?>
+                </span>
+            <?php endif; ?>
         </span>
-        <span class="context-label">
-            <?php
-            if ($currentContext === 'dashboard') echo 'Dashboard';
-            elseif ($currentContext === 'space') echo 'Space';
-            else echo Html::encode($user->displayName ?? 'Navigate');
-            ?>
+        <?php
+        if ($currentContext === 'dashboard') {
+            $buttonLabel = 'Dashboard';
+        } elseif ($currentContext === 'space' && $currentSpace) {
+            $buttonLabel = $currentSpace->name;
+        } elseif ($currentContext === 'space') {
+            $buttonLabel = 'Space';
+        } else {
+            $buttonLabel = $user->displayName ?? 'Navigate';
+        }
+        ?>
+        <span class="context-label" data-default="<?= Html::encode($buttonLabel) ?>">
+            <?= Html::encode($buttonLabel) ?>
         </span>
         <span class="dropdown-arrow">
             <i class="fa fa-chevron-down"></i>
@@ -55,14 +69,16 @@ use yii\helpers\Url;
             <div class="section-items" id="context-spaces-list">
                 <?php foreach ($spaces as $space): ?>
                 <a href="<?= $space->createUrl() ?>"
-                   class="context-item"
+                   class="context-item<?= ($currentSpace && (int)$currentSpace->id === (int)$space->id) ? ' active' : '' ?>"
                    role="option"
                    data-search-name="<?= Html::encode($space->name) ?>">
                     <span class="item-icon">
                         <?php if ($space->getProfileImage()->hasImage()): ?>
                             <?= Html::img($space->getProfileImage()->getUrl('_48'), ['alt' => Html::encode($space->name)]) ?>
                         <?php else: ?>
-                            <i class="fa fa-th-large"></i>
+                            <span class="item-initial">
+                                <?= Html::encode(mb_strtoupper(mb_substr($space->name, 0, 1))) ?>
+                            </span>
                         <?php endif; ?>
                     </span>
                     <span class="item-label">
@@ -87,4 +103,4 @@ use yii\helpers\Url;
         </div>
 
     </div>
-</div>
+</li>

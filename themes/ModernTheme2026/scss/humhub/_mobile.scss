@@ -42,17 +42,28 @@
                 > a,
                 > .nav-link,
                 &.list-group-item {
-                    display: block;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
                     white-space: nowrap;
-                    padding: 8px 16px !important;
-                    border-radius: 20px !important;
+                    padding: 10px 18px !important;
+                    min-height: 44px;
+                    border-radius: 22px !important;
                     border: 1px solid var(--color-border, #e5e7eb) !important;
                     color: var(--color-text-secondary, #4b5563);
                     background: var(--color-bg-primary, #fff);
-                    font-size: 13px;
-                    font-weight: 500;
+                    font-size: 15px;
+                    font-weight: 600;
                     text-decoration: none;
                     margin: 0 !important;
+
+                    i,
+                    .fa,
+                    .glyphicon {
+                        font-size: 15px;
+                        line-height: 1;
+                    }
 
                     &:hover, &:focus {
                         background: var(--color-bg-secondary, #f3f4f6);

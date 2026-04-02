@@ -55,6 +55,7 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
 
     var init = function (pjax) {
         injectMobileActionBar();
+        bindCommentDropdownStackFix();
 
         if (!pjax) {
             $(document).on('pjax:end', function () {
@@ -70,5 +71,25 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
     module.export({
         init: init
     });
+
+    function bindCommentDropdownStackFix() {
+        // Prevent comment attachment dropdowns from being painted under the next stream card.
+        // We temporarily raise the parent stream entry while the dropdown is open.
+        $(document).off('shown.bs.dropdown.mt2026CommentMenu hidden.bs.dropdown.mt2026CommentMenu');
+
+        $(document).on('shown.bs.dropdown.mt2026CommentMenu', '.comment_create .btn-group', function () {
+            var $entry = $(this).closest('.wall-entry, .stream-entry');
+            if ($entry.length) {
+                $entry.addClass('mt2026-dropdown-open');
+            }
+        });
+
+        $(document).on('hidden.bs.dropdown.mt2026CommentMenu', '.comment_create .btn-group', function () {
+            var $entry = $(this).closest('.wall-entry, .stream-entry');
+            if ($entry.length) {
+                $entry.removeClass('mt2026-dropdown-open');
+            }
+        });
+    }
 
 });

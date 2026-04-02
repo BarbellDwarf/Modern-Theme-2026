@@ -2,6 +2,7 @@
 
 namespace humhub\modules\modernTheme2026\widgets;
 
+use humhub\modules\space\models\Space;
 use Yii;
 use yii\base\Widget;
 
@@ -18,6 +19,7 @@ class ContextSwitcher extends Widget
 
         $user = Yii::$app->user->getIdentity();
         $currentRoute = Yii::$app->controller->route ?? '';
+        $currentSpace = $this->getCurrentSpace();
 
         $spaces = $this->getUserSpaces($user);
         $currentContext = $this->detectCurrentContext($currentRoute);
@@ -25,6 +27,7 @@ class ContextSwitcher extends Widget
         return $this->render('contextSwitcher', [
             'user' => $user,
             'spaces' => $spaces,
+            'currentSpace' => $currentSpace,
             'currentContext' => $currentContext,
             'currentRoute' => $currentRoute,
         ]);
@@ -54,5 +57,19 @@ class ContextSwitcher extends Widget
         if (str_contains($route, 'space/')) return 'space';
         if (str_contains($route, 'user/')) return 'profile';
         return 'dashboard';
+    }
+
+    private function getCurrentSpace(): ?Space
+    {
+        $controller = Yii::$app->controller;
+
+        if ($controller && property_exists($controller, 'contentContainer')) {
+            $contentContainer = $controller->contentContainer;
+            if ($contentContainer instanceof Space) {
+                return $contentContainer;
+            }
+        }
+
+        return null;
     }
 }

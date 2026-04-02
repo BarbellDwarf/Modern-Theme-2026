@@ -159,30 +159,31 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
     };
 
     var updateActiveState = function() {
-        var path = window.location.pathname;
         var $label = $('.context-switcher-button .context-label');
         var $icon = $('.context-switcher-button .context-icon');
 
         if (!$label.length) return;
 
-        // Check for space context
-        var spaceMatch = path.match(/\/s\/([^\/]+)/);
-        // Check for user profile context
-        var userMatch = path.match(/\/u\/([^\/]+)/);
+        // Never replace the icon class here: server-rendered icon can be an <img>.
+        // Sync button state from the active context item when available.
+        var $activeItem = $('#context-spaces-list .context-item.active').first();
+        if ($activeItem.length) {
+            var activeName = $activeItem.find('.item-name').text().trim();
+            var activeIconHtml = $activeItem.find('.item-icon').html();
 
-        if (spaceMatch) {
-            var spaceName = spaceMatch[1].replace(/-/g, ' ');
-            $label.text(spaceName.charAt(0).toUpperCase() + spaceName.slice(1));
-            if ($icon.length) {
-                $icon.attr('class', 'context-icon fa fa-users');
+            if (activeName) {
+                $label.text(activeName);
             }
-        } else if (userMatch) {
-            $label.text(userMatch[1].replace(/-/g, ' '));
-            if ($icon.length) {
-                $icon.attr('class', 'context-icon fa fa-user');
+            if (activeIconHtml && $icon.length) {
+                $icon.html(activeIconHtml);
             }
-        } else {
-            $label.text($label.data('default') || $label.text());
+            return;
+        }
+
+        // Fallback: keep server-rendered label/icon intact.
+        var defaultLabel = $label.data('default');
+        if (defaultLabel) {
+            $label.text(defaultLabel);
         }
     };
 

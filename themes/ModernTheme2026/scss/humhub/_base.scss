@@ -2,12 +2,11 @@
 // Container widths and responsive layout
 
 // Modern Theme uses position:sticky (not fixed) on the topbar — no body top offset needed.
-// Override both HumHub core (--hh-fixed-header-height) and Clean Theme
-// (_base.scss: padding-top: calc(--hh-ct-top-bar-height + --hh-ct-top-bar-bottom-spacing) = 80px).
+// --hh-ct-top-bar-height is the ACTUAL height of the topbar element — do NOT zero this.
+// The body gap comes from Clean Theme's body { padding-top: calc(...) } rule.
+// Zeroing --hh-fixed-header-height + direct body override is sufficient.
 :root {
     --hh-fixed-header-height: 0px;
-    --hh-ct-top-bar-height: 0px;
-    --hh-ct-top-bar-bottom-spacing: 0px;
 }
 
 body {

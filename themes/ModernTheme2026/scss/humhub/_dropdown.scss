@@ -14,6 +14,14 @@
   @include fade-in(var(--transition-fast));
   @include scale-in(var(--transition-base));
   
+  // .hh-list inside a dropdown is a list container (e.g. notifications) — must not be flex
+  .dropdown-item.hh-list {
+    display: block;
+    padding: 0;
+    background: transparent;
+    &:hover { background: transparent; }
+  }
+
   .dropdown-item {
     padding: var(--space-2) var(--space-3);
     border-radius: var(--radius);

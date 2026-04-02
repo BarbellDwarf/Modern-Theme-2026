@@ -156,7 +156,7 @@ if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
                 </li>
                 <?php if (\Yii::$app->moduleManager->hasModule('calendar')): ?>
                 <li>
-                    <a href="<?= Url::to(['/calendar/view/index']) ?>" class="mobile-more-item">
+                    <a href="<?= Url::to(['/calendar/global/index']) ?>" class="mobile-more-item">
                         <span class="mobile-more-icon"><i class="fa fa-calendar"></i></span>
                         <span class="mobile-more-label">Calendar</span>
                         <i class="fa fa-chevron-right mobile-more-arrow"></i>

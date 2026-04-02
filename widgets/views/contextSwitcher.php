@@ -90,7 +90,7 @@ use yii\helpers\Url;
                    role="option"
                    data-search-name="<?= Html::encode($space->name) ?>">
                     <span class="item-icon">
-                        <?php if ($space->hasProfileImage()): ?>
+                        <?php if ($space->getProfileImage()->hasImage()): ?>
                             <?= Html::img($space->getProfileImage()->getUrl('_48'), ['alt' => Html::encode($space->name)]) ?>
                         <?php else: ?>
                             <i class="fa fa-th-large"></i>

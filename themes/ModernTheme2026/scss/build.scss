@@ -7,6 +7,9 @@
 // Import CSS custom properties for dynamic theming
 @import "root";
 
+// General theme styles (typography, links, utilities, loading states)
+@import "theme";
+
 // Performance optimizations (early)
 @import "performance";
 

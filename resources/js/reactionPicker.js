@@ -9,6 +9,9 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         { type: 'pray',    emoji: '🙏', label: 'Care' }
     ];
 
+    // Base URL for the ReactionsController endpoint (set by PHP via data attribute or inline JS)
+    var REACT_BASE_URL = humhub.config.get('modernTheme.reactionPicker', 'reactBaseUrl') || '/modern-theme-2026/reactions/react';
+
     // Build the floating picker popup HTML
     function buildPicker() {
         var html = '<div class="mt2026-reaction-picker" role="listbox" aria-label="Choose reaction">';
@@ -38,7 +41,49 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
                 '<i class="fa fa-smile-o"></i>' +
                 '</button>');
             $container.prepend($trigger);
+
+            // Mark active reaction from server-rendered data (if present)
+            var currentReaction = $container.data('currentReaction') || null;
+            if (currentReaction) {
+                $container.find('.mt2026-reaction-btn[data-reaction="' + currentReaction + '"]').addClass('active');
+                updateTriggerState($container, currentReaction);
+            }
         });
+    }
+
+    /** Update the trigger button emoji/style to reflect the current reaction */
+    function updateTriggerState($container, reactionType) {
+        var $trigger = $container.find('.mt2026-reaction-trigger');
+        if (!reactionType) {
+            $trigger.removeClass('reacted').removeAttr('data-active-reaction').html('<i class="fa fa-smile-o"></i>');
+            return;
+        }
+        var reaction = REACTIONS.find(function(r) { return r.type === reactionType; });
+        if (reaction) {
+            $trigger.addClass('reacted').attr('data-active-reaction', reactionType)
+                .html('<span class="mt2026-active-emoji">' + reaction.emoji + '</span>');
+        }
+    }
+
+    /** Update reaction summary counts in the container */
+    function updateReactionSummary($container, reactionCounts) {
+        var $summary = $container.find('.mt2026-reaction-summary');
+        if (!$summary.length) {
+            $summary = $('<div class="mt2026-reaction-summary"></div>');
+            $container.append($summary);
+        }
+
+        var hasAny = false;
+        var html = '';
+        REACTIONS.forEach(function(r) {
+            var count = reactionCounts[r.type] || 0;
+            if (count > 0) {
+                hasAny = true;
+                html += '<span class="mt2026-reaction-count" data-reaction="' + r.type + '" title="' + r.label + '">' +
+                        r.emoji + ' <span class="cnt">' + count + '</span></span>';
+            }
+        });
+        $summary.html(hasAny ? html : '').toggle(hasAny);
     }
 
     function showPicker($container) {
@@ -107,21 +152,72 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
             e.preventDefault();
             e.stopPropagation();
             var $btn = $(this);
+            var reactionType = $btn.data('reaction');
             var $container = $btn.closest('.likeLinkContainer');
 
             // Animate
             $btn.addClass('mt2026-pop');
             setTimeout(function() { $btn.removeClass('mt2026-pop'); }, 300);
 
-            // Delegate to HumHub's built-in like toggle
-            var $likeLink = $container.find('a.like.likeAnchor:not(.d-none)');
-            var $unlikeLink = $container.find('a.unlike.likeAnchor:not(.d-none)');
+            // Extract contentModel and contentId from the existing like/unlike URL
+            var $likeLink = $container.find('a.likeAnchor');
+            var actionUrl = $likeLink.first().data('action-url') || $likeLink.first().attr('href');
 
-            if ($likeLink.length) {
-                $likeLink.trigger('click');
-            } else if ($unlikeLink.length) {
-                $unlikeLink.trigger('click');
+            if (!actionUrl) {
+                // Fallback: delegate to the built-in like link
+                $container.find('a.like.likeAnchor:not(.d-none), a.unlike.likeAnchor:not(.d-none)').first().trigger('click');
+                hidePicker($container);
+                return;
             }
+
+            // Parse contentModel and contentId from the existing URL query string
+            var urlParams = new URLSearchParams(actionUrl.split('?')[1] || '');
+            var contentModel = urlParams.get('contentModel');
+            var contentId = urlParams.get('contentId');
+
+            if (!contentModel || !contentId) {
+                // Fallback to built-in like
+                $container.find('a.like.likeAnchor:not(.d-none), a.unlike.likeAnchor:not(.d-none)').first().trigger('click');
+                hidePicker($container);
+                return;
+            }
+
+            // POST to our ReactionsController
+            $.ajax({
+                url: REACT_BASE_URL,
+                method: 'POST',
+                data: {
+                    contentModel: contentModel,
+                    contentId: contentId,
+                    reaction_type: reactionType,
+                    _csrf: humhub.config.get('humhub', 'csrf') || $('meta[name=csrf-token]').attr('content')
+                },
+                success: function(response) {
+                    if (response && typeof response === 'object') {
+                        var currentReaction = response.currentUserReaction || null;
+                        // Update active states on picker buttons
+                        $container.find('.mt2026-reaction-btn').removeClass('active');
+                        if (currentReaction) {
+                            $container.find('.mt2026-reaction-btn[data-reaction="' + currentReaction + '"]').addClass('active');
+                        }
+                        updateTriggerState($container, currentReaction);
+                        updateReactionSummary($container, response.reactionCounts || {});
+
+                        // Also update the built-in Like/Unlike link visibility
+                        if (currentReaction) {
+                            $container.find('a.like.likeAnchor').addClass('d-none');
+                            $container.find('a.unlike.likeAnchor').removeClass('d-none');
+                        } else {
+                            $container.find('a.like.likeAnchor').removeClass('d-none');
+                            $container.find('a.unlike.likeAnchor').addClass('d-none');
+                        }
+                    }
+                },
+                error: function() {
+                    // Fallback to built-in like on error
+                    $container.find('a.like.likeAnchor:not(.d-none), a.unlike.likeAnchor:not(.d-none)').first().trigger('click');
+                }
+            });
 
             hidePicker($container);
         });

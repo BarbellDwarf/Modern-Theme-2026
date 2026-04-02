@@ -214,3 +214,43 @@
 [data-bs-theme="dark"] .mt2026-reaction-user-row .mt2026-user-reaction-badge {
   background: var(--color-bg-elevated, #1f2937);
 }
+
+// Inline reaction summary (shown below content, next to Like link)
+.mt2026-reaction-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.mt2026-reaction-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary, #6b7280);
+  cursor: default;
+
+  .cnt {
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// Active emoji shown on trigger button when user has reacted
+.mt2026-reaction-trigger .mt2026-active-emoji {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.mt2026-reaction-trigger.reacted {
+  opacity: 1;
+  color: var(--color-primary, #1e6ad6);
+  background: var(--color-primary-lightest, #e3eef9);
+}
+
+[data-bs-theme="dark"] .mt2026-reaction-trigger.reacted {
+  background: rgba(var(--color-primary-rgb, 30, 106, 214), 0.2);
+}

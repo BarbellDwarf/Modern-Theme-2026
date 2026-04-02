@@ -34,27 +34,10 @@
     --color-border-light: #1e293b;
     --color-border-dark:  #475569;
 
-    // Brand primary — slightly lighter so it reads well on dark
-    --color-primary:          #5a8eeb;
-    --color-primary-dark:     #1e6ad6;
-    --color-primary-light:    #93b4f0;
-    --color-primary-lighter:  #bdd3f7;
-    --color-primary-lightest: rgba(90, 142, 235, 0.15);
-
-    // Secondary accent
-    --color-secondary:      #a78bfa;
-    --color-secondary-dark: #7c3aed;
-    --color-secondary-light: #c4b5fd;
-
-    // Semantic — brighter variants for dark backgrounds
-    --color-success:       #34d399;
-    --color-success-light: #6ee7b7;
-    --color-info:          #38bdf8;
-    --color-info-light:    #7dd3fc;
-    --color-warning:       #fbbf24;
-    --color-warning-light: #fcd34d;
-    --color-danger:        #f87171;
-    --color-danger-light:  #fca5a5;
+    // NOTE: --color-primary, --color-secondary, and semantic colors
+    // are intentionally NOT overridden here. They must come from the
+    // active palette so that palette switching affects dark mode too.
+    // Only background, text, border, and shadow tokens are dark-mode-specific.
 
     // Neutral grays remapped to dark scale
     --color-gray-50:  #1e293b;

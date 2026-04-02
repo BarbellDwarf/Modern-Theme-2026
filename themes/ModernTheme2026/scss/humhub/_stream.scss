@@ -143,7 +143,28 @@
   gap: 8px;
   font-size: 0;
   vertical-align: middle;
-  width: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+// Keep the feed action bar in one clean row:
+// [comment + react trigger]........[reaction summary]
+.stream-entry-addons,
+.wall-entry-addons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stream-entry-addons .wall-entry-controls.wall-entry-links,
+.wall-entry-addons .wall-entry-controls.wall-entry-links {
+  flex: 1 1 auto;
+}
+
+.stream-entry-addons a[data-action-click="comment.toggleComment"],
+.wall-entry-addons a[data-action-click="comment.toggleComment"] {
+  white-space: nowrap;
+  font-size: 14px !important;
 }
 
 // The like/unlike anchor links are REPLACED by our emoji trigger visually.
@@ -168,20 +189,5 @@
   }
 }
 
-// Reaction summary pushed to the right end of the addons bar
-.mt2026-reaction-summary-link {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  text-decoration: none;
-  cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 12px;
-  transition: background 0.15s;
-
-  &:hover {
-    background: var(--color-bg-secondary, #f3f4f6);
-  }
-}
-
+// Reaction summary pushed to the right end of the addons bar (styled in _reactions.scss)
+// .mt2026-summary-link uses margin-left:auto to right-align

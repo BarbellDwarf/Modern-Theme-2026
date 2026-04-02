@@ -141,30 +141,29 @@
 }
 
 // ── Stream entry footer: always show addon buttons ──────────────────────
-// Fix: stream-entry-addons is sometimes a flex-item inside an old .d-flex
-// row container with flex-grow-1 sibling that consumes all width. Force full width.
+// .stream-entry-addons is a full-width flex row containing:
+//   [comment link] [reaction trigger (likeLinkContainer)]  ··· auto ···  [summary counts]
 .stream-entry-addons {
     width: 100%;
-    flex-basis: 100%;
-    flex-shrink: 0;
     min-height: 36px;
-}
-
-// If .d-flex parent has row direction (old wallEntry.php template),
-// force wrap so addons drop to its own line.
-.d-flex:has(> .stream-entry-addons),
-.panel-body .d-flex {
-    flex-wrap: wrap;
 }
 
 @media (max-width: 767px) {
     .stream-entry-addons {
         display: flex !important;
         align-items: center;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         padding: 8px 4px 4px !important;
         border-top: 1px solid var(--color-border-light, #f3f4f6);
         margin-top: 8px;
+        gap: 6px;
+        overflow-x: auto;
+        overflow-y: visible;
+        scrollbar-width: none;
+    }
+
+    .stream-entry-addons::-webkit-scrollbar {
+        display: none;
     }
 
     // Style comment/addon links as pill buttons
@@ -186,6 +185,7 @@
             margin-right: 6px;
             min-height: 36px;
             vertical-align: middle;
+            white-space: nowrap;
 
             &:hover,
             &:active {
@@ -209,9 +209,11 @@
     }
 
     // Reaction summary link on far right
-    .mt2026-reaction-summary-link {
+    .mt2026-summary-link {
         margin-left: auto;
         font-size: 13px;
+        flex: 0 0 auto;
+        white-space: nowrap;
     }
 }
 

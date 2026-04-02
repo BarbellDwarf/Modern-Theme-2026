@@ -124,6 +124,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  flex: 0 0 auto;
 
   // likeCount link: hide by default via font-size trick (cross-browser vs :has()).
   // Only the .likeCount span itself has visible font-size so it appears
@@ -247,12 +248,54 @@
   line-height: 1;
 }
 
+// When the trigger shows the user's active emoji, hide the ::before smiley
 .mt2026-reaction-trigger.reacted {
   opacity: 1;
   color: var(--color-primary, #1e6ad6);
   background: var(--color-primary-lightest, #e3eef9);
+
+  &::before {
+    display: none;
+  }
 }
 
 [data-bs-theme="dark"] .mt2026-reaction-trigger.reacted {
   background: rgba(var(--color-primary-rgb, 30, 106, 214), 0.2);
+}
+
+// Reaction summary link — right-aligned in the addons bar
+.mt2026-summary-link {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--color-text-secondary, #6b7280);
+  transition: background 0.15s;
+
+  &:hover {
+    background: var(--color-bg-secondary, #f3f4f6);
+    color: var(--color-text-primary, #111827);
+  }
+
+  .mt2026-summary-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+  }
+
+  .mt2026-reaction-count {
+    font-size: 13px;
+    // Emoji within these counts must stay small
+    span, .emoji {
+      font-size: 13px;
+    }
+  }
 }

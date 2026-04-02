@@ -136,7 +136,7 @@
                 
                 &:hover {
                     background-color: var(--color-bg-secondary, #f3f4f6);
-                    border-color: var(--primary);
+                    border-color: var(--color-primary, #1e6ad6);
                     @include shadow('sm');
                 }
             }
@@ -144,8 +144,8 @@
             &.active {
                 a,
                 span {
-                    background-color: var(--primary);
-                    border-color: var(--primary);
+                    background-color: var(--color-primary, #1e6ad6);
+                    border-color: var(--color-primary, #1e6ad6);
                     color: #fff;
                     @include shadow('md');
                 }

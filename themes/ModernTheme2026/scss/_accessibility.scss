@@ -6,7 +6,7 @@
     position: absolute;
     top: -40px;
     left: 0;
-    background-color: var(--primary);
+    background-color: var(--color-primary, #1e6ad6);
     color: #fff;
     padding: space(2) space(4);
     text-decoration: none;
@@ -24,7 +24,7 @@
 
 // Focus visible styles (keyboard navigation)
 *:focus-visible {
-    outline: 2px solid var(--primary);
+    outline: 2px solid var(--color-primary, #1e6ad6);
     outline-offset: 2px;
     border-radius: $border-radius-sm;
 }
@@ -40,7 +40,7 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-    outline: 3px solid var(--primary);
+    outline: 3px solid var(--color-primary, #1e6ad6);
     outline-offset: 2px;
     box-shadow: 0 0 0 4px rgba(30, 106, 214, 0.2);
 }
@@ -58,7 +58,7 @@ body {
 
 // Link contrast
 a {
-    color: var(--primary);
+    color: var(--color-primary, #1e6ad6);
     
     &:hover,
     &:focus {
@@ -81,7 +81,7 @@ label {
     // Required indicator
     .required,
     abbr[title] {
-        color: var(--danger);
+        color: var(--color-danger, #ef4444);
         text-decoration: none;
     }
 }
@@ -90,7 +90,7 @@ label {
 .error,
 .invalid-feedback,
 .field-error {
-    color: var(--danger);
+    color: var(--color-danger, #ef4444);
     font-weight: 500;
     margin-top: space(1);
     font-size: $font-size-sm;
@@ -240,7 +240,7 @@ table {
     .dropdown-item {
         &:focus-visible {
             background-color: var(--color-bg-secondary, #f3f4f6);
-            outline: 2px solid var(--primary);
+            outline: 2px solid var(--color-primary, #1e6ad6);
             outline-offset: -2px;
         }
     }
@@ -309,7 +309,7 @@ img:not([alt]) {
 .keyboard-user {
     // Enhanced focus styles when user is using keyboard
     *:focus {
-        outline: 3px solid var(--primary);
+        outline: 3px solid var(--color-primary, #1e6ad6);
         outline-offset: 3px;
         box-shadow: 0 0 0 6px rgba(30, 106, 214, 0.2);
     }

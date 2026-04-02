@@ -49,12 +49,12 @@
         
         &:hover {
             background-color: var(--color-bg-secondary, #f3f4f6);
-            color: var(--primary);
+            color: var(--color-primary, #1e6ad6);
         }
         
         &.active {
             background-color: rgba(30, 106, 214, 0.1);
-            color: var(--primary);
+            color: var(--color-primary, #1e6ad6);
         }
         
         // Icon badges (notifications, etc)
@@ -68,7 +68,7 @@
             font-size: 10px;
             font-weight: 600;
             border-radius: 9px;
-            background-color: var(--danger);
+            background-color: var(--color-danger, #ef4444);
             color: #fff;
             display: flex;
             align-items: center;
@@ -95,7 +95,7 @@
             }
             
             &:hover img {
-                border-color: var(--primary);
+                border-color: var(--color-primary, #1e6ad6);
             }
         }
     }
@@ -115,7 +115,7 @@
             transition: all $transition-fast;
             
             &:focus {
-                border-color: var(--primary);
+                border-color: var(--color-primary, #1e6ad6);
                 box-shadow: 0 0 0 3px rgba(30, 106, 214, 0.1);
                 outline: none;
             }

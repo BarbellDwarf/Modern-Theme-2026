@@ -87,8 +87,8 @@
         }
         
         &.btn-primary {
-            background-color: var(--primary);
-            border-color: var(--primary);
+            background-color: var(--color-primary, #1e6ad6);
+            border-color: var(--color-primary, #1e6ad6);
             color: #fff;
             
             &:hover {
@@ -110,7 +110,7 @@
         
         &:focus {
             background-color: var(--color-bg-secondary, #f8fafc);
-            border-color: var(--primary);
+            border-color: var(--color-primary, #1e6ad6);
             color: var(--color-text-primary, #111827);
             box-shadow: 0 0 0 3px rgba(90, 142, 235, 0.2);
         }
@@ -157,7 +157,7 @@
                 }
                 
                 &.active {
-                    background-color: var(--primary);
+                    background-color: var(--color-primary, #1e6ad6);
                     color: #fff;
                 }
             }
@@ -179,7 +179,7 @@
             }
             
             &:active {
-                background-color: var(--primary);
+                background-color: var(--color-primary, #1e6ad6);
                 color: #fff;
             }
         }
@@ -249,7 +249,7 @@
         
         &.badge-primary,
         &.label-primary {
-            background-color: var(--primary);
+            background-color: var(--color-primary, #1e6ad6);
             color: #fff;
         }
         
@@ -273,7 +273,7 @@
         
         &.badge-danger,
         &.label-danger {
-            background-color: var(--danger);
+            background-color: var(--color-danger, #ef4444);
             color: #fff;
         }
     }
@@ -283,7 +283,7 @@
         color: var(--color-primary-light, #5a8eeb);
         
         &:hover {
-            color: var(--primary);
+            color: var(--color-primary, #1e6ad6);
         }
     }
     
@@ -338,8 +338,8 @@
         
         &.alert-danger {
             background-color: rgba(248, 113, 113, 0.1);
-            border-color: var(--danger);
-            color: var(--danger);
+            border-color: var(--color-danger, #ef4444);
+            color: var(--color-danger, #ef4444);
         }
     }
     

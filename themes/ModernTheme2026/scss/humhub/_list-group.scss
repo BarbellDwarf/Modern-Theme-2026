@@ -23,7 +23,7 @@
         
         &:hover {
             background-color: var(--color-bg-secondary, #f3f4f6);
-            border-color: var(--primary);
+            border-color: var(--color-primary, #1e6ad6);
             transform: translateX(4px);
             @include shadow('sm');
         }
@@ -36,8 +36,8 @@
         // Active state
         &.active {
             background-color: rgba(30, 106, 214, 0.1);
-            border-color: var(--primary);
-            color: var(--primary);
+            border-color: var(--color-primary, #1e6ad6);
+            color: var(--color-primary, #1e6ad6);
             @include shadow('md');
             
             &::before {
@@ -47,7 +47,7 @@
                 top: 0;
                 bottom: 0;
                 width: 4px;
-                background-color: var(--primary);
+                background-color: var(--color-primary, #1e6ad6);
                 border-radius: $border-radius-sm 0 0 $border-radius-sm;
             }
         }
@@ -72,7 +72,7 @@
         
         &:hover i,
         &:hover .fa {
-            color: var(--primary);
+            color: var(--color-primary, #1e6ad6);
         }
         
         // Badge in list item
@@ -140,7 +140,7 @@
         
         &:hover img,
         &:hover .avatar {
-            border-color: var(--primary);
+            border-color: var(--color-primary, #1e6ad6);
         }
         
         .list-content {

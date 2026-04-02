@@ -62,7 +62,7 @@
                     height: 24px;
                     border-radius: 50%;
                     object-fit: cover;
-                    border: 2px solid var(--primary);
+                    border: 2px solid var(--color-primary, #1e6ad6);
                 }
             }
             
@@ -86,7 +86,7 @@
                 font-size: 10px;
                 font-weight: 600;
                 border-radius: 9px;
-                background-color: var(--danger);
+                background-color: var(--color-danger, #ef4444);
                 color: #fff;
                 display: flex;
                 align-items: center;
@@ -97,7 +97,7 @@
             
             // Active state
             &.active {
-                color: var(--primary);
+                color: var(--color-primary, #1e6ad6);
                 background-color: rgba(30, 106, 214, 0.1);
                 
                 .nav-icon {

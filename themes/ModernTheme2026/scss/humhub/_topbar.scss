@@ -153,3 +153,85 @@
         }
     }
 }
+
+// ============================================================
+// Reset legacy HumHub account dropdown styles
+//
+// HumHub core (_nav.scss) targets .account .dropdown-menu and
+// paints the entire dropdown in the primary brand colour, then
+// applies a square background-color !important to li:hover and
+// overrides .dropdown-item padding/colour via li a selectors.
+//
+// We need a higher-specificity selector (.dropdown.account vs
+// core's .account) plus our own !important where the core uses
+// it, so our modern rounded-item design shows through.
+// ============================================================
+.dropdown.account {
+    .dropdown-menu {
+        // Undo the primary-color background the core sets.
+        background: rgba(255, 255, 255, 0.98) !important;
+        border: 1px solid var(--color-border-light) !important;
+
+        // Remove the decorative left border on every li.
+        li {
+            border-left: none !important;
+
+            // Neutralise the square primary-colour block the core
+            // puts on li:hover so the rounded .dropdown-item hover
+            // (set in _dropdown.scss) is the only visible effect.
+            &:hover,
+            &.selected {
+                background-color: transparent !important;
+                border-left: none !important;
+                color: inherit !important;
+            }
+        }
+
+        // The core also targets "li a" with specificity 0,3,1,
+        // overriding our 0,2,0 .dropdown-item rules.  Match with
+        // .dropdown-item directly inside .dropdown.account so we
+        // restore the correct padding, colour and border-radius.
+        .dropdown-item {
+            color: var(--color-text-secondary) !important;
+            font-size: var(--font-size-base, 1rem) !important;
+            font-weight: 400 !important;
+            padding: var(--space-2) var(--space-3) !important;
+            border-radius: var(--radius) !important;
+
+            &:hover {
+                background: var(--color-bg-secondary) !important;
+                color: var(--color-text-primary) !important;
+            }
+
+            &:active {
+                background: var(--color-primary-lightest) !important;
+                color: var(--color-primary) !important;
+            }
+
+            &.active {
+                background: var(--color-primary) !important;
+                color: #fff !important;
+            }
+
+            i {
+                width: 20px;
+                text-align: center;
+                margin-right: 0 !important;
+            }
+        }
+    }
+}
+
+// Dark-mode variant for the account dropdown.
+[data-bs-theme="dark"] .dropdown.account .dropdown-menu {
+    background: var(--color-bg-secondary) !important;
+    border-color: var(--color-border) !important;
+
+    .dropdown-item {
+        color: var(--color-text-primary) !important;
+
+        &:hover {
+            background: var(--color-bg-tertiary) !important;
+        }
+    }
+}

@@ -187,36 +187,19 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
     };
 
     var initSpaceSidebarMobile = function() {
-        if (window.innerWidth >= 768) return;
+        if (window.innerWidth > 991) return;
 
         var $container = $('.layout-nav-container');
         if (!$container.length) return;
 
-        var $nav = $container.find('.list-group').first();
+        // Remove any old toggle injected by a previous run to avoid duplicates on pjax navigation
+        $container.find('.mt2026-space-nav-toggle').remove();
+
+        var $nav = $container.find('.list-group, .nav').first();
         if (!$nav.length) return;
 
-        // Remove any previously injected toggle to avoid duplicates on pjax navigation
-        $container.find('.mt2026-space-nav-toggle').remove();
+        // Remove old collapse classes — CSS handles horizontal scroll, no JS collapse needed
         $nav.removeClass('mt2026-space-nav-collapsed mt2026-space-nav-expanded');
-
-        var itemCount = $nav.find('.list-group-item').length;
-        if (itemCount <= 3) return; // 3 or fewer items: horizontal scroll is enough
-
-        $nav.addClass('mt2026-space-nav-collapsed');
-
-        var $toggle = $('<button class="mt2026-space-nav-toggle" type="button">' +
-            '<i class="fa fa-bars"></i> Menu</button>');
-
-        $container.prepend($toggle);
-
-        $toggle.on('click', function() {
-            $nav.toggleClass('mt2026-space-nav-expanded');
-            var expanded = $nav.hasClass('mt2026-space-nav-expanded');
-            $toggle.toggleClass('active', expanded);
-            $toggle.html(expanded
-                ? '<i class="fa fa-times"></i> Close'
-                : '<i class="fa fa-bars"></i> Menu');
-        });
     };
 
     var initPeopleFilters = function() {

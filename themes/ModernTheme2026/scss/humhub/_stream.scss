@@ -80,3 +80,76 @@
     border-top: 1px solid var(--color-border);
   }
 }
+
+// ── Unconditional stream footer/addons rules ─────────────────────────────────
+// HumHub's real stream DOM is .s2_streamContent > .panel.wall_XXX (no
+// .stream-container or .wall-entry wrapper), so rules nested under those
+// ancestors never matched.  These global rules ensure the footer always renders.
+
+.wall-entry-footer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+}
+
+// Make .wall-entry-controls links always visible with readable color
+.wall-entry-controls a {
+  color: var(--color-text-secondary, #4b5563) !important;
+  transition: color 0.2s;
+
+  &:hover, &:focus {
+    color: var(--color-primary, #1e6ad6) !important;
+  }
+
+  &::before {
+    color: inherit;
+  }
+}
+
+[data-bs-theme="dark"] .wall-entry-controls a {
+  color: var(--color-text-secondary, #9ca3af) !important;
+}
+
+// Ensure the comment icon (::before from Clean Theme) is visible.
+// Clean Theme sets font-size:0 on the link text but 18px on ::before.
+// We must keep font-size:0 (to hide text) but force visibility of the element.
+.wall-entry-controls a[data-action-click="comment.toggleComment"] {
+  display: inline-flex !important;
+  align-items: center;
+  min-height: 32px;
+  min-width: 32px;
+  opacity: 1 !important;
+  visibility: visible !important;
+
+  &::before {
+    font-size: 18px !important;
+    color: var(--color-text-secondary, #4b5563) !important;
+  }
+
+  &:hover::before, &:focus::before {
+    color: var(--color-primary, #1e6ad6) !important;
+  }
+}
+
+// Ensure the like icon (::before) is also always visible
+.wall-entry-controls a[data-action-click="like.toggleLike"] {
+  display: inline-flex !important;
+  align-items: center;
+  min-height: 32px;
+  min-width: 32px;
+  opacity: 1 !important;
+  visibility: visible !important;
+
+  &::before {
+    font-size: 18px !important;
+    color: var(--color-text-secondary, #4b5563) !important;
+  }
+
+  &:hover::before, &:focus::before {
+    color: var(--color-primary, #1e6ad6) !important;
+  }
+}

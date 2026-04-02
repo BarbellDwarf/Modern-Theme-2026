@@ -1,6 +1,7 @@
 // Modern Theme 2026 - Emoji Reaction Picker
 
 // Trigger button (smiley face shown next to Like link)
+// Use CSS-generated icon so it renders even before FA fully loads.
 .mt2026-reaction-trigger {
   display: inline-flex;
   align-items: center;
@@ -13,17 +14,33 @@
   background: transparent;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 0; // hide any text/fallback content
   line-height: 1;
   vertical-align: middle;
   opacity: 0.7;
   transition: opacity 0.15s, transform 0.15s, background 0.15s;
+  color: var(--color-text-secondary, #6b7280);
+
+  // Always-visible icon via ::before so it doesn't rely on FA load order
+  &::before {
+    font-family: FontAwesome, sans-serif;
+    font-size: 18px;
+    content: "\f118"; // fa-smile-o
+    display: block;
+    line-height: 1;
+  }
+
+  // <i> child kept for semantics but hidden; CSS ::before does the visual work
+  i {
+    display: none;
+  }
 
   &:hover,
   &.active {
     opacity: 1;
     transform: scale(1.15);
     background: var(--color-bg-secondary, #f3f4f6);
+    color: var(--color-primary, #1e6ad6);
   }
 }
 
@@ -108,16 +125,17 @@
   align-items: center;
   gap: 4px;
 
-  // likeCount link: small and non-intrusive; hide when count is zero
+  // likeCount link: hide by default via font-size trick (cross-browser vs :has()).
+  // Only the .likeCount span itself has visible font-size so it appears
+  // when JS makes the span visible with text content.
   > a:not(.likeAnchor) {
-    font-size: 12px;
+    font-size: 0; // outer link invisible when likeCount is empty/hidden
     color: var(--color-text-muted, #6b7280);
     text-decoration: none;
     margin-left: 2px;
 
-    &:has(.likeCount[style*="display: none"]),
-    &:has(.likeCount[style*="display:none"]) {
-      display: none;
+    .likeCount {
+      font-size: 12px; // only visible when the span has content and is not hidden
     }
   }
 

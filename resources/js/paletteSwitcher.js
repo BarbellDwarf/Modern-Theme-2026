@@ -205,13 +205,20 @@ humhub.module('modernTheme.paletteSwitcher', function(module, require, $) {
 
     function init(pjax) {
         loadSavedPalette();
-        renderSwitcher();
+        // Only render the floating FAB on the admin appearance settings page
         renderAdminPresets();
+        if ($('#designsettingsform-themeprimarycolor').length) {
+            renderSwitcher();
+        }
 
         if (!pjax) {
             $(document).on('pjax:end', function() {
-                renderSwitcher();
                 renderAdminPresets();
+                if ($('#designsettingsform-themeprimarycolor').length) {
+                    renderSwitcher();
+                } else {
+                    $('#moderntheme-palette-switcher').remove();
+                }
             });
         }
     }

@@ -35,18 +35,6 @@ if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
         <span class="nav-label">Home</span>
     </a>
 
-    <!-- More Menu -->
-    <button type="button"
-            class="nav-item<?= $activeItem === 'more' ? ' active' : '' ?>"
-            id="mobile-more-btn"
-            aria-label="More"
-            aria-haspopup="dialog">
-        <span class="nav-icon">
-            <i class="fa fa-ellipsis-h"></i>
-        </span>
-        <span class="nav-label">More</span>
-    </button>
-
     <!-- Spaces - opens bottom sheet -->
     <button type="button"
             class="nav-item<?= $activeItem === 'spaces' ? ' active' : '' ?>"
@@ -94,6 +82,18 @@ if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
         </span>
         <span class="nav-label">Profile</span>
     </a>
+
+    <!-- More Menu -->
+    <button type="button"
+            class="nav-item<?= $activeItem === 'more' ? ' active' : '' ?>"
+            id="mobile-more-btn"
+            aria-label="More"
+            aria-haspopup="dialog">
+        <span class="nav-icon">
+            <i class="fa fa-ellipsis-h"></i>
+        </span>
+        <span class="nav-label">More</span>
+    </button>
     
 </nav>
 

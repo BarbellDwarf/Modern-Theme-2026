@@ -1,9 +1,14 @@
 // Modern Theme 2026 - Performance Optimizations
 // CSS optimizations for better rendering performance
 
-// Use CSS containment for improved layout performance
+// Use CSS containment for improved layout performance.
+// NOTE: `contain: paint` clips overflow (like overflow:hidden) which breaks
+// absolutely-positioned dropdown menus. Use `contain: layout style` only.
 .panel,
-.card,
+.card {
+    contain: layout style;
+}
+
 .s-wall-entry,
 .list-group-item {
     contain: layout style paint;
@@ -85,10 +90,13 @@ body {
 
 // Optimize scroll performance
 .modal-body,
-.dropdown-menu,
 .list-group {
     -webkit-overflow-scrolling: touch;
     overflow-y: auto;
+}
+// dropdown-menu must NOT have overflow-y:auto — it would re-introduce clipping
+.dropdown-menu {
+    -webkit-overflow-scrolling: touch;
 }
 
 // Reduce repaints with transform instead of top/left

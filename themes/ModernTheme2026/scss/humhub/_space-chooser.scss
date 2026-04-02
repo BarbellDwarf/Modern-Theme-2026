@@ -114,7 +114,7 @@
         margin-bottom: 8px;
         padding: 8px 12px;
         border-radius: $border-radius-md;
-        border: 1px solid var(--border-color);
+        border: 1px solid var(--color-border, #e5e7eb);
         width: 100%;
         font-size: $font-size-sm;
         
@@ -162,7 +162,7 @@
             
             .space-description {
                 font-size: $font-size-xs;
-                color: var(--text-secondary);
+                color: var(--color-text-secondary, #4b5563);
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -189,7 +189,7 @@
         }
         
         &:hover {
-            background-color: var(--bg-hover);
+            background-color: var(--color-bg-secondary, #f3f4f6);
             transform: translateX(4px);
             
             .space-logo,
@@ -205,7 +205,7 @@
         font-size: $font-size-xs;
         font-weight: 600;
         text-transform: uppercase;
-        color: var(--text-tertiary);
+        color: var(--color-text-muted, #6b7280);
         padding: 8px 12px 4px;
         margin-top: 8px;
         
@@ -226,8 +226,8 @@
         padding: 10px 12px;
         text-align: center;
         border-radius: $border-radius-md;
-        border: 2px dashed var(--border-color);
-        color: var(--text-secondary);
+        border: 2px dashed var(--color-border, #e5e7eb);
+        color: var(--color-text-secondary, #4b5563);
         font-weight: 500;
         font-size: $font-size-sm;
         cursor: pointer;
@@ -292,12 +292,12 @@
     
     .space-chooser-menu,
     .space-menu-dropdown {
-        background-color: var(--bg-elevated);
-        border: 1px solid var(--border-color);
+        background-color: var(--color-bg-secondary, #f8fafc);
+        border: 1px solid var(--color-border, #e5e7eb);
         
         .space-item {
             &:hover {
-                background-color: var(--bg-surface);
+                background-color: var(--color-bg-tertiary, #f1f5f9);
             }
             
             &.active {
@@ -306,11 +306,11 @@
         }
         
         .create-space-button {
-            border-color: var(--border-color);
+            border-color: var(--color-border, #e5e7eb);
             
             &:hover {
-                border-color: var(--primary-light);
-                color: var(--primary-light);
+                border-color: var(--color-primary-light, #5a8eeb);
+                color: var(--color-primary-light, #5a8eeb);
                 background-color: rgba(90, 142, 235, 0.1);
             }
         }

@@ -14,8 +14,8 @@
         left: 0;
         right: 0;
         height: 64px;
-        background-color: var(--bg-elevated);
-        border-top: 1px solid var(--border-color);
+        background-color: var(--color-bg-secondary, #f8fafc);
+        border-top: 1px solid var(--color-border, #e5e7eb);
         box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
         z-index: 1030;
         padding: 0 8px;
@@ -38,7 +38,7 @@
             position: relative;
             cursor: pointer;
             text-decoration: none;
-            color: var(--text-secondary);
+            color: var(--color-text-secondary, #4b5563);
             transition: all $transition-fast;
             border-radius: $border-radius-md;
             
@@ -91,7 +91,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                border: 2px solid var(--bg-elevated);
+                border: 2px solid var(--color-bg-secondary, #f8fafc);
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             }
             
@@ -135,14 +135,14 @@
 [data-bs-theme="dark"] {
     .mobile-bottom-nav {
         background-color: rgba(30, 41, 59, 0.95);
-        border-top-color: var(--border-color);
+        border-top-color: var(--color-border, #e5e7eb);
         box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
         
         .nav-item {
-            color: var(--text-secondary);
+            color: var(--color-text-secondary, #4b5563);
             
             &.active {
-                color: var(--primary-light);
+                color: var(--color-primary-light, #5a8eeb);
                 background-color: rgba(90, 142, 235, 0.15);
             }
             

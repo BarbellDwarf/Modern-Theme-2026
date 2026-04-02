@@ -17,7 +17,7 @@
     
     &:focus {
         top: 0;
-        outline: 3px solid var(--primary-light);
+        outline: 3px solid var(--color-primary-light, #5a8eeb);
         outline-offset: 2px;
     }
 }
@@ -48,7 +48,7 @@ textarea:focus-visible {
 // High contrast text for better readability
 body {
     // Ensure minimum contrast ratios
-    color: var(--text-primary);
+    color: var(--color-text-primary, #111827);
     
     // Enhance text contrast in dark mode
     [data-bs-theme="dark"] & {
@@ -62,7 +62,7 @@ a {
     
     &:hover,
     &:focus {
-        color: var(--primary-dark);
+        color: var(--color-primary-dark, #1558b0);
         text-decoration: underline;
     }
     
@@ -76,7 +76,7 @@ a {
 label {
     font-weight: 500;
     margin-bottom: space(2);
-    color: var(--text-primary);
+    color: var(--color-text-primary, #111827);
     
     // Required indicator
     .required,
@@ -202,7 +202,7 @@ table {
         caption-side: top;
         font-weight: 600;
         text-align: left;
-        color: var(--text-primary);
+        color: var(--color-text-primary, #111827);
     }
 }
 
@@ -239,7 +239,7 @@ table {
     // Ensure dropdown items are keyboard navigable
     .dropdown-item {
         &:focus-visible {
-            background-color: var(--bg-hover);
+            background-color: var(--color-bg-secondary, #f3f4f6);
             outline: 2px solid var(--primary);
             outline-offset: -2px;
         }

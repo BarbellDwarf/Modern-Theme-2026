@@ -13,16 +13,16 @@
         display: flex;
         align-items: center;
         padding: space(3) space(4);
-        background-color: var(--bg-elevated);
-        border: 1px solid var(--border-color);
+        background-color: var(--color-bg-secondary, #f8fafc);
+        border: 1px solid var(--color-border, #e5e7eb);
         border-radius: $border-radius-md;
-        color: var(--text-primary);
+        color: var(--color-text-primary, #111827);
         text-decoration: none;
         transition: all $transition-base;
         @include shadow('xs');
         
         &:hover {
-            background-color: var(--bg-hover);
+            background-color: var(--color-bg-secondary, #f3f4f6);
             border-color: var(--primary);
             transform: translateX(4px);
             @include shadow('sm');
@@ -66,7 +66,7 @@
             margin-right: space(3);
             width: 20px;
             text-align: center;
-            color: var(--text-secondary);
+            color: var(--color-text-secondary, #4b5563);
             transition: color $transition-fast;
         }
         
@@ -134,7 +134,7 @@
             height: 40px;
             border-radius: $border-radius-full;
             flex-shrink: 0;
-            border: 2px solid var(--border-color);
+            border: 2px solid var(--color-border, #e5e7eb);
             transition: border-color $transition-fast;
         }
         
@@ -157,7 +157,7 @@
             
             .list-subtitle {
                 font-size: $font-size-sm;
-                color: var(--text-secondary);
+                color: var(--color-text-secondary, #4b5563);
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -180,11 +180,11 @@
 [data-bs-theme="dark"] {
     .list-group {
         .list-group-item {
-            background-color: var(--bg-elevated);
-            border-color: var(--border-color);
+            background-color: var(--color-bg-secondary, #f8fafc);
+            border-color: var(--color-border, #e5e7eb);
             
             &:hover {
-                background-color: var(--bg-surface);
+                background-color: var(--color-bg-tertiary, #f1f5f9);
             }
             
             &.active {

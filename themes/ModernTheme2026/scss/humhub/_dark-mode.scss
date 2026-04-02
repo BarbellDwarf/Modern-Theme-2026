@@ -40,48 +40,48 @@
     
     // Apply dark background to body
     body {
-        background-color: var(--bg-base);
-        color: var(--text-primary);
+        background-color: var(--color-bg-primary, #ffffff);
+        color: var(--color-text-primary, #111827);
     }
     
     // Dark mode panels/cards
     .panel,
     .card {
-        background-color: var(--bg-elevated);
-        border-color: var(--border-color);
-        color: var(--text-primary);
+        background-color: var(--color-bg-secondary, #f8fafc);
+        border-color: var(--color-border, #e5e7eb);
+        color: var(--color-text-primary, #111827);
         box-shadow: var(--shadow-sm);
         
         .panel-heading,
         .card-header {
-            background-color: var(--bg-surface);
-            border-color: var(--border-color);
-            color: var(--text-primary);
+            background-color: var(--color-bg-tertiary, #f1f5f9);
+            border-color: var(--color-border, #e5e7eb);
+            color: var(--color-text-primary, #111827);
         }
         
         .panel-body,
         .card-body {
-            background-color: var(--bg-elevated);
-            color: var(--text-primary);
+            background-color: var(--color-bg-secondary, #f8fafc);
+            color: var(--color-text-primary, #111827);
         }
         
         .panel-footer,
         .card-footer {
-            background-color: var(--bg-surface);
-            border-color: var(--border-color);
-            color: var(--text-secondary);
+            background-color: var(--color-bg-tertiary, #f1f5f9);
+            border-color: var(--color-border, #e5e7eb);
+            color: var(--color-text-secondary, #4b5563);
         }
     }
     
     // Dark mode buttons
     .btn {
         &.btn-default {
-            background-color: var(--bg-surface);
-            border-color: var(--border-color);
-            color: var(--text-primary);
+            background-color: var(--color-bg-tertiary, #f1f5f9);
+            border-color: var(--color-border, #e5e7eb);
+            color: var(--color-text-primary, #111827);
             
             &:hover {
-                background-color: var(--bg-hover);
+                background-color: var(--color-bg-secondary, #f3f4f6);
                 border-color: var(--border-color-light);
             }
         }
@@ -92,7 +92,7 @@
             color: #fff;
             
             &:hover {
-                background-color: var(--primary-dark);
+                background-color: var(--color-primary-dark, #1558b0);
             }
         }
     }
@@ -104,40 +104,40 @@
     input[type="password"],
     textarea,
     select {
-        background-color: var(--bg-surface);
-        border-color: var(--border-color);
-        color: var(--text-primary);
+        background-color: var(--color-bg-tertiary, #f1f5f9);
+        border-color: var(--color-border, #e5e7eb);
+        color: var(--color-text-primary, #111827);
         
         &:focus {
-            background-color: var(--bg-elevated);
+            background-color: var(--color-bg-secondary, #f8fafc);
             border-color: var(--primary);
-            color: var(--text-primary);
+            color: var(--color-text-primary, #111827);
             box-shadow: 0 0 0 3px rgba(90, 142, 235, 0.2);
         }
         
         &::placeholder {
-            color: var(--text-tertiary);
+            color: var(--color-text-muted, #6b7280);
         }
     }
     
     // Dark mode navigation
     #topbar,
     .navbar {
-        background-color: var(--bg-elevated);
-        border-color: var(--border-color);
+        background-color: var(--color-bg-secondary, #f8fafc);
+        border-color: var(--color-border, #e5e7eb);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         
         .nav-link {
-            color: var(--text-secondary);
+            color: var(--color-text-secondary, #4b5563);
             
             &:hover {
-                color: var(--text-primary);
-                background-color: var(--bg-hover);
+                color: var(--color-text-primary, #111827);
+                background-color: var(--color-bg-secondary, #f3f4f6);
             }
             
             &.active {
-                color: var(--primary-light);
+                color: var(--color-primary-light, #5a8eeb);
             }
         }
     }
@@ -145,15 +145,15 @@
     // Dark mode sidebar
     #layout-sidebar-left,
     #layout-sidebar-right {
-        background-color: var(--bg-base);
+        background-color: var(--color-bg-primary, #ffffff);
         
         .nav-pills {
             .nav-link {
-                color: var(--text-secondary);
+                color: var(--color-text-secondary, #4b5563);
                 
                 &:hover {
-                    background-color: var(--bg-surface);
-                    color: var(--text-primary);
+                    background-color: var(--color-bg-tertiary, #f1f5f9);
+                    color: var(--color-text-primary, #111827);
                 }
                 
                 &.active {
@@ -166,16 +166,16 @@
     
     // Dark mode dropdowns
     .dropdown-menu {
-        background-color: var(--bg-elevated);
-        border-color: var(--border-color);
+        background-color: var(--color-bg-secondary, #f8fafc);
+        border-color: var(--color-border, #e5e7eb);
         box-shadow: var(--shadow-lg);
         
         .dropdown-item {
-            color: var(--text-primary);
+            color: var(--color-text-primary, #111827);
             
             &:hover {
-                background-color: var(--bg-surface);
-                color: var(--text-primary);
+                background-color: var(--color-bg-tertiary, #f1f5f9);
+                color: var(--color-text-primary, #111827);
             }
             
             &:active {
@@ -185,26 +185,26 @@
         }
         
         .dropdown-divider {
-            border-color: var(--border-color);
+            border-color: var(--color-border, #e5e7eb);
         }
     }
     
     // Dark mode modals
     .modal-content {
-        background-color: var(--bg-elevated);
-        border-color: var(--border-color);
-        color: var(--text-primary);
+        background-color: var(--color-bg-secondary, #f8fafc);
+        border-color: var(--color-border, #e5e7eb);
+        color: var(--color-text-primary, #111827);
         
         .modal-header {
-            border-color: var(--border-color);
+            border-color: var(--color-border, #e5e7eb);
             
             .modal-title {
-                color: var(--text-primary);
+                color: var(--color-text-primary, #111827);
             }
             
             .close,
             .btn-close {
-                color: var(--text-primary);
+                color: var(--color-text-primary, #111827);
                 opacity: 0.7;
                 
                 &:hover {
@@ -214,11 +214,11 @@
         }
         
         .modal-body {
-            color: var(--text-primary);
+            color: var(--color-text-primary, #111827);
         }
         
         .modal-footer {
-            border-color: var(--border-color);
+            border-color: var(--color-border, #e5e7eb);
         }
     }
     
@@ -229,12 +229,12 @@
     
     // Dark mode stream/wall entries
     .s-wall-entry {
-        background-color: var(--bg-elevated);
-        border-color: var(--border-color);
-        color: var(--text-primary);
+        background-color: var(--color-bg-secondary, #f8fafc);
+        border-color: var(--color-border, #e5e7eb);
+        color: var(--color-text-primary, #111827);
         
         &:hover {
-            background-color: var(--bg-surface);
+            background-color: var(--color-bg-tertiary, #f1f5f9);
         }
     }
     
@@ -243,8 +243,8 @@
     .label {
         &.badge-default,
         &.label-default {
-            background-color: var(--bg-surface);
-            color: var(--text-primary);
+            background-color: var(--color-bg-tertiary, #f1f5f9);
+            color: var(--color-text-primary, #111827);
         }
         
         &.badge-primary,
@@ -280,7 +280,7 @@
     
     // Dark mode links
     a {
-        color: var(--primary-light);
+        color: var(--color-primary-light, #5a8eeb);
         
         &:hover {
             color: var(--primary);
@@ -289,16 +289,16 @@
     
     // Dark mode tables
     .table {
-        color: var(--text-primary);
+        color: var(--color-text-primary, #111827);
         
         th {
-            border-color: var(--border-color);
-            color: var(--text-primary);
+            border-color: var(--color-border, #e5e7eb);
+            color: var(--color-text-primary, #111827);
         }
         
         td {
-            border-color: var(--border-color);
-            color: var(--text-primary);
+            border-color: var(--color-border, #e5e7eb);
+            color: var(--color-text-primary, #111827);
         }
         
         &.table-striped {
@@ -309,14 +309,14 @@
         
         &.table-hover {
             tbody tr:hover {
-                background-color: var(--bg-surface);
+                background-color: var(--color-bg-tertiary, #f1f5f9);
             }
         }
     }
     
     // Dark mode alerts
     .alert {
-        border-color: var(--border-color);
+        border-color: var(--color-border, #e5e7eb);
         
         &.alert-info {
             background-color: rgba(56, 189, 248, 0.1);
@@ -346,76 +346,76 @@
     // Dark mode tooltips
     .tooltip {
         .tooltip-inner {
-            background-color: var(--bg-elevated);
-            color: var(--text-primary);
+            background-color: var(--color-bg-secondary, #f8fafc);
+            color: var(--color-text-primary, #111827);
             box-shadow: var(--shadow-md);
         }
         
         &.bs-tooltip-top .tooltip-arrow::before {
-            border-top-color: var(--bg-elevated);
+            border-top-color: var(--color-bg-secondary, #f8fafc);
         }
         
         &.bs-tooltip-bottom .tooltip-arrow::before {
-            border-bottom-color: var(--bg-elevated);
+            border-bottom-color: var(--color-bg-secondary, #f8fafc);
         }
         
         &.bs-tooltip-start .tooltip-arrow::before {
-            border-left-color: var(--bg-elevated);
+            border-left-color: var(--color-bg-secondary, #f8fafc);
         }
         
         &.bs-tooltip-end .tooltip-arrow::before {
-            border-right-color: var(--bg-elevated);
+            border-right-color: var(--color-bg-secondary, #f8fafc);
         }
     }
     
     // Dark mode popovers
     .popover {
-        background-color: var(--bg-elevated);
-        border-color: var(--border-color);
+        background-color: var(--color-bg-secondary, #f8fafc);
+        border-color: var(--color-border, #e5e7eb);
         box-shadow: var(--shadow-lg);
         
         .popover-header {
-            background-color: var(--bg-surface);
-            border-color: var(--border-color);
-            color: var(--text-primary);
+            background-color: var(--color-bg-tertiary, #f1f5f9);
+            border-color: var(--color-border, #e5e7eb);
+            color: var(--color-text-primary, #111827);
         }
         
         .popover-body {
-            color: var(--text-primary);
+            color: var(--color-text-primary, #111827);
         }
         
         &.bs-popover-top > .popover-arrow::after {
-            border-top-color: var(--bg-elevated);
+            border-top-color: var(--color-bg-secondary, #f8fafc);
         }
         
         &.bs-popover-bottom > .popover-arrow::after {
-            border-bottom-color: var(--bg-elevated);
+            border-bottom-color: var(--color-bg-secondary, #f8fafc);
         }
         
         &.bs-popover-start > .popover-arrow::after {
-            border-left-color: var(--bg-elevated);
+            border-left-color: var(--color-bg-secondary, #f8fafc);
         }
         
         &.bs-popover-end > .popover-arrow::after {
-            border-right-color: var(--bg-elevated);
+            border-right-color: var(--color-bg-secondary, #f8fafc);
         }
     }
     
     // Dark mode code blocks
     code {
-        background-color: var(--bg-surface);
-        color: var(--primary-light);
+        background-color: var(--color-bg-tertiary, #f1f5f9);
+        color: var(--color-primary-light, #5a8eeb);
     }
     
     pre {
-        background-color: var(--bg-surface);
-        border-color: var(--border-color);
-        color: var(--text-primary);
+        background-color: var(--color-bg-tertiary, #f1f5f9);
+        border-color: var(--color-border, #e5e7eb);
+        color: var(--color-text-primary, #111827);
     }
     
     // Dark mode horizontal rules
     hr {
-        border-color: var(--border-color);
+        border-color: var(--color-border, #e5e7eb);
         opacity: 0.3;
     }
 }

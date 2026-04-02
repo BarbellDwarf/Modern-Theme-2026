@@ -114,6 +114,53 @@
     }
 }
 
+// ── Stream entry footer: always show addon buttons ──────────────────────
+@media (max-width: 767px) {
+    .stream-entry-addons {
+        display: block !important;
+        padding: 8px 0 4px !important;
+        border-top: 1px solid var(--color-border-light, #f3f4f6);
+        margin-top: 8px;
+    }
+
+    // Style comment/addon links as pill buttons
+    .stream-entry-addons {
+        a[data-action-click="comment.toggleComment"],
+        .comment-link,
+        .content-addon-link {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--color-border, #e5e7eb);
+            color: var(--color-text-secondary, #4b5563);
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            background: transparent;
+            margin-right: 6px;
+
+            &:hover,
+            &:active {
+                background: var(--color-bg-secondary, #f3f4f6);
+                color: var(--color-text-primary, #111827);
+            }
+
+            .comment-count {
+                color: var(--color-primary, #1e6ad6);
+            }
+        }
+
+        // Prepend comment icon via pseudo-element
+        a[data-action-click="comment.toggleComment"]::before {
+            content: '\f0e5';
+            font-family: FontAwesome;
+            margin-right: 4px;
+        }
+    }
+}
+
 // Extra small devices
 @media (max-width: 480px) {
     // Reduce spacing on very small screens

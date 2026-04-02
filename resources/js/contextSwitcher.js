@@ -14,6 +14,7 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
         initSpaceSidebarMobile();
 
         if (!pjax) {
+            initMobileInputScroll();
             $(document).on('pjax:end', function() {
                 init(true);
             });
@@ -245,6 +246,25 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
 
         // Prevent auto-focus on keyword input on mobile
         $row.find('.form-search-filter-keyword input').blur();
+    };
+
+    var initMobileInputScroll = function() {
+        if (window.innerWidth > 767) return;
+
+        var SELECTORS = 'input[type="text"], input[type="email"], input[type="search"], input[type="url"], input[type="password"], textarea, .ql-editor, [contenteditable="true"]';
+
+        $(document).on('focus', SELECTORS, function() {
+            var el = this;
+            setTimeout(function() {
+                if (document.activeElement === el) {
+                    el.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center',
+                        inline: 'nearest'
+                    });
+                }
+            }, 400);
+        });
     };
 
     module.export = {

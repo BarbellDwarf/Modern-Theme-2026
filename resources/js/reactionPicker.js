@@ -33,11 +33,11 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
             // Inject the floating picker into the container
             $container.append(buildPicker());
 
-            // Inject a visible emoji-face trigger button after the Like/Unlike links
-            var $trigger = $('<button type="button" class="mt2026-reaction-trigger" title="React" aria-haspopup="listbox">' +
-                '<span>🙂</span>' +
+            // Inject a visible FA-icon trigger button at the start of the container
+            var $trigger = $('<button type="button" class="mt2026-reaction-trigger" title="React to this" aria-haspopup="listbox">' +
+                '<i class="fa fa-smile-o"></i>' +
                 '</button>');
-            $container.find('a.likeAnchor').last().after($trigger);
+            $container.prepend($trigger);
         });
     }
 

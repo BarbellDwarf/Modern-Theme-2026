@@ -72,10 +72,25 @@
   }
 }
 
-// Space header controls: ensure the space settings/controls panel sits
-// ABOVE stream entries so its dropdown is never covered.
-.panel-profile-controls,
-.controls-header,
+// Space/user profile header: prevent the panel and its ancestors from
+// clipping the settings dropdown menu.
+// Ancestor chain: .panel-profile > .panel-body > .panel-profile-controls > … > .dropdown-menu
+// .panel-profile is the outer wrapper class set by ContainerProfileHeader (panel panel-default panel-profile).
+.panel-profile,
+.panel-profile .panel-body,
+.panel-profile-controls {
+  overflow: visible !important;
+}
+
+// Ensure the controls wrapper floats above surrounding content and never clips.
+.controls.controls-header,
+.controls-header {
+  position: relative;
+  z-index: $z-dropdown + 10;
+  overflow: visible;
+}
+
+// Keep the dropdown toggle and menu in the stacking context above panel content.
 #space-header-controls-menu,
 .profile-header-controls {
   position: relative;

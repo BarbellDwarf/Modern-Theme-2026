@@ -47,14 +47,19 @@ class MobileBottomNav extends Widget
         $activeItem = $this->getActiveItem($currentRoute);
 
         // Load user's member spaces (most recently visited first, limit 8)
-        $spaces = Space::find()
-            ->innerJoin('space_membership', 'space_membership.space_id = space.id')
-            ->where(['space_membership.user_id' => Yii::$app->user->id])
-            ->andWhere(['space_membership.status' => Membership::STATUS_MEMBER])
-            ->andWhere(['space.status' => Space::STATUS_ENABLED])
-            ->orderBy(['space_membership.last_visit' => SORT_DESC])
-            ->limit(8)
-            ->all();
+        try {
+            $spaces = Space::find()
+                ->innerJoin('space_membership', 'space_membership.space_id = space.id')
+                ->where(['space_membership.user_id' => Yii::$app->user->id])
+                ->andWhere(['space_membership.status' => Membership::STATUS_MEMBER])
+                ->andWhere(['space.status' => Space::STATUS_ENABLED])
+                ->orderBy(['space_membership.last_visit' => SORT_DESC])
+                ->limit(8)
+                ->all();
+        } catch (\Exception $e) {
+            Yii::error('MobileBottomNav: failed to load spaces: ' . $e->getMessage(), 'modernTheme2026');
+            $spaces = [];
+        }
 
         return $this->render('mobileBottomNav', [
             'user' => $user,

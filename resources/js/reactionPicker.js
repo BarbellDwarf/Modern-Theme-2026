@@ -234,67 +234,31 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
     }
 
     function submitReaction(container, reactionType) {
-        var likeUrl = container.dataset.likeUrl;
-        if (!likeUrl) {
-            var urlEl = container.closest('[data-like-url]');
-            if (urlEl) likeUrl = urlEl.dataset.likeUrl;
-        }
-        if (!likeUrl) return;
+        // HumHub's backend doesn't have a reaction_type endpoint — delegate to its
+        // own like.toggleLike action. Any emoji selection maps to a like/unlike toggle.
+        var $container = $(container);
+        var isCurrentlyLiked = container.dataset.reactionCurrent !== '';
 
-        $.post(likeUrl, { reaction_type: reactionType || '' })
-            .done(function(response) {
-                updateUI(container, reactionType, response);
-            })
-            .fail(function() {
-                // Silently fail — UI stays in previous state
-            });
+        if (reactionType && !isCurrentlyLiked) {
+            // Not yet liked: click the "Like" anchor to trigger HumHub's toggle
+            $container.find('a.like.likeAnchor').trigger('click');
+        } else if (!reactionType && isCurrentlyLiked) {
+            // Already liked: click "Unlike" to toggle off
+            $container.find('a.unlike.likeAnchor').trigger('click');
+        }
+
+        updateUI(container, reactionType);
     }
 
-    function updateUI(container, reactionType, response) {
-        // Update stored current reaction
+    function updateUI(container, reactionType) {
+        // Update stored current reaction for picker state tracking
         container.dataset.reactionCurrent = reactionType || '';
 
-        // Update like button appearance
-        var likeBtn = container.querySelector('.like-button');
-        if (likeBtn) {
-            if (reactionType && REACTIONS[reactionType]) {
-                $(likeBtn).addClass('liked');
-                var emojiEl = likeBtn.querySelector('.reaction-emoji');
-                var labelEl = likeBtn.querySelector('.reaction-label');
-                if (emojiEl) emojiEl.textContent = REACTIONS[reactionType].emoji;
-                if (labelEl) labelEl.textContent = REACTIONS[reactionType].label;
-            } else {
-                $(likeBtn).removeClass('liked');
-                var emojiEl = likeBtn.querySelector('.reaction-emoji');
-                var labelEl = likeBtn.querySelector('.reaction-label');
-                if (emojiEl) emojiEl.textContent = REACTIONS.like.emoji;
-                if (labelEl) labelEl.textContent = REACTIONS.like.label;
-            }
-        }
-
-        // Update reaction summary badges
+        // Update reaction summary badge (optimistic — HumHub updates the real count)
         var summary = container.querySelector('.reaction-summary');
-        if (!summary) return;
-
-        if (response && response.counts) {
-            rebuildSummary(summary, response.counts);
-        } else {
+        if (summary) {
             optimisticSummaryUpdate(summary, reactionType, container.dataset.reactionCurrent);
         }
-    }
-
-    function rebuildSummary(summary, counts) {
-        $(summary).empty();
-        Object.keys(counts).forEach(function(type) {
-            var count = counts[type];
-            if (count > 0 && REACTIONS[type]) {
-                var badge = document.createElement('span');
-                badge.className = 'reaction-count';
-                badge.dataset.reaction = type;
-                badge.textContent = REACTIONS[type].emoji + ' ' + count;
-                summary.appendChild(badge);
-            }
-        });
     }
 
     function optimisticSummaryUpdate(summary, newReaction, previousReaction) {

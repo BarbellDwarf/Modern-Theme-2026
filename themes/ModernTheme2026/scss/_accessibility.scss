@@ -142,8 +142,6 @@ label {
 // Touch target size (minimum 44x44px for accessibility)
 button,
 a,
-input[type="checkbox"],
-input[type="radio"],
 .btn,
 .nav-link {
     min-height: 44px;
@@ -154,6 +152,13 @@ input[type="radio"],
         min-height: 36px;
         min-width: auto;
     }
+}
+
+// Checkboxes and radios must not inherit min-height; they are fixed-size elements
+input[type="checkbox"],
+input[type="radio"] {
+    min-height: unset;
+    min-width: unset;
 }
 
 // Ensure interactive elements are distinguishable

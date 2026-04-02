@@ -20,7 +20,7 @@ class Module extends \humhub\components\Module
     /**
      * @inheritdoc
      */
-    public string $icon = 'star';
+    public string $icon = 'paint-brush';
     
     /**
      * @inheritdoc
@@ -28,6 +28,11 @@ class Module extends \humhub\components\Module
     public bool $collapsibleLeftNavigation = false;
 
     public const THEME_NAME = 'ModernTheme2026';
+
+    public function getConfigUrl()
+    {
+        return \yii\helpers\Url::to(['/modern-theme-2026/config']);
+    }
 
     public function getName()
     {

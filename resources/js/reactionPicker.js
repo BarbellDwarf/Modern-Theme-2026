@@ -1,297 +1,155 @@
 humhub.module('modernTheme.reactionPicker', function(module, require, $) {
-    var event = require('event');
 
-    var REACTIONS = {
-        like:  { emoji: '👍', label: 'Like' },
-        love:  { emoji: '❤️', label: 'Love' },
-        laugh: { emoji: '😂', label: 'Laugh' },
-        sad:   { emoji: '😢', label: 'Sad' },
-        pray:  { emoji: '🙏', label: 'Pray' }
-    };
+    var REACTIONS = [
+        { type: 'like',    emoji: '👍', label: 'Like' },
+        { type: 'love',    emoji: '❤️', label: 'Love' },
+        { type: 'laugh',   emoji: '😂', label: 'Haha' },
+        { type: 'wow',     emoji: '😮', label: 'Wow'  },
+        { type: 'sad',     emoji: '😢', label: 'Sad'  },
+        { type: 'pray',    emoji: '🙏', label: 'Care' }
+    ];
 
-    var HOVER_DELAY = 300;
-    var LONGPRESS_DELAY = 500;
-
-    // Timers keyed by container element
-    var hoverTimers = new WeakMap();
-    var hideTimers = new WeakMap();
-    var longpressTimers = new WeakMap();
-    var touchStartPos = new WeakMap();
-
-    function buildPickerHtml() {
-        var html = '<div class="reaction-picker" role="listbox" aria-label="Choose reaction" style="display:none;">';
-        Object.keys(REACTIONS).forEach(function(type) {
-            var r = REACTIONS[type];
-            html += '<button class="reaction-item" type="button" role="option"' +
-                    ' data-reaction="' + type + '" aria-label="' + r.label + '">' +
-                    '<span class="reaction-emoji">' + r.emoji + '</span>' +
-                    '<span class="reaction-label">' + r.label + '</span>' +
+    // Build the floating picker popup HTML
+    function buildPicker() {
+        var html = '<div class="mt2026-reaction-picker" role="listbox" aria-label="Choose reaction">';
+        REACTIONS.forEach(function(r) {
+            html += '<button class="mt2026-reaction-btn" type="button" role="option"' +
+                    ' data-reaction="' + r.type + '" title="' + r.label + '">' +
+                    '<span class="mt2026-reaction-emoji">' + r.emoji + '</span>' +
+                    '<span class="mt2026-reaction-label">' + r.label + '</span>' +
                     '</button>';
         });
         html += '</div>';
         return html;
     }
 
-    // Bridge HumHub's .likeLinkContainer elements to our .like-link-container
-    // and inject the reaction picker HTML so event delegation can find them.
-    function attachToHumHubLikeContainers() {
-        $('.likeLinkContainer:not(.like-link-container)').each(function() {
+    // Attach trigger button + picker to every .likeLinkContainer not yet processed
+    function attach() {
+        $('.likeLinkContainer').not('[data-mt2026-reactions]').each(function() {
             var $container = $(this);
-            $container.addClass('like-link-container');
+            $container.attr('data-mt2026-reactions', '1');
+            $container.css('position', 'relative');
 
-            // Store the like URL so submitReaction can find it
-            var likeUrl = $container.find('a[data-action-url]').first().attr('data-action-url') || '';
-            if (likeUrl) {
-                $container.attr('data-like-url', likeUrl);
-            }
+            // Inject the floating picker into the container
+            $container.append(buildPicker());
 
-            if (!$container.find('.reaction-picker').length) {
-                $container.append(buildPickerHtml());
-            }
+            // Inject a visible emoji-face trigger button after the Like/Unlike links
+            var $trigger = $('<button type="button" class="mt2026-reaction-trigger" title="React" aria-haspopup="listbox">' +
+                '<span>🙂</span>' +
+                '</button>');
+            $container.find('a.likeAnchor').last().after($trigger);
         });
     }
 
-    function init() {
-        attachToHumHubLikeContainers();
+    function showPicker($container) {
+        // Hide all others first
+        $('.mt2026-reaction-picker.visible').not($container.find('.mt2026-reaction-picker')).removeClass('visible');
+        $container.find('.mt2026-reaction-picker').addClass('visible');
+        $container.find('.mt2026-reaction-trigger').addClass('active');
+    }
 
-        // Re-attach after stream loads more content (infinite scroll, PJAX)
-        $(document).on('humhub:ready humhub:stream:afterAppend', function() {
-            setTimeout(attachToHumHubLikeContainers, 100);
+    function hidePicker($container) {
+        $container.find('.mt2026-reaction-picker').removeClass('visible');
+        $container.find('.mt2026-reaction-trigger').removeClass('active');
+    }
+
+    function togglePicker($container) {
+        if ($container.find('.mt2026-reaction-picker').hasClass('visible')) {
+            hidePicker($container);
+        } else {
+            showPicker($container);
+        }
+    }
+
+    var init = function() {
+        // Run immediately and after every stream content update
+        attach();
+
+        $(document).on('humhub:ready humhub:stream:afterAppend humhub:content:afterMove', function() {
+            setTimeout(attach, 150);
         });
 
-        // Desktop hover: show picker after delay
-        $(document).on('mouseover', '.like-link-container', function() {
-            var container = this;
-            // Cancel any pending hide
-            var hideTimer = hideTimers.get(container);
-            if (hideTimer) {
-                clearTimeout(hideTimer);
-                hideTimers.delete(container);
-            }
-            if (!hoverTimers.has(container)) {
-                var timer = setTimeout(function() {
-                    hoverTimers.delete(container);
-                    showPicker(container);
-                }, HOVER_DELAY);
-                hoverTimers.set(container, timer);
-            }
-        });
-
-        // Desktop hover: hide picker after short delay (allows moving mouse to picker)
-        $(document).on('mouseleave', '.like-link-container', function() {
-            var container = this;
-            var hoverTimer = hoverTimers.get(container);
-            if (hoverTimer) {
-                clearTimeout(hoverTimer);
-                hoverTimers.delete(container);
-            }
-            var timer = setTimeout(function() {
-                hideTimers.delete(container);
-                hidePicker(container);
-            }, 150);
-            hideTimers.set(container, timer);
-        });
-
-        // Cancel hide when mouse enters the picker itself
-        $(document).on('mouseenter', '.reaction-picker', function() {
-            var container = $(this).closest('.like-link-container')[0];
-            if (!container) return;
-            var hideTimer = hideTimers.get(container);
-            if (hideTimer) {
-                clearTimeout(hideTimer);
-                hideTimers.delete(container);
-            }
-        });
-
-        // Hide when mouse leaves the picker
-        $(document).on('mouseleave', '.reaction-picker', function() {
-            var container = $(this).closest('.like-link-container')[0];
-            if (!container) return;
-            var timer = setTimeout(function() {
-                hideTimers.delete(container);
-                hidePicker(container);
-            }, 150);
-            hideTimers.set(container, timer);
-        });
-
-        // Mobile: long-press on like button to show picker
-        $(document).on('touchstart', '.like-button', function(e) {
-            var btn = this;
-            var container = $(btn).closest('.like-link-container')[0];
-            if (!container) return;
-
-            var touch = e.originalEvent.touches[0];
-            touchStartPos.set(btn, { x: touch.clientX, y: touch.clientY });
-
-            var timer = setTimeout(function() {
-                longpressTimers.delete(btn);
-                showPicker(container);
-            }, LONGPRESS_DELAY);
-            longpressTimers.set(btn, timer);
-        });
-
-        $(document).on('touchmove', '.like-button', function(e) {
-            var btn = this;
-            var startPos = touchStartPos.get(btn);
-            if (!startPos) return;
-            var touch = e.originalEvent.touches[0];
-            var dx = Math.abs(touch.clientX - startPos.x);
-            var dy = Math.abs(touch.clientY - startPos.y);
-            if (dx > 10 || dy > 10) {
-                var timer = longpressTimers.get(btn);
-                if (timer) {
-                    clearTimeout(timer);
-                    longpressTimers.delete(btn);
-                }
-            }
-        });
-
-        $(document).on('touchend', '.like-button', function(e) {
-            var btn = this;
-            var container = $(btn).closest('.like-link-container')[0];
-            var timer = longpressTimers.get(btn);
-            if (timer) {
-                // Timer still pending: short tap — submit like (or toggle off)
-                clearTimeout(timer);
-                longpressTimers.delete(btn);
-                if (container) {
-                    var current = container.dataset.reactionCurrent || '';
-                    var reactionType = current === 'like' ? '' : 'like';
-                    submitReaction(container, reactionType);
-                }
-            }
-            touchStartPos.delete(btn);
-        });
-
-        // Click reaction item
-        $(document).on('click', '.reaction-item[data-reaction]', function(e) {
+        // Trigger button click: toggle picker
+        $(document).on('click', '.mt2026-reaction-trigger', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            var reactionType = this.dataset.reaction;
-            var container = $(this).closest('.like-link-container')[0];
-            if (!container) return;
-
-            var current = container.dataset.reactionCurrent || '';
-            if (current === reactionType) {
-                reactionType = '';
-            }
-
-            var item = this;
-            $(item).addClass('animating');
-            setTimeout(function() { $(item).removeClass('animating'); }, 300);
-
-            submitReaction(container, reactionType);
-            hidePicker(container);
+            var $container = $(this).closest('.likeLinkContainer');
+            togglePicker($container);
         });
 
-        // Keyboard navigation inside picker
-        $(document).on('keydown', '.reaction-picker', function(e) {
-            var picker = this;
-            var items = Array.prototype.slice.call(picker.querySelectorAll('.reaction-item'));
-            var focused = document.activeElement;
-            var idx = items.indexOf(focused);
-
-            if (e.key === 'ArrowRight') {
-                e.preventDefault();
-                var next = items[(idx + 1) % items.length];
-                if (next) next.focus();
-            } else if (e.key === 'ArrowLeft') {
-                e.preventDefault();
-                var prev = items[(idx - 1 + items.length) % items.length];
-                if (prev) prev.focus();
-            } else if (e.key === 'Escape') {
-                e.preventDefault();
-                var container = $(picker).closest('.like-link-container')[0];
-                hidePicker(container);
-            } else if (e.key === 'Enter' && focused && focused.classList.contains('reaction-item')) {
-                e.preventDefault();
-                $(focused).trigger('click');
-            }
+        // Hover on desktop: show picker after short delay
+        var hoverTimer = null;
+        $(document).on('mouseenter', '.likeLinkContainer', function() {
+            var $container = $(this);
+            hoverTimer = setTimeout(function() {
+                showPicker($container);
+            }, 400);
         });
-
-        // PJAX re-init
-        $(document).on('pjax:end', function() {
-            // Event delegation means no re-attachment needed,
-            // but clear stale timer maps by re-assigning
-            hoverTimers = new WeakMap();
-            hideTimers = new WeakMap();
-            longpressTimers = new WeakMap();
-            touchStartPos = new WeakMap();
-        });
-    }
-
-    function showPicker(container) {
-        var picker = container.querySelector('.reaction-picker');
-        if (picker) {
-            picker.style.display = 'flex';
-            picker.style.animation = 'scaleIn 0.15s ease-out';
-        }
-    }
-
-    function hidePicker(container) {
-        var picker = container && container.querySelector('.reaction-picker');
-        if (picker) picker.style.display = 'none';
-    }
-
-    function submitReaction(container, reactionType) {
-        // HumHub's backend doesn't have a reaction_type endpoint — delegate to its
-        // own like.toggleLike action. Any emoji selection maps to a like/unlike toggle.
-        var $container = $(container);
-        var isCurrentlyLiked = container.dataset.reactionCurrent !== '';
-
-        if (reactionType && !isCurrentlyLiked) {
-            // Not yet liked: click the "Like" anchor to trigger HumHub's toggle
-            $container.find('a.like.likeAnchor').trigger('click');
-        } else if (!reactionType && isCurrentlyLiked) {
-            // Already liked: click "Unlike" to toggle off
-            $container.find('a.unlike.likeAnchor').trigger('click');
-        }
-
-        updateUI(container, reactionType);
-    }
-
-    function updateUI(container, reactionType) {
-        // Update stored current reaction for picker state tracking
-        container.dataset.reactionCurrent = reactionType || '';
-
-        // Update reaction summary badge (optimistic — HumHub updates the real count)
-        var summary = container.querySelector('.reaction-summary');
-        if (summary) {
-            optimisticSummaryUpdate(summary, reactionType, container.dataset.reactionCurrent);
-        }
-    }
-
-    function optimisticSummaryUpdate(summary, newReaction, previousReaction) {
-        // Decrement previous reaction badge
-        if (previousReaction && previousReaction !== newReaction) {
-            var prevBadge = summary.querySelector('.reaction-count[data-reaction="' + previousReaction + '"]');
-            if (prevBadge) {
-                var prevCount = parseInt(prevBadge.textContent.replace(/\D/g, ''), 10) - 1;
-                if (prevCount <= 0) {
-                    prevBadge.remove();
-                } else {
-                    prevBadge.textContent = REACTIONS[previousReaction].emoji + ' ' + prevCount;
+        $(document).on('mouseleave', '.likeLinkContainer', function() {
+            clearTimeout(hoverTimer);
+            var $container = $(this);
+            // Small delay so user can move mouse to picker
+            setTimeout(function() {
+                if (!$container.find('.mt2026-reaction-picker:hover').length) {
+                    hidePicker($container);
                 }
-            }
-        }
+            }, 300);
+        });
 
-        // Increment or create new reaction badge
-        if (newReaction && REACTIONS[newReaction]) {
-            var badge = summary.querySelector('.reaction-count[data-reaction="' + newReaction + '"]');
-            if (badge) {
-                var count = parseInt(badge.textContent.replace(/\D/g, ''), 10) + 1;
-                badge.textContent = REACTIONS[newReaction].emoji + ' ' + count;
-            } else {
-                badge = document.createElement('span');
-                badge.className = 'reaction-count';
-                badge.dataset.reaction = newReaction;
-                badge.textContent = REACTIONS[newReaction].emoji + ' 1';
-                summary.appendChild(badge);
+        // Keep picker open while hovering over it
+        $(document).on('mouseleave', '.mt2026-reaction-picker', function() {
+            var $container = $(this).closest('.likeLinkContainer');
+            setTimeout(function() { hidePicker($container); }, 200);
+        });
+
+        // Click a reaction
+        $(document).on('click', '.mt2026-reaction-btn', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var $btn = $(this);
+            var $container = $btn.closest('.likeLinkContainer');
+
+            // Animate
+            $btn.addClass('mt2026-pop');
+            setTimeout(function() { $btn.removeClass('mt2026-pop'); }, 300);
+
+            // Delegate to HumHub's built-in like toggle
+            var $likeLink = $container.find('a.like.likeAnchor:not(.d-none)');
+            var $unlikeLink = $container.find('a.unlike.likeAnchor:not(.d-none)');
+
+            if ($likeLink.length) {
+                $likeLink.trigger('click');
+            } else if ($unlikeLink.length) {
+                $unlikeLink.trigger('click');
             }
-        }
-    }
+
+            hidePicker($container);
+        });
+
+        // Close picker on outside click
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.likeLinkContainer').length) {
+                $('.mt2026-reaction-picker.visible').removeClass('visible');
+                $('.mt2026-reaction-trigger.active').removeClass('active');
+            }
+        });
+
+        // Close on Escape
+        $(document).on('keydown', function(e) {
+            if (e.key === 'Escape') {
+                $('.mt2026-reaction-picker.visible').removeClass('visible');
+                $('.mt2026-reaction-trigger.active').removeClass('active');
+            }
+        });
+
+        // Re-attach after pjax navigation
+        $(document).on('pjax:end', function() {
+            setTimeout(attach, 200);
+        });
+    };
 
     module.export = {
-        init: init
+        init: init,
+        initOnPjaxLoad: true
     };
 });

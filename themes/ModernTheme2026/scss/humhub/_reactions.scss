@@ -1,146 +1,110 @@
-// Modern Theme 2026 - Emoji Reactions
-// Modern reaction picker and display
+// Modern Theme 2026 - Emoji Reaction Picker
 
-.reaction-picker {
+// Trigger button (smiley face shown next to Like link)
+.mt2026-reaction-trigger {
   display: inline-flex;
-  gap: var(--space-1);
-  padding: var(--space-2);
-  background: var(--color-bg-primary);
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-full);
-  @include shadow('lg');
-  @include glass-effect(0.98);
-  @include scale-in();
-  z-index: $z-dropdown;
-  
-  .reaction-item {
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  margin-left: 4px;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  vertical-align: middle;
+  opacity: 0.6;
+  transition: opacity 0.15s, transform 0.15s, background 0.15s;
+
+  &:hover,
+  &.active {
+    opacity: 1;
+    transform: scale(1.15);
+    background: var(--color-bg-secondary, #f3f4f6);
+  }
+}
+
+// Floating picker popup
+.mt2026-reaction-picker {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  z-index: 9999;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 10px;
+  background: var(--color-bg-primary, #fff);
+  border: 1px solid var(--color-border-light, #e5e7eb);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  white-space: nowrap;
+
+  // Show when JS adds .visible class
+  &.visible {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: var(--radius-full);
-    cursor: pointer;
-    @include transition(all, var(--transition-base));
-    font-size: 24px;
-    
-    &:hover {
-      background: var(--color-bg-secondary);
-      transform: scale(1.2);
-      @include shadow('md');
-    }
-    
-    &:active {
-      transform: scale(1.1);
-    }
+    animation: mt2026PickerIn 0.18s ease-out;
   }
 }
 
-// Reaction display under posts
-.reaction-summary {
+@keyframes mt2026PickerIn {
+  from { opacity: 0; transform: scale(0.85) translateY(6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+// Individual reaction button
+.mt2026-reaction-btn {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  padding: var(--space-2) 0;
-  
-  .reaction-count {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-1);
-    padding: $space-1 $space-2;
-    background: var(--color-bg-secondary);
-    border: 1px solid var(--color-border-light);
-    border-radius: var(--radius-full);
-    font-size: var(--font-size-sm);
-    font-weight: $font-weight-medium;
-    color: var(--color-text-secondary);
-    @include transition(all, var(--transition-fast));
-    cursor: pointer;
-    
-    &:hover {
-      background: var(--color-bg-primary);
-      border-color: var(--color-primary);
-      color: var(--color-primary);
-      @include shadow('sm');
-    }
-    
-    &.user-reacted {
-      background: var(--color-primary-lightest);
-      border-color: var(--color-primary);
-      color: var(--color-primary);
-      font-weight: $font-weight-semibold;
-    }
-    
-    .emoji {
-      font-size: 18px;
-      line-height: 1;
-    }
-    
-    .count {
-      font-size: var(--font-size-sm);
-      min-width: 16px;
-      text-align: center;
-    }
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 8px;
+  transition: transform 0.15s, background 0.15s;
+  min-width: 44px;
+
+  &:hover {
+    transform: scale(1.25) translateY(-3px);
+    background: var(--color-bg-secondary, #f3f4f6);
   }
 }
 
-// Like button with reaction picker
-.like-link-container {
+.mt2026-reaction-emoji {
+  font-size: 22px;
+  line-height: 1.2;
+  display: block;
+}
+
+.mt2026-reaction-label {
+  font-size: 10px;
+  color: var(--color-text-muted, #6b7280);
+  line-height: 1;
+  display: block;
+  margin-top: 1px;
+}
+
+// Pop animation when selected
+.mt2026-reaction-btn.mt2026-pop {
+  animation: mt2026Pop 0.3s ease-out;
+}
+
+@keyframes mt2026Pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.5) translateY(-4px); }
+  100% { transform: scale(1); }
+}
+
+// Make .likeLinkContainer a positioning context
+.likeLinkContainer {
   position: relative;
-  
-  .like-button {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: $space-2 $space-3;
-    border-radius: var(--radius-full);
-    color: var(--color-text-secondary);
-    @include transition(all, var(--transition-fast));
-    
-    &:hover {
-      background: var(--color-bg-secondary);
-      color: var(--color-primary);
-      
-      ~ .reaction-picker {
-        display: flex;
-      }
-    }
-    
-    &.liked {
-      color: var(--color-primary);
-      font-weight: $font-weight-medium;
-    }
-  }
-  
-  // Show picker on hover (desktop)
-  @include desktop-and-up {
-    &:hover .reaction-picker {
-      display: flex;
-    }
-  }
-  
-  // Show picker on tap (mobile)
-  @include mobile-only {
-    .reaction-picker {
-      display: none;
-      
-      &.active {
-        display: flex;
-      }
-    }
-  }
-}
-
-// Reaction animation
-@keyframes reactionBounce {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.3);
-  }
-}
-
-.reaction-item.animating {
-  animation: reactionBounce var(--transition-base) $transition-timing-bounce;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }

@@ -11,7 +11,8 @@
 
 .s-wall-entry,
 .list-group-item {
-    contain: layout style paint;
+    // Do NOT use paint containment here; it clips dropdown menus/popovers.
+    contain: layout style;
 }
 
 // Optimize animations with will-change
@@ -131,8 +132,9 @@ img {
 
 // Use content-visibility for off-screen content
 .s-wall-entry {
-    content-visibility: auto;
-    contain-intrinsic-size: 0 200px; // Estimated height
+    // Keep stream entries fully paintable so nested comment/file dropdown menus
+    // are not clipped while opening.
+    content-visibility: visible;
 }
 
 // Optimize critical rendering path - inline critical CSS

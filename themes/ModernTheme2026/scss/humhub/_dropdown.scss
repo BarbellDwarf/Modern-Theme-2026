@@ -159,3 +159,19 @@
 .dropdown-menu {
   z-index: $z-dropdown !important;
 }
+
+// Comment composer attachment menu can be rendered inside nested comment wrappers
+// with overflow/stacking contexts. Force this chain to allow visible overflow.
+.comment-container,
+.comment-container .comment,
+.comment-entry,
+.comment-entry-form,
+.comment-controls,
+.comment-controls .dropdown,
+.comment-controls .dropdown-menu {
+  overflow: visible !important;
+}
+
+.comment-controls .dropdown-menu {
+  z-index: $z-dropdown + 20 !important;
+}

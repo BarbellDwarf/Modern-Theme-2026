@@ -35,30 +35,43 @@ class MobileBottomNav extends Widget
         $user = Yii::$app->user->getIdentity();
         $currentRoute = Yii::$app->controller->route;
         
-        // Get notification count
+        $userId = Yii::$app->user->id;
+        $cache  = Yii::$app->cache;
+
+        // Notification count — cache 60 s per user (badge refreshed by live updates anyway)
         $notificationCount = 0;
         if (class_exists('humhub\modules\notification\models\Notification')) {
-            $notificationCount = \humhub\modules\notification\models\Notification::find()
-                ->where(['user_id' => Yii::$app->user->id, 'seen' => 0])
-                ->count();
+            $cacheKey = 'mbn_notif_' . $userId;
+            $notificationCount = $cache->get($cacheKey);
+            if ($notificationCount === false) {
+                $notificationCount = (int)\humhub\modules\notification\models\Notification::find()
+                    ->where(['user_id' => $userId, 'seen' => 0])
+                    ->count();
+                $cache->set($cacheKey, $notificationCount, 60);
+            }
         }
 
         // Determine active nav item based on current route
         $activeItem = $this->getActiveItem($currentRoute);
 
-        // Load user's member spaces (most recently visited first, limit 8)
-        try {
-            $spaces = Space::find()
-                ->innerJoin('space_membership', 'space_membership.space_id = space.id')
-                ->where(['space_membership.user_id' => Yii::$app->user->id])
-                ->andWhere(['space_membership.status' => Membership::STATUS_MEMBER])
-                ->andWhere(['space.status' => Space::STATUS_ENABLED])
-                ->orderBy(['space_membership.last_visit' => SORT_DESC])
-                ->limit(8)
-                ->all();
-        } catch (\Exception $e) {
-            Yii::error('MobileBottomNav: failed to load spaces: ' . $e->getMessage(), 'modernTheme2026');
-            $spaces = [];
+        // Member spaces — cache 5 min per user (memberships change infrequently)
+        $spacesCacheKey = 'mbn_spaces_' . $userId;
+        $spaces = $cache->get($spacesCacheKey);
+        if ($spaces === false) {
+            try {
+                $spaces = Space::find()
+                    ->innerJoin('space_membership', 'space_membership.space_id = space.id')
+                    ->where(['space_membership.user_id' => $userId])
+                    ->andWhere(['space_membership.status' => Membership::STATUS_MEMBER])
+                    ->andWhere(['space.status' => Space::STATUS_ENABLED])
+                    ->orderBy(['space_membership.last_visit' => SORT_DESC])
+                    ->limit(8)
+                    ->all();
+                $cache->set($spacesCacheKey, $spaces, 300);
+            } catch (\Exception $e) {
+                Yii::error('MobileBottomNav: failed to load spaces: ' . $e->getMessage(), 'modernTheme2026');
+                $spaces = [];
+            }
         }
 
         return $this->render('mobileBottomNav', [

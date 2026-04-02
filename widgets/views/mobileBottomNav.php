@@ -11,32 +11,17 @@ use yii\helpers\Html;
  * @var $activeItem string
  */
 
-// Register inline script to detect mobile and add class
+// Register inline script to detect mobile and add CSS fallback class
 $this->registerJs("
-// Add mobile class to body for CSS fallback
 if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
     document.body.classList.add('mobile');
     document.body.setAttribute('data-mobile', 'true');
-    console.log('Mobile Bottom Nav: Mobile device detected, width=' + window.innerWidth);
-} else {
-    console.log('Mobile Bottom Nav: Desktop device detected, width=' + window.innerWidth);
 }
-// Debug: Check if nav element exists
-setTimeout(function() {
-    var nav = document.querySelector('.mobile-bottom-nav');
-    if (nav) {
-        console.log('Mobile Bottom Nav: Element found in DOM');
-        console.log('Mobile Bottom Nav: Display style =', window.getComputedStyle(nav).display);
-        console.log('Mobile Bottom Nav: Position =', window.getComputedStyle(nav).position);
-    } else {
-        console.log('Mobile Bottom Nav: Element NOT found in DOM!');
-    }
-}, 100);
 ", \yii\web\View::POS_READY);
 ?>
 
-<!-- Mobile Bottom Navigation - Debug Comment: Rendered at " . date('Y-m-d H:i:s') . " -->
-<nav class="mobile-bottom-nav" role="navigation" aria-label="Mobile Navigation" style="display: flex !important; position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 9999 !important; background: #fff !important; border-top: 2px solid #000 !important;">
+<!-- Mobile Bottom Navigation -->
+<nav class="mobile-bottom-nav" role="navigation" aria-label="Mobile Navigation">
     
     <!-- Home/Dashboard -->
     <a href="<?= Url::to(['/dashboard/dashboard']) ?>" 

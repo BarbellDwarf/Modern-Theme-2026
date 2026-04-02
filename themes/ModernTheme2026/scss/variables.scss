@@ -167,6 +167,11 @@ $transition-speed-slower: 500ms !default;
 $transition-timing: cubic-bezier(0.4, 0, 0.2, 1) !default;
 $transition-timing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55) !default;
 
+// Shorthand transition variables (speed + timing combined)
+$transition-fast: $transition-speed-fast $transition-timing !default;
+$transition-base: $transition-speed-base $transition-timing !default;
+$transition-slow: $transition-speed-slow $transition-timing !default;
+
 // ============================================
 // Z-INDEX LAYERS
 // ============================================

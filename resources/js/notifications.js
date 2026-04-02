@@ -8,16 +8,9 @@
  */
 humhub.module('modernTheme.notifications', function (module, require, $) {
 
-    var OVERVIEW_PATH_RE = /\/notification\/overview/i;
-
-    /**
-     * Inject the mobile action bar into the notification overview panel.
-     * The bar is only rendered on the notification overview route.
-     * The action URL is copied from the existing (desktop) mark-seen button
-     * so we don't have to hard-code the application base path.
-     */
     var injectMobileActionBar = function () {
-        if (!OVERVIEW_PATH_RE.test(window.location.pathname)) {
+        // Match any URL containing notification/overview (works with sub-paths)
+        if (window.location.href.indexOf('notification/overview') === -1) {
             return;
         }
 
@@ -26,21 +19,25 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
             return;
         }
 
-        var $panelHeading = $('.panel .panel-heading').first();
+        var $panelHeading = $('.layout-content-container .panel .panel-heading').first();
+        if (!$panelHeading.length) {
+            $panelHeading = $('.panel .panel-heading').first();
+        }
         if (!$panelHeading.length) {
             return;
         }
 
         // Inherit the action URL from the existing hidden desktop button
         var $desktopBtn = $('#notification_overview_markseen');
-        var actionUrl = $desktopBtn.length
-            ? $desktopBtn.attr('data-action-url') || $desktopBtn.data('action-url')
-            : null;
+        var actionUrl = '';
+        if ($desktopBtn.length) {
+            actionUrl = $desktopBtn.attr('data-action-url') || $desktopBtn.data('actionUrl') || '';
+        }
 
         if (!actionUrl) {
-            // Fall back: derive from existing links on the page
-            var baseHref = $('base').attr('href') || '';
-            actionUrl = baseHref.replace(/\/$/, '') + '/notification/list/mark-as-seen';
+            // Fall back: derive from base tag or origin
+            var base = $('base').attr('href') || window.location.origin;
+            actionUrl = base.replace(/\/$/, '') + '/notification/list/mark-as-seen';
         }
 
         var $bar = $(
@@ -48,8 +45,7 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
                 '<button class="btn btn-sm btn-default mt2026-mark-all-seen-btn"' +
                     ' data-action-click="notification.markAsSeen"' +
                     ' data-action-url="' + actionUrl + '">' +
-                    '<i class="fa fa-check-circle"></i> ' +
-                    '<span>' + module.text('markAllSeen') + '</span>' +
+                    '<i class="fa fa-check-circle"></i> Mark All Seen' +
                 '</button>' +
             '</div>'
         );
@@ -62,7 +58,8 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
 
         if (!pjax) {
             $(document).on('pjax:end', function () {
-                // Re-inject after pjax page transitions
+                // Remove stale bar then re-inject after pjax page transitions
+                $('#mt2026-notification-mobile-bar').remove();
                 injectMobileActionBar();
             });
         }
@@ -70,10 +67,7 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
 
     module.export = {
         init: init,
-    };
-
-    module.texts = {
-        markAllSeen: 'Mark all as seen',
+        initOnPjaxLoad: true
     };
 
 });

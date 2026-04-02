@@ -103,6 +103,25 @@
         padding: space(3);
         margin-bottom: space(2);
     }
+
+    // Stream entries are rendered as:
+    // outer .wall-entry wrapper + inner .panel.wall_x.
+    // On mobile, flatten the OUTER wrapper so only the inner panel remains
+    // (avoids "box in a box" and gives more room for content/comments).
+    .s2_streamContent > .wall-entry,
+    .s2_streamContent > .stream-entry {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        margin-bottom: 8px !important;
+    }
+
+    .s2_streamContent > .wall-entry > .panel,
+    .s2_streamContent > .stream-entry > .panel {
+        margin-bottom: 0 !important;
+    }
     
     // Mobile modal: use sheet-style bottom-anchored for small modals (#globalModal),
     // full-screen for large ones. Keep horizontal centering.

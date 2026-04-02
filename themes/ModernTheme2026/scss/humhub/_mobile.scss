@@ -69,3 +69,37 @@
     h2 { font-size: $font-size-xl; }
     h3 { font-size: $font-size-lg; }
 }
+
+// -----------------------------------------------------------------------
+// User profile: About section field labels
+// .field-title needs to read as a label/heading, not plain body text.
+// On desktop (md+) it sits in a left column; on mobile it stacks above
+// the value — both need font-weight to distinguish it from the value.
+// -----------------------------------------------------------------------
+.profile-item {
+    .field-title {
+        font-weight: $font-weight-semibold;
+        color: var(--color-text-primary);
+        margin-bottom: 2px;
+    }
+
+    .field-value {
+        color: var(--color-text-secondary);
+        word-break: break-word;
+    }
+
+    // On desktop the label column already has text-lg-end (right-aligned).
+    // Keep the font-weight on all breakpoints but lighten color slightly.
+    @media (min-width: 768px) {
+        .field-title {
+            color: var(--color-text-muted);
+            font-weight: $font-weight-medium;
+        }
+    }
+}
+
+// Subtle divider between profile fields for readability
+#user-profile-about .profile-item + .profile-item {
+    border-top: 1px solid var(--color-border-light);
+    padding-top: 0.5rem;
+}

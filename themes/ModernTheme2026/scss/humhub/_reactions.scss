@@ -162,3 +162,53 @@
     border: 0;
   }
 }
+
+// ── Reactions popup: title pills + per-user emoji badge ─────────────────
+
+.mt2026-reaction-title-pills {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.mt2026-reaction-title-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: var(--color-bg-secondary, #f3f4f6);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  cursor: default;
+}
+
+[data-bs-theme="dark"] .mt2026-reaction-title-pill {
+  background: var(--color-bg-elevated, #1f2937);
+}
+
+// Row in the reactions user list
+.mt2026-reaction-user-row {
+  align-items: center;
+  position: relative;
+
+  .mt2026-user-reaction-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    font-size: 20px;
+    border-radius: 50%;
+    background: var(--color-bg-secondary, #f3f4f6);
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+}
+
+[data-bs-theme="dark"] .mt2026-reaction-user-row .mt2026-user-reaction-badge {
+  background: var(--color-bg-elevated, #1f2937);
+}

@@ -135,6 +135,17 @@
   }
 }
 
+// WallEntryLinks injects ' · ' text nodes between its child widgets.
+// Setting font-size:0 on the container hides those text nodes;
+// all child elements (links, .likeLinkContainer) already have explicit font-sizes.
+.wall-entry-controls.wall-entry-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0;
+  vertical-align: middle;
+}
+
 // Ensure the like icon (::before) is also always visible
 .wall-entry-controls a[data-action-click="like.toggleLike"] {
   display: inline-flex !important;

@@ -104,14 +104,31 @@
         margin-bottom: space(2);
     }
     
-    // Mobile modal full screen
+    // Mobile modal: use sheet-style bottom-anchored for small modals (#globalModal),
+    // full-screen for large ones. Keep horizontal centering.
     .modal-dialog {
+        margin: 8px auto;         // keep horizontal centering
+        max-width: calc(100% - 16px);
+        width: 100%;
+
+        .modal-content {
+            border-radius: var(--radius-xl, 16px) var(--radius-xl, 16px) 0 0;
+            max-height: calc(100dvh - 72px); // leave room for bottom nav
+            overflow-y: auto;
+        }
+    }
+
+    // Full-screen for modals that need it (modal-lg, iframe modals)
+    .modal-dialog.modal-lg,
+    .modal-dialog.modal-xl,
+    .modal-dialog.modal-fullscreen {
         margin: 0;
         max-width: 100%;
-        height: 100vh;
-        
+        height: 100dvh;
+
         .modal-content {
-            min-height: 100vh;
+            min-height: 100dvh;
+            max-height: none;
             border-radius: 0;
         }
     }

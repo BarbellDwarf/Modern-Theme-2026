@@ -2,10 +2,8 @@
 /**
  * Modern Theme 2026 – override of user/widgets/views/userListBox.php
  *
- * When shown from the like/like/user-list action (reactions context), this
- * view replaces "Users who like this" with a proper "Reactions" header that
- * shows each emoji count summary, and adds the user's chosen reaction emoji
- * inline next to their name.
+ * Renders the reactions/likes user list with a 👍 emoji badge next to each
+ * user (HumHub's built-in like system is binary — no per-reaction type stored).
  */
 
 use humhub\helpers\Html;
@@ -13,24 +11,11 @@ use humhub\modules\user\widgets\Image;
 use humhub\widgets\AjaxLinkPager;
 use humhub\widgets\modal\Modal;
 use humhub\widgets\modal\ModalButton;
-use yii\data\Pagination;
 
 /* @var $users \humhub\modules\user\models\User[] */
 /* @var $hideOnlineStatus bool */
 /* @var $title string */
-/* @var $pagination Pagination */
-
-// ── Reactions context detection ────────────────────────────────────────
-$reactionsByUserId = [];
-$reactionCounts    = [];
-
-$reactionMeta = [
-    'like'  => ['emoji' => '👍', 'label' => Yii::t('LikeModule.base', 'Like')],
-    'love'  => ['emoji' => '❤️',  'label' => Yii::t('LikeModule.base', 'Love')],
-    'laugh' => ['emoji' => '😂', 'label' => Yii::t('LikeModule.base', 'Haha')],
-    'sad'   => ['emoji' => '😢', 'label' => Yii::t('LikeModule.base', 'Sad')],
-    'pray'  => ['emoji' => '🙏', 'label' => Yii::t('LikeModule.base', 'Care')],
-];
+/* @var $pagination \yii\data\Pagination */
 
 $isLikesContext = (
     Yii::$app->controller &&
@@ -39,56 +24,26 @@ $isLikesContext = (
 );
 
 if ($isLikesContext) {
-    $objectModel = Yii::$app->request->get('objectModel', '');
-    $objectId    = (int) Yii::$app->request->get('objectId', 0);
-
-    if ($objectModel && $objectId) {
-        $rows = \humhub\modules\like\models\Like::find()
-            ->select(['created_by', 'reaction_type'])
-            ->where(['object_model' => $objectModel, 'object_id' => $objectId])
-            ->asArray()
-            ->all();
-
-        foreach ($rows as $r) {
-            $type = $r['reaction_type'] ?: 'like';
-            $reactionsByUserId[(int) $r['created_by']] = $type;
-            $reactionCounts[$type] = ($reactionCounts[$type] ?? 0) + 1;
-        }
-    }
-
-    // Build a rich title: "Reactions  👍 3  ❤️ 1 …"
-    $parts = [];
-    foreach ($reactionMeta as $type => $meta) {
-        if (!empty($reactionCounts[$type])) {
-            $parts[] = Html::tag('span',
-                $meta['emoji'] . ' ' . $reactionCounts[$type],
-                ['class' => 'mt2026-reaction-title-pill', 'title' => $meta['label']]
-            );
-        }
-    }
-
-    $reactionSummaryHtml = !empty($parts)
-        ? ' <span class="mt2026-reaction-title-pills">' . implode('', $parts) . '</span>'
-        : '';
-
-    $title = '<strong>' . Yii::t('LikeModule.base', 'Reactions') . '</strong>' . $reactionSummaryHtml;
+    $count = count($users);
+    $countBadge = $count ? Html::tag('span', '👍 ' . $count, ['class' => 'mt2026-reaction-title-pill']) : '';
+    $title = '<strong>' . Yii::t('LikeModule.base', 'Reactions') . '</strong>'
+           . ($countBadge ? ' <span class="mt2026-reaction-title-pills">' . $countBadge . '</span>' : '');
 }
-// ────────────────────────────────────────────────────────────────────────
 ?>
 
 <?php Modal::beginDialog([
     'title' => $title,
     'footer' => ModalButton::cancel(Yii::t('base', 'Close')),
-    'bodyOptions' => ['style' => 'margin: 0 calc(var(--hh-modal-content-padding) * -1); padding: var(--bs-modal-padding) 0;'],
+    'bodyOptions' => ['style' => 'padding: 0;'],
 ]) ?>
 
     <?php if (count($users) === 0): ?>
-        <p><?= Yii::t('UserModule.base', 'No users found.') ?></p>
+        <p class="p-3"><?= Yii::t('UserModule.base', 'No users found.') ?></p>
     <?php endif; ?>
 
     <div id="userlist-content" class="hh-list">
         <?php foreach ($users as $user) : ?>
-            <a href="<?= $user->getUrl() ?>" data-modal-close="1" class="d-flex mt2026-reaction-user-row">
+            <a href="<?= $user->getUrl() ?>" data-modal-close="1" class="d-flex align-items-center px-3 py-2 mt2026-reaction-user-row">
                 <div class="flex-shrink-0 me-2">
                     <?= Image::widget([
                         'user' => $user,
@@ -99,26 +54,26 @@ if ($isLikesContext) {
                 </div>
 
                 <div class="flex-grow-1">
-                    <h4 class="mt-0"><?= Html::encode($user->displayName) ?></h4>
-                    <h5><?= Html::encode($user->displayNameSub) ?></h5>
+                    <div class="fw-semibold" style="color:var(--color-text-primary)"><?= Html::encode($user->displayName) ?></div>
+                    <div class="text-muted small"><?= Html::encode($user->displayNameSub) ?></div>
                 </div>
 
-                <?php if ($isLikesContext && isset($reactionsByUserId[$user->id])): ?>
-                    <?php $rType = $reactionsByUserId[$user->id]; ?>
-                    <div class="mt2026-user-reaction-badge" title="<?= Html::encode($reactionMeta[$rType]['label'] ?? $rType) ?>">
-                        <?= $reactionMeta[$rType]['emoji'] ?? '👍' ?>
-                    </div>
+                <?php if ($isLikesContext): ?>
+                    <div class="mt2026-user-reaction-badge" title="<?= Yii::t('LikeModule.base', 'Like') ?>">👍</div>
                 <?php endif; ?>
             </a>
         <?php endforeach; ?>
     </div>
 
-    <div class="pagination-container">
-        <?= AjaxLinkPager::widget(['pagination' => $pagination]) ?>
-    </div>
+    <?php if ($pagination->pageCount > 1): ?>
+        <div class="pagination-container px-3 pb-2">
+            <?= AjaxLinkPager::widget(['pagination' => $pagination]) ?>
+        </div>
+    <?php endif; ?>
 
     <script <?= Html::nonce() ?>>
         $(".modal-body").animate({scrollTop: 0}, 200);
     </script>
 
 <?php Modal::endDialog() ?>
+

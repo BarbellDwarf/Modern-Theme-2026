@@ -640,6 +640,23 @@
         }
     }
 
+    // Force like/comment icons to be visible in dark mode regardless of
+    // which template or parent selector matched.
+    .wall-entry-controls {
+        a {
+            color: var(--color-text-secondary) !important;
+
+            &::before {
+                color: var(--color-text-secondary) !important;
+            }
+        }
+    }
+
+    .stream-entry-addons,
+    .wall-entry-footer {
+        background-color: var(--color-bg-primary) !important;
+    }
+
     // --- Space chooser --------------------------------------------------
 
     .space-chooser-container,

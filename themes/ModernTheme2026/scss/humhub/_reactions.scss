@@ -147,9 +147,11 @@
 }
 
 // Hide the stock Like/Unlike text links — our emoji trigger replaces them visually.
-// They remain in the DOM (invisible) so HumHub's JS can still click them to
-// fire the like/unlike toggle against the backend.
-.likeLinkContainer {
+// Hide the stock Like/Unlike text links ONLY after JS has processed the
+// container and injected the trigger (indicated by [data-mt2026-reactions]).
+// Before JS runs, the native link (with Clean Theme's ::before icon) remains
+// visible as a fallback, so the like button is never invisible.
+.likeLinkContainer[data-mt2026-reactions] {
   a.likeAnchor {
     position: absolute;
     width: 1px;

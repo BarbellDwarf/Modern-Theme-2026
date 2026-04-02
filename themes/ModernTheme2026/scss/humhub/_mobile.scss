@@ -126,7 +126,8 @@
   // Tighten up the card panel itself
   .card-panel {
     border-radius: 12px;
-    overflow: hidden;
+    overflow: visible !important;
+    min-height: 140px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     background: var(--color-bg-primary);
     text-align: center;
@@ -165,35 +166,48 @@
     }
 
     .card-body {
-      padding: space(1) space(3) space(2);
+      padding: 8px 8px 10px !important;
+      overflow: visible !important;
+      flex-grow: 1;
+      display: flex !important;
+      flex-direction: column;
+      align-items: center;
 
       .card-title {
-        display: block;
-        font-size: 13px;
-        font-weight: 600;
-        line-height: 1.3;
-        color: var(--color-text-primary);
-        text-align: center;
+        display: block !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        line-height: 1.3 !important;
+        color: var(--color-text-primary, #111827) !important;
+        text-align: center !important;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        width: 100%;
+
+        // The name is a link inside <strong> — ensure it's visible
+        a, a:visited {
+          color: var(--color-text-primary, #111827) !important;
+          text-decoration: none !important;
+        }
       }
 
-      // Subtitle / role
-      > div {
-        display: block;
-        font-size: 11px;
-        color: var(--color-text-muted);
-        text-align: center;
+      // Subtitle / role (direct div child, not .card-details or .card-tags)
+      > div:not(.card-details):not(.card-tags) {
+        display: block !important;
+        font-size: 11px !important;
+        color: var(--color-text-muted, #6b7280) !important;
+        text-align: center !important;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        width: 100%;
       }
 
       // Details & tags hidden on mobile to keep cards compact
       .card-details,
       .card-tags {
-        display: none;
+        display: none !important;
       }
     }
 

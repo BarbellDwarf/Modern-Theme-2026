@@ -216,7 +216,7 @@ humhub.module('modernTheme.paletteSwitcher', function(module, require, $) {
         }
     }
 
-    module.export = {
+    module.export({
         init: init
-    };
+    });
 });

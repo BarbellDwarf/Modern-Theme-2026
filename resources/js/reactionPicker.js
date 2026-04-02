@@ -148,8 +148,9 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         });
     };
 
-    module.export = {
-        init: init,
-        initOnPjaxLoad: true
-    };
+    module.initOnPjaxLoad = true;
+
+    module.export({
+        init: init
+    });
 });

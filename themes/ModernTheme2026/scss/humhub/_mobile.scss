@@ -124,10 +124,26 @@
 }
 
 // ── Stream entry footer: always show addon buttons ──────────────────────
+// Fix: stream-entry-addons is sometimes a flex-item inside an old .d-flex
+// row container with flex-grow-1 sibling that consumes all width. Force full width.
+.stream-entry-addons {
+    width: 100%;
+    flex-basis: 100%;
+    flex-shrink: 0;
+    min-height: 36px;
+}
+
+// If .d-flex parent has row direction (old wallEntry.php template),
+// force wrap so addons drop to its own line.
+.d-flex:has(> .stream-entry-addons),
+.panel-body .d-flex {
+    flex-wrap: wrap;
+}
+
 @media (max-width: 767px) {
     .stream-entry-addons {
         display: block !important;
-        padding: 8px 0 4px !important;
+        padding: 8px 4px 4px !important;
         border-top: 1px solid var(--color-border-light, #f3f4f6);
         margin-top: 8px;
     }
@@ -143,21 +159,24 @@
             padding: 6px 12px;
             border-radius: 20px;
             border: 1px solid var(--color-border, #e5e7eb);
-            color: var(--color-text-secondary, #4b5563);
-            font-size: 13px;
+            color: var(--color-text-secondary, #4b5563) !important;
+            font-size: 13px !important;
             font-weight: 500;
             text-decoration: none;
             background: transparent;
             margin-right: 6px;
+            min-height: 36px;
+            vertical-align: middle;
 
             &:hover,
             &:active {
                 background: var(--color-bg-secondary, #f3f4f6);
-                color: var(--color-text-primary, #111827);
+                color: var(--color-text-primary, #111827) !important;
             }
 
             .comment-count {
                 color: var(--color-primary, #1e6ad6);
+                font-size: 13px !important;
             }
         }
 
@@ -166,6 +185,7 @@
             content: '\f0e5';
             font-family: FontAwesome;
             margin-right: 4px;
+            font-size: 14px !important;
         }
     }
 }

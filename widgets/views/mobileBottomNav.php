@@ -6,6 +6,7 @@ use yii\helpers\Html;
 /**
  * Mobile Bottom Navigation View
  * 
+ * @var $spaces \humhub\modules\space\models\Space[]
  * @var $user \humhub\modules\user\models\User
  * @var $notificationCount int
  * @var $activeItem string
@@ -45,16 +46,17 @@ if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
         <span class="nav-label">People</span>
     </a>
 
-    <!-- Spaces -->
-    <a href="<?= Url::to(['/space/spaces']) ?>" 
-       class="nav-item<?= $activeItem === 'spaces' ? ' active' : '' ?>"
-       aria-label="Spaces"
-       aria-current="<?= $activeItem === 'spaces' ? 'page' : 'false' ?>">
+    <!-- Spaces - opens bottom sheet -->
+    <button type="button"
+            class="nav-item<?= $activeItem === 'spaces' ? ' active' : '' ?>"
+            id="mobile-spaces-btn"
+            aria-label="Spaces"
+            aria-haspopup="dialog">
         <span class="nav-icon">
             <i class="fa fa-th-large"></i>
         </span>
         <span class="nav-label">Spaces</span>
-    </a>
+    </button>
 
     <!-- Notifications -->
     <a href="<?= Url::to(['/notification/overview']) ?>" 

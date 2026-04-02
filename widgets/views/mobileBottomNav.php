@@ -221,9 +221,26 @@ if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
                 link.addEventListener('click', closeSheet);
             });
         }
+        var footerLinks = sheet.querySelectorAll('.mobile-sheet-footer a');
+        footerLinks.forEach(function(link) {
+            link.addEventListener('click', closeSheet);
+        });
     }
 
     initSheet('mobile-spaces-btn', 'mobile-spaces-sheet', '.mobile-space-item');
     initSheet('mobile-more-btn',   'mobile-more-sheet',   '.mobile-more-item');
+
+    // After pjax navigation to the spaces page, blur any auto-focused input to prevent keyboard pop-up
+    $(document).on('pjax:end', function() {
+        if (window.location.pathname.indexOf('space/spaces') !== -1) {
+            setTimeout(function() {
+                if (document.activeElement &&
+                    (document.activeElement.tagName === 'INPUT' ||
+                     document.activeElement.tagName === 'TEXTAREA')) {
+                    document.activeElement.blur();
+                }
+            }, 300);
+        }
+    });
 })();
 ", \yii\web\View::POS_READY); ?>

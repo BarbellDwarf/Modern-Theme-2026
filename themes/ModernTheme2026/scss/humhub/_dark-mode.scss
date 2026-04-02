@@ -277,6 +277,21 @@
             border-color: var(--color-border-dark);
             color: var(--color-text-primary);
         }
+
+        &:active,
+        &.active {
+            background-color: var(--color-border-dark);
+            border-color: var(--color-border-dark);
+            color: var(--color-text-primary);
+        }
+
+        &:disabled,
+        &.disabled {
+            background-color: var(--color-bg-tertiary);
+            border-color: var(--color-border);
+            color: var(--color-text-muted);
+            opacity: 0.5;
+        }
     }
 
     .btn-primary {
@@ -289,6 +304,96 @@
             background-color: var(--color-primary-dark);
             border-color: var(--color-primary-dark);
         }
+    }
+
+    // Semantic colour buttons — keep colours, ensure legible text
+    .btn-success {
+        color: #fff;
+        &:hover, &:focus { filter: brightness(1.1); color: #fff; }
+    }
+
+    .btn-info {
+        color: #fff;
+        &:hover, &:focus { filter: brightness(1.1); color: #fff; }
+    }
+
+    .btn-warning {
+        color: #fff;
+        &:hover, &:focus { filter: brightness(1.05); color: #fff; }
+    }
+
+    .btn-danger {
+        color: #fff;
+        &:hover, &:focus { filter: brightness(1.1); color: #fff; }
+    }
+
+    // Link buttons — use dark-mode link tokens
+    .btn-link {
+        color: var(--color-link);
+        background-color: transparent;
+
+        &:hover,
+        &:focus {
+            color: var(--color-link-hover);
+            background-color: var(--color-bg-tertiary);
+        }
+    }
+
+    // Action buttons (HumHub toolbar/icon buttons)
+    .btn-action {
+        background-color: transparent;
+        border-color: var(--color-border);
+        color: var(--color-text-secondary);
+
+        &:hover,
+        &:focus {
+            background-color: var(--color-bg-tertiary);
+            border-color: var(--color-border-dark);
+            color: var(--color-text-primary);
+        }
+
+        &:active,
+        &.active {
+            background-color: var(--color-bg-tertiary);
+            color: var(--color-primary);
+        }
+    }
+
+    // Input-group buttons (Bootstrap 3 .input-group-btn pattern)
+    .input-group-btn .btn,
+    .input-group > .btn {
+        background-color: var(--color-bg-tertiary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+
+        &:hover,
+        &:focus {
+            background-color: var(--color-border-dark);
+            border-color: var(--color-border-dark);
+            color: var(--color-text-primary);
+        }
+    }
+
+    // Standalone dropdown toggles (outside .dropdown-menu)
+    .dropdown-toggle:not(.btn-primary):not(.btn-success):not(.btn-info):not(.btn-warning):not(.btn-danger) {
+        background-color: var(--color-bg-secondary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+
+        &:hover,
+        &:focus {
+            background-color: var(--color-bg-tertiary);
+            border-color: var(--color-border-dark);
+            color: var(--color-text-primary);
+        }
+    }
+
+    // Collapse / toggle buttons
+    .btn-collapse,
+    .toggle-btn {
+        background-color: var(--color-bg-secondary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
     }
 
     // --- List groups ----------------------------------------------------

@@ -118,7 +118,7 @@ class MobileBottomNav extends Widget
             return 'notifications';
         }
 
-        // Default to home
-        return 'home';
+        // Default: nothing selected
+        return '';
     }
 }

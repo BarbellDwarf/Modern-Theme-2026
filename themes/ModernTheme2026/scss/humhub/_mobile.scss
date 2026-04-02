@@ -132,17 +132,15 @@
     background: var(--color-bg-primary);
     text-align: center;
 
+    // Banner image hidden on mobile — too small to be useful and overlaps avatar
     .card-bg-image {
-      height: 56px;
-      background-size: cover;
-      background-position: center;
-      background-color: var(--color-primary);
+      display: none;
     }
 
     .card-header {
       display: flex;
       justify-content: center;
-      margin-top: -28px;
+      margin-top: space(3);
       padding: 0 space(2) space(2);
       position: relative;
       z-index: 1;

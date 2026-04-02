@@ -1,0 +1,24 @@
+// Modern Theme 2026 - Admin Section Overrides
+// Fixes admin sidebar navigation layout
+
+// Define list-group-vertical-lg used in HumHub's left-navigation template:
+// The template renders: class="list-group list-group-horizontal list-group-vertical-lg"
+// Intended: horizontal on small screens, vertical (column) sidebar on lg+ screens.
+// Without this definition, list-group-horizontal's flex-direction:row wins on all
+// breakpoints, squishing items sideways inside the narrow col-lg-3 admin sidebar.
+@media (min-width: 992px) {
+  .list-group-vertical-lg {
+    flex-direction: column !important;
+    flex-wrap: nowrap;
+  }
+}
+
+// Ensure the admin panel sidebar list items display correctly as a vertical nav
+#admin-menu,
+.left-navigation {
+  @media (min-width: 992px) {
+    .list-group {
+      flex-direction: column;
+    }
+  }
+}

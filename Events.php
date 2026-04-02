@@ -8,6 +8,7 @@
 namespace humhub\modules\modernTheme2026;
 
 use humhub\components\View;
+use humhub\modules\modernTheme2026\assets\ModernThemeAsset;
 use humhub\modules\modernTheme2026\widgets\MobileBottomNav;
 use Yii;
 
@@ -24,11 +25,19 @@ class Events
             return;
         }
 
+        if (Yii::$app->user->isGuest) {
+            return;
+        }
+
         /** @var View $view */
         $view = $event->sender;
-        
-        // Register custom assets if needed
-        // ModernTheme2026Asset::register($view);
+
+        // Register theme JavaScript assets
+        try {
+            ModernThemeAsset::register($view);
+        } catch (\Exception $e) {
+            Yii::error('Failed to register ModernThemeAsset: ' . $e->getMessage(), 'modern-theme-2026');
+        }
     }
 
     /**

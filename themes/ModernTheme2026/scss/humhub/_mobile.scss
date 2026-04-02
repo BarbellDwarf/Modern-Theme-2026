@@ -335,3 +335,50 @@
     width: 100%;
   }
 }
+
+// -----------------------------------------------------------------------
+// Notification overview – mobile "Mark All Seen" action bar
+// Injected by notifications.js; only visible on small screens.
+// -----------------------------------------------------------------------
+.mt2026-notification-mobile-bar {
+    display: none; // hidden on desktop; shown on mobile via the rule below
+    padding: space(2) space(3);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg-secondary, #{$gray-50});
+
+    .mt2026-mark-all-seen-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: space(2);
+        min-height: 40px;
+        font-size: $font-size-sm;
+        color: var(--color-text-secondary);
+        border-color: var(--color-border);
+
+        i {
+            font-size: $font-size-base;
+            color: var(--color-success, #28a745);
+        }
+
+        &:hover,
+        &:focus {
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+            i { color: var(--color-primary); }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    // Show the injected mobile action bar
+    .mt2026-notification-mobile-bar {
+        display: block;
+    }
+
+    // Make the desktop mark-seen button inside the panel-heading also
+    // touch-friendly when it IS visible on mobile
+    #notification_overview_markseen {
+        min-height: 40px;
+        min-width: 40px;
+    }
+}

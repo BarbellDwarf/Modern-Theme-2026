@@ -16,6 +16,7 @@ class ModernThemeAsset extends AssetBundle
         'js/contextSwitcher.js',
         'js/reactionPicker.js',
         'js/paletteSwitcher.js',
+        'js/notifications.js',
     ];
 
     public $depends = [

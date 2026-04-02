@@ -265,7 +265,7 @@
 
 // Reaction summary link — right-aligned in the addons bar
 .mt2026-summary-link {
-  margin-left: auto;
+  margin-left: auto !important;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -289,6 +289,7 @@
     align-items: center;
     gap: 6px;
     font-size: 13px;
+    flex-wrap: nowrap;
   }
 
   .mt2026-reaction-count {

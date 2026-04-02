@@ -150,20 +150,9 @@
 
 @media (max-width: 767px) {
     .stream-entry-addons {
-        display: flex !important;
-        align-items: center;
-        flex-wrap: nowrap;
         padding: 8px 4px 4px !important;
         border-top: 1px solid var(--color-border-light, #f3f4f6);
         margin-top: 8px;
-        gap: 6px;
-        overflow-x: auto;
-        overflow-y: visible;
-        scrollbar-width: none;
-    }
-
-    .stream-entry-addons::-webkit-scrollbar {
-        display: none;
     }
 
     // Style comment/addon links as pill buttons
@@ -212,8 +201,6 @@
     .mt2026-summary-link {
         margin-left: auto;
         font-size: 13px;
-        flex: 0 0 auto;
-        white-space: nowrap;
     }
 }
 

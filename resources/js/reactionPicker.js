@@ -26,7 +26,8 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
 
     function getSummaryLink($container) {
         var cid = $container.data('mt2026-cid');
-        return $('.mt2026-summary-link[data-mt2026-cid="' + cid + '"]');
+        var $controls = $container.closest('.wall-entry-controls.wall-entry-links');
+        return $controls.find('.mt2026-summary-link[data-mt2026-cid="' + cid + '"]');
     }
 
     // ── Build picker HTML ─────────────────────────────────────────────────────
@@ -75,10 +76,10 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         }
     }
 
-    // ── Attach to each .likeLinkContainer (wall-entry links only) ──
+    // ── Attach to each feed-entry .likeLinkContainer only ──
 
     function attach() {
-        $('.wall-entry-controls.wall-entry-links .likeLinkContainer')
+        $('.stream-entry-addons .wall-entry-controls.wall-entry-links .likeLinkContainer')
             .not('[data-mt2026-reactions]').each(function() {
             var $c = $(this);
             $c.attr('data-mt2026-reactions', '1');
@@ -97,11 +98,11 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
             // 2. Append floating picker inside the container
             $c.append(buildPickerHtml());
 
-            // 3. Build reaction summary link and place it in the addons bar (right-aligned)
+            // 3. Build reaction summary link and place it in wall-entry-links (right-aligned)
             var listUrl = BASE_URL + '/list?contentModel=' + encodeURIComponent(params.contentModel) + '&contentId=' + cid;
-            var $addons = $c.closest('.stream-entry-addons, .wall-entry-addons');
-            if ($addons.length && !$addons.find('.mt2026-summary-link[data-mt2026-cid="' + cid + '"]').length) {
-                $addons.append('<a class="mt2026-summary-link" href="' + listUrl
+            var $controls = $c.closest('.wall-entry-controls.wall-entry-links');
+            if ($controls.length && !$controls.find('.mt2026-summary-link[data-mt2026-cid="' + cid + '"]').length) {
+                $controls.append('<a class="mt2026-summary-link" href="' + listUrl
                     + '" data-bs-target="#globalModal" data-mt2026-cid="' + cid + '" style="display:none">'
                     + '<span class="mt2026-summary-inner"></span>'
                     + '</a>');
@@ -144,7 +145,7 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         });
 
         // Toggle picker on trigger click/tap
-        $(document).on('click', '.wall-entry-controls.wall-entry-links .mt2026-reaction-trigger', function(e) {
+        $(document).on('click', '.stream-entry-addons .wall-entry-controls.wall-entry-links .mt2026-reaction-trigger', function(e) {
             e.preventDefault();
             e.stopPropagation();
             var $c = $(this).closest('.likeLinkContainer');
@@ -157,10 +158,10 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
 
         // Desktop hover: open picker after delay
         var hoverTimer;
-        $(document).on('mouseenter', '.wall-entry-controls.wall-entry-links .likeLinkContainer', function() {
+        $(document).on('mouseenter', '.stream-entry-addons .wall-entry-controls.wall-entry-links .likeLinkContainer', function() {
             var $c = $(this);
             hoverTimer = setTimeout(function() { showPicker($c); }, 400);
-        }).on('mouseleave', '.wall-entry-controls.wall-entry-links .likeLinkContainer', function() {
+        }).on('mouseleave', '.stream-entry-addons .wall-entry-controls.wall-entry-links .likeLinkContainer', function() {
             clearTimeout(hoverTimer);
             var $c = $(this);
             setTimeout(function() {

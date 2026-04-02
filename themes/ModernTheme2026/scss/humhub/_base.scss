@@ -10,7 +10,20 @@
 }
 
 body {
-    padding-top: 0 !important;
+    // Keep enough top offset for HumHub's fixed dual topbars.
+    // This restores baseline spacing for all page layouts.
+    padding-top: var(--hh-ct-top-bar-height) !important;
+}
+
+// Add a small universal breathing room below the topbar for all page types
+// (dashboard, space, profile, admin-like pages, and mobile views that still
+// render content containers).
+body > .container,
+body > .container-fluid,
+body > #layout-content,
+body > .space-layout-container,
+body > .profile-layout-container {
+    margin-top: 8px;
 }
 
 // Only override container width on very large screens to avoid

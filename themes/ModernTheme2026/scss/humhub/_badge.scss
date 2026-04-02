@@ -4,10 +4,13 @@
 .badge, .label {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   padding: $space-1 $space-2;
   font-size: var(--font-size-xs);
   font-weight: $font-weight-medium;
   line-height: 1;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
   border-radius: var(--radius);
   @include transition(all, var(--transition-fast));
 }

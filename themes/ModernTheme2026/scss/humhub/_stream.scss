@@ -137,34 +137,17 @@
 // WallEntryLinks injects ' · ' text nodes between its child widgets.
 // Setting font-size:0 on the container hides those text nodes;
 // all child elements (links, .likeLinkContainer) already have explicit font-sizes.
-.wall-entry-controls.wall-entry-links {
+.stream-entry-addons .wall-entry-controls.wall-entry-links {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 0;
   vertical-align: middle;
-  flex: 1 1 auto;
-  min-width: 0;
+  width: 100%;
 }
 
-// Keep the feed action bar in one clean row:
-// [comment + react trigger]........[reaction summary]
-.stream-entry-addons,
-.wall-entry-addons {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.stream-entry-addons .wall-entry-controls.wall-entry-links,
-.wall-entry-addons .wall-entry-controls.wall-entry-links {
-  flex: 1 1 auto;
-}
-
-.stream-entry-addons a[data-action-click="comment.toggleComment"],
-.wall-entry-addons a[data-action-click="comment.toggleComment"] {
-  white-space: nowrap;
-  font-size: 14px !important;
+.stream-entry-addons .wall-entry-controls.wall-entry-links > * {
+  font-size: 14px;
 }
 
 // The like/unlike anchor links are REPLACED by our emoji trigger visually.

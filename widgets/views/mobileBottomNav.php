@@ -154,7 +154,7 @@ if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
                         <i class="fa fa-chevron-right mobile-more-arrow"></i>
                     </a>
                 </li>
-                <?php if (\Yii::$app->moduleManager->isEnabled('calendar')): ?>
+                <?php if (\Yii::$app->moduleManager->hasModule('calendar')): ?>
                 <li>
                     <a href="<?= Url::to(['/calendar/view/index']) ?>" class="mobile-more-item">
                         <span class="mobile-more-icon"><i class="fa fa-calendar"></i></span>
@@ -163,7 +163,7 @@ if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
                     </a>
                 </li>
                 <?php endif; ?>
-                <?php if (\Yii::$app->moduleManager->isEnabled('usermap')): ?>
+                <?php if (\Yii::$app->moduleManager->hasModule('usermap')): ?>
                 <li>
                     <a href="<?= Url::to(['/usermap/map/index']) ?>" class="mobile-more-item">
                         <span class="mobile-more-icon"><i class="fa fa-map-marker"></i></span>

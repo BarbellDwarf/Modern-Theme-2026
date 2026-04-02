@@ -142,6 +142,11 @@ $space-16: 4rem !default;     // 64px
 $space-20: 5rem !default;     // 80px
 $space-24: 6rem !default;     // 96px
 
+// Spacing function: space(N) maps N to the 4px-based scale (N * 0.25rem)
+@function space($n) {
+  @return $n * 0.25rem;
+}
+
 // ============================================
 // BORDER RADIUS (Contemporary rounded)
 // ============================================

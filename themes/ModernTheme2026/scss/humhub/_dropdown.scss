@@ -8,6 +8,9 @@
   @include shadow('lg');
   padding: var(--space-2);
   min-width: 200px;
+  // Explicit z-index ensures the menu floats above panels, stream entries, etc.
+  z-index: $z-dropdown;
+  position: absolute;
   @include fade-in(var(--transition-fast));
   @include scale-in(var(--transition-base));
   
@@ -54,4 +57,27 @@
     text-transform: uppercase;
     letter-spacing: $letter-spacing-wide;
   }
+}
+
+// Ensure panels/cards that contain dropdowns allow menus to visually overflow.
+// This overrides any Bootstrap overflow:hidden on ancestor containers.
+.dropdown,
+.btn-group,
+.dropup {
+  &.open,
+  &.show {
+    // When a dropdown is open, its direct parent needs overflow:visible
+    // so the .dropdown-menu is not clipped by a containing block.
+    overflow: visible;
+  }
+}
+
+// Space header controls: ensure the space settings/controls panel sits
+// ABOVE stream entries so its dropdown is never covered.
+.panel-profile-controls,
+.controls-header,
+#space-header-controls-menu,
+.profile-header-controls {
+  position: relative;
+  z-index: $z-dropdown + 1;
 }

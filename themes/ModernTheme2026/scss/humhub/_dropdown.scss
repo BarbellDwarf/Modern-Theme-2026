@@ -187,3 +187,29 @@
 .comment_create .btn-group.show .dropdown-menu {
   z-index: $z-dropdown + 40 !important;
 }
+
+// Stream post composer settings dropdown ("gear") can be inside wrappers that clip.
+// Keep the full chain overflow-visible and lift the menu above stream cards.
+.wall-entry-form,
+.post-form,
+.wall-entry-form .panel,
+.post-form .panel,
+.wall-entry-form .panel-body,
+.post-form .panel-body,
+.wall-entry-form .editor-toolbar,
+.post-form .editor-toolbar,
+.wall-entry-form .btn-group,
+.post-form .btn-group {
+  overflow: visible !important;
+}
+
+.wall-entry-form .btn-group > .dropdown-menu,
+.post-form .btn-group > .dropdown-menu {
+  z-index: $z-dropdown + 30 !important;
+}
+
+// When composer settings menu is open, lift the whole composer above next stream card.
+.mt2026-composer-dropdown-open {
+  position: relative;
+  z-index: $z-dropdown + 35 !important;
+}

@@ -56,6 +56,7 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
     var init = function (pjax) {
         injectMobileActionBar();
         bindCommentDropdownStackFix();
+        bindComposerDropdownStackFix();
 
         if (!pjax) {
             $(document).on('pjax:end', function () {
@@ -88,6 +89,24 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
             var $entry = $(this).closest('.wall-entry, .stream-entry');
             if ($entry.length) {
                 $entry.removeClass('mt2026-dropdown-open');
+            }
+        });
+    }
+
+    function bindComposerDropdownStackFix() {
+        $(document).off('shown.bs.dropdown.mt2026ComposerMenu hidden.bs.dropdown.mt2026ComposerMenu');
+
+        $(document).on('shown.bs.dropdown.mt2026ComposerMenu', '.wall-entry-form .btn-group, .post-form .btn-group', function () {
+            var $form = $(this).closest('.wall-entry-form, .post-form, .panel');
+            if ($form.length) {
+                $form.addClass('mt2026-composer-dropdown-open');
+            }
+        });
+
+        $(document).on('hidden.bs.dropdown.mt2026ComposerMenu', '.wall-entry-form .btn-group, .post-form .btn-group', function () {
+            var $form = $(this).closest('.wall-entry-form, .post-form, .panel');
+            if ($form.length) {
+                $form.removeClass('mt2026-composer-dropdown-open');
             }
         });
     }

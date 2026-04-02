@@ -191,6 +191,13 @@
     }
 }
 
+// Runtime keyboard-open state from JS for devices where max-height media query is unreliable
+body.mt2026-keyboard-open {
+    .mobile-bottom-nav {
+        display: none !important;
+    }
+}
+
 // Adjust body padding for fixed bottom nav
 @media (max-width: 767px) {
     body {

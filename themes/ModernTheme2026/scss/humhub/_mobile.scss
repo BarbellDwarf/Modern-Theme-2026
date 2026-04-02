@@ -179,6 +179,60 @@
 }
 
 @media (max-width: 767px) {
+    // Keyboard-safe composer and event forms
+    body.mt2026-keyboard-open {
+        .mobile-bottom-nav {
+            display: none !important;
+        }
+
+        .wall-entry-form,
+        .post-form,
+        .modal.show {
+            scroll-margin-bottom: 120px;
+        }
+    }
+
+    .modal.show {
+        .modal-dialog {
+            margin: 6px auto;
+            max-height: calc(100dvh - 12px);
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .modal-content {
+            max-height: calc(100dvh - 12px);
+            overflow-y: auto;
+        }
+    }
+
+    // Event form checkbox/switch density on mobile
+    .event-create-form,
+    .event-edit-form,
+    .calendar-edit-form {
+        .checkbox,
+        .radio,
+        .form-check {
+            margin-bottom: 6px !important;
+            display: inline-flex;
+            align-items: center;
+            margin-right: 12px;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            width: 14px;
+            height: 14px;
+            margin-right: 6px;
+        }
+
+        .bootstrap-switch {
+            transform: scale(0.9);
+            transform-origin: left center;
+            margin-right: 6px;
+        }
+    }
+
     .stream-entry-addons {
         padding: 8px 4px 4px !important;
         border-top: 1px solid var(--color-border-light, #f3f4f6);

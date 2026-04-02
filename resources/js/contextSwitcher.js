@@ -261,51 +261,7 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
         $row.find('.form-search-filter-keyword input').blur();
     };
 
-    var initMobileInputScroll = function() {
-        if (window.innerWidth > 767) return;
-
-        var SELECTORS = 'input[type="text"], input[type="email"], input[type="search"], input[type="url"], input[type="password"], textarea, .ql-editor, [contenteditable="true"]';
-
-        var scrollElIntoView = function(el) {
-            if (!el || document.activeElement !== el) return;
-
-            var rect = el.getBoundingClientRect();
-
-            if (window.visualViewport) {
-                // Use visualViewport for accurate keyboard-aware positioning
-                var vv = window.visualViewport;
-                var elBottom = rect.bottom;
-                var visibleBottom = vv.height + vv.offsetTop;
-                var margin = 40;
-                if (elBottom > visibleBottom - margin) {
-                    window.scrollBy({ top: elBottom - (visibleBottom - margin), behavior: 'smooth' });
-                }
-            } else {
-                // Fallback: estimate keyboard height as 40% of viewport
-                var keyboardEst = window.innerHeight * 0.4;
-                var visibleBottom2 = window.innerHeight - keyboardEst;
-                if (rect.bottom > visibleBottom2) {
-                    window.scrollBy({ top: rect.bottom - visibleBottom2 + 40, behavior: 'smooth' });
-                }
-            }
-        };
-
-        $(document).on('focus', SELECTORS, function() {
-            var el = this;
-            // Wait for keyboard to appear (typically 300–400 ms on Android/iOS)
-            setTimeout(function() { scrollElIntoView(el); }, 400);
-        });
-
-        // visualViewport resize fires when keyboard appears/disappears
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', function() {
-                var el = document.activeElement;
-                if (el && el.matches(SELECTORS)) {
-                    setTimeout(function() { scrollElIntoView(el); }, 100);
-                }
-            });
-        }
-    };
+    var initMobileInputScroll = function() {};
 
     module.initOnPjaxLoad = true;
 

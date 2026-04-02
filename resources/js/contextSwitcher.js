@@ -10,6 +10,7 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
         bindSearch();
         bindExpandSections();
         updateActiveState();
+        initPeopleFilters();
 
         if (!pjax) {
             $(document).on('pjax:end', function() {
@@ -181,6 +182,35 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
         } else {
             $label.text($label.data('default') || $label.text());
         }
+    };
+
+    var initPeopleFilters = function() {
+        if (window.innerWidth >= 768) return;
+
+        // Find the People page filter row (contains keyword search)
+        var $row = $('.panel-body .row.gy-2').filter(function() {
+            return $(this).find('.form-search-filter-keyword').length > 0;
+        });
+
+        if (!$row.length) return;
+
+        // Only inject once
+        if ($row.find('.mt2026-more-filters-btn-wrap').length) return;
+
+        var $btnWrap = $('<div class="mt2026-more-filters-btn-wrap col-12">' +
+            '<button class="mt2026-more-filters-btn" type="button">' +
+            '<i class="fa fa-sliders"></i> Filters</button></div>');
+
+        $row.find('.form-search-filter-keyword').after($btnWrap);
+
+        $btnWrap.find('.mt2026-more-filters-btn').on('click', function() {
+            var $btn = $(this);
+            $row.toggleClass('filters-expanded');
+            $btn.toggleClass('active');
+        });
+
+        // Prevent auto-focus on keyword input on mobile
+        $row.find('.form-search-filter-keyword input').blur();
     };
 
     module.export = {

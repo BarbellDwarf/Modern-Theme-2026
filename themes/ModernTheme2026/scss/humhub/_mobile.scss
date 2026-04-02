@@ -210,3 +210,54 @@
     }
   }
 }
+
+
+// ─── People page: collapse filters mobile on ─────────────
+@media (max-width: 767px) {
+  // Hide all non-keyword filter columns by default
+  .panel-body .row.gy-2 > div:not(.form-search-filter-keyword):not(.mt2026-more-filters-btn-wrap) {
+    display: none;
+  }
+
+  // Show all filters when expanded
+  .panel-body .row.gy-2.filters-expanded > div {
+    display: block !important;
+  }
+
+  // "More Filters" toggle button wrapper
+  .mt2026-more-filters-btn-wrap {
+    display: flex !important;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: 4px;
+  }
+
+  // The toggle button itself
+  .mt2026-more-filters-btn {
+    background: transparent;
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--color-text-secondary, #6b7280);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+
+    i { font-size: 11px; }
+
+    &.active {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary);
+    }
+  }
+
+  // Keyword input — full width on mobile
+  .form-search-filter-keyword input[type="text"],
+  .form-search-filter-keyword input[type="search"] {
+    width: 100%;
+  }
+}

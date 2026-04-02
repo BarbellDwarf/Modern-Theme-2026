@@ -248,3 +248,159 @@ body[data-mobile="true"],
         transition: transform 0s;
     }
 }
+
+// ─── Mobile Bottom Sheet ────────────
+
+.mobile-sheet {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+
+    &.open {
+        display: block;
+    }
+
+    .mobile-sheet-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.2s ease;
+    }
+
+    .mobile-sheet-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--color-bg-primary, #fff);
+        border-radius: 20px 20px 0 0;
+        max-height: 75vh;
+        display: flex;
+        flex-direction: column;
+        animation: slideUpSheet 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        padding-bottom: calc(70px + env(safe-area-inset-bottom));
+    }
+
+    .mobile-sheet-handle {
+        width: 40px;
+        height: 4px;
+        background: var(--color-border, #e5e7eb);
+        border-radius: 2px;
+        margin: 12px auto 0;
+        flex-shrink: 0;
+    }
+
+    .mobile-sheet-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px 12px;
+        border-bottom: 1px solid var(--color-border, #e5e7eb);
+        flex-shrink: 0;
+    }
+
+    .mobile-sheet-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0;
+        color: var(--color-text-primary, #111827);
+    }
+
+    .mobile-sheet-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        line-height: 1;
+        color: var(--color-text-muted, #6b7280);
+        cursor: pointer;
+        padding: 0 4px;
+
+        &:hover { color: var(--color-text-primary, #111827); }
+    }
+
+    .mobile-sheet-body {
+        overflow-y: auto;
+        flex: 1;
+        padding: 8px 0;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .mobile-sheet-footer {
+        padding: 12px 16px;
+        border-top: 1px solid var(--color-border, #e5e7eb);
+        flex-shrink: 0;
+    }
+}
+
+.mobile-spaces-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mobile-space-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 20px;
+    text-decoration: none;
+    color: var(--color-text-primary, #111827);
+    transition: background 0.15s;
+
+    &:hover, &:active {
+        background: var(--color-bg-secondary, #f3f4f6);
+        text-decoration: none;
+        color: var(--color-text-primary, #111827);
+    }
+}
+
+.mobile-space-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--color-primary, #1e6ad6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-space-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mobile-space-initials {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.mobile-space-name {
+    flex: 1;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mobile-spaces-empty {
+    padding: 24px 20px;
+    color: var(--color-text-muted, #6b7280);
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+@keyframes slideUpSheet {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}

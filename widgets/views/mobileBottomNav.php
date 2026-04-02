@@ -95,3 +95,81 @@ if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
     </a>
     
 </nav>
+
+<!-- Spaces Bottom Sheet -->
+<div id="mobile-spaces-sheet" class="mobile-sheet" role="dialog" aria-label="Your Spaces" aria-hidden="true">
+    <div class="mobile-sheet-backdrop"></div>
+    <div class="mobile-sheet-content">
+        <div class="mobile-sheet-handle"></div>
+        <div class="mobile-sheet-header">
+            <h3 class="mobile-sheet-title">Your Spaces</h3>
+            <button type="button" class="mobile-sheet-close" aria-label="Close">&times;</button>
+        </div>
+        <div class="mobile-sheet-body">
+            <?php if (!empty($spaces)): ?>
+                <ul class="mobile-spaces-list">
+                    <?php foreach ($spaces as $space): ?>
+                    <li>
+                        <a href="<?= $space->getUrl() ?>" class="mobile-space-item">
+                            <span class="mobile-space-icon">
+                                <?php if ($space->getProfileImage()->hasImage()): ?>
+                                    <?= Html::img($space->getProfileImage()->getUrl(), ['class' => 'mobile-space-img', 'alt' => Html::encode($space->name)]) ?>
+                                <?php else: ?>
+                                    <span class="mobile-space-initials"><?= Html::encode(mb_strtoupper(mb_substr($space->name, 0, 2))) ?></span>
+                                <?php endif; ?>
+                            </span>
+                            <span class="mobile-space-name"><?= Html::encode($space->name) ?></span>
+                        </a>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <p class="mobile-spaces-empty">You haven't joined any spaces yet.</p>
+            <?php endif; ?>
+        </div>
+        <div class="mobile-sheet-footer">
+            <a href="<?= Url::to(['/space/spaces']) ?>" class="btn btn-primary btn-block">
+                <i class="fa fa-th-large"></i> View All Spaces
+            </a>
+        </div>
+    </div>
+</div>
+
+<?php $this->registerJs("
+(function() {
+    var btn = document.getElementById('mobile-spaces-btn');
+    var sheet = document.getElementById('mobile-spaces-sheet');
+    if (!btn || !sheet) return;
+
+    var backdrop = sheet.querySelector('.mobile-sheet-backdrop');
+    var closeBtn = sheet.querySelector('.mobile-sheet-close');
+
+    function openSheet() {
+        sheet.classList.add('open');
+        sheet.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSheet() {
+        sheet.classList.remove('open');
+        sheet.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (sheet.classList.contains('open')) { closeSheet(); } else { openSheet(); }
+    });
+
+    if (backdrop) backdrop.addEventListener('click', closeSheet);
+    if (closeBtn) closeBtn.addEventListener('click', closeSheet);
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeSheet();
+    });
+
+    sheet.querySelectorAll('.mobile-space-item').forEach(function(link) {
+        link.addEventListener('click', closeSheet);
+    });
+})();
+", \yii\web\View::POS_READY); ?>

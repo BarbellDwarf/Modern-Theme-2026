@@ -96,3 +96,58 @@
   position: relative;
   z-index: $z-dropdown + 1;
 }
+
+// -----------------------------------------------------------------------
+// Space page layout stacking fix
+//
+// Layout HTML:
+//   .space-layout-container
+//     .row                          ← header row  (z-index: 100)
+//       .col-lg-12
+//         .panel-profile (dropdown lives here)
+//     .row.space-content            ← content row (z-index: 1, isolated)
+//       .layout-content-container
+//         .wall-entry / .stream-entry  (transform on hover → new stacking ctx)
+//
+// Problem: stream entries use transform:translateY on hover which creates a
+// new stacking context. Because both rows are siblings in normal flow, and
+// the content row's entries appear later in the DOM, their stacking context
+// can paint on top of the header's dropdown even when the dropdown has a
+// high z-index — because the dropdown is a child of the *earlier* row's
+// stacking context.
+//
+// Fix:
+//  1. Give the header row position:relative + high z-index (100) so its
+//     entire stacking context — including the dropdown — is ordered above
+//     the content row.
+//  2. Give .space-content (content row) position:relative + z-index:1 and
+//     isolation:isolate so stream-entry stacking contexts are confined
+//     within it and cannot escape to paint over the header.
+// -----------------------------------------------------------------------
+
+.space-layout-container {
+  > .row:first-child {
+    position: relative;
+    z-index: 100;
+  }
+}
+
+.space-content {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
+// Prevent the profile panel's hover transform from creating a stacking
+// context that traps the dropdown inside a lower z-index layer.
+.panel-profile,
+.panel-default.panel-profile {
+  &:hover {
+    transform: none !important;
+  }
+}
+
+// Ensure the dropdown-menu always floats at the very top of the page stack.
+.dropdown-menu {
+  z-index: $z-dropdown !important;
+}

@@ -2,7 +2,7 @@
 // Mobile-specific styles and responsive adjustments
 
 // Mobile-specific enhancements for Modern Theme 2026
-@media (max-width: 991px) {
+@media (max-width: 767px) {
     // Space sidebar nav: convert vertical list to horizontal scrollable pill bar
     .layout-nav-container {
         width: 100% !important;
@@ -13,10 +13,10 @@
         margin-bottom: 12px;
         overflow: visible !important; // Don't clip rounded pill borders
 
-        // Handle both .list-group (LeftNavigation widget) and .nav/.nav-pills
-        .list-group,
-        .nav,
-        ul {
+        // Target only actual sidebar nav containers on mobile.
+        #left-navigation .list-group,
+        #user-profile-menu .nav,
+        #space-menu-dropdown .nav {
             display: flex !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
@@ -42,13 +42,13 @@
                 > a,
                 > .nav-link,
                 &.list-group-item {
-                    display: inline-flex;
+                    display: inline-flex !important;
                     align-items: center;
                     justify-content: center;
                     gap: 8px;
                     white-space: nowrap;
-                    padding: 10px 18px !important;
-                    min-height: 44px;
+                    padding: 11px 20px !important;
+                    min-height: 46px;
                     border-radius: 22px !important;
                     border: 1px solid var(--color-border, #e5e7eb) !important;
                     color: var(--color-text-secondary, #4b5563);

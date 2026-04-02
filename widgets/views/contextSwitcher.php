@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use humhub\modules\space\widgets\Image as SpaceImage;
 
 /* @var $user \humhub\modules\user\models\User */
 /* @var $spaces array */
@@ -19,11 +20,19 @@ use yii\helpers\Url;
             aria-controls="context-switcher-menu"
             id="context-switcher-btn">
         <span class="context-icon">
-            <?php if ($currentSpace && $currentSpace->getProfileImage()->hasImage()): ?>
-                <?= Html::img($currentSpace->getProfileImage()->getUrl('_48'), ['alt' => Html::encode($currentSpace->name)]) ?>
+            <?php if ($currentSpace): ?>
+                <?= SpaceImage::widget([
+                    'space' => $currentSpace,
+                    'width' => 32,
+                    'link' => false,
+                    'htmlOptions' => [
+                        'class' => 'context-space-image',
+                        'alt' => Html::encode($currentSpace->name),
+                    ],
+                ]) ?>
             <?php else: ?>
                 <span class="context-initial">
-                    <?= Html::encode(mb_strtoupper(mb_substr(($currentSpace->name ?? 'D'), 0, 1))) ?>
+                    D
                 </span>
             <?php endif; ?>
         </span>
@@ -71,15 +80,17 @@ use yii\helpers\Url;
                 <a href="<?= $space->createUrl() ?>"
                    class="context-item<?= ($currentSpace && (int)$currentSpace->id === (int)$space->id) ? ' active' : '' ?>"
                    role="option"
-                   data-search-name="<?= Html::encode($space->name) ?>">
+                    data-search-name="<?= Html::encode($space->name) ?>">
                     <span class="item-icon">
-                        <?php if ($space->getProfileImage()->hasImage()): ?>
-                            <?= Html::img($space->getProfileImage()->getUrl('_48'), ['alt' => Html::encode($space->name)]) ?>
-                        <?php else: ?>
-                            <span class="item-initial">
-                                <?= Html::encode(mb_strtoupper(mb_substr($space->name, 0, 1))) ?>
-                            </span>
-                        <?php endif; ?>
+                        <?= SpaceImage::widget([
+                            'space' => $space,
+                            'width' => 30,
+                            'link' => false,
+                            'htmlOptions' => [
+                                'class' => 'context-space-image',
+                                'alt' => Html::encode($space->name),
+                            ],
+                        ]) ?>
                     </span>
                     <span class="item-label">
                         <span class="item-name"><?= Html::encode($space->name) ?></span>

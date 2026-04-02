@@ -158,15 +158,44 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
             });
     };
 
+    var normalizePath = function(url) {
+        if (!url) return '';
+        var path = url;
+        if (path.indexOf('http://') === 0 || path.indexOf('https://') === 0) {
+            try {
+                path = new URL(path).pathname;
+            } catch (e) {
+                path = url;
+            }
+        }
+        path = path.split('?')[0].split('#')[0];
+        return path.replace(/\/+$/, '') || '/';
+    };
+
     var updateActiveState = function() {
         var $label = $('.context-switcher-button .context-label');
         var $icon = $('.context-switcher-button .context-icon');
+        var path = normalizePath(window.location.pathname);
 
         if (!$label.length) return;
 
+        // Recompute active item from current URL (important on PJAX navigation where
+        // topbar isn't fully re-rendered).
+        $('#context-spaces-list .context-item').removeClass('active');
+        var $activeItem = $('#context-spaces-list .context-item').filter(function() {
+            var href = normalizePath($(this).attr('href') || '');
+            return href && (path === href || path.indexOf(href + '/') === 0);
+        }).first();
+
+        if ($activeItem.length) {
+            $activeItem.addClass('active');
+        } else {
+            // Fallback to any pre-marked active item from server render.
+            $activeItem = $('#context-spaces-list .context-item.active').first();
+        }
+
         // Never replace the icon class here: server-rendered icon can be an <img>.
-        // Sync button state from the active context item when available.
-        var $activeItem = $('#context-spaces-list .context-item.active').first();
+        // Sync button state from active item when available.
         if ($activeItem.length) {
             var activeName = $activeItem.find('.item-name').text().trim();
             var activeIconHtml = $activeItem.find('.item-icon').html();
@@ -188,7 +217,7 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
     };
 
     var initSpaceSidebarMobile = function() {
-        if (window.innerWidth > 991) return;
+        if (window.innerWidth > 767) return;
 
         var $container = $('.layout-nav-container');
         if (!$container.length) return;

@@ -5,6 +5,7 @@ namespace humhub\modules\modernTheme2026\controllers;
 use humhub\components\behaviors\AccessControl;
 use humhub\modules\like\models\Like;
 use humhub\modules\content\components\ContentAddonController;
+use humhub\modules\user\models\User;
 use Yii;
 use yii\web\ForbiddenHttpException;
 
@@ -26,6 +27,78 @@ class ReactionsController extends ContentAddonController
                 'class' => AccessControl::class,
             ],
         ];
+    }
+
+    /**
+     * GET /modern-theme-2026/reactions/my-reaction
+     * Params: contentModel, contentId
+     *
+     * Returns the current user's reaction type for a given content item.
+     * Used by JS on page load to restore the active trigger emoji.
+     */
+    public function actionMyReaction(): array
+    {
+        Yii::$app->response->format = 'json';
+
+        $existing = Like::find()
+            ->where([
+                'object_model' => $this->contentModel,
+                'object_id'    => $this->contentId,
+                'created_by'   => Yii::$app->user->id,
+            ])
+            ->one();
+
+        return [
+            'reactionType'   => $existing ? ($existing->reaction_type ?? 'like') : null,
+            'reactionCounts' => $this->getReactionCounts(),
+        ];
+    }
+
+    /**
+     * GET /modern-theme-2026/reactions/list
+     * Params: contentModel, contentId
+     *
+     * Renders a modal listing all users who reacted, with their actual emoji.
+     */
+    public function actionList(): string
+    {
+        /** Reaction type → emoji map (must match reactionPicker.js REACTIONS array) */
+        $emojiMap = [
+            'like'  => '👍',
+            'love'  => '❤️',
+            'laugh' => '😂',
+            'wow'   => '😮',
+            'sad'   => '😢',
+            'pray'  => '🙏',
+        ];
+
+        // Query users + their reaction_type, newest first
+        $rows = (new \yii\db\Query())
+            ->select(['u.*', 'l.reaction_type'])
+            ->from('{{%like}} l')
+            ->innerJoin('{{%user}} u', 'u.id = l.created_by')
+            ->where([
+                'l.object_model' => $this->contentModel,
+                'l.object_id'    => $this->contentId,
+            ])
+            ->orderBy(['l.created_at' => SORT_DESC])
+            ->all();
+
+        $reactions = array_map(function ($row) {
+            $user                  = User::findOne($row['id']);
+            return [
+                'user'          => $user,
+                'reaction_type' => $row['reaction_type'] ?? 'like',
+            ];
+        }, $rows);
+
+        // Filter out any null users (deleted accounts)
+        $reactions = array_filter($reactions, fn($r) => $r['user'] !== null);
+
+        return $this->renderAjaxContent($this->renderPartial(
+            'list',
+            ['reactions' => array_values($reactions), 'emojiMap' => $emojiMap]
+        ));
     }
 
     /**

@@ -159,7 +159,9 @@
 
 @media (max-width: 767px) {
     .stream-entry-addons {
-        display: block !important;
+        display: flex !important;
+        align-items: center;
+        flex-wrap: wrap;
         padding: 8px 4px 4px !important;
         border-top: 1px solid var(--color-border-light, #f3f4f6);
         margin-top: 8px;
@@ -167,7 +169,7 @@
 
     // Style comment/addon links as pill buttons
     .stream-entry-addons {
-        a[data-action-click="comment.toggleComment"],
+        a[data-action-click="comment.toggleComment"]:not(.d-none),
         .comment-link,
         .content-addon-link {
             display: inline-flex !important;
@@ -204,6 +206,12 @@
             margin-right: 4px;
             font-size: 14px !important;
         }
+    }
+
+    // Reaction summary link on far right
+    .mt2026-reaction-summary-link {
+        margin-left: auto;
+        font-size: 13px;
     }
 }
 

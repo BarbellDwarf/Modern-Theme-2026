@@ -48,37 +48,6 @@ use yii\helpers\Url;
                    autocomplete="off">
         </div>
 
-        <!-- Quick Links Section -->
-        <div class="context-section">
-            <div class="section-header">Quick Access</div>
-            <div class="section-items">
-                <a href="<?= Url::to(['/dashboard/dashboard']) ?>"
-                   class="context-item <?= $currentContext === 'dashboard' ? 'active' : '' ?>"
-                   role="option">
-                    <span class="item-icon"><i class="fa fa-home"></i></span>
-                    <span class="item-label">
-                        <span class="item-name">Dashboard</span>
-                    </span>
-                </a>
-                <a href="<?= Url::to(['/user/people']) ?>"
-                   class="context-item"
-                   role="option">
-                    <span class="item-icon"><i class="fa fa-users"></i></span>
-                    <span class="item-label">
-                        <span class="item-name">People</span>
-                    </span>
-                </a>
-                <a href="<?= Url::to(['/space/spaces']) ?>"
-                   class="context-item"
-                   role="option">
-                    <span class="item-icon"><i class="fa fa-th-large"></i></span>
-                    <span class="item-label">
-                        <span class="item-name">Explore Spaces</span>
-                    </span>
-                </a>
-            </div>
-        </div>
-
         <!-- My Spaces Section (only if user has spaces) -->
         <?php if (!empty($spaces)): ?>
         <div class="context-section">
@@ -105,6 +74,10 @@ use yii\helpers\Url;
                 </a>
                 <?php endforeach; ?>
             </div>
+        </div>
+        <?php else: ?>
+        <div class="context-section">
+            <p class="context-no-spaces">You have not joined any spaces yet.</p>
         </div>
         <?php endif; ?>
 

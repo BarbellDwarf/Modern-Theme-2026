@@ -36,9 +36,9 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
             // Inject the floating picker into the container
             $container.append(buildPicker());
 
-            // Inject a visible FA-icon trigger button at the start of the container
+            // Inject a visible trigger button at the start of the container
             var $trigger = $('<button type="button" class="mt2026-reaction-trigger" title="React to this" aria-haspopup="listbox">' +
-                '<i class="fa fa-smile-o"></i>' +
+                '<i class="fa fa-smile-o" aria-hidden="true"></i>' +
                 '</button>');
             $container.prepend($trigger);
 
@@ -47,6 +47,34 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
             if (currentReaction) {
                 $container.find('.mt2026-reaction-btn[data-reaction="' + currentReaction + '"]').addClass('active');
                 updateTriggerState($container, currentReaction);
+            }
+
+            // Build the reaction summary link in the addons bar (right side)
+            var $addons = $container.closest('.stream-entry-addons, .wall-entry-addons');
+            if ($addons.length) {
+                // Remove any existing summary link for this container
+                $addons.find('.mt2026-reaction-summary-link[data-for="' + $container.attr('id') + '"]').remove();
+
+                // Parse the list URL from the existing like link
+                var $likeLink = $container.find('a.likeAnchor');
+                var actionUrl = $likeLink.first().data('action-url') || '';
+                var urlParams = new URLSearchParams(actionUrl.split('?')[1] || '');
+                var contentModel = urlParams.get('contentModel');
+                var contentId = urlParams.get('contentId');
+
+                var listUrl = (contentModel && contentId)
+                    ? '/modern-theme-2026/reactions/list?contentModel=' + encodeURIComponent(contentModel) + '&contentId=' + encodeURIComponent(contentId)
+                    : '#';
+
+                var summaryId = 'mt2026-summary-' + (contentId || Math.random().toString(36).slice(2));
+                $container.attr('id', $container.attr('id') || summaryId);
+
+                var $summaryLink = $('<a class="mt2026-reaction-summary-link" href="' + listUrl + '" ' +
+                    'data-bs-target="#globalModal" data-for="' + summaryId + '" style="display:none">' +
+                    '<span class="mt2026-reaction-summary"></span>' +
+                    '</a>');
+
+                $addons.append($summaryLink);
             }
         });
     }
@@ -65,13 +93,13 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         }
     }
 
-    /** Update reaction summary counts in the container */
+    /** Update reaction summary counts in the external summary link */
     function updateReactionSummary($container, reactionCounts) {
-        var $summary = $container.find('.mt2026-reaction-summary');
-        if (!$summary.length) {
-            $summary = $('<div class="mt2026-reaction-summary"></div>');
-            $container.append($summary);
-        }
+        var $addons = $container.closest('.stream-entry-addons, .wall-entry-addons');
+        var $summaryLink = $addons.find('.mt2026-reaction-summary-link');
+        if (!$summaryLink.length) return;
+
+        var $summary = $summaryLink.find('.mt2026-reaction-summary');
 
         var hasAny = false;
         var html = '';
@@ -83,7 +111,8 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
                         r.emoji + ' <span class="cnt">' + count + '</span></span>';
             }
         });
-        $summary.html(hasAny ? html : '').toggle(hasAny);
+        $summary.html(hasAny ? html : '');
+        $summaryLink.toggle(hasAny);
     }
 
     function showPicker($container) {
@@ -106,12 +135,49 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         }
     }
 
+    /**
+     * For containers where the user has already reacted (unlike link is visible),
+     * fetch the actual reaction type from the server and restore the trigger state.
+     */
+    function restoreReactionStates() {
+        $('.likeLinkContainer[data-mt2026-reactions]').each(function() {
+            var $container = $(this);
+            var $unlike = $container.find('a.unlike.likeAnchor');
+            // If the unlike link is not hidden, user has an existing reaction
+            if ($unlike.length && !$unlike.hasClass('d-none')) {
+                var $likeLink = $container.find('a.likeAnchor');
+                var actionUrl = $likeLink.first().data('action-url') || '';
+                var urlParams = new URLSearchParams(actionUrl.split('?')[1] || '');
+                var contentModel = urlParams.get('contentModel');
+                var contentId = urlParams.get('contentId');
+                if (!contentModel || !contentId) return;
+
+                $.ajax({
+                    url: '/modern-theme-2026/reactions/my-reaction',
+                    method: 'GET',
+                    data: { contentModel: contentModel, contentId: contentId },
+                    success: function(response) {
+                        if (response && response.reactionType) {
+                            $container.find('.mt2026-reaction-btn').removeClass('active');
+                            $container.find('.mt2026-reaction-btn[data-reaction="' + response.reactionType + '"]').addClass('active');
+                            updateTriggerState($container, response.reactionType);
+                        }
+                        if (response && response.reactionCounts) {
+                            updateReactionSummary($container, response.reactionCounts);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
     var init = function() {
         // Run immediately and after every stream content update
         attach();
+        restoreReactionStates();
 
         $(document).on('humhub:ready humhub:stream:afterAppend humhub:content:afterMove', function() {
-            setTimeout(attach, 150);
+            setTimeout(function() { attach(); restoreReactionStates(); }, 150);
         });
 
         // Trigger button click: toggle picker

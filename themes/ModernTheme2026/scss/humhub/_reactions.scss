@@ -146,12 +146,13 @@
   }
 }
 
-// Hide the stock Like/Unlike text links — our emoji trigger replaces them visually.
-// Hide the stock Like/Unlike text links ONLY after JS has processed the
-// container and injected the trigger (indicated by [data-mt2026-reactions]).
-// Before JS runs, the native link (with Clean Theme's ::before icon) remains
-// visible as a fallback, so the like button is never invisible.
+// After JS processes the container, hide the original user-list count link entirely.
+// The reaction summary link (placed by JS in the addons bar) replaces it.
 .likeLinkContainer[data-mt2026-reactions] {
+  > a:not(.likeAnchor) {
+    display: none !important;
+  }
+
   a.likeAnchor {
     position: absolute;
     width: 1px;
@@ -215,14 +216,15 @@
   background: var(--color-bg-elevated, #1f2937);
 }
 
-// Inline reaction summary (shown below content, next to Like link)
+// Inline reaction summary — rendered as a tappable link on the right side of the addons bar.
+// JS wraps this in an <a> with class mt2026-reaction-summary-link.
 .mt2026-reaction-summary {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   flex-wrap: wrap;
-  margin-left: 8px;
   vertical-align: middle;
+  font-size: 13px;
 }
 
 .mt2026-reaction-count {

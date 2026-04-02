@@ -1,219 +1,200 @@
 // Modern Theme 2026 - Smart Context Switcher
-// Unified navigation dropdown
+// Unified navigation dropdown — spaces only, dark themed
+
+// Shared dark surface colours (match the nav bar)
+$cs-bg:            #1e2a3a;
+$cs-bg-item-hover: rgba(255, 255, 255, 0.08);
+$cs-bg-item-active:rgba(30, 106, 214, 0.25);
+$cs-border:        rgba(255, 255, 255, 0.12);
+$cs-text:          #e2e8f0;
+$cs-text-muted:    rgba(255, 255, 255, 0.45);
+$cs-icon-bg:       rgba(255, 255, 255, 0.1);
 
 .context-switcher {
   position: relative;
-  
+
   .context-switcher-button {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
     padding: var(--space-2) var(--space-4);
     border-radius: var(--radius);
-    border: 1px solid var(--color-border);
-    background: var(--color-bg-primary);
-    color: var(--color-text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
     font-weight: $font-weight-medium;
     @include transition(all, var(--transition-fast));
     cursor: pointer;
-    
+
     &:hover {
-      background: var(--color-bg-secondary);
-      border-color: var(--color-primary);
-      @include shadow('sm');
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.5);
     }
-    
+
     &.active {
       border-color: var(--color-primary);
-      @include shadow('md');
+      background: rgba(30, 106, 214, 0.2);
     }
-    
-    .context-icon {
-      font-size: 18px;
-    }
-    
+
     .context-label {
       max-width: 150px;
       @include text-truncate;
     }
-    
+
     .dropdown-arrow {
       margin-left: auto;
       @include transition(transform, var(--transition-fast));
+      opacity: 0.7;
     }
-    
+
     &.active .dropdown-arrow {
       transform: rotate(180deg);
     }
   }
-  
+
   .context-switcher-menu {
     position: absolute;
-    top: calc(100% + var(--space-2));
+    top: calc(100% + 6px);
     left: 0;
-    width: $context-switcher-width;
-    max-height: $context-switcher-max-height;
+    width: 280px;
+    max-height: 480px;
     overflow-y: auto;
-    @include glass-effect(0.98);
-    border: 1px solid var(--color-border-light);
+    background: $cs-bg;
+    border: 1px solid $cs-border;
     border-radius: var(--radius-lg);
-    @include shadow('xl');
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
     z-index: $z-dropdown;
-    @include scale-in();
-    
+
     // Search input
     .context-search {
-      padding: var(--space-3);
-      border-bottom: 1px solid var(--color-border);
-      
+      padding: 10px 12px;
+      border-bottom: 1px solid $cs-border;
+
       input {
         width: 100%;
-        padding: var(--space-2) var(--space-3);
-        border: 1px solid var(--color-border);
+        padding: 7px 12px;
+        border: 1px solid $cs-border;
         border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.07);
+        color: $cs-text;
         font-size: var(--font-size-sm);
-        
+
+        &::placeholder {
+          color: $cs-text-muted;
+        }
+
         &:focus {
           outline: none;
           border-color: var(--color-primary);
+          background: rgba(255, 255, 255, 0.1);
         }
       }
     }
-    
+
     // Menu sections
     .context-section {
-      padding: var(--space-2);
-      
+      padding: 6px 6px 8px;
+
       .section-header {
-        padding: var(--space-2) var(--space-3);
-        font-size: var(--font-size-xs);
+        padding: 6px 10px 4px;
+        font-size: 11px;
         font-weight: $font-weight-semibold;
-        color: var(--color-text-muted);
+        color: $cs-text-muted;
         text-transform: uppercase;
         letter-spacing: $letter-spacing-wide;
       }
-      
-      .section-items {
-        .context-item {
+
+      .context-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 10px;
+        border-radius: var(--radius);
+        color: $cs-text;
+        text-decoration: none;
+        @include transition(background, var(--transition-fast));
+
+        &:hover {
+          background: $cs-bg-item-hover;
+          color: #fff;
+        }
+
+        &.active {
+          background: $cs-bg-item-active;
+          color: #fff;
+          font-weight: $font-weight-semibold;
+        }
+
+        .item-icon {
+          width: 30px;
+          height: 30px;
+          flex-shrink: 0;
           display: flex;
           align-items: center;
-          gap: var(--space-3);
-          padding: var(--space-2) var(--space-3);
+          justify-content: center;
           border-radius: var(--radius);
-          color: var(--color-text-secondary);
-          cursor: pointer;
-          @include transition(all, var(--transition-fast));
-          
-          &:hover {
-            background: var(--color-bg-secondary);
-            color: var(--color-text-primary);
-          }
-          
-          &.active {
-            background: var(--color-primary-lightest);
-            color: var(--color-primary);
-            font-weight: $font-weight-semibold;
-          }
-          
-          .item-icon {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+          background: $cs-icon-bg;
+          color: $cs-text;
+          font-size: 13px;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             border-radius: var(--radius);
-            background: var(--color-bg-tertiary);
-            
-            img {
-              width: 100%;
-              height: 100%;
-              object-fit: cover;
-              border-radius: var(--radius);
-            }
-          }
-          
-          .item-label {
-            flex: 1;
-            min-width: 0;
-            
-            .item-name {
-              @include text-truncate;
-              font-weight: $font-weight-medium;
-            }
-            
-            .item-meta {
-              font-size: var(--font-size-xs);
-              color: var(--color-text-muted);
-            }
-          }
-          
-          .item-badge {
-            @include shadow('xs');
           }
         }
-        
-        // Expandable section
-        .expandable {
-          .expand-toggle {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: var(--space-2) var(--space-3);
-            border-radius: var(--radius);
-            cursor: pointer;
-            @include transition(background, var(--transition-fast));
-            
-            &:hover {
-              background: var(--color-bg-secondary);
-            }
-            
-            .expand-icon {
-              @include transition(transform, var(--transition-fast));
-            }
-            
-            &.expanded .expand-icon {
-              transform: rotate(90deg);
-            }
+
+        .item-label {
+          flex: 1;
+          min-width: 0;
+
+          .item-name {
+            @include text-truncate;
+            font-weight: $font-weight-medium;
+            font-size: 14px;
           }
-          
-          .expand-content {
-            max-height: 0;
-            overflow: hidden;
-            @include transition(max-height, var(--transition-base));
-            
-            &.expanded {
-              max-height: 500px;
-            }
-            
-            .context-item {
-              padding-left: var(--space-10);
-            }
+
+          .item-meta {
+            display: block;
+            font-size: 11px;
+            color: $cs-text-muted;
+            @include text-truncate;
+            margin-top: 1px;
           }
         }
       }
+
+      .context-no-spaces {
+        padding: 10px 12px;
+        font-size: var(--font-size-sm);
+        color: $cs-text-muted;
+        margin: 0;
+      }
     }
-    
+
     // Keyboard shortcut hint
     .keyboard-hint {
-      padding: var(--space-2) var(--space-3);
-      border-top: 1px solid var(--color-border);
-      font-size: var(--font-size-xs);
-      color: var(--color-text-muted);
+      padding: 8px 12px;
+      border-top: 1px solid $cs-border;
+      font-size: 11px;
+      color: $cs-text-muted;
       text-align: center;
-      
+
       kbd {
-        padding: 2px 6px;
-        background: var(--color-bg-tertiary);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-sm);
+        padding: 1px 5px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid $cs-border;
+        border-radius: 3px;
         font-family: var(--font-family-monospace);
         font-size: 10px;
+        color: $cs-text;
       }
     }
   }
 }
 
-// Mobile optimizations
+// Mobile: full-screen overlay
 @include mobile-only {
   .context-switcher-menu {
     position: fixed !important;
@@ -225,6 +206,5 @@
     max-width: 100% !important;
     max-height: 100% !important;
     border-radius: 0 !important;
-    @include slide-up();
   }
 }

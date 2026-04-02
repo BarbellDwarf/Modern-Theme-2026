@@ -115,9 +115,8 @@
 }
 
 // Ensure the comment icon (::before from Clean Theme) is visible.
-// Clean Theme sets font-size:0 on the link text but 18px on ::before.
-// We must keep font-size:0 (to hide text) but force visibility of the element.
-.wall-entry-controls a[data-action-click="comment.toggleComment"] {
+// Only apply display:inline-flex when the link is NOT hidden by .d-none.
+.wall-entry-controls a[data-action-click="comment.toggleComment"]:not(.d-none) {
   display: inline-flex !important;
   align-items: center;
   min-height: 32px;
@@ -139,19 +138,23 @@
 // Setting font-size:0 on the container hides those text nodes;
 // all child elements (links, .likeLinkContainer) already have explicit font-sizes.
 .wall-entry-controls.wall-entry-links {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 8px;
   font-size: 0;
   vertical-align: middle;
+  width: 100%;
 }
 
-// Ensure the like icon (::before) is also always visible
-.wall-entry-controls a[data-action-click="like.toggleLike"] {
+// The like/unlike anchor links are REPLACED by our emoji trigger visually.
+// Before JS runs: show them via the Clean Theme FA icon (fallback).
+// After JS runs: [data-mt2026-reactions] is set, clip rule in _reactions.scss hides them.
+// DO NOT force display here — that would break .d-none toggling.
+.wall-entry-controls a[data-action-click="like.toggleLike"]:not(.d-none) {
   display: inline-flex !important;
   align-items: center;
-  min-height: 32px;
-  min-width: 32px;
+  min-height: 28px;
+  min-width: 28px;
   opacity: 1 !important;
   visibility: visible !important;
 
@@ -164,3 +167,21 @@
     color: var(--color-primary, #1e6ad6) !important;
   }
 }
+
+// Reaction summary pushed to the right end of the addons bar
+.mt2026-reaction-summary-link {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 12px;
+  transition: background 0.15s;
+
+  &:hover {
+    background: var(--color-bg-secondary, #f3f4f6);
+  }
+}
+

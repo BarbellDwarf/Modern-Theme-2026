@@ -94,25 +94,28 @@ class MobileBottomNav extends Widget
         if (strpos($route, 'dashboard') !== false || $route === 'dashboard/dashboard') {
             return 'home';
         }
-        
-        // People/User routes
-        if (strpos($route, 'user/') !== false || strpos($route, 'people') !== false) {
-            return 'people';
+
+        // Profile/Account routes (check before generic user/ to be more specific)
+        if (strpos($route, 'user/profile') !== false || strpos($route, 'user/account') !== false) {
+            return 'profile';
         }
-        
+
+        // "More" sheet routes: People directory, Calendar, Usermap
+        if (strpos($route, 'user/people') !== false
+            || strpos($route, 'people') !== false
+            || strpos($route, 'calendar/') !== false
+            || strpos($route, 'usermap/') !== false) {
+            return 'more';
+        }
+
         // Space routes
         if (strpos($route, 'space/') !== false || strpos($route, 'content/container') !== false) {
             return 'spaces';
         }
-        
+
         // Notification routes
         if (strpos($route, 'notification') !== false) {
             return 'notifications';
-        }
-        
-        // Profile routes
-        if (strpos($route, 'user/profile') !== false || strpos($route, 'user/account') !== false) {
-            return 'profile';
         }
 
         // Default to home

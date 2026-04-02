@@ -35,16 +35,17 @@ if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
         <span class="nav-label">Home</span>
     </a>
 
-    <!-- People/Directory -->
-    <a href="<?= Url::to(['/user/people']) ?>" 
-       class="nav-item<?= $activeItem === 'people' ? ' active' : '' ?>"
-       aria-label="People"
-       aria-current="<?= $activeItem === 'people' ? 'page' : 'false' ?>">
+    <!-- More Menu -->
+    <button type="button"
+            class="nav-item<?= $activeItem === 'more' ? ' active' : '' ?>"
+            id="mobile-more-btn"
+            aria-label="More"
+            aria-haspopup="dialog">
         <span class="nav-icon">
-            <i class="fa fa-users"></i>
+            <i class="fa fa-ellipsis-h"></i>
         </span>
-        <span class="nav-label">People</span>
-    </a>
+        <span class="nav-label">More</span>
+    </button>
 
     <!-- Spaces - opens bottom sheet -->
     <button type="button"
@@ -135,41 +136,94 @@ if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
     </div>
 </div>
 
+<!-- More Menu Bottom Sheet -->
+<div id="mobile-more-sheet" class="mobile-sheet" role="dialog" aria-label="More options" aria-hidden="true">
+    <div class="mobile-sheet-backdrop"></div>
+    <div class="mobile-sheet-content">
+        <div class="mobile-sheet-handle"></div>
+        <div class="mobile-sheet-header">
+            <h3 class="mobile-sheet-title">More</h3>
+            <button type="button" class="mobile-sheet-close" aria-label="Close">&times;</button>
+        </div>
+        <div class="mobile-sheet-body">
+            <ul class="mobile-more-list">
+                <li>
+                    <a href="<?= Url::to(['/user/people']) ?>" class="mobile-more-item">
+                        <span class="mobile-more-icon"><i class="fa fa-users"></i></span>
+                        <span class="mobile-more-label">People</span>
+                        <i class="fa fa-chevron-right mobile-more-arrow"></i>
+                    </a>
+                </li>
+                <?php if (\Yii::$app->moduleManager->isEnabled('calendar')): ?>
+                <li>
+                    <a href="<?= Url::to(['/calendar/view/index']) ?>" class="mobile-more-item">
+                        <span class="mobile-more-icon"><i class="fa fa-calendar"></i></span>
+                        <span class="mobile-more-label">Calendar</span>
+                        <i class="fa fa-chevron-right mobile-more-arrow"></i>
+                    </a>
+                </li>
+                <?php endif; ?>
+                <?php if (\Yii::$app->moduleManager->isEnabled('usermap')): ?>
+                <li>
+                    <a href="<?= Url::to(['/usermap/map/index']) ?>" class="mobile-more-item">
+                        <span class="mobile-more-icon"><i class="fa fa-map-marker"></i></span>
+                        <span class="mobile-more-label">User Map</span>
+                        <i class="fa fa-chevron-right mobile-more-arrow"></i>
+                    </a>
+                </li>
+                <?php endif; ?>
+                <?php if (!\Yii::$app->user->isGuest && \Yii::$app->user->identity->isSystemAdmin()): ?>
+                <li>
+                    <a href="<?= Url::to(['/admin/index']) ?>" class="mobile-more-item">
+                        <span class="mobile-more-icon"><i class="fa fa-cog"></i></span>
+                        <span class="mobile-more-label">Administration</span>
+                        <i class="fa fa-chevron-right mobile-more-arrow"></i>
+                    </a>
+                </li>
+                <?php endif; ?>
+            </ul>
+        </div>
+    </div>
+</div>
+
 <?php $this->registerJs("
 (function() {
-    var btn = document.getElementById('mobile-spaces-btn');
-    var sheet = document.getElementById('mobile-spaces-sheet');
-    if (!btn || !sheet) return;
+    function initSheet(btnId, sheetId, itemSelector) {
+        var btn = document.getElementById(btnId);
+        var sheet = document.getElementById(sheetId);
+        if (!btn || !sheet) return;
 
-    var backdrop = sheet.querySelector('.mobile-sheet-backdrop');
-    var closeBtn = sheet.querySelector('.mobile-sheet-close');
+        var backdrop = sheet.querySelector('.mobile-sheet-backdrop');
+        var closeBtn = sheet.querySelector('.mobile-sheet-close');
 
-    function openSheet() {
-        sheet.classList.add('open');
-        sheet.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
+        function openSheet() {
+            sheet.classList.add('open');
+            sheet.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSheet() {
+            sheet.classList.remove('open');
+            sheet.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            sheet.classList.contains('open') ? closeSheet() : openSheet();
+        });
+        if (backdrop) backdrop.addEventListener('click', closeSheet);
+        if (closeBtn) closeBtn.addEventListener('click', closeSheet);
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeSheet();
+        });
+        if (itemSelector) {
+            sheet.querySelectorAll(itemSelector).forEach(function(link) {
+                link.addEventListener('click', closeSheet);
+            });
+        }
     }
 
-    function closeSheet() {
-        sheet.classList.remove('open');
-        sheet.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
-    }
-
-    btn.addEventListener('click', function(e) {
-        e.preventDefault();
-        if (sheet.classList.contains('open')) { closeSheet(); } else { openSheet(); }
-    });
-
-    if (backdrop) backdrop.addEventListener('click', closeSheet);
-    if (closeBtn) closeBtn.addEventListener('click', closeSheet);
-
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeSheet();
-    });
-
-    sheet.querySelectorAll('.mobile-space-item').forEach(function(link) {
-        link.addEventListener('click', closeSheet);
-    });
+    initSheet('mobile-spaces-btn', 'mobile-spaces-sheet', '.mobile-space-item');
+    initSheet('mobile-more-btn',   'mobile-more-sheet',   '.mobile-more-item');
 })();
 ", \yii\web\View::POS_READY); ?>

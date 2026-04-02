@@ -407,3 +407,53 @@ body[data-mobile="true"],
     from { opacity: 0; }
     to   { opacity: 1; }
 }
+
+// ── More menu items sheet ───────────
+.mobile-more-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mobile-more-item {
+  display: flex;
+  align-items: center;
+  gap: space(3);
+  padding: space(4) space(2);
+  text-decoration: none;
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border-light);
+  transition: background 0.15s;
+
+  &:last-child { border-bottom: none; }
+
+  &:hover, &:active {
+    background: var(--color-bg-secondary);
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+}
+
+.mobile-more-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.mobile-more-label {
+  flex: 1;
+  font-size: 16px;
+  font-weight: $font-weight-medium;
+}
+
+.mobile-more-arrow {
+  color: var(--color-text-muted);
+  font-size: 12px;
+}

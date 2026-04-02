@@ -3,14 +3,76 @@
 
 // Mobile-specific enhancements for Modern Theme 2026
 @media (max-width: 768px) {
-    // Enhanced mobile navigation
+    // Space sidebar nav: convert vertical list to horizontal scrollable pill bar
     .layout-nav-container {
-        .nav {
-            padding: space(2);
-            
-            .nav-item {
-                margin-bottom: space(1);
+        margin-bottom: 12px;
+
+        .list-group {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            -webkit-overflow-scrolling: touch;
+            gap: 6px;
+            padding: 8px 4px !important;
+            margin: 0 !important;
+            justify-content: center;
+            scrollbar-width: none; // Firefox
+
+            &::-webkit-scrollbar { display: none; } // Chrome/Safari
+
+            .list-group-item {
+                flex-shrink: 0 !important;
+                width: auto !important;
+                float: none !important;
+                white-space: nowrap;
+                padding: 6px 14px !important;
+                border-radius: 20px !important;
+                font-size: 13px;
+                border: 1px solid var(--color-border, #e5e7eb) !important;
+                margin: 0 !important;
+
+                // Active indicator: bottom bar doesn't apply; use bg instead
+                &.active::before { display: none; }
             }
+        }
+
+        // Collapsed state: hide items beyond the first 3
+        .list-group.mt2026-space-nav-collapsed:not(.mt2026-space-nav-expanded) {
+            justify-content: flex-start;
+
+            .list-group-item:nth-child(n+4) {
+                display: none !important;
+            }
+        }
+
+        // Expanded state: allow wrapping so all items are visible
+        .list-group.mt2026-space-nav-collapsed.mt2026-space-nav-expanded {
+            flex-wrap: wrap !important;
+            justify-content: flex-start;
+        }
+    }
+
+    // "Menu" toggle button injected by JS
+    .mt2026-space-nav-toggle {
+        display: block;
+        margin: 0 4px 8px;
+        background: transparent;
+        border: 1px solid var(--color-border, #e5e7eb);
+        border-radius: 20px;
+        padding: 6px 14px;
+        font-size: 13px;
+        color: var(--color-text-secondary, #6b7280);
+        cursor: pointer;
+        white-space: nowrap;
+
+        i { font-size: 12px; margin-right: 4px; }
+
+        &.active {
+            background: var(--color-primary);
+            color: #fff;
+            border-color: var(--color-primary);
         }
     }
     

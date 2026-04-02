@@ -11,6 +11,7 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
         bindExpandSections();
         updateActiveState();
         initPeopleFilters();
+        initSpaceSidebarMobile();
 
         if (!pjax) {
             $(document).on('pjax:end', function() {
@@ -182,6 +183,39 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
         } else {
             $label.text($label.data('default') || $label.text());
         }
+    };
+
+    var initSpaceSidebarMobile = function() {
+        if (window.innerWidth >= 768) return;
+
+        var $container = $('.layout-nav-container');
+        if (!$container.length) return;
+
+        var $nav = $container.find('.list-group').first();
+        if (!$nav.length) return;
+
+        // Remove any previously injected toggle to avoid duplicates on pjax navigation
+        $container.find('.mt2026-space-nav-toggle').remove();
+        $nav.removeClass('mt2026-space-nav-collapsed mt2026-space-nav-expanded');
+
+        var itemCount = $nav.find('.list-group-item').length;
+        if (itemCount <= 3) return; // 3 or fewer items: horizontal scroll is enough
+
+        $nav.addClass('mt2026-space-nav-collapsed');
+
+        var $toggle = $('<button class="mt2026-space-nav-toggle" type="button">' +
+            '<i class="fa fa-bars"></i> Menu</button>');
+
+        $container.prepend($toggle);
+
+        $toggle.on('click', function() {
+            $nav.toggleClass('mt2026-space-nav-expanded');
+            var expanded = $nav.hasClass('mt2026-space-nav-expanded');
+            $toggle.toggleClass('active', expanded);
+            $toggle.html(expanded
+                ? '<i class="fa fa-times"></i> Close'
+                : '<i class="fa fa-bars"></i> Menu');
+        });
     };
 
     var initPeopleFilters = function() {

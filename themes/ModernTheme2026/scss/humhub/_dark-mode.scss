@@ -692,6 +692,136 @@
         }
     }
 
+    // --- Select2 --------------------------------------------------------
+
+    .select2-container--default {
+        .select2-selection--single,
+        .select2-selection--multiple {
+            background-color: var(--color-bg-tertiary);
+            border-color: var(--color-border);
+            color: var(--color-text-primary);
+
+            .select2-selection__rendered {
+                color: var(--color-text-primary);
+            }
+
+            .select2-selection__placeholder {
+                color: var(--color-text-muted);
+            }
+
+            .select2-selection__arrow b {
+                border-color: var(--color-text-secondary) transparent transparent transparent;
+            }
+
+            .select2-selection__choice {
+                background-color: var(--color-bg-secondary);
+                border-color: var(--color-border);
+                color: var(--color-text-primary);
+            }
+
+            .select2-selection__choice__remove {
+                color: var(--color-text-muted);
+                &:hover { color: var(--color-text-primary); }
+            }
+        }
+
+        &.select2-container--focus .select2-selection--single,
+        &.select2-container--focus .select2-selection--multiple {
+            border-color: var(--color-primary);
+        }
+
+        .select2-dropdown {
+            background-color: var(--color-bg-secondary);
+            border-color: var(--color-border);
+            box-shadow: var(--shadow-lg);
+
+            .select2-search__field {
+                background-color: var(--color-bg-tertiary);
+                border-color: var(--color-border);
+                color: var(--color-text-primary);
+            }
+
+            .select2-results__option {
+                color: var(--color-text-primary);
+
+                &--highlighted[aria-selected] {
+                    background-color: var(--color-primary);
+                    color: #fff;
+                }
+
+                &[aria-selected="true"] {
+                    background-color: var(--color-bg-tertiary);
+                }
+
+                &[aria-disabled="true"] {
+                    color: var(--color-text-muted);
+                }
+            }
+
+            .select2-results__group {
+                color: var(--color-text-muted);
+            }
+        }
+    }
+
+    // Typeahead (tt-) dropdowns used in HumHub user/space search
+    .tt-menu,
+    .tt-dropdown-menu {
+        background-color: var(--color-bg-secondary);
+        border-color: var(--color-border);
+        box-shadow: var(--shadow-lg);
+        color: var(--color-text-primary);
+
+        .tt-suggestion {
+            color: var(--color-text-primary);
+
+            &:hover,
+            &.tt-cursor {
+                background-color: var(--color-bg-tertiary);
+                color: var(--color-text-primary);
+            }
+        }
+    }
+
+    // --- Notification badges / overlays ---------------------------------
+
+    .notification-count-overlay,
+    .badge-count,
+    .ui-badge {
+        background-color: var(--color-danger);
+        color: #fff;
+        border-color: var(--color-bg-primary);
+    }
+
+    // --- Activity / comment entries -------------------------------------
+
+    .comment-entry,
+    .comment-container {
+        background-color: var(--color-bg-secondary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+    }
+
+    .comment-entry-form {
+        background-color: var(--color-bg-tertiary);
+        border-color: var(--color-border);
+    }
+
+    // --- Richtext / content editor --------------------------------------
+
+    .humhub-ui-richtext,
+    .ProseMirror,
+    [contenteditable="true"] {
+        background-color: var(--color-bg-tertiary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+
+        &:focus {
+            border-color: var(--color-primary);
+            outline: none;
+        }
+    }
+
     // --- Miscellaneous --------------------------------------------------
 
     .text-muted {

@@ -5,67 +5,60 @@
 .mobile-bottom-nav {
     // Force hide on desktop, override any other rules
     display: none !important;
-    
+
     @media (max-width: 767px) {
-        // Force show on mobile with important to override any conflicts
         display: flex !important;
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        height: 64px;
+        height: 56px;
         background-color: var(--color-bg-secondary, #f8fafc);
         border-top: 1px solid var(--color-border, #e5e7eb);
         box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
         z-index: 1030;
-        padding: 0 8px;
+        padding: 0;
         padding-bottom: env(safe-area-inset-bottom, 0); // iPhone notch
-        align-items: center;
+        align-items: stretch;
         justify-content: space-around;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        
-        // Bottom nav items
+        overflow: hidden; // clip all children to bar bounds
+
         .nav-item {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 8px 4px;
+            padding: 4px 2px;
             min-width: 0;
             position: relative;
             cursor: pointer;
             text-decoration: none;
             color: var(--color-text-secondary, #4b5563);
-            transition: all $transition-fast;
-            border-radius: $border-radius-md;
-            
-            // Icon
+            transition: color $transition-fast;
+            background: none;
+            border: none;
+
             .nav-icon {
-                font-size: 22px;
-                margin-bottom: 4px;
-                transition: all $transition-fast;
+                font-size: 20px;
+                margin-bottom: 2px;
+                transition: transform $transition-fast, font-size $transition-fast;
                 position: relative;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                
-                i {
-                    display: block;
-                }
-                
-                // Profile avatar styling
+
+                i { display: block; }
+
                 .nav-avatar {
-                    width: 24px;
-                    height: 24px;
+                    width: 22px;
+                    height: 22px;
                     border-radius: 50%;
                     object-fit: cover;
                     border: 2px solid var(--color-primary, #1e6ad6);
                 }
             }
-            
-            // Label
+
             .nav-label {
                 font-size: 10px;
                 font-weight: 500;
@@ -74,49 +67,56 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 max-width: 100%;
-                transition: all $transition-fast;
+                transition: color $transition-fast;
             }
-            
-            // Badge for notifications
+
             .nav-badge {
                 position: absolute;
-                top: 4px;
+                top: 2px;
                 right: 50%;
-                transform: translateX(10px);
-                min-width: 18px;
-                height: 18px;
-                padding: 0 5px;
-                font-size: 10px;
+                transform: translateX(14px);
+                min-width: 16px;
+                height: 16px;
+                padding: 0 4px;
+                font-size: 9px;
                 font-weight: 600;
-                border-radius: 9px;
+                border-radius: 8px;
                 background-color: var(--color-danger, #ef4444);
                 color: #fff;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 border: 2px solid var(--color-bg-secondary, #f8fafc);
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             }
-            
-            // Active state
+
+            // Active state: color + top indicator line (no background fill)
             &.active {
                 color: var(--color-primary, #1e6ad6);
-                
-                .nav-icon {
-                    transform: translateY(-1px);
-                    font-size: 24px;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 20px;
+                    height: 2px;
+                    background-color: var(--color-primary, #1e6ad6);
+                    border-radius: 0 0 2px 2px;
                 }
-                
+
+                .nav-icon {
+                    font-size: 22px;
+                }
+
                 .nav-label {
                     font-weight: 600;
                     color: var(--color-primary, #1e6ad6);
-                    border-bottom: 2px solid var(--color-primary, #1e6ad6);
                 }
             }
-            
-            // Hover/tap state
+
             &:active {
-                transform: scale(0.95);
+                opacity: 0.7;
             }
         }
     }
@@ -125,9 +125,9 @@
 // Add bottom padding to body to prevent content from being hidden by bottom nav
 @media (max-width: 767px) {
     body {
-        padding-bottom: calc(64px + env(safe-area-inset-bottom, 0));
+        padding-bottom: calc(56px + env(safe-area-inset-bottom, 0));
     }
-    
+
     // Adjust main content area
     #layout-content,
     .container-fluid {
@@ -141,18 +141,18 @@
         background-color: rgba(30, 41, 59, 0.95);
         border-top-color: var(--color-border, #e5e7eb);
         box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
-        
+
         .nav-item {
             color: var(--color-text-secondary, #4b5563);
-            
+
             &.active {
                 color: var(--color-primary-light, #5a8eeb);
-                
-                .nav-label {
-                    border-bottom-color: var(--color-primary-light, #5a8eeb);
+
+                &::after {
+                    background-color: var(--color-primary-light, #5a8eeb);
                 }
             }
-            
+
             .nav-badge {
                 border-color: rgba(30, 41, 59, 0.95);
             }
@@ -181,7 +181,7 @@
     .mobile-bottom-nav {
         display: none !important;
     }
-    
+
     body {
         padding-bottom: 0;
     }
@@ -190,7 +190,7 @@
 // Adjust body padding for fixed bottom nav
 @media (max-width: 767px) {
     body {
-        padding-bottom: calc(64px + env(safe-area-inset-bottom, 0)) !important;
+        padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
     }
 }
 
@@ -203,6 +203,8 @@ body[data-mobile="true"] .mobile-bottom-nav,
     bottom: 0;
     left: 0;
     right: 0;
+    height: 56px;
+    overflow: hidden;
     z-index: 1030;
 }
 
@@ -210,7 +212,7 @@ body[data-mobile="true"] .mobile-bottom-nav,
 body.mobile,
 body[data-mobile="true"],
 .mobile-app {
-    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0)) !important;
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
 }
 
 // Tablet landscape - optional bottom nav
@@ -222,18 +224,8 @@ body[data-mobile="true"],
     // }
 }
 
-// Ensure proper z-index stacking
-.mobile-bottom-nav {
-    z-index: 1030; // Below modals (1050) but above most content
-}
-
 .modal {
     z-index: 1050; // Modals should appear above bottom nav
-}
-
-// Add ripple effect on tap (optional enhancement)
-.mobile-bottom-nav .nav-item {
-    position: relative;
 }
 
 // ─── Mobile Bottom Sheet ────────────

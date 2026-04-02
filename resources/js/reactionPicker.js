@@ -18,7 +18,47 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
     var longpressTimers = new WeakMap();
     var touchStartPos = new WeakMap();
 
+    function buildPickerHtml() {
+        var html = '<div class="reaction-picker" role="listbox" aria-label="Choose reaction" style="display:none;">';
+        Object.keys(REACTIONS).forEach(function(type) {
+            var r = REACTIONS[type];
+            html += '<button class="reaction-item" type="button" role="option"' +
+                    ' data-reaction="' + type + '" aria-label="' + r.label + '">' +
+                    '<span class="reaction-emoji">' + r.emoji + '</span>' +
+                    '<span class="reaction-label">' + r.label + '</span>' +
+                    '</button>';
+        });
+        html += '</div>';
+        return html;
+    }
+
+    // Bridge HumHub's .likeLinkContainer elements to our .like-link-container
+    // and inject the reaction picker HTML so event delegation can find them.
+    function attachToHumHubLikeContainers() {
+        $('.likeLinkContainer:not(.like-link-container)').each(function() {
+            var $container = $(this);
+            $container.addClass('like-link-container');
+
+            // Store the like URL so submitReaction can find it
+            var likeUrl = $container.find('a[data-action-url]').first().attr('data-action-url') || '';
+            if (likeUrl) {
+                $container.attr('data-like-url', likeUrl);
+            }
+
+            if (!$container.find('.reaction-picker').length) {
+                $container.append(buildPickerHtml());
+            }
+        });
+    }
+
     function init() {
+        attachToHumHubLikeContainers();
+
+        // Re-attach after stream loads more content (infinite scroll, PJAX)
+        $(document).on('humhub:ready humhub:stream:afterAppend', function() {
+            setTimeout(attachToHumHubLikeContainers, 100);
+        });
+
         // Desktop hover: show picker after delay
         $(document).on('mouseover', '.like-link-container', function() {
             var container = this;

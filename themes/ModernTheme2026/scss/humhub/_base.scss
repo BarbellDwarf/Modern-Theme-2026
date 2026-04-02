@@ -1,6 +1,12 @@
 // Modern Theme 2026 - Base Layout
 // Container widths and responsive layout
 
+// HumHub core assumes a position:fixed topbar and sets body { padding-top: var(--hh-fixed-header-height) }
+// (default 130px). Our theme uses position:sticky, so no body padding-top offset is needed.
+:root {
+    --hh-fixed-header-height: 0px;
+}
+
 // Only override container width on very large screens to avoid
 // conflicting with Bootstrap's 3-column layout at normal desktop widths
 @media (min-width: 1600px) {

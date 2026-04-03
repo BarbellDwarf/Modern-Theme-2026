@@ -15,7 +15,8 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
 
     function getUrlParams($container) {
         var $like = $container.find('a.likeAnchor').first();
-        var url = ($like.data('action-url') || '').split('?')[1] || '';
+        var actionUrl = ($like.data('action-url') || $like.attr('data-action-url') || '').toString();
+        var url = actionUrl.split('?')[1] || '';
         var p = new URLSearchParams(url);
         return { contentModel: p.get('contentModel'), contentId: p.get('contentId') };
     }
@@ -82,10 +83,13 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         $('.stream-entry-addons .wall-entry-controls.wall-entry-links .likeLinkContainer')
             .not('[data-mt2026-reactions]').each(function() {
             var $c = $(this);
-            $c.attr('data-mt2026-reactions', '1');
 
             var params = getUrlParams($c);
-            if (!params.contentModel || !params.contentId) return;
+            if (!params.contentModel || !params.contentId) {
+                return;
+            }
+
+            $c.attr('data-mt2026-reactions', '1');
 
             var cid = params.contentId;
             $c.data('mt2026-cid', cid);

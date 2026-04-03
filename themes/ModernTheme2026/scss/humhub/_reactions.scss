@@ -60,6 +60,15 @@
   border-radius: 999px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.15);
   white-space: nowrap;
+  // On narrow screens the picker can overflow the right edge of the viewport.
+  // Constrain it and allow horizontal scroll so no emoji is clipped.
+  max-width: calc(100vw - 24px);
+  overflow-x: auto;
+  // Anchor to the right side on mobile so it stays within the viewport.
+  @media (max-width: 767px) {
+    left: auto;
+    right: 0;
+  }
 
   // Show when JS adds .visible class
   &.visible {

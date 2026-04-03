@@ -47,6 +47,17 @@ if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
         <span class="nav-label">Spaces</span>
     </button>
 
+    <!-- People -->
+    <a href="<?= Url::to(['/user/people']) ?>" 
+       class="nav-item<?= $activeItem === 'people' ? ' active' : '' ?>"
+       aria-label="People"
+       aria-current="<?= $activeItem === 'people' ? 'page' : 'false' ?>">
+        <span class="nav-icon">
+            <i class="fa fa-users"></i>
+        </span>
+        <span class="nav-label">People</span>
+    </a>
+
     <!-- Notifications -->
     <a href="<?= Url::to(['/notification/overview']) ?>" 
        class="nav-item<?= $activeItem === 'notifications' ? ' active' : '' ?>"
@@ -63,25 +74,18 @@ if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
         <span class="nav-label">Notifications</span>
     </a>
 
-    <!-- Profile -->
-    <a href="<?= Url::to(['/user/profile', 'uguid' => $user->guid]) ?>" 
-       class="nav-item<?= $activeItem === 'profile' ? ' active' : '' ?>"
-       aria-label="Profile"
-       aria-current="<?= $activeItem === 'profile' ? 'page' : 'false' ?>">
+    <?php if (\Yii::$app->moduleManager->hasModule('calendar')): ?>
+    <!-- Calendar (visible on comfortable mobile widths; moved into More on narrow screens) -->
+    <a href="<?= Url::to(['/calendar/global/index']) ?>" 
+       class="nav-item nav-item-calendar<?= $activeItem === 'calendar' ? ' active' : '' ?>"
+       aria-label="Calendar"
+       aria-current="<?= $activeItem === 'calendar' ? 'page' : 'false' ?>">
         <span class="nav-icon">
-            <?php if ($user->getProfileImage()): ?>
-                <?= Html::img($user->getProfileImage()->getUrl(), [
-                    'class' => 'nav-avatar',
-                    'alt' => $user->displayName,
-                    'width' => 24,
-                    'height' => 24,
-                ]) ?>
-            <?php else: ?>
-                <i class="fa fa-user"></i>
-            <?php endif; ?>
+            <i class="fa fa-calendar"></i>
         </span>
-        <span class="nav-label">Profile</span>
+        <span class="nav-label">Calendar</span>
     </a>
+    <?php endif; ?>
 
     <!-- More Menu -->
     <button type="button"
@@ -148,14 +152,25 @@ if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
         <div class="mobile-sheet-body">
             <ul class="mobile-more-list">
                 <li>
-                    <a href="<?= Url::to(['/user/people']) ?>" class="mobile-more-item">
-                        <span class="mobile-more-icon"><i class="fa fa-users"></i></span>
-                        <span class="mobile-more-label">People</span>
+                    <a href="<?= Url::to(['/user/profile', 'uguid' => $user->guid]) ?>" class="mobile-more-item">
+                        <span class="mobile-more-icon">
+                            <?php if ($user->getProfileImage()): ?>
+                                <?= Html::img($user->getProfileImage()->getUrl(), [
+                                    'class' => 'nav-avatar',
+                                    'alt' => $user->displayName,
+                                    'width' => 24,
+                                    'height' => 24,
+                                ]) ?>
+                            <?php else: ?>
+                                <i class="fa fa-user"></i>
+                            <?php endif; ?>
+                        </span>
+                        <span class="mobile-more-label">Profile</span>
                         <i class="fa fa-chevron-right mobile-more-arrow"></i>
                     </a>
                 </li>
                 <?php if (\Yii::$app->moduleManager->hasModule('calendar')): ?>
-                <li>
+                <li class="mobile-more-calendar-fallback">
                     <a href="<?= Url::to(['/calendar/global/index']) ?>" class="mobile-more-item">
                         <span class="mobile-more-icon"><i class="fa fa-calendar"></i></span>
                         <span class="mobile-more-label">Calendar</span>

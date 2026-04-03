@@ -123,6 +123,23 @@
                 opacity: 0.7;
             }
         }
+
+        // Calendar is shown in bar on comfortable widths, moved into "More" on narrow screens.
+        .nav-item-calendar {
+            display: flex;
+        }
+    }
+}
+
+@media (max-width: 380px) {
+    .mobile-bottom-nav .nav-item-calendar {
+        display: none !important;
+    }
+}
+
+@media (min-width: 381px) and (max-width: 767px) {
+    .mobile-more-calendar-fallback {
+        display: none !important;
     }
 }
 

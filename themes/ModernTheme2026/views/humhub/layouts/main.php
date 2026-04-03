@@ -56,6 +56,13 @@ $useContextSwitcher = !Yii::$app->user->isGuest;
                     <?= TopMenu::widget() ?>
                 </ul>
 
+                <!--
+                    Hidden stub so core humhub.ui.topNavigation.js finds #topbar-second.
+                    height: 9999px (with visibility:hidden + position:absolute) ensures
+                    isOverflow() always returns false: nav height (56px) < 9999px → no items migrate.
+                -->
+                <div id="topbar-second" style="position:absolute;visibility:hidden;height:9999px;width:0;overflow:hidden;pointer-events:none;" aria-hidden="true"></div>
+
                 <ul class="nav" id="search-menu-nav">
                     <?= TopMenuRightStack::widget() ?>
                 </ul>

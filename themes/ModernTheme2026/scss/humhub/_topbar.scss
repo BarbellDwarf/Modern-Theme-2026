@@ -260,12 +260,14 @@
             flex-wrap: nowrap;
             overflow: visible !important;
             margin-right: 4px;
+            align-items: center;
         }
 
         #top-menu-nav > li {
             flex: 0 0 auto;
             display: inline-flex;
             align-items: center;
+            overflow: visible;
         }
 
         #top-menu-sub {
@@ -318,6 +320,7 @@
             overflow: visible !important;
             margin-right: 8px;
             min-width: 0;
+            align-items: center;
         }
 
         #top-menu-nav > li {

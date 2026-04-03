@@ -33,6 +33,11 @@ class Events
         /** @var View $view */
         $view = $event->sender;
 
+        // TopNavigationAsset is registered by the view widget; unset it after the fact
+        // so the overflow-migration JS doesn't run. The layout provides a hidden
+        // #topbar-second stub that keeps isOverflow() returning false as a belt-and-suspenders guard.
+        // Note: unset only works if asset was already queued; the stub approach is the reliable path.
+
         // Register theme JavaScript assets
         try {
             ModernThemeAsset::register($view);

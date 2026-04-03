@@ -2,7 +2,7 @@
 // Mobile-specific styles and responsive adjustments
 
 // Mobile-specific enhancements for Modern Theme 2026
-@media (max-width: 767px) {
+@media (max-width: 991px) {
     // Space sidebar nav: convert vertical list to horizontal scrollable pill bar
     .layout-nav-container {
         width: 100% !important;
@@ -13,10 +13,10 @@
         margin-bottom: 12px;
         overflow: visible !important; // Don't clip rounded pill borders
 
-        // Target only actual sidebar nav containers on mobile.
-        #left-navigation .list-group,
-        #user-profile-menu .nav,
-        #space-menu-dropdown .nav {
+        // Handle both .list-group (LeftNavigation widget) and .nav/.nav-pills
+        .list-group,
+        .nav,
+        ul {
             display: flex !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
@@ -42,13 +42,13 @@
                 > a,
                 > .nav-link,
                 &.list-group-item {
-                    display: inline-flex !important;
+                    display: inline-flex;
                     align-items: center;
                     justify-content: center;
                     gap: 8px;
                     white-space: nowrap;
-                    padding: 11px 20px !important;
-                    min-height: 46px;
+                    padding: 10px 18px !important;
+                    min-height: 44px;
                     border-radius: 22px !important;
                     border: 1px solid var(--color-border, #e5e7eb) !important;
                     color: var(--color-text-secondary, #4b5563);
@@ -179,92 +179,6 @@
 }
 
 @media (max-width: 767px) {
-    // Keyboard-safe composer and event forms
-    body.mt2026-keyboard-open {
-        .mobile-bottom-nav {
-            display: none !important;
-        }
-
-        .wall-entry-form,
-        .post-form,
-        .modal.show {
-            scroll-margin-bottom: 120px;
-        }
-    }
-
-    .modal.show {
-        .modal-dialog {
-            margin: 6px auto;
-            max-height: calc(100dvh - 12px);
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .modal-content {
-            max-height: calc(100dvh - 12px);
-            overflow-y: auto;
-        }
-    }
-
-    // Event form checkbox/switch density on mobile
-    .event-create-form,
-    .event-edit-form,
-    .calendar-edit-form {
-        .checkbox,
-        .radio,
-        .form-check {
-            margin-bottom: 6px !important;
-            display: inline-flex;
-            align-items: center;
-            margin-right: 12px;
-        }
-
-        input[type="checkbox"],
-        input[type="radio"] {
-            width: 14px;
-            height: 14px;
-            margin-right: 6px;
-        }
-
-        .bootstrap-switch {
-            transform: scale(0.9);
-            transform-origin: left center;
-            margin-right: 6px;
-        }
-
-        // Calendar content hidden switch: keep control and label in one row without wide input stretching.
-        .field-calendarentryform-hidden {
-            .checkbox {
-                display: flex !important;
-                align-items: center;
-                flex-wrap: nowrap;
-                gap: 8px;
-            }
-
-            input[type="checkbox"] {
-                width: 14px !important;
-                min-width: 14px !important;
-                max-width: 14px !important;
-                height: 14px !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                flex: 0 0 14px;
-            }
-
-            label {
-                display: inline-flex !important;
-                align-items: center;
-                width: auto !important;
-                margin: 0 !important;
-                line-height: 1.2;
-            }
-
-            p.text-body-secondary {
-                margin: 6px 0 0 0;
-            }
-        }
-    }
-
     .stream-entry-addons {
         padding: 8px 4px 4px !important;
         border-top: 1px solid var(--color-border-light, #f3f4f6);
@@ -363,6 +277,13 @@
             color: var(--color-text-muted);
             font-weight: $font-weight-medium;
         }
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .profile-item .field-title {
+        max-width: 150px;
+        word-break: break-word;
     }
 }
 

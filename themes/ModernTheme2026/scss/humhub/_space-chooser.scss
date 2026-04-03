@@ -40,8 +40,13 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         
-        @media (max-width: 991px) {
-            display: none; // Hide on smaller screens to save space
+        @media (min-width: 768px) and (max-width: 991px) {
+            display: inline-block;
+            max-width: 120px;
+        }
+
+        @media (max-width: 767px) {
+            display: none; // Hide only on true mobile
         }
     }
     

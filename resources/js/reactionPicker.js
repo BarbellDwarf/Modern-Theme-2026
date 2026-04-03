@@ -10,6 +10,7 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
     ];
 
     var BASE_URL = '/modern-theme-2026/reactions';
+    var CONTAINER_SELECTOR = '.wall-entry-controls.wall-entry-links .likeLinkContainer';
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -80,7 +81,7 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
     // ── Attach to each feed-entry .likeLinkContainer only ──
 
     function attach() {
-        $('.stream-entry-addons .wall-entry-controls.wall-entry-links .likeLinkContainer')
+        $(CONTAINER_SELECTOR)
             .not('[data-mt2026-reactions]').each(function() {
             var $c = $(this);
 
@@ -149,7 +150,7 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         });
 
         // Toggle picker on trigger click/tap
-        $(document).on('click', '.stream-entry-addons .wall-entry-controls.wall-entry-links .mt2026-reaction-trigger', function(e) {
+        $(document).on('click', CONTAINER_SELECTOR + ' .mt2026-reaction-trigger', function(e) {
             e.preventDefault();
             e.stopPropagation();
             var $c = $(this).closest('.likeLinkContainer');
@@ -162,10 +163,10 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
 
         // Desktop hover: open picker after delay
         var hoverTimer;
-        $(document).on('mouseenter', '.stream-entry-addons .wall-entry-controls.wall-entry-links .likeLinkContainer', function() {
+        $(document).on('mouseenter', CONTAINER_SELECTOR, function() {
             var $c = $(this);
             hoverTimer = setTimeout(function() { showPicker($c); }, 400);
-        }).on('mouseleave', '.stream-entry-addons .wall-entry-controls.wall-entry-links .likeLinkContainer', function() {
+        }).on('mouseleave', CONTAINER_SELECTOR, function() {
             clearTimeout(hoverTimer);
             var $c = $(this);
             setTimeout(function() {

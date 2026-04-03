@@ -6,6 +6,7 @@ use humhub\modules\space\widgets\Image as SpaceImage;
 
 /* @var $user \humhub\modules\user\models\User */
 /* @var $spaces array */
+/* @var $recentItems array */
 /* @var $currentContext string */
 /* @var $currentSpace \humhub\modules\space\models\Space|null */
 /* @var $currentRoute string */
@@ -70,6 +71,26 @@ use humhub\modules\space\widgets\Image as SpaceImage;
                    id="context-search-input"
                    autocomplete="off">
         </div>
+
+        <!-- My Spaces Section (only if user has spaces) -->
+        <?php if (!empty($recentItems)): ?>
+        <div class="context-section">
+            <div class="section-header">Recent</div>
+            <div class="section-items" id="context-recent-list">
+                <?php foreach ($recentItems as $item): ?>
+                    <a href="<?= Html::encode($item['url'] ?? '#') ?>"
+                       class="context-item"
+                       role="option"
+                       data-search-name="<?= Html::encode($item['label'] ?? '') ?>">
+                        <span class="item-icon"><i class="fa fa-<?= Html::encode($item['icon'] ?? 'clock-o') ?>"></i></span>
+                        <span class="item-label">
+                            <span class="item-name"><?= Html::encode($item['label'] ?? 'Recent') ?></span>
+                        </span>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
 
         <!-- My Spaces Section (only if user has spaces) -->
         <?php if (!empty($spaces)): ?>

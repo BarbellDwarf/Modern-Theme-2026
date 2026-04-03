@@ -136,8 +136,13 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
                     var $item = $(this);
                     var name = $item.find('.item-name').text().toLowerCase();
                     var searchName = ($item.data('search-name') || '').toLowerCase();
-                    var matches = !query || name.indexOf(query) !== -1 || searchName.indexOf(query) !== -1;
+                    var startsWith = name.indexOf(query) === 0 || searchName.indexOf(query) === 0;
+                    var contains = name.indexOf(query) !== -1 || searchName.indexOf(query) !== -1;
+                    var matches = !query || startsWith || contains;
                     $item.toggle(matches);
+                    if (query && startsWith) {
+                        $item.prependTo($item.parent());
+                    }
                 });
 
                 $menu.find('.context-section').each(function() {

@@ -10,6 +10,7 @@ class ContextSwitcher extends Widget
 {
     /** Max spaces to show in the menu */
     public int $maxSpaces = 10;
+    private const RECENT_HISTORY_LIMIT = 5;
 
     public function run(): string
     {
@@ -22,11 +23,14 @@ class ContextSwitcher extends Widget
         $currentSpace = $this->getCurrentSpace();
 
         $spaces = $this->getUserSpaces($user);
+        $recentItems = $this->getRecentItems();
         $currentContext = $this->detectCurrentContext($currentRoute);
+        $this->trackRecentContext($currentContext, $currentRoute, $currentSpace);
 
         return $this->render('contextSwitcher', [
             'user' => $user,
             'spaces' => $spaces,
+            'recentItems' => $recentItems,
             'currentSpace' => $currentSpace,
             'currentContext' => $currentContext,
             'currentRoute' => $currentRoute,
@@ -71,5 +75,64 @@ class ContextSwitcher extends Widget
         }
 
         return null;
+    }
+
+    private function getRecentItems(): array
+    {
+        if (Yii::$app->user->isGuest) {
+            return [];
+        }
+
+        $raw = Yii::$app->session->get('mt2026.context.recent', []);
+        return is_array($raw) ? $raw : [];
+    }
+
+    private function trackRecentContext(string $context, string $route, ?Space $currentSpace): void
+    {
+        if (Yii::$app->user->isGuest) {
+            return;
+        }
+
+        $items = $this->getRecentItems();
+
+        $entry = [
+            'context' => $context,
+            'route' => $route,
+            'url' => Yii::$app->request->url,
+            'label' => $this->buildRecentLabel($context, $currentSpace),
+            'icon' => $this->buildRecentIcon($context),
+            'spaceId' => $currentSpace?->id,
+        ];
+
+        $items = array_values(array_filter($items, function ($item) use ($entry) {
+            return ($item['url'] ?? null) !== $entry['url'];
+        }));
+
+        array_unshift($items, $entry);
+        $items = array_slice($items, 0, self::RECENT_HISTORY_LIMIT);
+
+        Yii::$app->session->set('mt2026.context.recent', $items);
+    }
+
+    private function buildRecentLabel(string $context, ?Space $currentSpace): string
+    {
+        if ($context === 'space' && $currentSpace) {
+            return $currentSpace->name;
+        }
+        if ($context === 'profile') {
+            return Yii::t('base', 'Profile');
+        }
+        return Yii::t('base', 'Dashboard');
+    }
+
+    private function buildRecentIcon(string $context): string
+    {
+        if ($context === 'space') {
+            return 'users';
+        }
+        if ($context === 'profile') {
+            return 'user';
+        }
+        return 'dashboard';
     }
 }

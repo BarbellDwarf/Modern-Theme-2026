@@ -49,23 +49,31 @@
         margin-left: 14px;
     }
 
+    // Space out notification bell and dark-mode toggle (both .btn-group children)
+    .notifications {
+        gap: 10px;
+    }
+
     .topbar-actions {
         margin-left: 10px;
     }
 
+    // The notification bell and dark-mode toggle use plain <a> tags (not .dropdown-toggle).
+    // Target both .btn-group > a and .dropdown-toggle to cover all variants.
+    .notifications .btn-group > a,
     .notifications .dropdown-toggle,
     .topbar-actions .dropdown-toggle,
     #search-menu-nav > li > a {
-        height: 42px;
-        min-height: 42px;
-        width: 42px;
-        min-width: 42px;
+        height: 46px;
+        min-height: 46px;
+        width: 46px;
+        min-width: 46px;
         padding: 0;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         border-radius: 10px;
-        font-size: 19px;
+        font-size: 20px;
     }
 
     #top-menu-nav > li,
@@ -303,21 +311,23 @@
 
         .notifications {
             margin-left: 12px;
+            gap: 10px;
         }
 
         .topbar-actions {
             margin-left: 8px;
         }
 
+        .notifications .btn-group > a,
         #search-menu-nav > li > a,
         .notifications .dropdown-toggle,
         .topbar-actions .dropdown-toggle {
-            width: 42px;
-            min-width: 42px;
-            height: 42px;
-            min-height: 42px;
+            width: 46px;
+            min-width: 46px;
+            height: 46px;
+            min-height: 46px;
             padding: 0;
-            font-size: 19px;
+            font-size: 20px;
         }
 
         .topbar-actions .dropdown.account .dropdown-toggle {
@@ -375,21 +385,23 @@
 
         .notifications {
             margin-left: 14px;
+            gap: 10px;
         }
 
         .topbar-actions {
             margin-left: 10px;
         }
 
+        .notifications .btn-group > a,
         #search-menu-nav > li > a,
         .notifications .dropdown-toggle,
         .topbar-actions .dropdown-toggle {
-            width: 42px;
-            min-width: 42px;
-            height: 42px;
-            min-height: 42px;
+            width: 46px;
+            min-width: 46px;
+            height: 46px;
+            min-height: 46px;
             padding: 0;
-            font-size: 19px;
+            font-size: 20px;
         }
 
         .topbar-actions .dropdown.account .dropdown-toggle {

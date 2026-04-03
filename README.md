@@ -44,6 +44,13 @@ The theme activates automatically when you enable the module. To manually switch
 2. Select "ModernTheme2026"
 3. Save and flush cache
 
+## Lifecycle Behavior
+
+- **First install/enable:** runs module migrations, activates `ModernTheme2026`, and rebuilds theme CSS.
+- **Disable/uninstall:** switches back to default `HumHub` theme and runs uninstall cleanup.
+- **Database cleanup on uninstall:** removes the `like.reaction_type` column and restores the original
+  `unique-object-user` index on the `like` table.
+
 ## Documentation
 
 - **QUICK-START.md** - Quick activation guide

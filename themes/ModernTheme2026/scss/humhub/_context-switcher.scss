@@ -1,16 +1,29 @@
 // Modern Theme 2026 - Smart Context Switcher
-// Unified navigation dropdown — spaces only, dark themed
-
-// Shared dark surface colours (match the nav bar)
-$cs-bg:            #1e2a3a;
-$cs-bg-item-hover: rgba(255, 255, 255, 0.08);
-$cs-bg-item-active:rgba(30, 106, 214, 0.25);
-$cs-border:        rgba(255, 255, 255, 0.12);
-$cs-text:          #e2e8f0;
-$cs-text-muted:    rgba(255, 255, 255, 0.45);
-$cs-icon-bg:       rgba(255, 255, 255, 0.1);
+// Unified navigation dropdown — theme-aware for light and dark modes.
 
 .context-switcher {
+  --cs-bg: var(--color-bg-secondary, #f8fafc);
+  --cs-bg-item-hover: var(--color-bg-tertiary, #f1f5f9);
+  --cs-bg-item-active: color-mix(in srgb, var(--color-primary, #1e6ad6) 20%, transparent);
+  --cs-border: var(--color-border, #d1d5db);
+  --cs-text: var(--color-text-primary, #111827);
+  --cs-text-muted: var(--color-text-muted, #6b7280);
+  --cs-icon-bg: var(--color-bg-primary, #ffffff);
+  --cs-shadow: var(--shadow-lg);
+
+  [data-bs-theme="dark"] &,
+  html[data-bs-theme="dark"] &,
+  body[data-bs-theme="dark"] & {
+    --cs-bg: #1e2a3a;
+    --cs-bg-item-hover: rgba(255, 255, 255, 0.08);
+    --cs-bg-item-active: rgba(30, 106, 214, 0.25);
+    --cs-border: rgba(255, 255, 255, 0.12);
+    --cs-text: #e2e8f0;
+    --cs-text-muted: rgba(255, 255, 255, 0.45);
+    --cs-icon-bg: rgba(255, 255, 255, 0.1);
+    --cs-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  }
+
   position: relative;
   margin-right: 8px;
   list-style: none;
@@ -21,21 +34,21 @@ $cs-icon-bg:       rgba(255, 255, 255, 0.1);
     gap: var(--space-2);
     padding: var(--space-2) var(--space-4);
     border-radius: var(--radius);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
+    border: 1px solid var(--cs-border);
+    background: var(--cs-bg-item-hover);
+    color: var(--cs-text);
     font-weight: $font-weight-medium;
     @include transition(all, var(--transition-fast));
     cursor: pointer;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: rgba(255, 255, 255, 0.5);
+      background: var(--cs-bg-item-hover);
+      border-color: var(--color-primary);
     }
 
     &.active {
       border-color: var(--color-primary);
-      background: rgba(30, 106, 214, 0.2);
+      background: var(--cs-bg-item-active);
     }
 
     .context-icon {
@@ -56,8 +69,8 @@ $cs-icon-bg:       rgba(255, 255, 255, 0.1);
         justify-content: center;
         font-size: 12px;
         font-weight: 700;
-        background: rgba(255, 255, 255, 0.14);
-        color: #fff;
+        background: var(--cs-icon-bg);
+        color: var(--cs-text);
         border-radius: 6px;
       }
 
@@ -77,7 +90,7 @@ $cs-icon-bg:       rgba(255, 255, 255, 0.1);
     .dropdown-arrow {
       margin-left: auto;
       @include transition(transform, var(--transition-fast));
-      opacity: 0.7;
+      opacity: 0.75;
     }
 
     &.active .dropdown-arrow {
@@ -92,34 +105,34 @@ $cs-icon-bg:       rgba(255, 255, 255, 0.1);
     width: 280px;
     max-height: 480px;
     overflow-y: auto;
-    background: $cs-bg;
-    border: 1px solid $cs-border;
+    background: var(--cs-bg);
+    border: 1px solid var(--cs-border);
     border-radius: var(--radius-lg);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
-    z-index: $z-dropdown;
+    box-shadow: var(--cs-shadow);
+    z-index: $z-dropdown + 30;
 
     // Search input
     .context-search {
       padding: 10px 12px;
-      border-bottom: 1px solid $cs-border;
+      border-bottom: 1px solid var(--cs-border);
 
       input {
         width: 100%;
         padding: 7px 12px;
-        border: 1px solid $cs-border;
+        border: 1px solid var(--cs-border);
         border-radius: var(--radius);
-        background: rgba(255, 255, 255, 0.07);
-        color: $cs-text;
+        background: var(--cs-bg-item-hover);
+        color: var(--cs-text);
         font-size: var(--font-size-sm);
 
         &::placeholder {
-          color: $cs-text-muted;
+          color: var(--cs-text-muted);
         }
 
         &:focus {
           outline: none;
           border-color: var(--color-primary);
-          background: rgba(255, 255, 255, 0.1);
+          background: var(--cs-bg);
         }
       }
     }
@@ -132,7 +145,7 @@ $cs-icon-bg:       rgba(255, 255, 255, 0.1);
         padding: 6px 10px 4px;
         font-size: 11px;
         font-weight: $font-weight-semibold;
-        color: $cs-text-muted;
+        color: var(--cs-text-muted);
         text-transform: uppercase;
         letter-spacing: $letter-spacing-wide;
       }
@@ -143,18 +156,18 @@ $cs-icon-bg:       rgba(255, 255, 255, 0.1);
         gap: 10px;
         padding: 8px 10px;
         border-radius: var(--radius);
-        color: $cs-text;
+        color: var(--cs-text);
         text-decoration: none;
         @include transition(background, var(--transition-fast));
 
         &:hover {
-          background: $cs-bg-item-hover;
-          color: #fff;
+          background: var(--cs-bg-item-hover);
+          color: var(--cs-text);
         }
 
         &.active {
-          background: $cs-bg-item-active;
-          color: #fff;
+          background: var(--cs-bg-item-active);
+          color: var(--cs-text);
           font-weight: $font-weight-semibold;
         }
 
@@ -166,8 +179,8 @@ $cs-icon-bg:       rgba(255, 255, 255, 0.1);
           align-items: center;
           justify-content: center;
           border-radius: var(--radius);
-          background: $cs-icon-bg;
-          color: $cs-text;
+          background: var(--cs-icon-bg);
+          color: var(--cs-text);
           font-size: 13px;
 
           .item-initial {
@@ -178,8 +191,8 @@ $cs-icon-bg:       rgba(255, 255, 255, 0.1);
             justify-content: center;
             font-size: 13px;
             font-weight: 700;
-            background: rgba(255, 255, 255, 0.15);
-            color: $cs-text;
+            background: var(--cs-icon-bg);
+            color: var(--cs-text);
             border-radius: var(--radius);
           }
 
@@ -204,7 +217,7 @@ $cs-icon-bg:       rgba(255, 255, 255, 0.1);
           .item-meta {
             display: block;
             font-size: 11px;
-            color: $cs-text-muted;
+            color: var(--cs-text-muted);
             @include text-truncate;
             margin-top: 1px;
           }
@@ -214,7 +227,7 @@ $cs-icon-bg:       rgba(255, 255, 255, 0.1);
       .context-no-spaces {
         padding: 10px 12px;
         font-size: var(--font-size-sm);
-        color: $cs-text-muted;
+        color: var(--cs-text-muted);
         margin: 0;
       }
     }
@@ -222,21 +235,45 @@ $cs-icon-bg:       rgba(255, 255, 255, 0.1);
     // Keyboard shortcut hint
     .keyboard-hint {
       padding: 8px 12px;
-      border-top: 1px solid $cs-border;
+      border-top: 1px solid var(--cs-border);
       font-size: 11px;
-      color: $cs-text-muted;
+      color: var(--cs-text-muted);
       text-align: center;
 
       kbd {
         padding: 1px 5px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid $cs-border;
+        background: var(--cs-bg-item-hover);
+        border: 1px solid var(--cs-border);
         border-radius: 3px;
         font-family: var(--font-family-monospace);
         font-size: 10px;
-        color: $cs-text;
+        color: var(--cs-text);
       }
     }
+  }
+}
+
+// Explicit light-mode override to prevent inherited white text from topbar/nav rules.
+[data-bs-theme="light"] .context-switcher,
+html[data-bs-theme="light"] .context-switcher,
+body[data-bs-theme="light"] .context-switcher {
+  .context-switcher-button,
+  .context-switcher-button .context-label,
+  .context-switcher-button .dropdown-arrow,
+  .context-switcher-button .dropdown-arrow i {
+    color: var(--color-text-primary, #111827) !important;
+  }
+
+  .context-switcher-menu,
+  .context-switcher-menu .context-item,
+  .context-switcher-menu .item-name {
+    color: var(--color-text-primary, #111827);
+  }
+
+  .context-switcher-menu .item-meta,
+  .context-switcher-menu .section-header,
+  .context-switcher-menu .keyboard-hint {
+    color: var(--color-text-muted, #6b7280);
   }
 }
 

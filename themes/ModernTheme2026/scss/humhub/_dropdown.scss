@@ -192,6 +192,9 @@
 // Keep the full chain overflow-visible and lift the menu above stream cards.
 .wall-entry-form,
 .post-form,
+.content-form-body,
+.content-form-body .contentForm_options,
+.content-form-body .btn_container,
 .wall-entry-form .panel,
 .post-form .panel,
 .wall-entry-form .panel-body,
@@ -204,12 +207,71 @@
 }
 
 .wall-entry-form .btn-group > .dropdown-menu,
-.post-form .btn-group > .dropdown-menu {
-  z-index: $z-dropdown + 30 !important;
+.post-form .btn-group > .dropdown-menu,
+.content-form-body .btn-group > .dropdown-menu,
+.content-form-body .dropdown-menu {
+  z-index: $z-dropdown + 45 !important;
 }
 
 // When composer settings menu is open, lift the whole composer above next stream card.
 .mt2026-composer-dropdown-open {
   position: relative;
-  z-index: $z-dropdown + 35 !important;
+  z-index: $z-dropdown + 50 !important;
+}
+
+.s-wall-entry.mt2026-composer-dropdown-open,
+.wall-entry.mt2026-composer-dropdown-open,
+.stream-entry.mt2026-composer-dropdown-open,
+.panel.mt2026-composer-dropdown-open,
+#contentFormBody.mt2026-composer-dropdown-open,
+#contentFormBodyModal.mt2026-composer-dropdown-open,
+.content-form-body.mt2026-composer-dropdown-open {
+  z-index: $z-dropdown + 50 !important;
+}
+
+// Desktop stream card overlap: when composer menu is open, lift parent panel/layout too.
+.panel.mt2026-composer-panel-open,
+.layout-content-container.mt2026-composer-layout-open,
+.space-layout-container.mt2026-composer-layout-open,
+.space-content.mt2026-composer-layout-open {
+  position: relative;
+  z-index: $z-dropdown + 55 !important;
+  overflow: visible !important;
+}
+
+// Keep stream posts beneath the composer menu while it is open.
+.layout-content-container.mt2026-composer-layout-open .stream-entry,
+.layout-content-container.mt2026-composer-layout-open .wall-entry,
+.space-layout-container.mt2026-composer-layout-open .stream-entry,
+.space-layout-container.mt2026-composer-layout-open .wall-entry,
+.space-content.mt2026-composer-layout-open .stream-entry,
+.space-content.mt2026-composer-layout-open .wall-entry {
+  position: relative;
+  z-index: 1 !important;
+  transform: none !important;
+}
+
+.layout-content-container.mt2026-composer-layout-open .content-form-body,
+.space-layout-container.mt2026-composer-layout-open .content-form-body,
+.space-content.mt2026-composer-layout-open .content-form-body {
+  position: relative;
+  z-index: $z-dropdown + 56 !important;
+}
+
+// Global guard: while composer settings dropdown is open, ensure stream cards never overlay it.
+body.mt2026-composer-dropdown-open-global .layout-content-container .stream-entry,
+body.mt2026-composer-dropdown-open-global .layout-content-container .wall-entry,
+body.mt2026-composer-dropdown-open-global .space-layout-container .stream-entry,
+body.mt2026-composer-dropdown-open-global .space-layout-container .wall-entry {
+  position: relative;
+  z-index: 1 !important;
+}
+
+body.mt2026-composer-dropdown-open-global .content-form-body,
+body.mt2026-composer-dropdown-open-global #contentFormBody,
+body.mt2026-composer-dropdown-open-global #contentFormBodyModal,
+body.mt2026-composer-dropdown-open-global .contentForm_options,
+body.mt2026-composer-dropdown-open-global .contentForm_options .dropdown-menu {
+  position: relative;
+  z-index: $z-dropdown + 60 !important;
 }

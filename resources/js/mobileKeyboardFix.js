@@ -109,9 +109,28 @@ humhub.module('modernTheme.mobileKeyboardFix', function(module, require, $) {
 
         initialized = true;
 
+        var setKeyboardState = function(forceOpen) {
+            var active = document.activeElement;
+            var hasEditableFocus = !!(active && active.matches && active.matches(SELECTORS));
+            var viewportOpen = false;
+            var keyboardByDelta = false;
+
+            if (window.visualViewport) {
+                var ratio = window.visualViewport.height / window.innerHeight;
+                viewportOpen = ratio < 0.86;
+                keyboardByDelta = (window.innerHeight - window.visualViewport.height) > 160;
+            }
+
+            var open = typeof forceOpen === 'boolean'
+                ? forceOpen
+                : (viewportOpen || keyboardByDelta || hasEditableFocus);
+
+            $('body').toggleClass('mt2026-keyboard-open', open);
+        };
+
         $(document).on('focusin.mt2026Keyboard', SELECTORS, function() {
             var el = this;
-            $('body').addClass('mt2026-keyboard-open');
+            setKeyboardState(true);
             setTimeout(function() {
                 scrollIntoSafeView(el);
             }, 250);
@@ -132,7 +151,7 @@ humhub.module('modernTheme.mobileKeyboardFix', function(module, require, $) {
                 var active = document.activeElement;
                 var stillTyping = active && active.matches && active.matches(SELECTORS);
                 if (!stillTyping) {
-                    $('body').removeClass('mt2026-keyboard-open');
+                    setKeyboardState();
                 }
             }, 50);
         });
@@ -140,12 +159,11 @@ humhub.module('modernTheme.mobileKeyboardFix', function(module, require, $) {
         if (window.visualViewport) {
             window.visualViewport.addEventListener('resize', function() {
                 if (window.innerWidth > 767) {
-                    $('body').removeClass('mt2026-keyboard-open');
+                    setKeyboardState(false);
                     return;
                 }
 
-                var keyboardLikelyOpen = window.visualViewport.height < (window.innerHeight * 0.78);
-                $('body').toggleClass('mt2026-keyboard-open', keyboardLikelyOpen);
+                setKeyboardState();
 
                 var el = document.activeElement;
                 if (el && el.matches && el.matches(SELECTORS)) {

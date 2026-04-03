@@ -20,6 +20,7 @@
     position: sticky;
     top: 0;
     z-index: 1020;
+    overflow: visible;
     
     [data-bs-theme="dark"] & {
         background-color: var(--color-bg-secondary, #f8fafc);
@@ -38,6 +39,13 @@
                 background-color: rgba(30, 41, 59, 0.98);
             }
         }
+    }
+
+    .navbar,
+    .container,
+    #top-menu-nav,
+    #top-menu-nav > li {
+        overflow: visible;
     }
     
     // Navigation items
@@ -124,6 +132,37 @@
                 outline: none;
             }
         }
+    }
+}
+
+// Explicit light-mode topbar/nav contrast guard.
+[data-bs-theme="light"],
+html[data-bs-theme="light"],
+body[data-bs-theme="light"] {
+    #topbar,
+    #topbar .nav-link,
+    #topbar .navbar-nav .nav-link,
+    #topbar #top-menu-nav > li > a {
+        color: var(--color-text-primary, #111827) !important;
+    }
+
+    #topbar .nav-link i,
+    #topbar .navbar-nav .nav-link i,
+    #topbar #top-menu-nav > li > a i {
+        color: var(--color-text-primary, #111827) !important;
+    }
+}
+
+// Generic desktop nav parity: always follow active theme text tokens.
+@media (min-width: 992px) {
+    #topbar #top-menu-nav > li > a,
+    #topbar #top-menu-nav > li > a span,
+    #topbar #top-menu-nav > li > a i,
+    #topbar .context-switcher-button,
+    #topbar .context-switcher-button .context-label,
+    #topbar .context-switcher-button .dropdown-arrow,
+    #topbar .context-switcher-button .dropdown-arrow i {
+        color: var(--color-text-primary) !important;
     }
 }
 

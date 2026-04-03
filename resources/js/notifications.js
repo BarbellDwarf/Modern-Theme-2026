@@ -94,20 +94,65 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
     }
 
     function bindComposerDropdownStackFix() {
-        $(document).off('shown.bs.dropdown.mt2026ComposerMenu hidden.bs.dropdown.mt2026ComposerMenu');
+        var selector = '.contentForm_options .btn-group, .wall-entry-form .btn-group, .post-form .btn-group, .wall-entry-controls .btn-group, .stream-entry-addons .btn-group';
 
-        $(document).on('shown.bs.dropdown.mt2026ComposerMenu', '.wall-entry-form .btn-group, .post-form .btn-group', function () {
-            var $form = $(this).closest('.wall-entry-form, .post-form, .panel');
+        var applyLift = function ($trigger) {
+            $('body').addClass('mt2026-composer-dropdown-open-global');
+
+            var $form = $trigger.closest('.content-form-body, #contentFormBody, #contentFormBodyModal, .wall-entry-form, .post-form, .panel, .s-wall-entry, .wall-entry, .stream-entry');
             if ($form.length) {
                 $form.addClass('mt2026-composer-dropdown-open');
             }
-        });
+            var $panel = $trigger.closest('.panel');
+            if ($panel.length) {
+                $panel.addClass('mt2026-composer-panel-open');
+            }
+            var $layout = $trigger.closest('.layout-content-container, .space-layout-container, .space-content');
+            if ($layout.length) {
+                $layout.addClass('mt2026-composer-layout-open');
+            }
+        };
 
-        $(document).on('hidden.bs.dropdown.mt2026ComposerMenu', '.wall-entry-form .btn-group, .post-form .btn-group', function () {
-            var $form = $(this).closest('.wall-entry-form, .post-form, .panel');
+        var clearLift = function ($trigger) {
+            var $form = $trigger.closest('.content-form-body, #contentFormBody, #contentFormBodyModal, .wall-entry-form, .post-form, .panel, .s-wall-entry, .wall-entry, .stream-entry');
             if ($form.length) {
                 $form.removeClass('mt2026-composer-dropdown-open');
             }
+            var $panel = $trigger.closest('.panel');
+            if ($panel.length) {
+                $panel.removeClass('mt2026-composer-panel-open');
+            }
+            var $layout = $trigger.closest('.layout-content-container, .space-layout-container, .space-content');
+            if ($layout.length) {
+                $layout.removeClass('mt2026-composer-layout-open');
+            }
+
+            // Remove global state only when no relevant dropdown is still open.
+            if (!$(selector).filter('.open, .show').length) {
+                $('body').removeClass('mt2026-composer-dropdown-open-global');
+            }
+        };
+
+        $(document).off('shown.bs.dropdown.mt2026ComposerMenu hidden.bs.dropdown.mt2026ComposerMenu click.mt2026ComposerMenu');
+
+        $(document).on('shown.bs.dropdown.mt2026ComposerMenu', selector, function () {
+            applyLift($(this));
+        });
+
+        $(document).on('hidden.bs.dropdown.mt2026ComposerMenu', selector, function () {
+            clearLift($(this));
+        });
+
+        // Fallback for cases where Bootstrap dropdown events don't bubble reliably.
+        $(document).on('click.mt2026ComposerMenu', selector + ' > .dropdown-toggle, ' + selector + ' > [data-bs-toggle="dropdown"], ' + selector + ' > [data-toggle="dropdown"]', function () {
+            var $group = $(this).closest('.btn-group');
+            setTimeout(function () {
+                if ($group.hasClass('open') || $group.hasClass('show')) {
+                    applyLift($group);
+                } else {
+                    clearLift($group);
+                }
+            }, 0);
         });
     }
 

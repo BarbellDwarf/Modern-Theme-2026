@@ -231,6 +231,38 @@
             transform-origin: left center;
             margin-right: 6px;
         }
+
+        // Calendar content hidden switch: keep control and label in one row without wide input stretching.
+        .field-calendarentryform-hidden {
+            .checkbox {
+                display: flex !important;
+                align-items: center;
+                flex-wrap: nowrap;
+                gap: 8px;
+            }
+
+            input[type="checkbox"] {
+                width: 14px !important;
+                min-width: 14px !important;
+                max-width: 14px !important;
+                height: 14px !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                flex: 0 0 14px;
+            }
+
+            label {
+                display: inline-flex !important;
+                align-items: center;
+                width: auto !important;
+                margin: 0 !important;
+                line-height: 1.2;
+            }
+
+            p.text-body-secondary {
+                margin: 6px 0 0 0;
+            }
+        }
     }
 
     .stream-entry-addons {

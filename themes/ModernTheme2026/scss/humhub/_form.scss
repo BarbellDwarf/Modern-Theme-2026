@@ -4,7 +4,7 @@
 // Exclude input[type="color"] — kartik ColorInput renders as type="text" with
 // a colored background swatch; our background-color override makes all swatches
 // appear the same color. Exclude by the kartik wrapper class and the native type.
-.form-control:not([type="color"]):not(.color-picker),
+.form-control:not([type="color"]):not(.color-picker):not([type="checkbox"]):not([type="radio"]),
 input[type="text"]:not(.color-picker),
 input[type="email"], input[type="password"],
 input[type="number"], input[type="tel"], input[type="url"], input[type="search"],
@@ -100,16 +100,26 @@ input[type="color"] {
 }
 
 // Checkboxes and radios
-.checkbox, .radio {
+.checkbox, .radio, .form-check {
   display: flex;
   align-items: center;
   gap: var(--space-2);
   margin-bottom: var(--space-3);
   
-  input[type="checkbox"], input[type="radio"] {
+  input[type="checkbox"],
+  input[type="radio"],
+  .form-check-input {
     width: 18px;
     height: 18px;
-    margin: 0;
+    min-width: 18px;
+    max-width: 18px;
+    flex: 0 0 18px;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-width: 1px;
+    box-shadow: none;
+    display: inline-block;
+    vertical-align: middle;
     cursor: pointer;
     
     &:checked {
@@ -117,10 +127,28 @@ input[type="color"] {
     }
   }
   
-  label {
-    margin: 0;
+  label,
+  .form-check-label {
+    display: inline-flex;
+    align-items: center;
+    margin: 0 !important;
     cursor: pointer;
+    width: auto;
+    max-width: 100%;
   }
+}
+
+// If a checkbox/radio input is accidentally rendered with .form-control,
+// prevent full-width "wide box" rendering.
+input.form-control[type="checkbox"],
+input.form-control[type="radio"] {
+  width: 18px !important;
+  min-width: 18px !important;
+  max-width: 18px !important;
+  height: 18px !important;
+  padding: 0 !important;
+  border-radius: 4px;
+  display: inline-block !important;
 }
 
 // Switch toggle

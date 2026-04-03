@@ -7,6 +7,11 @@ use humhub\modules\space\widgets\Image as SpaceImage;
 /* @var $user \humhub\modules\user\models\User */
 /* @var $spaces array */
 /* @var $recentItems array */
+/* @var $recentSpacesByGuid array */
+/* @var $dashboardUrl string */
+/* @var $profileUrl string */
+/* @var $spacesDirectoryUrl string */
+/* @var $siteIconUrl string|null */
 /* @var $currentContext string */
 /* @var $currentSpace \humhub\modules\space\models\Space|null */
 /* @var $currentRoute string */
@@ -30,6 +35,16 @@ use humhub\modules\space\widgets\Image as SpaceImage;
                         'class' => 'context-space-image',
                         'alt' => Html::encode($currentSpace->name),
                     ],
+                ]) ?>
+            <?php elseif ($currentContext === 'profile'): ?>
+                <?= Html::img($user->getProfileImage()->getUrl(), [
+                    'class' => 'context-user-image',
+                    'alt' => Yii::t('base', 'Profile'),
+                ]) ?>
+            <?php elseif ($currentContext === 'dashboard' && !empty($siteIconUrl)): ?>
+                <?= Html::img($siteIconUrl, [
+                    'class' => 'context-site-image',
+                    'alt' => Yii::t('base', 'Dashboard'),
                 ]) ?>
             <?php else: ?>
                 <span class="context-initial">
@@ -72,7 +87,47 @@ use humhub\modules\space\widgets\Image as SpaceImage;
                    autocomplete="off">
         </div>
 
-        <!-- My Spaces Section (only if user has spaces) -->
+        <div class="context-section">
+            <div class="section-header">General</div>
+            <div class="section-items" id="context-general-list">
+                <a href="<?= Html::encode($dashboardUrl ?? Url::to(['/dashboard/dashboard'])) ?>"
+                   class="context-item<?= $currentContext === 'dashboard' ? ' active' : '' ?>"
+                   role="option"
+                   data-search-name="dashboard home">
+                    <span class="item-icon">
+                        <?php if (!empty($siteIconUrl)): ?>
+                            <?= Html::img($siteIconUrl, ['class' => 'context-site-image', 'alt' => Yii::t('base', 'Dashboard')]) ?>
+                        <?php else: ?>
+                            <i class="fa fa-dashboard"></i>
+                        <?php endif; ?>
+                    </span>
+                    <span class="item-label">
+                        <span class="item-name"><?= Yii::t('base', 'Dashboard') ?></span>
+                    </span>
+                </a>
+                <a href="<?= Html::encode($spacesDirectoryUrl ?? Url::to(['/space/spaces'])) ?>"
+                   class="context-item<?= str_contains($currentRoute, 'space/spaces') ? ' active' : '' ?>"
+                   role="option"
+                   data-search-name="spaces discover directory">
+                    <span class="item-icon"><i class="fa fa-compass"></i></span>
+                    <span class="item-label">
+                        <span class="item-name"><?= Yii::t('SpaceModule.base', 'Spaces') ?></span>
+                    </span>
+                </a>
+                <a href="<?= Html::encode($profileUrl ?? Url::to(['/user/profile'])) ?>"
+                   class="context-item<?= $currentContext === 'profile' ? ' active' : '' ?>"
+                   role="option"
+                   data-search-name="profile account me">
+                    <span class="item-icon">
+                        <?= Html::img($user->getProfileImage()->getUrl(), ['class' => 'context-user-image', 'alt' => Yii::t('base', 'Profile')]) ?>
+                    </span>
+                    <span class="item-label">
+                        <span class="item-name"><?= Yii::t('base', 'Profile') ?></span>
+                    </span>
+                </a>
+            </div>
+        </div>
+
         <?php if (!empty($recentItems)): ?>
         <div class="context-section">
             <div class="section-header">Recent</div>
@@ -82,7 +137,33 @@ use humhub\modules\space\widgets\Image as SpaceImage;
                        class="context-item"
                        role="option"
                        data-search-name="<?= Html::encode($item['label'] ?? '') ?>">
-                        <span class="item-icon"><i class="fa fa-<?= Html::encode($item['icon'] ?? 'clock-o') ?>"></i></span>
+                        <span class="item-icon">
+                            <?php
+                            $recentSpace = null;
+                            if (($item['context'] ?? '') === 'space' && !empty($item['spaceGuid'])) {
+                                $recentSpace = $recentSpacesByGuid[$item['spaceGuid']] ?? null;
+                            }
+                            $isProfileRecent = (($item['context'] ?? '') === 'profile');
+                            $isDashboardRecent = (($item['context'] ?? '') === 'dashboard');
+                            ?>
+                            <?php if ($recentSpace): ?>
+                                <?= SpaceImage::widget([
+                                    'space' => $recentSpace,
+                                    'width' => 30,
+                                    'link' => false,
+                                    'htmlOptions' => [
+                                        'class' => 'context-space-image',
+                                        'alt' => Html::encode($item['label'] ?? ''),
+                                    ],
+                                ]) ?>
+                            <?php elseif ($isProfileRecent): ?>
+                                <?= Html::img($user->getProfileImage()->getUrl(), ['class' => 'context-user-image', 'alt' => Yii::t('base', 'Profile')]) ?>
+                            <?php elseif ($isDashboardRecent && !empty($siteIconUrl)): ?>
+                                <?= Html::img($siteIconUrl, ['class' => 'context-site-image', 'alt' => Yii::t('base', 'Dashboard')]) ?>
+                            <?php else: ?>
+                                <i class="fa fa-<?= Html::encode($item['icon'] ?? 'clock-o') ?>"></i>
+                            <?php endif; ?>
+                        </span>
                         <span class="item-label">
                             <span class="item-name"><?= Html::encode($item['label'] ?? 'Recent') ?></span>
                         </span>

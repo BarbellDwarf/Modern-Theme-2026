@@ -5,6 +5,7 @@ namespace humhub\modules\modernTheme2026\widgets;
 use humhub\modules\space\models\Space;
 use Yii;
 use yii\base\Widget;
+use yii\helpers\Url;
 
 class ContextSwitcher extends Widget
 {
@@ -22,15 +23,23 @@ class ContextSwitcher extends Widget
         $currentRoute = Yii::$app->controller->route ?? '';
         $currentSpace = $this->getCurrentSpace();
 
-        $spaces = $this->getUserSpaces($user);
-        $recentItems = $this->getRecentItems();
         $currentContext = $this->detectCurrentContext($currentRoute);
         $this->trackRecentContext($currentContext, $currentRoute, $currentSpace);
+        $spaces = $this->getUserSpaces($user);
+        $recentItems = $this->getRecentItems();
+        $recentSpacesByGuid = $this->getRecentSpacesByGuid($recentItems);
+        $profileUrl = method_exists($user, 'getUrl') ? $user->getUrl() : Url::to(['/user/profile']);
+        $spacesDirectoryUrl = Url::to(['/space/spaces']);
 
         return $this->render('contextSwitcher', [
             'user' => $user,
             'spaces' => $spaces,
             'recentItems' => $recentItems,
+            'recentSpacesByGuid' => $recentSpacesByGuid,
+            'dashboardUrl' => Url::to(['/dashboard/dashboard']),
+            'profileUrl' => $profileUrl,
+            'spacesDirectoryUrl' => $spacesDirectoryUrl,
+            'siteIconUrl' => $this->getSiteIconUrl(),
             'currentSpace' => $currentSpace,
             'currentContext' => $currentContext,
             'currentRoute' => $currentRoute,
@@ -102,6 +111,7 @@ class ContextSwitcher extends Widget
             'label' => $this->buildRecentLabel($context, $currentSpace),
             'icon' => $this->buildRecentIcon($context),
             'spaceId' => $currentSpace?->id,
+            'spaceGuid' => $currentSpace?->guid,
         ];
 
         $items = array_values(array_filter($items, function ($item) use ($entry) {
@@ -134,5 +144,38 @@ class ContextSwitcher extends Widget
             return 'user';
         }
         return 'dashboard';
+    }
+
+    private function getSiteIconUrl(): ?string
+    {
+        try {
+            return \humhub\modules\web\pwa\widgets\SiteIcon::getUrl(32);
+        } catch (\Throwable $e) {
+            Yii::warning('ContextSwitcher: Failed to resolve site icon URL: ' . $e->getMessage(), 'modern-theme-2026');
+            return null;
+        }
+    }
+
+    private function getRecentSpacesByGuid(array $recentItems): array
+    {
+        $spaceGuids = [];
+        foreach ($recentItems as $item) {
+            if (($item['context'] ?? null) !== 'space') {
+                continue;
+            }
+            $guid = $item['spaceGuid'] ?? null;
+            if (is_string($guid) && $guid !== '') {
+                $spaceGuids[] = $guid;
+            }
+        }
+
+        if (empty($spaceGuids)) {
+            return [];
+        }
+
+        return Space::find()
+            ->where(['guid' => array_values(array_unique($spaceGuids))])
+            ->indexBy('guid')
+            ->all();
     }
 }

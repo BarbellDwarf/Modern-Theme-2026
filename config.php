@@ -7,6 +7,7 @@
 
 use humhub\components\View;
 use humhub\modules\modernTheme2026\Events;
+use humhub\widgets\TopMenu;
 
 return [
     'id' => 'modern-theme-2026',
@@ -22,6 +23,11 @@ return [
             'class' => View::class,
             'event' => View::EVENT_END_BODY,
             'callback' => [Events::class, 'onViewEndBody'],
+        ],
+        [
+            'class' => TopMenu::class,
+            'event' => TopMenu::EVENT_RUN,
+            'callback' => [Events::class, 'onTopMenuRun'],
         ],
     ],
 ];

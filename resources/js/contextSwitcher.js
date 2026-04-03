@@ -186,17 +186,24 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
 
         // Recompute active item from current URL (important on PJAX navigation where
         // topbar isn't fully re-rendered).
-        $('#context-spaces-list .context-item').removeClass('active');
-        var $activeItem = $('#context-spaces-list .context-item').filter(function() {
+        $('#context-switcher-menu .context-item').removeClass('active');
+        var $activeItem = $('#context-general-list .context-item').filter(function() {
             var href = normalizePath($(this).attr('href') || '');
             return href && (path === href || path.indexOf(href + '/') === 0);
         }).first();
+
+        if (!$activeItem.length) {
+            $activeItem = $('#context-spaces-list .context-item').filter(function() {
+                var href = normalizePath($(this).attr('href') || '');
+                return href && (path === href || path.indexOf(href + '/') === 0);
+            }).first();
+        }
 
         if ($activeItem.length) {
             $activeItem.addClass('active');
         } else {
             // Fallback to any pre-marked active item from server render.
-            $activeItem = $('#context-spaces-list .context-item.active').first();
+            $activeItem = $('#context-switcher-menu .context-item.active').first();
         }
 
         // Never replace the icon class here: server-rendered icon can be an <img>.

@@ -66,6 +66,53 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         return html;
     }
 
+    // ── Picker teleport: attach a single floating picker to <body> ───────────
+    //
+    // Positioning relative to an ancestor results in clipping when any ancestor
+    // has overflow:hidden (stream cards, comment containers, etc.).
+    // We maintain ONE shared picker appended to <body> and position it using
+    // getBoundingClientRect() so it's completely outside the stacking context.
+
+    var $bodyPicker = null;
+    var $activeTrigger = null;
+    var $activeContainer = null;
+
+    function getOrCreateBodyPicker() {
+        if (!$bodyPicker || !$bodyPicker.length) {
+            $bodyPicker = $(buildPickerHtml()).css({
+                position: 'fixed',
+                display: 'none',
+                zIndex: 99999
+            }).removeClass('visible').appendTo('body');
+        }
+        return $bodyPicker;
+    }
+
+    function positionBodyPicker($trigger) {
+        var $picker = getOrCreateBodyPicker();
+        $picker.css('display', 'flex');
+        var trigRect  = $trigger[0].getBoundingClientRect();
+        var pickW     = $picker.outerWidth(true);
+        var pickH     = $picker.outerHeight(true);
+        var vpW       = window.innerWidth;
+        var vpH       = window.innerHeight;
+
+        // Prefer opening above the trigger; fall back to below if insufficient space.
+        var top = trigRect.top - pickH - 8;
+        if (top < 4) { top = trigRect.bottom + 8; }
+
+        // Align left edge with trigger, clamped inside viewport.
+        var left = trigRect.left;
+        if (left + pickW > vpW - 8) { left = vpW - pickW - 8; }
+        if (left < 8) { left = 8; }
+
+        // Bottom guard
+        if (top + pickH > vpH - 8) { top = Math.max(4, trigRect.top - pickH - 8); }
+
+        $picker.css({ top: top, left: left });
+        return $picker;
+    }
+
     // ── Per-container state ───────────────────────────────────────────────────
 
     function setTrigger($container, reactionType) {
@@ -120,8 +167,8 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
                 + '<i class="fa fa-smile-o" aria-hidden="true"></i>'
                 + '</button>');
 
-            // 2. Append floating picker inside the container
-            $c.append(buildPickerHtml());
+            // 2. No longer appending an inline picker — we use a single teleported body picker.
+            // (kept as comment for clarity)
 
             // 3. Build reaction summary link and place it in wall-entry-links (right-aligned)
             var $controls = $c.closest('.wall-entry-controls.wall-entry-links');
@@ -155,14 +202,28 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
     // ── Picker show/hide ──────────────────────────────────────────────────────
 
     function showPicker($c) {
-        $('.mt2026-reaction-picker.visible').not($c.find('.mt2026-reaction-picker')).removeClass('visible');
-        $c.find('.mt2026-reaction-picker').addClass('visible');
-        $c.find('.mt2026-reaction-trigger').addClass('active');
+        var $trigger = $c.find('.mt2026-reaction-trigger');
+        // Reuse the teleported body picker
+        var $picker = positionBodyPicker($trigger);
+        $activeContainer = $c;
+        $activeTrigger   = $trigger;
+        $trigger.addClass('active');
+        // Ensure reaction buttons reflect active state of THIS container
+        var currentReaction = $trigger.attr('data-active');
+        $picker.find('.mt2026-reaction-btn').removeClass('selected');
+        if (currentReaction) {
+            $picker.find('.mt2026-reaction-btn[data-reaction="' + currentReaction + '"]').addClass('selected');
+        }
+        $picker.addClass('visible').show();
     }
 
     function hidePicker($c) {
-        $c.find('.mt2026-reaction-picker').removeClass('visible');
-        $c.find('.mt2026-reaction-trigger').removeClass('active');
+        if ($bodyPicker) {
+            $bodyPicker.removeClass('visible').hide();
+        }
+        if ($activeTrigger) { $activeTrigger.removeClass('active'); }
+        $activeContainer = null;
+        $activeTrigger   = null;
     }
 
     // ── Init ─────────────────────────────────────────────────────────────────
@@ -201,20 +262,23 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
             clearTimeout(hoverTimer);
             var $c = $(this);
             setTimeout(function() {
-                if (!$c.find('.mt2026-reaction-picker:hover').length) hidePicker($c);
+                // Only hide if mouse isn't over the body picker
+                if ($bodyPicker && $bodyPicker.is(':hover')) { return; }
+                if ($activeContainer && $activeContainer[0] === $c[0]) { hidePicker($c); }
             }, 300);
         });
         $(document).on('mouseleave', '.mt2026-reaction-picker', function() {
-            hidePicker($(this).closest('.likeLinkContainer'));
+            if ($activeContainer) { hidePicker($activeContainer); }
         });
 
-        // Pick a reaction
+        // Pick a reaction (from body-teleported picker)
         $(document).on('click', '.mt2026-reaction-btn', function(e) {
             e.preventDefault();
             e.stopPropagation();
             var $btn = $(this);
             var type = $btn.data('reaction');
-            var $c = $btn.closest('.likeLinkContainer');
+            var $c   = $activeContainer;
+            if (!$c || !$c.length) { return; }
             hidePicker($c);
 
             $btn.addClass('mt2026-pop');
@@ -257,21 +321,27 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
 
         // Close on outside click
         $(document).on('click', function(e) {
-            if (!$(e.target).closest('.likeLinkContainer').length) {
-                $('.mt2026-reaction-picker.visible').removeClass('visible');
-                $('.mt2026-reaction-trigger.active').removeClass('active');
+            if (!$(e.target).closest('.likeLinkContainer').length
+                && !$(e.target).closest('.mt2026-reaction-picker').length) {
+                if ($activeContainer) hidePicker($activeContainer);
             }
         });
 
         // Close on Escape
         $(document).on('keydown', function(e) {
-            if (e.key === 'Escape') {
-                $('.mt2026-reaction-picker.visible').removeClass('visible');
-                $('.mt2026-reaction-trigger.active').removeClass('active');
+            if (e.key === 'Escape' && $activeContainer) {
+                hidePicker($activeContainer);
             }
         });
 
         $(document).on('pjax:end', function() { setTimeout(attach, 200); });
+
+        // Keep the floating picker aligned if the page scrolls or resizes
+        $(window).on('scroll.mt2026picker resize.mt2026picker', function() {
+            if ($activeContainer && $activeTrigger && $bodyPicker && $bodyPicker.is(':visible')) {
+                positionBodyPicker($activeTrigger);
+            }
+        });
     };
 
     module.initOnPjaxLoad = true;

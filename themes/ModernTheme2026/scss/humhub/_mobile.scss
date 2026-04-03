@@ -366,6 +366,29 @@
                 height: 1em;
             }
         }
+
+        .mt2026-pc-phone {
+            font-size: 11px;
+            margin-top: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            .mt2026-pc-phone-link {
+                color: var(--color-text-muted, #6b7280);
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+
+                i { font-size: 10px; }
+
+                &:hover {
+                    color: var(--color-primary, #1e6ad6);
+                    text-decoration: underline;
+                }
+            }
+        }
     }
 
     .mt2026-pc-actions {

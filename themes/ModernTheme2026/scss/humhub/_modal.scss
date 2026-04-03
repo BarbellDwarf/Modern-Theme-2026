@@ -9,20 +9,13 @@
 
 .modal {
   @include fade-in();
-  // The topbar is fixed at z-index 3000 (higher than Bootstrap's modal z-index
-  // of 1055). Shift modal content down so it clears the topbar height.
-  // --mt2026-topbar-height is defined in _base.scss (currently 60px).
-  padding-top: calc(var(--mt2026-topbar-height, 60px) + 8px) !important;
-
-  // Full-screen and centered modals should not get the topbar offset
-  &.modal-fullscreen .modal-dialog,
-  .modal-dialog-centered {
-    padding-top: 0 !important;
-  }
 }
 
-.modal-dialog {
-  @include scale-in();
+// The topbar is fixed at z-index 3000 — above Bootstrap's modal z-index (1055).
+// Apply margin-top to the dialog box so it clears the fixed topbar.
+// .modal-dialog-centered and fullscreen modals are excluded (they fill the viewport).
+.modal-dialog:not(.modal-dialog-centered):not(.modal-fullscreen) {
+  margin-top: calc(var(--mt2026-topbar-height, 60px) + 8px);
 }
 
 .modal-content {

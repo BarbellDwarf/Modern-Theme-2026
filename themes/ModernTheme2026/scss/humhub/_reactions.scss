@@ -69,15 +69,17 @@
 }
 
 // Core comment markup wraps content/controls in overflow-hidden utility containers.
-// Keep these wrappers overflow-visible so the picker can float above comment cards.
-.comment-entry > .flex-grow-1.overflow-hidden,
-.comment-container .comment-entry > .flex-grow-1.overflow-hidden,
-.comment-entry .wall-entry-controls,
+// The comment root element uses class "single-comment" (not "comment-entry").
+// .single-comment > .flex-grow-1.overflow-hidden clips the picker — override it.
+.single-comment > .flex-grow-1.overflow-hidden,
+.comment-container .single-comment > .flex-grow-1.overflow-hidden,
+.single-comment .wall-entry-controls,
 .comment-container .wall-entry-controls {
   overflow: visible !important;
 }
 
-.comment-entry,
+// Ensure the comment stacking context doesn't trap the picker below sibling elements.
+.single-comment,
 .comment-container,
 .comment-container .comment {
   position: relative;

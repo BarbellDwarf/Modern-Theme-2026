@@ -2,6 +2,7 @@
 
 namespace humhub\modules\modernTheme2026\widgets;
 
+use humhub\modules\space\models\Membership;
 use humhub\modules\space\models\Space;
 use Yii;
 use yii\base\Widget;
@@ -50,10 +51,12 @@ class ContextSwitcher extends Widget
     {
         try {
             if (class_exists('humhub\modules\space\models\Space')) {
-                $spaces = \humhub\modules\space\models\Space::find()
-                    ->joinWith('memberships')
-                    ->where(['space_membership.user_id' => $user->id])
-                    ->andWhere(['space_membership.status' => 3]) // STATUS_MEMBER = 3
+                $smTable = Membership::tableName();
+                $spTable = Space::tableName();
+                $spaces = Space::find()
+                    ->innerJoin($smTable . ' sm', 'sm.space_id = ' . $spTable . '.id')
+                    ->where(['sm.user_id' => $user->id])
+                    ->andWhere(['sm.status' => Membership::STATUS_MEMBER])
                     ->limit($this->maxSpaces)
                     ->all();
                 return $spaces;

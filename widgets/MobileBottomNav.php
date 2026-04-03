@@ -54,24 +54,45 @@ class MobileBottomNav extends Widget
         // Determine active nav item based on current route
         $activeItem = $this->getActiveItem($currentRoute);
 
-        // Member spaces — cache 5 min per user (memberships change infrequently)
-        $spacesCacheKey = 'mbn_spaces_' . $userId;
-        $spaces = $cache->get($spacesCacheKey);
-        if ($spaces === false) {
+        // Member spaces — cache space IDs only (5 min per user) to avoid serializing AR instances.
+        // AR objects are lightweight re-fetched from those IDs when rendering.
+        $spacesCacheKey = 'mbn_space_ids_' . $userId;
+        $spaceIds = $cache->get($spacesCacheKey);
+        if ($spaceIds === false) {
             try {
-                $spaces = Space::find()
-                    ->innerJoin('space_membership', 'space_membership.space_id = space.id')
-                    ->where(['space_membership.user_id' => $userId])
-                    ->andWhere(['space_membership.status' => Membership::STATUS_MEMBER])
-                    ->andWhere(['space.status' => Space::STATUS_ENABLED])
-                    ->orderBy(['space_membership.last_visit' => SORT_DESC])
+                $smTable = Membership::tableName();
+                $spTable = Space::tableName();
+                $spaceIds = Space::find()
+                    ->select([$spTable . '.id'])
+                    ->innerJoin(
+                        $smTable . ' sm',
+                        'sm.space_id = ' . $spTable . '.id'
+                    )
+                    ->where(['sm.user_id' => $userId])
+                    ->andWhere(['sm.status' => Membership::STATUS_MEMBER])
+                    ->andWhere([$spTable . '.status' => Space::STATUS_ENABLED])
+                    ->orderBy(['sm.last_visit' => SORT_DESC])
                     ->limit(8)
-                    ->all();
-                $cache->set($spacesCacheKey, $spaces, 300);
+                    ->column();
+                $cache->set($spacesCacheKey, $spaceIds, 300);
             } catch (\Exception $e) {
                 Yii::error('MobileBottomNav: failed to load spaces: ' . $e->getMessage(), 'modernTheme2026');
-                $spaces = [];
+                $spaceIds = [];
             }
+        }
+
+        // Re-fetch full Space AR objects from cached IDs, preserving last_visit ordering.
+        if (!empty($spaceIds)) {
+            $spTable = Space::tableName();
+            $smTable = Membership::tableName();
+            $spaces  = Space::find()
+                ->innerJoin($smTable . ' sm2', 'sm2.space_id = ' . $spTable . '.id')
+                ->where([$spTable . '.id' => $spaceIds])
+                ->andWhere(['sm2.user_id' => $userId])
+                ->orderBy(['sm2.last_visit' => SORT_DESC])
+                ->all();
+        } else {
+            $spaces = [];
         }
 
         return $this->render('mobileBottomNav', [

@@ -9,7 +9,15 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         { type: 'pray',    emoji: '🙏', label: 'Care' }
     ];
 
-    var BASE_URL = '/modern-theme-2026/reactions';
+    var BASE_URL = (function() {
+        var route = 'modern-theme-2026/reactions';
+        var urlBuilder = humhub.config && humhub.config.get ? humhub.config.get('url') : null;
+        if (typeof urlBuilder === 'function') {
+            return urlBuilder(route);
+        }
+        var baseUrl = (humhub.config && humhub.config.get ? humhub.config.get('baseUrl') : '') || '';
+        return baseUrl.toString().replace(/\/+$/, '') + '/' + route;
+    }());
     var CONTAINER_SELECTOR = '.wall-entry-controls.wall-entry-links .likeLinkContainer';
 
     // ── Helpers ───────────────────────────────────────────────────────────────

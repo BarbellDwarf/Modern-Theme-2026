@@ -72,11 +72,10 @@ class ReactionsController extends ContentAddonController
             'pray'  => '🙏',
         ];
 
-        // Query users + their reaction_type, newest first
+        // Query reaction rows (user id + reaction type), newest first
         $rows = (new \yii\db\Query())
-            ->select(['u.*', 'l.reaction_type'])
+            ->select(['l.created_by AS user_id', 'l.reaction_type', 'l.created_at'])
             ->from('{{%like}} l')
-            ->innerJoin('{{%user}} u', 'u.id = l.created_by')
             ->where([
                 'l.object_model' => $this->contentModel,
                 'l.object_id'    => $this->contentId,
@@ -84,20 +83,26 @@ class ReactionsController extends ContentAddonController
             ->orderBy(['l.created_at' => SORT_DESC])
             ->all();
 
-        $reactions = array_map(function ($row) {
-            $user                  = User::findOne($row['id']);
-            return [
-                'user'          => $user,
-                'reaction_type' => $row['reaction_type'] ?? 'like',
-            ];
-        }, $rows);
+        // Batch-load all users in a single query to avoid N+1
+        $userIds = array_column($rows, 'user_id');
+        $usersById = !empty($userIds)
+            ? User::find()->where(['id' => $userIds])->indexBy('id')->all()
+            : [];
 
-        // Filter out any null users (deleted accounts)
-        $reactions = array_filter($reactions, fn($r) => $r['user'] !== null);
+        $reactions = [];
+        foreach ($rows as $row) {
+            $user = $usersById[$row['user_id']] ?? null;
+            if ($user !== null) {
+                $reactions[] = [
+                    'user'          => $user,
+                    'reaction_type' => $row['reaction_type'] ?? 'like',
+                ];
+            }
+        }
 
         return $this->renderAjaxContent($this->renderPartial(
             'list',
-            ['reactions' => array_values($reactions), 'emojiMap' => $emojiMap]
+            ['reactions' => $reactions, 'emojiMap' => $emojiMap]
         ));
     }
 

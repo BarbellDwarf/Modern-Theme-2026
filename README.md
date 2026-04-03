@@ -11,7 +11,7 @@ A contemporary HumHub theme featuring glassmorphism effects, subtle depth, smoot
 - **Smooth Animations**: Microinteractions and transitions throughout
 - **Mobile-First**: Responsive design optimized for all devices
 - **Accessibility**: WCAG 2.1 AA compliance
-- **Based on Clean Theme**: Inherits from the popular Clean Theme module
+- **Self-contained Theme Module**: No dependency on Clean Theme
 
 ## Installation
 
@@ -107,7 +107,7 @@ After changes, flush cache to recompile SCSS.
 ## Requirements
 
 - HumHub 1.18.0 or higher
-- Clean Theme module (parent theme)
+- No additional theme module dependencies
 
 ## Support
 

@@ -1,18 +1,15 @@
 // Modern Theme 2026 - Base Layout
 // Container widths and responsive layout
 
-// Modern Theme uses position:sticky (not fixed) on the topbar — no body top offset needed.
-// --hh-ct-top-bar-height is the ACTUAL height of the topbar element — do NOT zero this.
-// The body gap comes from Clean Theme's body { padding-top: calc(...) } rule.
-// Zeroing --hh-fixed-header-height + direct body override is sufficient.
+// Modern Theme uses sticky topbar and provides its own offset handling.
 :root {
     --hh-fixed-header-height: 0px;
+    --mt2026-topbar-height: 56px;
 }
 
 body {
-    // Keep enough top offset for HumHub's fixed dual topbars.
-    // This restores baseline spacing for all page layouts.
-    padding-top: var(--hh-ct-top-bar-height) !important;
+    // Self-contained top offset; no Clean Theme dependency.
+    padding-top: var(--mt2026-topbar-height) !important;
 }
 
 // Add a small universal breathing room below the topbar for all page types
@@ -24,6 +21,9 @@ body > #layout-content,
 body > .space-layout-container,
 body > .profile-layout-container {
     margin-top: 8px;
+    // Keep all primary page content in a lower stacking context than topbar dropdowns.
+    position: relative;
+    z-index: 1;
 }
 
 // Only override container width on very large screens to avoid

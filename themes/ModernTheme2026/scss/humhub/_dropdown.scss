@@ -72,6 +72,8 @@
 .dropdown,
 .btn-group,
 .dropup {
+  overflow: visible !important;
+
   &.open,
   &.show {
     // When a dropdown is open, its direct parent needs overflow:visible
@@ -143,7 +145,6 @@
 .space-content {
   position: relative;
   z-index: 1;
-  isolation: isolate;
 }
 
 // Prevent the profile panel's hover transform from creating a stacking

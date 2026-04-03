@@ -14,9 +14,9 @@ class ModernThemeAsset extends AssetBundle
 
     public $js = [
         'js/contextSwitcher.js',
+        'js/topbarStabilizer.js',
         'js/reactionPicker.js',
         'js/paletteSwitcher.js',
-        'js/mobileKeyboardFix.js',
         'js/notifications.js',
     ];
 

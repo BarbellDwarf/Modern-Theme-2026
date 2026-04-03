@@ -9,25 +9,37 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         { type: 'pray',    emoji: '🙏', label: 'Care' }
     ];
 
-    var BASE_URL = (function() {
-        var route = 'modern-theme-2026/reactions';
-        var urlBuilder = humhub.config && humhub.config.get ? humhub.config.get('url') : null;
+    var BASE_URL = '/modern-theme-2026/reactions';
+    try {
+        var urlBuilder = humhub && humhub.config && humhub.config.get ? humhub.config.get('url') : null;
         if (typeof urlBuilder === 'function') {
-            return urlBuilder(route);
+            BASE_URL = urlBuilder('modern-theme-2026/reactions');
         }
-        var baseUrl = (humhub.config && humhub.config.get ? humhub.config.get('baseUrl') : '') || '';
-        return baseUrl.toString().replace(/\/+$/, '') + '/' + route;
-    }());
-    var CONTAINER_SELECTOR = '.wall-entry-controls.wall-entry-links .likeLinkContainer';
+    } catch (e) {}
+    var CONTAINER_SELECTOR = '.likeLinkContainer';
+    var bootstrapped = false;
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     function getUrlParams($container) {
         var $like = $container.find('a.likeAnchor').first();
-        var actionUrl = ($like.data('action-url') || $like.attr('data-action-url') || '').toString();
-        var url = actionUrl.split('?')[1] || '';
-        var p = new URLSearchParams(url);
-        return { contentModel: p.get('contentModel'), contentId: p.get('contentId') };
+        var actionUrl = ($like.attr('data-action-url') || $like.data('action-url') || $like.attr('href') || '').toString();
+        var query = (actionUrl.split('?')[1] || '').replace(/&amp;/g, '&');
+        if (!query) {
+            return { contentModel: null, contentId: null };
+        }
+
+        if (typeof URLSearchParams !== 'undefined') {
+            var p = new URLSearchParams(query);
+            return { contentModel: p.get('contentModel'), contentId: p.get('contentId') };
+        }
+
+        var modelMatch = query.match(/(?:^|&)contentModel=([^&]+)/);
+        var idMatch = query.match(/(?:^|&)contentId=([^&]+)/);
+        return {
+            contentModel: modelMatch ? decodeURIComponent(modelMatch[1]) : null,
+            contentId: idMatch ? decodeURIComponent(idMatch[1]) : null
+        };
     }
 
     function getReactionByType(type) {
@@ -36,7 +48,7 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
 
     function getSummaryLink($container) {
         var cid = $container.data('mt2026-cid');
-        var $controls = $container.closest('.wall-entry-controls.wall-entry-links');
+        var $controls = $container.closest('.wall-entry-controls');
         return $controls.find('.mt2026-summary-link[data-mt2026-cid="' + cid + '"]');
     }
 
@@ -92,15 +104,15 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         $(CONTAINER_SELECTOR)
             .not('[data-mt2026-reactions]').each(function() {
             var $c = $(this);
-
-            var params = getUrlParams($c);
-            if (!params.contentModel || !params.contentId) {
+            if (!$c.find('a.likeAnchor').length) {
                 return;
             }
-
             $c.attr('data-mt2026-reactions', '1');
 
-            var cid = params.contentId;
+            var params = getUrlParams($c);
+            $c.data('mt2026-params', params);
+
+            var cid = params.contentId || ('local-' + Math.random().toString(36).slice(2));
             $c.data('mt2026-cid', cid);
 
             // 1. Prepend trigger button
@@ -112,9 +124,9 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
             $c.append(buildPickerHtml());
 
             // 3. Build reaction summary link and place it in wall-entry-links (right-aligned)
-            var listUrl = BASE_URL + '/list?contentModel=' + encodeURIComponent(params.contentModel) + '&contentId=' + cid;
             var $controls = $c.closest('.wall-entry-controls.wall-entry-links');
-            if ($controls.length && !$controls.find('.mt2026-summary-link[data-mt2026-cid="' + cid + '"]').length) {
+            if ($controls.length && params.contentModel && params.contentId && !$controls.find('.mt2026-summary-link[data-mt2026-cid="' + cid + '"]').length) {
+                var listUrl = BASE_URL + '/list?contentModel=' + encodeURIComponent(params.contentModel) + '&contentId=' + params.contentId;
                 $controls.append('<a class="mt2026-summary-link" href="' + listUrl
                     + '" data-bs-target="#globalModal" data-mt2026-cid="' + cid + '" style="display:none">'
                     + '<span class="mt2026-summary-inner"></span>'
@@ -122,16 +134,20 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
             }
 
             // 4. If user has already reacted (unlike link visible), fetch and restore state
+            if (!params.contentModel || !params.contentId) {
+                return;
+            }
+
             if ($c.find('a.unlike.likeAnchor').not('.d-none').length) {
                 $.get(BASE_URL + '/my-reaction', params, function(resp) {
                     if (resp && resp.reactionType) setTrigger($c, resp.reactionType);
                     if (resp && resp.reactionCounts) setSummary($c, resp.reactionCounts);
-                });
+                }).fail(function() {});
             } else {
                 // Still fetch summary counts even when user hasn't reacted
                 $.get(BASE_URL + '/my-reaction', params, function(resp) {
                     if (resp && resp.reactionCounts) setSummary($c, resp.reactionCounts);
-                });
+                }).fail(function() {});
             }
         });
     }
@@ -153,9 +169,16 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
 
     var init = function() {
         attach();
-        $(document).on('humhub:ready humhub:stream:afterAppend humhub:content:afterMove', function() {
-            setTimeout(attach, 200);
-        });
+        if (!bootstrapped) {
+            bootstrapped = true;
+            $(document).on('humhub:ready humhub:stream:afterAppend humhub:content:afterMove pjax:end', function() {
+                setTimeout(attach, 200);
+            });
+
+            $(document).ajaxComplete(function() {
+                setTimeout(attach, 100);
+            });
+        }
 
         // Toggle picker on trigger click/tap
         $(document).on('click', CONTAINER_SELECTOR + ' .mt2026-reaction-trigger', function(e) {
@@ -197,7 +220,7 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
             $btn.addClass('mt2026-pop');
             setTimeout(function() { $btn.removeClass('mt2026-pop'); }, 300);
 
-            var params = getUrlParams($c);
+            var params = $c.data('mt2026-params') || getUrlParams($c);
             if (!params.contentModel || !params.contentId) {
                 $c.find('a.like.likeAnchor:not(.d-none)').first().trigger('click');
                 return;

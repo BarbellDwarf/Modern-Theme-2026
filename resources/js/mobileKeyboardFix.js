@@ -123,7 +123,7 @@ humhub.module('modernTheme.mobileKeyboardFix', function(module, require, $) {
 
             var open = typeof forceOpen === 'boolean'
                 ? forceOpen
-                : (viewportOpen || keyboardByDelta || hasEditableFocus);
+                : ((viewportOpen || keyboardByDelta) && hasEditableFocus);
 
             $('body').toggleClass('mt2026-keyboard-open', open);
         };

@@ -191,21 +191,6 @@
     }
 }
 
-// Runtime keyboard-open state from JS for devices where max-height media query is unreliable
-body.mt2026-keyboard-open {
-    .mobile-bottom-nav {
-        display: none !important;
-    }
-}
-
-// Must override force-show rules used by body.mobile/mobile-app fallbacks.
-body.mt2026-keyboard-open.mobile .mobile-bottom-nav,
-body.mt2026-keyboard-open[data-mobile="true"] .mobile-bottom-nav,
-body.mt2026-keyboard-open .mobile-app .mobile-bottom-nav,
-.mobile-app body.mt2026-keyboard-open .mobile-bottom-nav {
-    display: none !important;
-}
-
 // Adjust body padding for fixed bottom nav
 @media (max-width: 767px) {
     body {
@@ -213,33 +198,27 @@ body.mt2026-keyboard-open .mobile-app .mobile-bottom-nav,
     }
 }
 
-// Force show on mobile devices (fallback for apps that don't respect media queries)
-body.mobile .mobile-bottom-nav,
-body[data-mobile="true"] .mobile-bottom-nav,
-.mobile-app .mobile-bottom-nav {
-    display: flex !important;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 56px;
-    overflow: hidden;
-    z-index: 1030;
-}
+// Force show only on true mobile widths (fallback for apps that don't respect media queries)
+@media (max-width: 767px) {
+    body.mobile .mobile-bottom-nav,
+    body[data-mobile="true"] .mobile-bottom-nav,
+    .mobile-app .mobile-bottom-nav {
+        display: flex !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        overflow: hidden;
+        z-index: 1030;
+    }
 
-// Also adjust body padding if mobile class is present
-body.mobile,
-body[data-mobile="true"],
-.mobile-app {
-    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
-}
-
-// While keyboard is open, remove reserved nav space so editor can move up.
-body.mt2026-keyboard-open,
-body.mt2026-keyboard-open.mobile,
-body.mt2026-keyboard-open[data-mobile="true"],
-body.mt2026-keyboard-open.mobile-app {
-    padding-bottom: env(safe-area-inset-bottom, 0) !important;
+    // Also adjust body padding if mobile class is present
+    body.mobile,
+    body[data-mobile="true"],
+    .mobile-app {
+        padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
+    }
 }
 
 // Tablet landscape - optional bottom nav

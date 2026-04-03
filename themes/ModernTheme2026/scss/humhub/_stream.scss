@@ -172,5 +172,16 @@
   }
 }
 
+// Once picker is attached, hide native like anchors so only emoji UI is shown.
+.wall-entry-controls .likeLinkContainer[data-mt2026-reactions] a.likeAnchor {
+  display: none !important;
+}
+
+.wall-entry-controls .likeLinkContainer[data-mt2026-reactions] {
+  display: inline-flex !important;
+  align-items: center;
+  min-height: 28px;
+}
+
 // Reaction summary pushed to the right end of the addons bar (styled in _reactions.scss)
 // .mt2026-summary-link uses margin-left:auto to right-align

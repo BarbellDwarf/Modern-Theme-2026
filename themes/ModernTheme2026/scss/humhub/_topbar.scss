@@ -2,11 +2,14 @@
 // Clean, modern top bar with proper styling
 
 .navbar.topbar {
+    // Override HumHub core's .topbar { height: 50px } which clips content
+    height: auto !important;
+
     // Better spacing and alignment
     .container {
         display: flex;
         align-items: center;
-        min-height: 58px;
+        min-height: 68px;
         padding-left: 16px;
         padding-right: 16px;
         gap: 8px;
@@ -242,7 +245,7 @@
         .container {
             gap: 8px;
             min-width: 0;
-            min-height: 60px;
+            min-height: 68px;
             padding-left: 10px;
             padding-right: 10px;
         }

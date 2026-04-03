@@ -271,6 +271,29 @@
   }
 }
 
+// Tablet / small-desktop: prevent switcher trigger/menu from breaking layout.
+@media (min-width: 768px) and (max-width: 1199px) {
+  .context-switcher {
+    margin-right: 4px;
+
+    .context-switcher-button {
+      padding: var(--space-2) var(--space-3);
+
+      .context-label {
+        max-width: 110px;
+      }
+    }
+
+    .context-switcher-menu {
+      left: 0;
+      right: auto;
+      width: min(320px, calc(100vw - 24px));
+      max-width: calc(100vw - 24px);
+      max-height: min(70vh, 520px);
+    }
+  }
+}
+
 // Explicit light-mode override to prevent inherited white text from topbar/nav rules.
 [data-bs-theme="light"] .context-switcher,
 html[data-bs-theme="light"] .context-switcher,

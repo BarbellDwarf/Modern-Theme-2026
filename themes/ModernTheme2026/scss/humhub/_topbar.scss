@@ -135,6 +135,46 @@
     }
 }
 
+// Tablet / small-desktop hardening: keep topbar usable before mobile mode.
+@media (min-width: 768px) and (max-width: 1199px) {
+    #topbar {
+        .container {
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .topbar-brand {
+            flex: 0 0 auto;
+            max-width: 34vw;
+            min-width: 0;
+        }
+
+        #top-menu-nav {
+            min-width: 0;
+            flex: 1 1 auto;
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            overflow-y: visible;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+        #top-menu-nav > li {
+            flex: 0 0 auto;
+        }
+
+        #top-menu-nav > li > a {
+            padding: 10px 10px;
+            white-space: nowrap;
+        }
+    }
+}
+
 // Explicit light-mode topbar/nav contrast guard.
 [data-bs-theme="light"],
 html[data-bs-theme="light"],

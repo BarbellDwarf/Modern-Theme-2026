@@ -1,31 +1,36 @@
 // Modern Theme 2026 - Base Layout
 // Container widths and responsive layout
 
-// Better container widths for modern displays
-.container {
-    @media (min-width: 768px) {
-        width: 100%;
-        max-width: 100%;
-        padding-left: 24px;
-        padding-right: 24px;
-    }
-    
-    @media (min-width: 992px) {
-        width: 100%;
-        max-width: 1400px;
-        padding-left: 32px;
-        padding-right: 32px;
-    }
-    
-    @media (min-width: 1400px) {
-        width: 100%;
-        max-width: 1600px;
-        padding-left: 40px;
-        padding-right: 40px;
-    }
-    
-    @media (min-width: 1920px) {
-        max-width: 1800px;
+// Modern Theme uses position:sticky (not fixed) on the topbar — no body top offset needed.
+// --hh-ct-top-bar-height is the ACTUAL height of the topbar element — do NOT zero this.
+// The body gap comes from Clean Theme's body { padding-top: calc(...) } rule.
+// Zeroing --hh-fixed-header-height + direct body override is sufficient.
+:root {
+    --hh-fixed-header-height: 0px;
+}
+
+body {
+    // Keep enough top offset for HumHub's fixed dual topbars.
+    // This restores baseline spacing for all page layouts.
+    padding-top: var(--hh-ct-top-bar-height) !important;
+}
+
+// Add a small universal breathing room below the topbar for all page types
+// (dashboard, space, profile, admin-like pages, and mobile views that still
+// render content containers).
+body > .container,
+body > .container-fluid,
+body > #layout-content,
+body > .space-layout-container,
+body > .profile-layout-container {
+    margin-top: 8px;
+}
+
+// Only override container width on very large screens to avoid
+// conflicting with Bootstrap's 3-column layout at normal desktop widths
+@media (min-width: 1600px) {
+    .container {
+        max-width: 1560px;
     }
 }
 
@@ -115,10 +120,6 @@
 
 // Ultra-wide (4K+) optimizations
 @media (min-width: 2560px) {
-    .container {
-        max-width: 2000px;
-    }
-    
     body {
         font-size: 17px;
     }

@@ -8,9 +8,20 @@
   @include shadow('lg');
   padding: var(--space-2);
   min-width: 200px;
+  // Explicit z-index ensures the menu floats above panels, stream entries, etc.
+  z-index: $z-dropdown;
+  position: absolute;
   @include fade-in(var(--transition-fast));
   @include scale-in(var(--transition-base));
   
+  // .hh-list inside a dropdown is a list container (e.g. notifications) — must not be flex
+  .dropdown-item.hh-list {
+    display: block;
+    padding: 0;
+    background: transparent;
+    &:hover { background: transparent; }
+  }
+
   .dropdown-item {
     padding: var(--space-2) var(--space-3);
     border-radius: var(--radius);
@@ -54,4 +65,213 @@
     text-transform: uppercase;
     letter-spacing: $letter-spacing-wide;
   }
+}
+
+// Ensure panels/cards that contain dropdowns allow menus to visually overflow.
+// This overrides any Bootstrap overflow:hidden on ancestor containers.
+.dropdown,
+.btn-group,
+.dropup {
+  &.open,
+  &.show {
+    // When a dropdown is open, its direct parent needs overflow:visible
+    // so the .dropdown-menu is not clipped by a containing block.
+    overflow: visible;
+  }
+}
+
+// Space/user profile header: prevent the panel and its ancestors from
+// clipping the settings dropdown menu.
+// Ancestor chain: .panel-profile > .panel-body > .panel-profile-controls > … > .dropdown-menu
+// .panel-profile is the outer wrapper class set by ContainerProfileHeader (panel panel-default panel-profile).
+.panel-profile,
+.panel-profile .panel-body,
+.panel-profile-controls {
+  overflow: visible !important;
+}
+
+// Ensure the controls wrapper floats above surrounding content and never clips.
+.controls.controls-header,
+.controls-header {
+  position: relative;
+  z-index: $z-dropdown + 10;
+  overflow: visible;
+}
+
+// Keep the dropdown toggle and menu in the stacking context above panel content.
+#space-header-controls-menu,
+.profile-header-controls {
+  position: relative;
+  z-index: $z-dropdown + 1;
+}
+
+// -----------------------------------------------------------------------
+// Space page layout stacking fix
+//
+// Layout HTML:
+//   .space-layout-container
+//     .row                          ← header row  (z-index: 100)
+//       .col-lg-12
+//         .panel-profile (dropdown lives here)
+//     .row.space-content            ← content row (z-index: 1, isolated)
+//       .layout-content-container
+//         .wall-entry / .stream-entry  (transform on hover → new stacking ctx)
+//
+// Problem: stream entries use transform:translateY on hover which creates a
+// new stacking context. Because both rows are siblings in normal flow, and
+// the content row's entries appear later in the DOM, their stacking context
+// can paint on top of the header's dropdown even when the dropdown has a
+// high z-index — because the dropdown is a child of the *earlier* row's
+// stacking context.
+//
+// Fix:
+//  1. Give the header row position:relative + high z-index (100) so its
+//     entire stacking context — including the dropdown — is ordered above
+//     the content row.
+//  2. Give .space-content (content row) position:relative + z-index:1 and
+//     isolation:isolate so stream-entry stacking contexts are confined
+//     within it and cannot escape to paint over the header.
+// -----------------------------------------------------------------------
+
+.space-layout-container {
+  > .row:first-child {
+    position: relative;
+    z-index: 100;
+  }
+}
+
+.space-content {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
+// Prevent the profile panel's hover transform from creating a stacking
+// context that traps the dropdown inside a lower z-index layer.
+.panel-profile,
+.panel-default.panel-profile {
+  &:hover {
+    transform: none !important;
+  }
+}
+
+// Ensure the dropdown-menu always floats at the very top of the page stack.
+.dropdown-menu {
+  z-index: $z-dropdown !important;
+}
+
+// Comment composer attachment menu can be rendered inside nested comment wrappers
+// with overflow/stacking contexts. Force this chain to allow visible overflow.
+.comment-container,
+.comment-container .comment,
+.comment-entry,
+.comment-entry-form,
+.comment-controls,
+.comment-controls .dropdown,
+.comment-controls .dropdown-menu {
+  overflow: visible !important;
+}
+
+.comment-controls .dropdown-menu {
+  z-index: $z-dropdown + 20 !important;
+}
+
+// While a comment attachment dropdown is open, raise the whole stream entry
+// above sibling entries so the menu cannot be covered by the next card.
+.wall-entry.mt2026-dropdown-open,
+.stream-entry.mt2026-dropdown-open {
+  position: relative;
+  z-index: $z-dropdown + 30;
+}
+
+.comment_create .btn-group.show .dropdown-menu {
+  z-index: $z-dropdown + 40 !important;
+}
+
+// Stream post composer settings dropdown ("gear") can be inside wrappers that clip.
+// Keep the full chain overflow-visible and lift the menu above stream cards.
+.wall-entry-form,
+.post-form,
+.content-form-body,
+.content-form-body .contentForm_options,
+.content-form-body .btn_container,
+.wall-entry-form .panel,
+.post-form .panel,
+.wall-entry-form .panel-body,
+.post-form .panel-body,
+.wall-entry-form .editor-toolbar,
+.post-form .editor-toolbar,
+.wall-entry-form .btn-group,
+.post-form .btn-group {
+  overflow: visible !important;
+}
+
+.wall-entry-form .btn-group > .dropdown-menu,
+.post-form .btn-group > .dropdown-menu,
+.content-form-body .btn-group > .dropdown-menu,
+.content-form-body .dropdown-menu {
+  z-index: $z-dropdown + 45 !important;
+}
+
+// When composer settings menu is open, lift the whole composer above next stream card.
+.mt2026-composer-dropdown-open {
+  position: relative;
+  z-index: $z-dropdown + 50 !important;
+}
+
+.s-wall-entry.mt2026-composer-dropdown-open,
+.wall-entry.mt2026-composer-dropdown-open,
+.stream-entry.mt2026-composer-dropdown-open,
+.panel.mt2026-composer-dropdown-open,
+#contentFormBody.mt2026-composer-dropdown-open,
+#contentFormBodyModal.mt2026-composer-dropdown-open,
+.content-form-body.mt2026-composer-dropdown-open {
+  z-index: $z-dropdown + 50 !important;
+}
+
+// Desktop stream card overlap: when composer menu is open, lift parent panel/layout too.
+.panel.mt2026-composer-panel-open,
+.layout-content-container.mt2026-composer-layout-open,
+.space-layout-container.mt2026-composer-layout-open,
+.space-content.mt2026-composer-layout-open {
+  position: relative;
+  z-index: $z-dropdown + 55 !important;
+  overflow: visible !important;
+}
+
+// Keep stream posts beneath the composer menu while it is open.
+.layout-content-container.mt2026-composer-layout-open .stream-entry,
+.layout-content-container.mt2026-composer-layout-open .wall-entry,
+.space-layout-container.mt2026-composer-layout-open .stream-entry,
+.space-layout-container.mt2026-composer-layout-open .wall-entry,
+.space-content.mt2026-composer-layout-open .stream-entry,
+.space-content.mt2026-composer-layout-open .wall-entry {
+  position: relative;
+  z-index: 1 !important;
+  transform: none !important;
+}
+
+.layout-content-container.mt2026-composer-layout-open .content-form-body,
+.space-layout-container.mt2026-composer-layout-open .content-form-body,
+.space-content.mt2026-composer-layout-open .content-form-body {
+  position: relative;
+  z-index: $z-dropdown + 56 !important;
+}
+
+// Global guard: while composer settings dropdown is open, ensure stream cards never overlay it.
+body.mt2026-composer-dropdown-open-global .layout-content-container .stream-entry,
+body.mt2026-composer-dropdown-open-global .layout-content-container .wall-entry,
+body.mt2026-composer-dropdown-open-global .space-layout-container .stream-entry,
+body.mt2026-composer-dropdown-open-global .space-layout-container .wall-entry {
+  position: relative;
+  z-index: 1 !important;
+}
+
+body.mt2026-composer-dropdown-open-global .content-form-body,
+body.mt2026-composer-dropdown-open-global #contentFormBody,
+body.mt2026-composer-dropdown-open-global #contentFormBodyModal,
+body.mt2026-composer-dropdown-open-global .contentForm_options,
+body.mt2026-composer-dropdown-open-global .contentForm_options .dropdown-menu {
+  position: relative;
+  z-index: $z-dropdown + 60 !important;
 }

@@ -7,6 +7,9 @@
 // Import CSS custom properties for dynamic theming
 @import "root";
 
+// General theme styles (typography, links, utilities, loading states)
+@import "theme";
+
 // Performance optimizations (early)
 @import "performance";
 
@@ -24,6 +27,7 @@
 @import "humhub/form";
 @import "humhub/gridview";
 @import "humhub/list-group";
+@import "humhub/admin";
 @import "humhub/nav";
 @import "humhub/topbar";
 @import "humhub/sidebar";
@@ -35,6 +39,7 @@
 @import "humhub/context-switcher";
 
 // Dark mode support (before mobile)
+@import "humhub/palette-switcher";
 @import "humhub/dark-mode";
 
 // Mobile overrides (must come last)

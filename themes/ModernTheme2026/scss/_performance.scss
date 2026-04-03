@@ -1,12 +1,18 @@
 // Modern Theme 2026 - Performance Optimizations
 // CSS optimizations for better rendering performance
 
-// Use CSS containment for improved layout performance
+// Use CSS containment for improved layout performance.
+// NOTE: `contain: paint` clips overflow (like overflow:hidden) which breaks
+// absolutely-positioned dropdown menus. Use `contain: layout style` only.
 .panel,
-.card,
+.card {
+    contain: layout style;
+}
+
 .s-wall-entry,
 .list-group-item {
-    contain: layout style paint;
+    // Do NOT use paint containment here; it clips dropdown menus/popovers.
+    contain: layout style;
 }
 
 // Optimize animations with will-change
@@ -50,7 +56,7 @@
     
     // Skip blur on mobile for better performance
     @media (max-width: 767px) {
-        background-color: var(--bg-elevated);
+        background-color: var(--color-bg-secondary, #f8fafc);
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
     }
@@ -85,10 +91,13 @@ body {
 
 // Optimize scroll performance
 .modal-body,
-.dropdown-menu,
 .list-group {
     -webkit-overflow-scrolling: touch;
     overflow-y: auto;
+}
+// dropdown-menu must NOT have overflow-y:auto — it would re-introduce clipping
+.dropdown-menu {
+    -webkit-overflow-scrolling: touch;
 }
 
 // Reduce repaints with transform instead of top/left
@@ -104,7 +113,7 @@ body {
 img {
     &[loading="lazy"] {
         // Add placeholder while loading
-        background-color: var(--bg-surface);
+        background-color: var(--color-bg-tertiary, #f1f5f9);
         min-height: 100px;
     }
 }
@@ -123,8 +132,9 @@ img {
 
 // Use content-visibility for off-screen content
 .s-wall-entry {
-    content-visibility: auto;
-    contain-intrinsic-size: 0 200px; // Estimated height
+    // Keep stream entries fully paintable so nested comment/file dropdown menus
+    // are not clipped while opening.
+    content-visibility: visible;
 }
 
 // Optimize critical rendering path - inline critical CSS

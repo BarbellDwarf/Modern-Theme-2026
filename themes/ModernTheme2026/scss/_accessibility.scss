@@ -6,7 +6,7 @@
     position: absolute;
     top: -40px;
     left: 0;
-    background-color: var(--primary);
+    background-color: var(--color-primary, #1e6ad6);
     color: #fff;
     padding: space(2) space(4);
     text-decoration: none;
@@ -17,14 +17,14 @@
     
     &:focus {
         top: 0;
-        outline: 3px solid var(--primary-light);
+        outline: 3px solid var(--color-primary-light, #5a8eeb);
         outline-offset: 2px;
     }
 }
 
 // Focus visible styles (keyboard navigation)
 *:focus-visible {
-    outline: 2px solid var(--primary);
+    outline: 2px solid var(--color-primary, #1e6ad6);
     outline-offset: 2px;
     border-radius: $border-radius-sm;
 }
@@ -40,7 +40,7 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-    outline: 3px solid var(--primary);
+    outline: 3px solid var(--color-primary, #1e6ad6);
     outline-offset: 2px;
     box-shadow: 0 0 0 4px rgba(30, 106, 214, 0.2);
 }
@@ -48,7 +48,7 @@ textarea:focus-visible {
 // High contrast text for better readability
 body {
     // Ensure minimum contrast ratios
-    color: var(--text-primary);
+    color: var(--color-text-primary, #111827);
     
     // Enhance text contrast in dark mode
     [data-bs-theme="dark"] & {
@@ -58,11 +58,11 @@ body {
 
 // Link contrast
 a {
-    color: var(--primary);
+    color: var(--color-primary, #1e6ad6);
     
     &:hover,
     &:focus {
-        color: var(--primary-dark);
+        color: var(--color-primary-dark, #1558b0);
         text-decoration: underline;
     }
     
@@ -76,12 +76,12 @@ a {
 label {
     font-weight: 500;
     margin-bottom: space(2);
-    color: var(--text-primary);
+    color: var(--color-text-primary, #111827);
     
     // Required indicator
     .required,
     abbr[title] {
-        color: var(--danger);
+        color: var(--color-danger, #ef4444);
         text-decoration: none;
     }
 }
@@ -90,7 +90,7 @@ label {
 .error,
 .invalid-feedback,
 .field-error {
-    color: var(--danger);
+    color: var(--color-danger, #ef4444);
     font-weight: 500;
     margin-top: space(1);
     font-size: $font-size-sm;
@@ -142,8 +142,6 @@ label {
 // Touch target size (minimum 44x44px for accessibility)
 button,
 a,
-input[type="checkbox"],
-input[type="radio"],
 .btn,
 .nav-link {
     min-height: 44px;
@@ -154,6 +152,13 @@ input[type="radio"],
         min-height: 36px;
         min-width: auto;
     }
+}
+
+// Checkboxes and radios must not inherit min-height; they are fixed-size elements
+input[type="checkbox"],
+input[type="radio"] {
+    min-height: unset;
+    min-width: unset;
 }
 
 // Ensure interactive elements are distinguishable
@@ -202,7 +207,7 @@ table {
         caption-side: top;
         font-weight: 600;
         text-align: left;
-        color: var(--text-primary);
+        color: var(--color-text-primary, #111827);
     }
 }
 
@@ -239,8 +244,8 @@ table {
     // Ensure dropdown items are keyboard navigable
     .dropdown-item {
         &:focus-visible {
-            background-color: var(--bg-hover);
-            outline: 2px solid var(--primary);
+            background-color: var(--color-bg-secondary, #f3f4f6);
+            outline: 2px solid var(--color-primary, #1e6ad6);
             outline-offset: -2px;
         }
     }
@@ -309,7 +314,7 @@ img:not([alt]) {
 .keyboard-user {
     // Enhanced focus styles when user is using keyboard
     *:focus {
-        outline: 3px solid var(--primary);
+        outline: 3px solid var(--color-primary, #1e6ad6);
         outline-offset: 3px;
         box-shadow: 0 0 0 6px rgba(30, 106, 214, 0.2);
     }

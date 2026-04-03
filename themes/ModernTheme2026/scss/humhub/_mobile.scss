@@ -2,16 +2,98 @@
 // Mobile-specific styles and responsive adjustments
 
 // Mobile-specific enhancements for Modern Theme 2026
-@media (max-width: 768px) {
-    // Enhanced mobile navigation
+@media (max-width: 767px) {
+    // Space sidebar nav: convert vertical list to horizontal scrollable pill bar
     .layout-nav-container {
-        .nav {
-            padding: space(2);
-            
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        margin-bottom: 12px;
+        overflow: visible !important; // Don't clip rounded pill borders
+
+        // Target only actual sidebar nav containers on mobile.
+        #left-navigation .list-group,
+        #user-profile-menu .nav,
+        #space-menu-dropdown .nav {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            overflow-y: visible !important; // Allow rounded borders to show
+            -webkit-overflow-scrolling: touch;
+            gap: 6px;
+            padding: 4px 0 8px !important; // bottom padding for scroll shadow
+            margin: 0 !important;
+            list-style: none;
+            scrollbar-width: none; // Firefox
+
+            &::-webkit-scrollbar { display: none; } // Chrome/Safari
+
+            .list-group-item,
+            > li,
             .nav-item {
-                margin-bottom: space(1);
+                flex-shrink: 0 !important;
+                width: auto !important;
+                float: none !important;
+                overflow: visible !important; // Don't clip border-radius
+
+                > a,
+                > .nav-link,
+                &.list-group-item {
+                    display: inline-flex !important;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                    white-space: nowrap;
+                    padding: 11px 20px !important;
+                    min-height: 46px;
+                    border-radius: 22px !important;
+                    border: 1px solid var(--color-border, #e5e7eb) !important;
+                    color: var(--color-text-secondary, #4b5563);
+                    background: var(--color-bg-primary, #fff);
+                    font-size: 15px;
+                    font-weight: 600;
+                    text-decoration: none;
+                    margin: 0 !important;
+
+                    i,
+                    .fa,
+                    .glyphicon {
+                        font-size: 15px;
+                        line-height: 1;
+                    }
+
+                    &:hover, &:focus {
+                        background: var(--color-bg-secondary, #f3f4f6);
+                        color: var(--color-text-primary, #111827);
+                    }
+
+                    &.active, &:active {
+                        background: var(--color-primary, #1e6ad6) !important;
+                        color: #fff !important;
+                        border-color: var(--color-primary, #1e6ad6) !important;
+                    }
+                }
+
+                // HumHub marks active with class on li, not the anchor
+                &.active > a,
+                &.active > .nav-link {
+                    background: var(--color-primary, #1e6ad6) !important;
+                    color: #fff !important;
+                    border-color: var(--color-primary, #1e6ad6) !important;
+                }
+
+                // Active indicator bar from desktop theme doesn't apply
+                &.active::before { display: none; }
             }
         }
+    }
+
+    // Hide the old JS-injected toggle — collapse is replaced by horizontal scroll
+    .mt2026-space-nav-toggle {
+        display: none !important;
     }
     
     // Touch-optimized buttons
@@ -32,15 +114,51 @@
         padding: space(3);
         margin-bottom: space(2);
     }
+
+    // Stream entries are rendered as:
+    // outer .wall-entry wrapper + inner .panel.wall_x.
+    // On mobile, flatten the OUTER wrapper so only the inner panel remains
+    // (avoids "box in a box" and gives more room for content/comments).
+    .s2_streamContent > .wall-entry,
+    .s2_streamContent > .stream-entry {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        margin-bottom: 8px !important;
+    }
+
+    .s2_streamContent > .wall-entry > .panel,
+    .s2_streamContent > .stream-entry > .panel {
+        margin-bottom: 0 !important;
+    }
     
-    // Mobile modal full screen
+    // Mobile modal: use sheet-style bottom-anchored for small modals (#globalModal),
+    // full-screen for large ones. Keep horizontal centering.
     .modal-dialog {
+        margin: 8px auto;         // keep horizontal centering
+        max-width: calc(100% - 16px);
+        width: 100%;
+
+        .modal-content {
+            border-radius: var(--radius-xl, 16px) var(--radius-xl, 16px) 0 0;
+            max-height: calc(100dvh - 72px); // leave room for bottom nav
+            overflow-y: auto;
+        }
+    }
+
+    // Full-screen for modals that need it (modal-lg, iframe modals)
+    .modal-dialog.modal-lg,
+    .modal-dialog.modal-xl,
+    .modal-dialog.modal-fullscreen {
         margin: 0;
         max-width: 100%;
-        height: 100vh;
-        
+        height: 100dvh;
+
         .modal-content {
-            min-height: 100vh;
+            min-height: 100dvh;
+            max-height: none;
             border-radius: 0;
         }
     }
@@ -49,6 +167,156 @@
     .navbar-header {
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
+    }
+}
+
+// ── Stream entry footer: always show addon buttons ──────────────────────
+// .stream-entry-addons is a full-width flex row containing:
+//   [comment link] [reaction trigger (likeLinkContainer)]  ··· auto ···  [summary counts]
+.stream-entry-addons {
+    width: 100%;
+    min-height: 36px;
+}
+
+@media (max-width: 767px) {
+    // Keyboard-safe composer and event forms
+    body.mt2026-keyboard-open {
+        .mobile-bottom-nav {
+            display: none !important;
+        }
+
+        .wall-entry-form,
+        .post-form,
+        .modal.show {
+            scroll-margin-bottom: 120px;
+        }
+    }
+
+    .modal.show {
+        .modal-dialog {
+            margin: 6px auto;
+            max-height: calc(100dvh - 12px);
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .modal-content {
+            max-height: calc(100dvh - 12px);
+            overflow-y: auto;
+        }
+    }
+
+    // Event form checkbox/switch density on mobile
+    .event-create-form,
+    .event-edit-form,
+    .calendar-edit-form {
+        .checkbox,
+        .radio,
+        .form-check {
+            margin-bottom: 6px !important;
+            display: inline-flex;
+            align-items: center;
+            margin-right: 12px;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            width: 14px;
+            height: 14px;
+            margin-right: 6px;
+        }
+
+        .bootstrap-switch {
+            transform: scale(0.9);
+            transform-origin: left center;
+            margin-right: 6px;
+        }
+
+        // Calendar content hidden switch: keep control and label in one row without wide input stretching.
+        .field-calendarentryform-hidden {
+            .checkbox {
+                display: flex !important;
+                align-items: center;
+                flex-wrap: nowrap;
+                gap: 8px;
+            }
+
+            input[type="checkbox"] {
+                width: 14px !important;
+                min-width: 14px !important;
+                max-width: 14px !important;
+                height: 14px !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                flex: 0 0 14px;
+            }
+
+            label {
+                display: inline-flex !important;
+                align-items: center;
+                width: auto !important;
+                margin: 0 !important;
+                line-height: 1.2;
+            }
+
+            p.text-body-secondary {
+                margin: 6px 0 0 0;
+            }
+        }
+    }
+
+    .stream-entry-addons {
+        padding: 8px 4px 4px !important;
+        border-top: 1px solid var(--color-border-light, #f3f4f6);
+        margin-top: 8px;
+    }
+
+    // Style comment/addon links as pill buttons
+    .stream-entry-addons {
+        a[data-action-click="comment.toggleComment"]:not(.d-none),
+        .comment-link,
+        .content-addon-link {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--color-border, #e5e7eb);
+            color: var(--color-text-secondary, #4b5563) !important;
+            font-size: 13px !important;
+            font-weight: 500;
+            text-decoration: none;
+            background: transparent;
+            margin-right: 6px;
+            min-height: 36px;
+            vertical-align: middle;
+            white-space: nowrap;
+
+            &:hover,
+            &:active {
+                background: var(--color-bg-secondary, #f3f4f6);
+                color: var(--color-text-primary, #111827) !important;
+            }
+
+            .comment-count {
+                color: var(--color-primary, #1e6ad6);
+                font-size: 13px !important;
+            }
+        }
+
+        // Prepend comment icon via pseudo-element
+        a[data-action-click="comment.toggleComment"]::before {
+            content: '\f0e5';
+            font-family: FontAwesome;
+            margin-right: 4px;
+            font-size: 14px !important;
+        }
+    }
+
+    // Reaction summary link on far right
+    .mt2026-summary-link {
+        margin-left: auto;
+        font-size: 13px;
     }
 }
 
@@ -68,4 +336,255 @@
     h1 { font-size: $font-size-2xl; }
     h2 { font-size: $font-size-xl; }
     h3 { font-size: $font-size-lg; }
+}
+
+// -----------------------------------------------------------------------
+// User profile: About section field labels
+// .field-title needs to read as a label/heading, not plain body text.
+// On desktop (md+) it sits in a left column; on mobile it stacks above
+// the value — both need font-weight to distinguish it from the value.
+// -----------------------------------------------------------------------
+.profile-item {
+    .field-title {
+        font-weight: $font-weight-semibold;
+        color: var(--color-text-primary);
+        margin-bottom: 2px;
+    }
+
+    .field-value {
+        color: var(--color-text-secondary);
+        word-break: break-word;
+    }
+
+    // On desktop the label column already has text-lg-end (right-aligned).
+    // Keep the font-weight on all breakpoints but lighten color slightly.
+    @media (min-width: 768px) {
+        .field-title {
+            color: var(--color-text-muted);
+            font-weight: $font-weight-medium;
+        }
+    }
+}
+
+// Subtle divider between profile fields for readability
+#user-profile-about .profile-item + .profile-item {
+    border-top: 1px solid var(--color-border-light);
+    padding-top: 0.5rem;
+}
+
+// ── People directory cards ─────────────────────
+// Root-level card styles (all screen sizes).
+// Using mt2026-specific classes avoids interference from Clean Theme's
+// heavily-overridden .card-panel / .card-body selectors.
+.mt2026-people-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 8px 12px;
+    border-radius: 12px;
+    background: var(--color-bg-primary, #fff);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    min-height: 140px;
+
+    .mt2026-pc-avatar {
+        margin-bottom: 10px;
+
+        .mt2026-pc-img-wrapper,
+        .mt2026-pc-img-link {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        img {
+            width: 64px !important;
+            height: 64px !important;
+            border-radius: 50% !important;
+            border: 3px solid var(--color-primary, #1e6ad6);
+            object-fit: cover;
+            display: block;
+        }
+    }
+
+    .mt2026-pc-info {
+        text-align: center;
+        width: 100%;
+
+        .mt2026-pc-name {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text-primary, #111827);
+            line-height: 1.3;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            a, a:visited {
+                color: var(--color-text-primary, #111827) !important;
+                text-decoration: none !important;
+                font-weight: 600 !important;
+            }
+
+            a:hover {
+                color: var(--color-primary, #1e6ad6) !important;
+            }
+        }
+
+        .mt2026-pc-title {
+            font-size: 11px;
+            color: var(--color-text-muted, #6b7280);
+            line-height: 1.3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            &.mt2026-pc-title-empty {
+                visibility: hidden;
+                height: 1em;
+            }
+        }
+    }
+
+    .mt2026-pc-actions {
+        margin-top: 10px;
+        width: 100%;
+        text-align: center;
+
+        .btn {
+            font-size: 12px;
+            padding: 4px 10px;
+        }
+    }
+}
+
+// Neutralise Clean Theme's .card-panel rules when our override is active
+.card-people .card-panel.mt2026-people-card {
+    background: var(--color-bg-primary, #fff) !important;
+    overflow: visible !important;
+
+    // Clean Theme injects these elements — hide them so they don't shift layout
+    .card-bg-image,
+    .card-header,
+    .card-body,
+    .card-footer {
+        display: none !important;
+    }
+}
+
+// Mobile layout: 2-column grid for people cards
+@media (max-width: 767px) {
+    .row.cards {
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: -8px;
+        margin-right: -8px;
+    }
+
+    .card-people {
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        margin-bottom: 16px;
+    }
+}
+
+
+// ─── People page: collapse filters mobile on ─────────────
+@media (max-width: 767px) {
+  // Hide all non-keyword filter columns by default
+  .panel-body .row.gy-2 > div:not(.form-search-filter-keyword):not(.mt2026-more-filters-btn-wrap) {
+    display: none;
+  }
+
+  // Show all filters when expanded
+  .panel-body .row.gy-2.filters-expanded > div {
+    display: block !important;
+  }
+
+  // "More Filters" toggle button wrapper
+  .mt2026-more-filters-btn-wrap {
+    display: flex !important;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: 4px;
+  }
+
+  // The toggle button itself
+  .mt2026-more-filters-btn {
+    background: transparent;
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--color-text-secondary, #6b7280);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+
+    i { font-size: 11px; }
+
+    &.active {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary);
+    }
+  }
+
+  // Keyword input — full width on mobile
+  .form-search-filter-keyword input[type="text"],
+  .form-search-filter-keyword input[type="search"] {
+    width: 100%;
+  }
+}
+
+// -----------------------------------------------------------------------
+// Notification overview – mobile "Mark All Seen" action bar
+// Injected by notifications.js; only visible on small screens.
+// -----------------------------------------------------------------------
+.mt2026-notification-mobile-bar {
+    display: none; // hidden on desktop; shown on mobile via the rule below
+    padding: space(2) space(3);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg-secondary, #{$gray-50});
+
+    .mt2026-mark-all-seen-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: space(2);
+        min-height: 40px;
+        font-size: $font-size-sm;
+        color: var(--color-text-secondary);
+        border-color: var(--color-border);
+
+        i {
+            font-size: $font-size-base;
+            color: var(--color-success, #28a745);
+        }
+
+        &:hover,
+        &:focus {
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+            i { color: var(--color-primary); }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    // Show the injected mobile action bar
+    .mt2026-notification-mobile-bar {
+        display: block;
+    }
+
+    // Make the desktop mark-seen button inside the panel-heading also
+    // touch-friendly when it IS visible on mobile
+    #notification_overview_markseen {
+        min-height: 40px;
+        min-width: 40px;
+    }
 }

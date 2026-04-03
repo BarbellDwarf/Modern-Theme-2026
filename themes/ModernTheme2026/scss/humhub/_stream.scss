@@ -80,3 +80,97 @@
     border-top: 1px solid var(--color-border);
   }
 }
+
+// ── Unconditional stream footer/addons rules ─────────────────────────────────
+// HumHub's real stream DOM is .s2_streamContent > .panel.wall_XXX (no
+// .stream-container or .wall-entry wrapper), so rules nested under those
+// ancestors never matched.  These global rules ensure the footer always renders.
+
+.wall-entry-footer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+}
+
+// Make .wall-entry-controls links always visible with readable color
+.wall-entry-controls a {
+  color: var(--color-text-secondary, #4b5563) !important;
+  transition: color 0.2s;
+
+  &:hover, &:focus {
+    color: var(--color-primary, #1e6ad6) !important;
+  }
+
+  &::before {
+    color: inherit;
+  }
+}
+
+[data-bs-theme="dark"] .wall-entry-controls a {
+  color: var(--color-text-secondary, #9ca3af) !important;
+}
+
+// Ensure the comment icon (::before from Clean Theme) is visible.
+// Only apply display:inline-flex when the link is NOT hidden by .d-none.
+.wall-entry-controls a[data-action-click="comment.toggleComment"]:not(.d-none) {
+  display: inline-flex !important;
+  align-items: center;
+  min-height: 32px;
+  min-width: 32px;
+  opacity: 1 !important;
+  visibility: visible !important;
+
+  &::before {
+    font-size: 18px !important;
+    color: var(--color-text-secondary, #4b5563) !important;
+  }
+
+  &:hover::before, &:focus::before {
+    color: var(--color-primary, #1e6ad6) !important;
+  }
+}
+
+// WallEntryLinks injects ' · ' text nodes between its child widgets.
+// Setting font-size:0 on the container hides those text nodes;
+// all child elements (links, .likeLinkContainer) already have explicit font-sizes.
+.stream-entry-addons .wall-entry-controls.wall-entry-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0;
+  vertical-align: middle;
+  width: 100%;
+}
+
+.stream-entry-addons .wall-entry-controls.wall-entry-links > * {
+  font-size: 14px;
+}
+
+// The like/unlike anchor links are REPLACED by our emoji trigger visually.
+// Before JS runs: show them via the Clean Theme FA icon (fallback).
+// After JS runs: [data-mt2026-reactions] is set, clip rule in _reactions.scss hides them.
+// DO NOT force display here — that would break .d-none toggling.
+.wall-entry-controls a[data-action-click="like.toggleLike"]:not(.d-none) {
+  display: inline-flex !important;
+  align-items: center;
+  min-height: 28px;
+  min-width: 28px;
+  opacity: 1 !important;
+  visibility: visible !important;
+
+  &::before {
+    font-size: 18px !important;
+    color: var(--color-text-secondary, #4b5563) !important;
+  }
+
+  &:hover::before, &:focus::before {
+    color: var(--color-primary, #1e6ad6) !important;
+  }
+}
+
+// Reaction summary pushed to the right end of the addons bar (styled in _reactions.scss)
+// .mt2026-summary-link uses margin-left:auto to right-align

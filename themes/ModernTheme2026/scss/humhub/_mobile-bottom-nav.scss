@@ -5,114 +5,122 @@
 .mobile-bottom-nav {
     // Force hide on desktop, override any other rules
     display: none !important;
-    
+
     @media (max-width: 767px) {
-        // Force show on mobile with important to override any conflicts
         display: flex !important;
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        height: 64px;
-        background-color: var(--bg-elevated);
-        border-top: 1px solid var(--border-color);
+        height: 56px;
+        background-color: var(--color-bg-secondary, #f8fafc);
+        border-top: 1px solid var(--color-border, #e5e7eb);
         box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
         z-index: 1030;
-        padding: 0 8px;
+        padding: 0;
         padding-bottom: env(safe-area-inset-bottom, 0); // iPhone notch
-        align-items: center;
+        align-items: stretch;
         justify-content: space-around;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        
-        // Bottom nav items
+        overflow: hidden; // clip all children to bar bounds
+
         .nav-item {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 8px;
-            min-width: 64px;
-            max-width: 80px;
+            padding: 4px 2px;
+            min-width: 0;
             position: relative;
             cursor: pointer;
             text-decoration: none;
-            color: var(--text-secondary);
-            transition: all $transition-fast;
-            border-radius: $border-radius-md;
-            
-            // Icon
+            color: var(--color-text-secondary, #4b5563);
+            transition: color $transition-fast;
+            background: none;
+            border: none;
+
             .nav-icon {
-                font-size: 22px;
-                margin-bottom: 4px;
-                transition: all $transition-fast;
+                font-size: 20px;
+                margin-bottom: 2px;
+                transition: transform $transition-fast, font-size $transition-fast;
                 position: relative;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                
-                i {
-                    display: block;
-                }
-                
-                // Profile avatar styling
+
+                i { display: block; }
+
                 .nav-avatar {
-                    width: 24px;
-                    height: 24px;
+                    width: 22px;
+                    height: 22px;
                     border-radius: 50%;
                     object-fit: cover;
-                    border: 2px solid var(--primary);
+                    border: 2px solid var(--color-primary, #1e6ad6);
                 }
             }
-            
-            // Label
+
             .nav-label {
-                font-size: 11px;
+                font-size: 10px;
                 font-weight: 500;
                 line-height: 1;
-                transition: all $transition-fast;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 100%;
+                transition: color $transition-fast;
             }
-            
-            // Badge for notifications
+
             .nav-badge {
                 position: absolute;
-                top: 4px;
+                top: 2px;
                 right: 50%;
-                transform: translateX(10px);
+                transform: translateX(14px);
                 min-width: 18px;
-                height: 18px;
+                min-height: 16px;
+                height: auto;
                 padding: 0 5px;
-                font-size: 10px;
+                font-size: 9px;
                 font-weight: 600;
-                border-radius: 9px;
-                background-color: var(--danger);
+                line-height: 1.1;
+                font-variant-numeric: tabular-nums;
+                border-radius: 999px;
+                background-color: var(--color-danger, #ef4444);
                 color: #fff;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                border: 2px solid var(--bg-elevated);
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                border: 2px solid var(--color-bg-secondary, #f8fafc);
+                white-space: nowrap;
             }
-            
-            // Active state
+
+            // Active state: color + top indicator line (no background fill)
             &.active {
-                color: var(--primary);
-                background-color: rgba(30, 106, 214, 0.1);
-                
-                .nav-icon {
-                    transform: translateY(-2px);
-                    font-size: 24px;
+                color: var(--color-primary, #1e6ad6);
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 20px;
+                    height: 2px;
+                    background-color: var(--color-primary, #1e6ad6);
+                    border-radius: 0 0 2px 2px;
                 }
-                
+
+                .nav-icon {
+                    font-size: 22px;
+                }
+
                 .nav-label {
                     font-weight: 600;
+                    color: var(--color-primary, #1e6ad6);
                 }
             }
-            
-            // Hover/tap state
+
             &:active {
-                transform: scale(0.95);
+                opacity: 0.7;
             }
         }
     }
@@ -121,9 +129,9 @@
 // Add bottom padding to body to prevent content from being hidden by bottom nav
 @media (max-width: 767px) {
     body {
-        padding-bottom: calc(64px + env(safe-area-inset-bottom, 0));
+        padding-bottom: calc(56px + env(safe-area-inset-bottom, 0));
     }
-    
+
     // Adjust main content area
     #layout-content,
     .container-fluid {
@@ -135,17 +143,20 @@
 [data-bs-theme="dark"] {
     .mobile-bottom-nav {
         background-color: rgba(30, 41, 59, 0.95);
-        border-top-color: var(--border-color);
+        border-top-color: var(--color-border, #e5e7eb);
         box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
-        
+
         .nav-item {
-            color: var(--text-secondary);
-            
+            color: var(--color-text-secondary, #4b5563);
+
             &.active {
-                color: var(--primary-light);
-                background-color: rgba(90, 142, 235, 0.15);
+                color: var(--color-primary-light, #5a8eeb);
+
+                &::after {
+                    background-color: var(--color-primary-light, #5a8eeb);
+                }
             }
-            
+
             .nav-badge {
                 border-color: rgba(30, 41, 59, 0.95);
             }
@@ -174,16 +185,31 @@
     .mobile-bottom-nav {
         display: none !important;
     }
-    
+
     body {
         padding-bottom: 0;
     }
 }
 
+// Runtime keyboard-open state from JS for devices where max-height media query is unreliable
+body.mt2026-keyboard-open {
+    .mobile-bottom-nav {
+        display: none !important;
+    }
+}
+
+// Must override force-show rules used by body.mobile/mobile-app fallbacks.
+body.mt2026-keyboard-open.mobile .mobile-bottom-nav,
+body.mt2026-keyboard-open[data-mobile="true"] .mobile-bottom-nav,
+body.mt2026-keyboard-open .mobile-app .mobile-bottom-nav,
+.mobile-app body.mt2026-keyboard-open .mobile-bottom-nav {
+    display: none !important;
+}
+
 // Adjust body padding for fixed bottom nav
 @media (max-width: 767px) {
     body {
-        padding-bottom: calc(64px + env(safe-area-inset-bottom, 0)) !important;
+        padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
     }
 }
 
@@ -196,6 +222,8 @@ body[data-mobile="true"] .mobile-bottom-nav,
     bottom: 0;
     left: 0;
     right: 0;
+    height: 56px;
+    overflow: hidden;
     z-index: 1030;
 }
 
@@ -203,7 +231,15 @@ body[data-mobile="true"] .mobile-bottom-nav,
 body.mobile,
 body[data-mobile="true"],
 .mobile-app {
-    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0)) !important;
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
+}
+
+// While keyboard is open, remove reserved nav space so editor can move up.
+body.mt2026-keyboard-open,
+body.mt2026-keyboard-open.mobile,
+body.mt2026-keyboard-open[data-mobile="true"],
+body.mt2026-keyboard-open.mobile-app {
+    padding-bottom: env(safe-area-inset-bottom, 0) !important;
 }
 
 // Tablet landscape - optional bottom nav
@@ -215,36 +251,212 @@ body[data-mobile="true"],
     // }
 }
 
-// Ensure proper z-index stacking
-.mobile-bottom-nav {
-    z-index: 1030; // Below modals (1050) but above most content
-}
-
 .modal {
     z-index: 1050; // Modals should appear above bottom nav
 }
 
-// Add ripple effect on tap (optional enhancement)
-.mobile-bottom-nav .nav-item {
-    position: relative;
-    overflow: hidden;
-    
-    &::after {
-        content: '';
+// ─── Mobile Bottom Sheet ────────────
+
+.mobile-sheet {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+
+    &.open {
+        display: block;
+    }
+
+    .mobile-sheet-backdrop {
         position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(0);
-        border-radius: 50%;
-        background-color: rgba(30, 106, 214, 0.2);
-        pointer-events: none;
-        transition: transform 0.3s ease-out;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.2s ease;
     }
-    
-    &:active::after {
-        transform: translate(-50%, -50%) scale(2);
-        transition: transform 0s;
+
+    .mobile-sheet-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--color-bg-primary, #fff);
+        border-radius: 20px 20px 0 0;
+        max-height: 75vh;
+        display: flex;
+        flex-direction: column;
+        animation: slideUpSheet 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        padding-bottom: calc(70px + env(safe-area-inset-bottom));
     }
+
+    .mobile-sheet-handle {
+        width: 40px;
+        height: 4px;
+        background: var(--color-border, #e5e7eb);
+        border-radius: 2px;
+        margin: 12px auto 0;
+        flex-shrink: 0;
+    }
+
+    .mobile-sheet-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px 12px;
+        border-bottom: 1px solid var(--color-border, #e5e7eb);
+        flex-shrink: 0;
+    }
+
+    .mobile-sheet-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0;
+        color: var(--color-text-primary, #111827);
+    }
+
+    .mobile-sheet-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        line-height: 1;
+        color: var(--color-text-muted, #6b7280);
+        cursor: pointer;
+        padding: 0 4px;
+
+        &:hover { color: var(--color-text-primary, #111827); }
+    }
+
+    .mobile-sheet-body {
+        overflow-y: auto;
+        flex: 1;
+        padding: 8px 0;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .mobile-sheet-footer {
+        padding: 12px 16px;
+        border-top: 1px solid var(--color-border, #e5e7eb);
+        flex-shrink: 0;
+    }
+}
+
+.mobile-spaces-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mobile-space-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 20px;
+    text-decoration: none;
+    color: var(--color-text-primary, #111827);
+    transition: background 0.15s;
+
+    &:hover, &:active {
+        background: var(--color-bg-secondary, #f3f4f6);
+        text-decoration: none;
+        color: var(--color-text-primary, #111827);
+    }
+}
+
+.mobile-space-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--color-primary, #1e6ad6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-space-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mobile-space-initials {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.mobile-space-name {
+    flex: 1;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mobile-spaces-empty {
+    padding: 24px 20px;
+    color: var(--color-text-muted, #6b7280);
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+@keyframes slideUpSheet {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+// ── More menu items sheet ───────────
+.mobile-more-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mobile-more-item {
+  display: flex;
+  align-items: center;
+  gap: space(3);
+  padding: space(4) space(2);
+  text-decoration: none;
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border-light);
+  transition: background 0.15s;
+
+  &:last-child { border-bottom: none; }
+
+  &:hover, &:active {
+    background: var(--color-bg-secondary);
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+}
+
+.mobile-more-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.mobile-more-label {
+  flex: 1;
+  font-size: 16px;
+  font-weight: $font-weight-medium;
+}
+
+.mobile-more-arrow {
+  color: var(--color-text-muted);
+  font-size: 12px;
 }

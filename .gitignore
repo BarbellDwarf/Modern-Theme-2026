@@ -17,7 +17,8 @@ composer.lock
 
 # HumHub runtime
 /runtime/
-/assets/
+/assets/*
+!/assets/*.php
 
 # Logs
 *.log

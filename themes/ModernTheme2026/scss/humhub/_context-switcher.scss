@@ -1,219 +1,336 @@
 // Modern Theme 2026 - Smart Context Switcher
-// Unified navigation dropdown
+// Unified navigation dropdown — theme-aware for light and dark modes.
 
 .context-switcher {
+  --cs-bg: var(--color-bg-secondary, #f8fafc);
+  --cs-bg-item-hover: var(--color-bg-tertiary, #f1f5f9);
+  --cs-bg-item-active: color-mix(in srgb, var(--color-primary, #1e6ad6) 20%, transparent);
+  --cs-border: var(--color-border, #d1d5db);
+  --cs-text: var(--color-text-primary, #111827);
+  --cs-text-muted: var(--color-text-muted, #6b7280);
+  --cs-icon-bg: var(--color-bg-primary, #ffffff);
+  --cs-shadow: var(--shadow-lg);
+
+  [data-bs-theme="dark"] &,
+  html[data-bs-theme="dark"] &,
+  body[data-bs-theme="dark"] & {
+    --cs-bg: #1e2a3a;
+    --cs-bg-item-hover: rgba(255, 255, 255, 0.08);
+    --cs-bg-item-active: rgba(30, 106, 214, 0.25);
+    --cs-border: rgba(255, 255, 255, 0.12);
+    --cs-text: #e2e8f0;
+    --cs-text-muted: rgba(255, 255, 255, 0.45);
+    --cs-icon-bg: rgba(255, 255, 255, 0.1);
+    --cs-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  }
+
   position: relative;
-  
+  margin-right: 8px;
+  list-style: none;
+
   .context-switcher-button {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
     padding: var(--space-2) var(--space-4);
     border-radius: var(--radius);
-    border: 1px solid var(--color-border);
-    background: var(--color-bg-primary);
-    color: var(--color-text-primary);
+    border: 1px solid var(--cs-border);
+    background: var(--cs-bg-item-hover);
+    color: var(--cs-text);
     font-weight: $font-weight-medium;
     @include transition(all, var(--transition-fast));
     cursor: pointer;
-    
+
     &:hover {
-      background: var(--color-bg-secondary);
+      background: var(--cs-bg-item-hover);
       border-color: var(--color-primary);
-      @include shadow('sm');
     }
-    
+
     &.active {
       border-color: var(--color-primary);
-      @include shadow('md');
+      background: var(--cs-bg-item-active);
     }
-    
-    .context-icon {
-      font-size: 18px;
-    }
-    
+
+      .context-icon {
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      overflow: hidden;
+      flex-shrink: 0;
+
+      .context-initial {
+        width: 100%;
+        height: 100%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        background: var(--cs-icon-bg);
+        color: var(--cs-text);
+        border-radius: 6px;
+      }
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 6px;
+        }
+
+        .context-user-image,
+        .context-site-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 6px;
+          display: block;
+        }
+      }
+
     .context-label {
       max-width: 150px;
       @include text-truncate;
     }
-    
+
     .dropdown-arrow {
       margin-left: auto;
       @include transition(transform, var(--transition-fast));
+      opacity: 0.75;
     }
-    
+
     &.active .dropdown-arrow {
       transform: rotate(180deg);
     }
   }
-  
+
   .context-switcher-menu {
     position: absolute;
-    top: calc(100% + var(--space-2));
+    top: calc(100% + 6px);
     left: 0;
-    width: $context-switcher-width;
-    max-height: $context-switcher-max-height;
+    width: 280px;
+    max-height: 480px;
     overflow-y: auto;
-    @include glass-effect(0.98);
-    border: 1px solid var(--color-border-light);
+    background: var(--cs-bg);
+    border: 1px solid var(--cs-border);
     border-radius: var(--radius-lg);
-    @include shadow('xl');
-    z-index: $z-dropdown;
-    @include scale-in();
-    
+    box-shadow: var(--cs-shadow);
+    z-index: $z-dropdown + 30;
+
     // Search input
     .context-search {
-      padding: var(--space-3);
-      border-bottom: 1px solid var(--color-border);
-      
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--cs-border);
+
       input {
         width: 100%;
-        padding: var(--space-2) var(--space-3);
-        border: 1px solid var(--color-border);
+        padding: 7px 12px;
+        border: 1px solid var(--cs-border);
         border-radius: var(--radius);
+        background: var(--cs-bg-item-hover);
+        color: var(--cs-text);
         font-size: var(--font-size-sm);
-        
+
+        &::placeholder {
+          color: var(--cs-text-muted);
+        }
+
         &:focus {
           outline: none;
           border-color: var(--color-primary);
+          background: var(--cs-bg);
         }
       }
     }
-    
+
     // Menu sections
     .context-section {
-      padding: var(--space-2);
-      
+      padding: 6px 6px 8px;
+
       .section-header {
-        padding: var(--space-2) var(--space-3);
-        font-size: var(--font-size-xs);
+        padding: 6px 10px 4px;
+        font-size: 11px;
         font-weight: $font-weight-semibold;
-        color: var(--color-text-muted);
+        color: var(--cs-text-muted);
         text-transform: uppercase;
         letter-spacing: $letter-spacing-wide;
       }
-      
-      .section-items {
-        .context-item {
+
+      .context-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 10px;
+        border-radius: var(--radius);
+        color: var(--cs-text);
+        text-decoration: none;
+        @include transition(background, var(--transition-fast));
+
+        &:hover {
+          background: var(--cs-bg-item-hover);
+          color: var(--cs-text);
+        }
+
+        &.active {
+          background: var(--cs-bg-item-active);
+          color: var(--cs-text);
+          font-weight: $font-weight-semibold;
+        }
+
+        .item-icon {
+          width: 30px;
+          height: 30px;
+          flex-shrink: 0;
           display: flex;
           align-items: center;
-          gap: var(--space-3);
-          padding: var(--space-2) var(--space-3);
+          justify-content: center;
           border-radius: var(--radius);
-          color: var(--color-text-secondary);
-          cursor: pointer;
-          @include transition(all, var(--transition-fast));
-          
-          &:hover {
-            background: var(--color-bg-secondary);
-            color: var(--color-text-primary);
-          }
-          
-          &.active {
-            background: var(--color-primary-lightest);
-            color: var(--color-primary);
-            font-weight: $font-weight-semibold;
-          }
-          
-          .item-icon {
-            width: 32px;
-            height: 32px;
-            display: flex;
+          background: var(--cs-icon-bg);
+          color: var(--cs-text);
+          font-size: 13px;
+
+          .item-initial {
+            width: 100%;
+            height: 100%;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            background: var(--cs-icon-bg);
+            color: var(--cs-text);
             border-radius: var(--radius);
-            background: var(--color-bg-tertiary);
-            
-            img {
-              width: 100%;
-              height: 100%;
-              object-fit: cover;
-              border-radius: var(--radius);
-            }
           }
-          
-          .item-label {
-            flex: 1;
-            min-width: 0;
-            
-            .item-name {
-              @include text-truncate;
-              font-weight: $font-weight-medium;
-            }
-            
-            .item-meta {
-              font-size: var(--font-size-xs);
-              color: var(--color-text-muted);
-            }
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: var(--radius);
           }
-          
-          .item-badge {
-            @include shadow('xs');
+
+          .context-user-image,
+          .context-site-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: var(--radius);
+            display: block;
           }
         }
-        
-        // Expandable section
-        .expandable {
-          .expand-toggle {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: var(--space-2) var(--space-3);
-            border-radius: var(--radius);
-            cursor: pointer;
-            @include transition(background, var(--transition-fast));
-            
-            &:hover {
-              background: var(--color-bg-secondary);
-            }
-            
-            .expand-icon {
-              @include transition(transform, var(--transition-fast));
-            }
-            
-            &.expanded .expand-icon {
-              transform: rotate(90deg);
-            }
+
+        .item-label {
+          flex: 1;
+          min-width: 0;
+
+          .item-name {
+            @include text-truncate;
+            font-weight: $font-weight-medium;
+            font-size: 14px;
           }
-          
-          .expand-content {
-            max-height: 0;
-            overflow: hidden;
-            @include transition(max-height, var(--transition-base));
-            
-            &.expanded {
-              max-height: 500px;
-            }
-            
-            .context-item {
-              padding-left: var(--space-10);
-            }
+
+          .item-meta {
+            display: block;
+            font-size: 11px;
+            color: var(--cs-text-muted);
+            @include text-truncate;
+            margin-top: 1px;
           }
         }
       }
+
+      .context-no-spaces {
+        padding: 10px 12px;
+        font-size: var(--font-size-sm);
+        color: var(--cs-text-muted);
+        margin: 0;
+      }
     }
-    
+
     // Keyboard shortcut hint
     .keyboard-hint {
-      padding: var(--space-2) var(--space-3);
-      border-top: 1px solid var(--color-border);
-      font-size: var(--font-size-xs);
-      color: var(--color-text-muted);
+      padding: 8px 12px;
+      border-top: 1px solid var(--cs-border);
+      font-size: 11px;
+      color: var(--cs-text-muted);
       text-align: center;
-      
+
       kbd {
-        padding: 2px 6px;
-        background: var(--color-bg-tertiary);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-sm);
+        padding: 1px 5px;
+        background: var(--cs-bg-item-hover);
+        border: 1px solid var(--cs-border);
+        border-radius: 3px;
         font-family: var(--font-family-monospace);
         font-size: 10px;
+        color: var(--cs-text);
       }
     }
   }
 }
 
-// Mobile optimizations
+// Tablet / small-desktop: prevent switcher trigger/menu from breaking layout.
+@media (min-width: 768px) and (max-width: 1199px) {
+  .context-switcher {
+    margin-right: 4px;
+
+    .context-switcher-button {
+      padding: var(--space-2) var(--space-3);
+
+      .context-label {
+        max-width: 110px;
+      }
+    }
+
+    .context-switcher-menu {
+      left: 0;
+      right: auto;
+      width: min(320px, calc(100vw - 24px));
+      max-width: calc(100vw - 24px);
+      max-height: min(70vh, 520px);
+    }
+  }
+}
+
+// Explicit light-mode override to prevent inherited white text from topbar/nav rules.
+[data-bs-theme="light"] .context-switcher,
+html[data-bs-theme="light"] .context-switcher,
+body[data-bs-theme="light"] .context-switcher {
+  .context-switcher-button,
+  .context-switcher-button .context-label,
+  .context-switcher-button .dropdown-arrow,
+  .context-switcher-button .dropdown-arrow i {
+    color: var(--color-text-primary, #111827) !important;
+  }
+
+  .context-switcher-menu,
+  .context-switcher-menu .context-item,
+  .context-switcher-menu .item-name {
+    color: var(--color-text-primary, #111827);
+  }
+
+  .context-switcher-menu .item-meta,
+  .context-switcher-menu .section-header,
+  .context-switcher-menu .keyboard-hint {
+    color: var(--color-text-muted, #6b7280);
+  }
+}
+
+// Desktop cleanup:
+// keep topbar nav compact and avoid duplicated "Spaces" label when using context switcher.
+@media (min-width: 992px) {
+  body.modern-theme-2026 #top-menu-nav > li:not(.context-switcher):nth-child(n+2) {
+    margin-left: 2px;
+  }
+
+  body.modern-theme-2026 #top-menu-nav > li > a[href*="/space/spaces"] {
+    display: none !important;
+  }
+}
+
+// Mobile: full-screen overlay
 @include mobile-only {
   .context-switcher-menu {
     position: fixed !important;
@@ -225,6 +342,5 @@
     max-width: 100% !important;
     max-height: 100% !important;
     border-radius: 0 !important;
-    @include slide-up();
   }
 }

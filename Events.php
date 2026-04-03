@@ -8,7 +8,9 @@
 namespace humhub\modules\modernTheme2026;
 
 use humhub\components\View;
+use humhub\modules\modernTheme2026\assets\ModernThemeAsset;
 use humhub\modules\modernTheme2026\widgets\MobileBottomNav;
+use humhub\widgets\TopMenu;
 use Yii;
 
 class Events
@@ -24,11 +26,19 @@ class Events
             return;
         }
 
+        if (Yii::$app->user->isGuest) {
+            return;
+        }
+
         /** @var View $view */
         $view = $event->sender;
-        
-        // Register custom assets if needed
-        // ModernTheme2026Asset::register($view);
+
+        // Register theme JavaScript assets
+        try {
+            ModernThemeAsset::register($view);
+        } catch (\Exception $e) {
+            Yii::error('Failed to register ModernThemeAsset: ' . $e->getMessage(), 'modern-theme-2026');
+        }
     }
 
     /**
@@ -76,5 +86,31 @@ class Events
         }
 
         return $module;
+    }
+
+    /**
+     * Remove redundant default "Spaces" top menu item when using context switcher.
+     */
+    public static function onTopMenuRun($event): void
+    {
+        $module = static::getModuleIfThemeActive();
+        if (!$module || Yii::$app->user->isGuest) {
+            return;
+        }
+
+        /** @var TopMenu $menu */
+        $menu = $event->sender;
+
+        $spacesEntry = $menu->getEntryById('spaces');
+        if ($spacesEntry) {
+            $menu->removeEntry($spacesEntry);
+            return;
+        }
+
+        // Fallback in case another module adds Spaces without the standard id.
+        $spacesEntry = $menu->getEntryByUrl(['/space/spaces']);
+        if ($spacesEntry) {
+            $menu->removeEntry($spacesEntry);
+        }
     }
 }

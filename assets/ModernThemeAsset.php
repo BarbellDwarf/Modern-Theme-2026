@@ -18,6 +18,7 @@ class ModernThemeAsset extends AssetBundle
         'js/peopleFocusGuard.js',
         'js/paletteSwitcher.js',
         'js/notifications.js',
+        'js/modalFocusFix.js',
     ];
 
     public $depends = [

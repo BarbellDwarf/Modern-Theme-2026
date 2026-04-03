@@ -9,7 +9,7 @@
     .container {
         display: flex;
         align-items: center;
-        min-height: 68px;
+        min-height: 60px;
         padding-left: 16px;
         padding-right: 16px;
         gap: 8px;
@@ -36,7 +36,7 @@
         align-items: center;
         flex: 0 0 auto;
         margin-left: auto;
-        gap: 4px;
+        gap: 10px;
         height: 100%;
     }
 
@@ -46,7 +46,11 @@
         align-items: center;
         flex: 0 0 auto;
         height: 100%;
-        margin-left: 4px;
+        margin-left: 14px;
+    }
+
+    .topbar-actions {
+        margin-left: 10px;
     }
 
     .notifications .dropdown-toggle,
@@ -61,7 +65,7 @@
         align-items: center;
         justify-content: center;
         border-radius: 10px;
-        font-size: 16px;
+        font-size: 19px;
     }
 
     #top-menu-nav > li,
@@ -76,15 +80,17 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        min-height: 38px;
+        gap: 3px;
+        min-height: 34px;
         line-height: 1.05;
         text-align: center;
-        padding-top: 5px;
-        padding-bottom: 5px;
+        padding: 4px 8px;
     }
 
+    // Remove the <br> from the flex flow — line-height:0 has no effect on <br>.
+    // display:none is the only reliable way to collapse it.
     #top-menu-nav > li > a br {
-        line-height: 0;
+        display: none;
     }
 
     .topbar-actions .dropdown.account .dropdown-toggle {
@@ -252,7 +258,7 @@
         .container {
             gap: 8px;
             min-width: 0;
-            min-height: 68px;
+            min-height: 60px;
             padding-left: 10px;
             padding-right: 10px;
         }
@@ -285,25 +291,33 @@
         }
 
         #top-menu-nav > li > a {
-            padding: 6px 8px;
+            padding: 4px 6px;
             white-space: nowrap;
             font-size: 13px;
-            line-height: 1.2;
+            line-height: 1.05;
         }
 
         #search-menu-nav {
-            gap: 6px;
+            gap: 10px;
+        }
+
+        .notifications {
+            margin-left: 12px;
+        }
+
+        .topbar-actions {
+            margin-left: 8px;
         }
 
         #search-menu-nav > li > a,
         .notifications .dropdown-toggle,
         .topbar-actions .dropdown-toggle {
-            width: 40px;
-            min-width: 40px;
-            height: 40px;
-            min-height: 40px;
+            width: 42px;
+            min-width: 42px;
+            height: 42px;
+            min-height: 42px;
             padding: 0;
-            font-size: 15px;
+            font-size: 19px;
         }
 
         .topbar-actions .dropdown.account .dropdown-toggle {
@@ -347,11 +361,24 @@
             display: none !important;
         }
 
+        // Keep nav-link padding consistent with base — don't override with 6px
         #top-menu-nav > li > a {
             white-space: nowrap;
-            padding: 6px 8px;
+            padding: 4px 8px;
             font-size: 13px;
-            line-height: 1.2;
+            line-height: 1.05;
+        }
+
+        #search-menu-nav {
+            gap: 10px;
+        }
+
+        .notifications {
+            margin-left: 14px;
+        }
+
+        .topbar-actions {
+            margin-left: 10px;
         }
 
         #search-menu-nav > li > a,
@@ -362,7 +389,7 @@
             height: 42px;
             min-height: 42px;
             padding: 0;
-            font-size: 16px;
+            font-size: 19px;
         }
 
         .topbar-actions .dropdown.account .dropdown-toggle {

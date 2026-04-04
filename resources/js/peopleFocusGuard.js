@@ -1,33 +1,25 @@
 humhub.module('modernTheme.peopleFocusGuard', function(module, require, $) {
 
-    function isMobileViewport() {
-        return window.innerWidth <= 991 || /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    function isMobile() {
+        return window.innerWidth <= 991;
     }
 
     function isPeoplePage() {
         return (window.location.pathname || '').indexOf('/user/people') !== -1;
     }
 
-    // ─── Autofocus suppression (prevents cards.js from opening keyboard) ────────
+    // ─── Autofocus suppression ────────────────────
 
     var suppressUntil = 0;
     var captureInstalled = false;
 
     function onFocusCapture(e) {
-        if (Date.now() > suppressUntil) {
-            return;
-        }
-        var target = e.target;
-        if (!target) {
-            return;
-        }
-        var $t = $(target);
-        if ($t.closest('.form-search-filter-keyword').length || $t.closest('form.form-search').length) {
+        if (Date.now() > suppressUntil) { return; }
+        var $t = $(e.target);
+        if ($t.closest('form.form-search').length) {
             e.stopImmediatePropagation();
             setTimeout(function() {
-                if (document.activeElement === target) {
-                    target.blur();
-                }
+                if (document.activeElement === e.target) { e.target.blur(); }
             }, 0);
         }
     }
@@ -48,143 +40,94 @@ humhub.module('modernTheme.peopleFocusGuard', function(module, require, $) {
         suppressUntil = 0;
     }
 
-    function blurCurrentIfSearch() {
-        var active = document.activeElement;
-        if (!active) {
-            return;
-        }
-        var $a = $(active);
-        if ($a.closest('.form-search-filter-keyword').length || $a.closest('form.form-search').length) {
-            active.blur();
-        }
-    }
-
     // ─── FAB Search UI ──────────────────────────────────────────────────────────
 
     var fabInjected = false;
 
-    function getSearchPanel() {
-        // The panel-body that wraps form.form-search
-        return $('form.form-search').closest('.panel-body');
-    }
-
-    function injectFAB() {
-        if (fabInjected) {
-            return;
-        }
-
-        var $panel = getSearchPanel();
+    function setupPeopleMobile() {
+        // Hide search panel — use PHP-rendered class if present, else add it via JS
+        var $panel = $('.mt2026-people-search-panel');
         if (!$panel.length) {
-            return;
+            // Fallback: find the panel-body containing the people search form
+            $panel = $('form.form-search').closest('.panel-body');
+            $panel.addClass('mt2026-people-search-panel');
         }
 
-        // Mark panel with our class for CSS targeting
-        $panel.addClass('mt2026-people-search-panel');
-        $('body').addClass('mt2026-people-mobile');
+        // Hide invite button on mobile
+        $('.mt2026-people-invite-btn').addClass('mt2026-people-invite-hidden');
 
-        // Build the overlay: back arrow + cloned input from form + submit
-        var $form = $panel.find('form.form-search');
-        var $input = $panel.find('input[type="text"], input[type="search"]').first();
-        var inputName = $input.attr('name') || 'keyword';
-        var inputVal  = $input.val() || '';
-        var placeholder = $input.attr('placeholder') || 'Search...';
-        var formAction = $form.attr('action') || window.location.pathname;
-        var formMethod = ($form.attr('method') || 'get').toLowerCase();
-
-        var overlayHtml =
-            '<div class="mt2026-search-overlay" id="mt2026-search-overlay" role="search">' +
-            '  <button type="button" class="mt2026-search-overlay-back" id="mt2026-search-back" aria-label="Close search">' +
-            '    <i class="fa fa-arrow-left"></i>' +
-            '  </button>' +
-            '  <form method="' + formMethod + '" action="' + formAction + '" style="display:contents">' +
-            '    <input type="hidden" name="page" value="1">' +
-            '    <input type="text" name="' + inputName + '" value="' + $('<div>').text(inputVal).html() + '" placeholder="' + $('<div>').text(placeholder).html() + '" autocomplete="off">' +
-            '    <button type="submit"><i class="fa fa-search"></i></button>' +
-            '  </form>' +
-            '</div>';
+        // Inject FAB + overlay once
+        if (fabInjected || $('#mt2026-search-fab').length) { return; }
 
         var fabHtml =
             '<button type="button" class="mt2026-search-fab" id="mt2026-search-fab" aria-label="Search people">' +
-            '  <i class="fa fa-search"></i>' +
-            '</button>';
+            '<i class="fa fa-search"></i></button>';
 
-        $('body').append(overlayHtml).append(fabHtml);
+        var overlayHtml =
+            '<div class="mt2026-search-overlay" id="mt2026-search-overlay" role="search">' +
+            '<button type="button" id="mt2026-search-back" aria-label="Close search"><i class="fa fa-arrow-left"></i></button>' +
+            '<form method="get" action="/user/people" style="display:contents">' +
+            '<input type="text" name="keyword" placeholder="Search people\u2026" autocomplete="off">' +
+            '<button type="submit" aria-label="Search"><i class="fa fa-search"></i></button>' +
+            '</form></div>';
 
-        // Wire events
-        $(document).on('click', '#mt2026-search-fab', function() {
-            openSearchOverlay();
-        });
+        $('body').append(fabHtml).append(overlayHtml);
 
-        $(document).on('click', '#mt2026-search-back', function() {
-            closeSearchOverlay();
-        });
-
-        // Close overlay on Escape
-        $(document).on('keydown.mt2026SearchOverlay', function(e) {
-            if (e.key === 'Escape' || e.keyCode === 27) {
-                closeSearchOverlay();
-            }
+        $(document).on('click.mt2026Fab', '#mt2026-search-fab', openSearch);
+        $(document).on('click.mt2026Fab', '#mt2026-search-back', closeSearch);
+        $(document).on('keydown.mt2026Search', function(e) {
+            if (e.key === 'Escape' || e.keyCode === 27) { closeSearch(); }
         });
 
         fabInjected = true;
     }
 
-    function openSearchOverlay() {
-        var $overlay = $('#mt2026-search-overlay');
-        if (!$overlay.length) {
-            return;
-        }
-        $overlay.addClass('open');
-        // Intentional focus — user requested the keyboard by tapping
-        var $input = $overlay.find('input[type="text"]');
+    function openSearch() {
+        $('#mt2026-search-overlay').addClass('open');
         setTimeout(function() {
-            $input[0] && $input[0].focus();
-        }, 100);
+            var inp = document.querySelector('#mt2026-search-overlay input[type="text"]');
+            if (inp) { inp.focus(); }
+        }, 80);
     }
 
-    function closeSearchOverlay() {
+    function closeSearch() {
         $('#mt2026-search-overlay').removeClass('open');
     }
 
-    function removeFAB() {
+    function teardown() {
         $('#mt2026-search-fab').remove();
         $('#mt2026-search-overlay').remove();
-        $('body').removeClass('mt2026-people-mobile');
-        $('.mt2026-people-search-panel').removeClass('mt2026-people-search-panel');
+        // Restore search panel visibility
+        var $panel = $('.mt2026-people-search-panel');
+        if ($panel.length) {
+            $panel.removeClass('mt2026-people-search-panel');
+            $panel.css('display', '');
+        }
+        $('.mt2026-people-invite-btn').removeClass('mt2026-people-invite-hidden');
+        $(document).off('click.mt2026Fab keydown.mt2026Search');
         fabInjected = false;
+        removeCaptureGuard();
     }
 
     // ─── Module init ────────────────────────────────────────────────────────────
 
     var init = function() {
-        var onMobile = isMobileViewport();
-        var onPeople = isPeoplePage();
-
-        if (!onPeople) {
-            removeFAB();
-            removeCaptureGuard();
+        if (!isPeoplePage() || !isMobile()) {
+            teardown();
             return;
         }
 
-        if (!onMobile) {
-            // Desktop: ensure any leftover mobile UI is removed
-            removeFAB();
-            removeCaptureGuard();
-            return;
-        }
-
-        // Mobile people page: suppress autofocus + inject FAB
         installCaptureGuard();
+        setupPeopleMobile();
 
-        // Inject FAB after a short delay so the DOM is ready
+        // Belt-and-suspenders: blur any search input that cards.js may have focused
         setTimeout(function() {
-            injectFAB();
-            blurCurrentIfSearch();
-        }, 50);
-
-        setTimeout(blurCurrentIfSearch, 200);
+            var a = document.activeElement;
+            if (a && $(a).closest('form.form-search').length) { a.blur(); }
+        }, 200);
         setTimeout(function() {
-            blurCurrentIfSearch();
+            var a = document.activeElement;
+            if (a && $(a).closest('form.form-search').length) { a.blur(); }
             setTimeout(removeCaptureGuard, 100);
         }, 1200);
     };
@@ -192,5 +135,3 @@ humhub.module('modernTheme.peopleFocusGuard', function(module, require, $) {
     module.initOnPjaxLoad = true;
     module.export({ init: init });
 });
-
-

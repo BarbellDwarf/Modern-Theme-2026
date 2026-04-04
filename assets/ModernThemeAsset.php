@@ -19,6 +19,7 @@ class ModernThemeAsset extends AssetBundle
         'js/paletteSwitcher.js',
         'js/notifications.js',
         'js/modalFocusFix.js',
+        'js/mobileKeyboardFix.js',
     ];
 
     public $depends = [

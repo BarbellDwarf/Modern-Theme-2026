@@ -1,6 +1,53 @@
 // Modern Theme 2026 - Mobile Overrides
 // Mobile-specific styles and responsive adjustments
 
+// -----------------------------------------------------------------------
+// Virtual keyboard open state
+// -----------------------------------------------------------------------
+// When the virtual keyboard is open, mobileKeyboardFix.js:
+//   1. Adds .mt2026-keyboard-open to <body>
+//   2. Sets --vvh on :root to the visual viewport height (window.visualViewport.height)
+// CSS rules below respond to that state so modals shrink to the visible area
+// and inputs remain reachable above the keyboard.
+// -----------------------------------------------------------------------
+
+// Make modal content shrink to the visible viewport when the keyboard is open.
+// --vvh is set dynamically by JS; fall back to 100dvh if not yet available.
+body.mt2026-keyboard-open {
+    @media (max-width: 767px) {
+        // Shrink modal to the visual viewport height (keyboard-excluded area)
+        .modal-content {
+            max-height: calc(var(--vvh, 100dvh) - 60px) !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        // Allow modal body to scroll independently so the focused input stays visible
+        .modal-body {
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
+            flex: 1 1 auto;
+            min-height: 0;
+        }
+
+        // Keep modal footer always visible above the keyboard
+        .modal-footer {
+            flex-shrink: 0;
+        }
+
+        // Keep modal header always visible at the top
+        .modal-header {
+            flex-shrink: 0;
+        }
+
+        // Prevent bottom nav from showing behind the keyboard
+        .mobile-bottom-nav {
+            display: none !important;
+        }
+    }
+}
+
+// -----------------------------------------------------------------------
 // Mobile-specific enhancements for Modern Theme 2026
 @media (max-width: 991px) {
     // Space sidebar nav: convert vertical list to horizontal scrollable pill bar

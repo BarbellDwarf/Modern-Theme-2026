@@ -39,6 +39,9 @@
 @import "humhub/reactions";
 @import "humhub/context-switcher";
 
+// Rich text editor (ProseMirror) mobile overrides (before dark mode)
+@import "humhub/richtext";
+
 // Dark mode support (before mobile)
 @import "humhub/palette-switcher";
 @import "humhub/dark-mode";

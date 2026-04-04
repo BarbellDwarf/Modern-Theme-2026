@@ -101,15 +101,24 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         var top = trigRect.top - pickH - 8;
         if (top < 4) { top = trigRect.bottom + 8; }
 
-        // Align left edge with trigger, clamped inside viewport.
-        var left = trigRect.left;
-        if (left + pickW > vpW - 8) { left = vpW - pickW - 8; }
-        if (left < 8) { left = 8; }
+        // On mobile viewports center the picker horizontally so it is never
+        // clipped on either side, regardless of where the trigger sits.
+        var left;
+        if (vpW < 768 && pickW <= vpW - 16) {
+            left = Math.round((vpW - pickW) / 2);
+        } else {
+            // Desktop: align left edge with trigger, clamped inside viewport.
+            left = trigRect.left;
+            if (left + pickW > vpW - 8) { left = vpW - pickW - 8; }
+            if (left < 8) { left = 8; }
+        }
 
         // Bottom guard
         if (top + pickH > vpH - 8) { top = Math.max(4, trigRect.top - pickH - 8); }
 
-        $picker.css({ top: top, left: left });
+        // Explicitly clear bottom and right so that any residual CSS values
+        // (which cannot stretch a fixed-position element unexpectedly) are zeroed.
+        $picker.css({ top: top, left: left, bottom: 'auto', right: 'auto' });
         return $picker;
     }
 
@@ -242,11 +251,13 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         }
 
         // Toggle picker on trigger click/tap
+        // NOTE: the picker is teleported to <body> so we check $bodyPicker directly,
+        // not $c.find(...), to detect whether it is currently open for this container.
         $(document).on('click', CONTAINER_SELECTOR + ' .mt2026-reaction-trigger', function(e) {
             e.preventDefault();
             e.stopPropagation();
             var $c = $(this).closest('.likeLinkContainer');
-            if ($c.find('.mt2026-reaction-picker').hasClass('visible')) {
+            if ($activeContainer && $activeContainer[0] === $c[0] && $bodyPicker && $bodyPicker.hasClass('visible')) {
                 hidePicker($c);
             } else {
                 showPicker($c);

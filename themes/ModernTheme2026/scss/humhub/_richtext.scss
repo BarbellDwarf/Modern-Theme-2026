@@ -1,0 +1,190 @@
+// Modern Theme 2026 - Rich Text Editor (ProseMirror) Mobile Styles
+// Addresses mobile UX issues:
+//   • Toolbar buttons too small to tap accurately
+//   • Toolbar overflows without scrolling on narrow screens
+//   • Editor area is hard to interact with on small screens
+//   • iOS can zoom-in on focus if font-size < 16px
+
+// ── Mobile editor overrides ──────────────────────────────────────────────────
+@media (max-width: 767px) {
+
+    // ── Toolbar wrapper: constrain width so the toolbar cannot overflow ───────
+    // The .ProsemirrorEditor itself needs to be the clipping boundary.
+    .ProsemirrorEditor {
+        // Constrain to parent width — prevents toolbar from extending off-screen
+        max-width: 100% !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        // Do NOT set overflow:hidden here — that would clip dropdown menus.
+        // Width containment alone prevents the editor from expanding past its parent.
+    }
+
+    // ── Toolbar container: horizontally scrollable on mobile ────────────────
+    .ProseMirror-menubar {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        float: none !important;      // override focusMenu's float:left which breaks width
+        width: 100% !important;      // fill the constrained parent
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important; // hide vertical overflow (scrollbar row only)
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; // Firefox
+        gap: 2px;
+        padding: 4px 6px !important;
+        min-height: 44px !important; // Full-height touch bar
+        // Reset the negative margin used by focusMenu to float above the input
+        margin-top: 0 !important;
+
+        &::-webkit-scrollbar { display: none; } // Chrome/Safari
+
+        // Keep individual groups also in a row
+        .ProseMirror-menu-group,
+        .ProseMirror-menuitem .ProseMirror-menu-group {
+            display: inline-flex !important;
+            flex-wrap: nowrap !important;
+            flex-shrink: 0;
+        }
+    }
+
+    // ── focusMenu: un-float the toolbar so it stacks above the editor ────────
+    // On desktop the menubar floats left above the input (negative margin-top trick).
+    // On mobile there is no room for this — stack it normally.
+    .ProsemirrorEditor.focusMenu {
+        .ProseMirror-menubar {
+            position: static !important;
+            float: none !important;
+            margin-top: 0 !important;
+            border-bottom: 0 !important;
+            border-radius: 4px 4px 0 0 !important;
+        }
+
+        // Remove the border-radius flip that the focusMenu applies to the input
+        .form-control:focus {
+            border-top-left-radius: 0 !important;
+            border-top-right-radius: 0 !important;
+        }
+    }
+
+    // ── Toolbar menu items: larger touch targets ─────────────────────────────
+    .ProseMirror-menuitem {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        // Icon buttons (ProseMirror-icon)
+        .ProseMirror-icon {
+            min-width: 36px !important;
+            min-height: 36px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 6px 8px !important;
+            border-radius: 6px;
+            cursor: pointer;
+
+            svg,
+            span {
+                pointer-events: none;
+            }
+        }
+
+        // Dropdown trigger buttons
+        .ProseMirror-menu-dropdown,
+        a.ProseMirror-menu-trigger {
+            min-height: 36px !important;
+            min-width: 36px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            padding: 6px 10px !important;
+        }
+    }
+
+    // ── Toolbar separators: keep them visible ────────────────────────────────
+    .ProseMirror-menuseparator {
+        flex-shrink: 0;
+        align-self: stretch;
+        margin: 4px 2px;
+    }
+
+    // ── Dropdown menus: ensure they open within the visible viewport ─────────
+    .ProseMirror-menu-dropdown-menu,
+    .ProseMirror-menu-submenu {
+        position: fixed !important; // Break out of any clipping ancestor
+        z-index: 9999 !important;
+        max-height: 40vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    // ── Editor content area ──────────────────────────────────────────────────
+    .ProseMirror-menubar-wrapper {
+        // iOS: enable inertia scrolling on the editor wrapper
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .ProseMirror {
+        // Minimum height so there is a large enough tap target to focus
+        min-height: 80px !important;
+
+        // Prevent iOS from zooming in when the editor is focused.
+        // 1rem = 16px which is the iOS zoom threshold.
+        font-size: max(1rem, 16px) !important;
+
+        // Allow the editor itself to scroll when content is long and modal clips it
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        word-break: break-word;
+    }
+
+    // ── Full wrapper: focusMenu variant (toolbar floats above the input) ─────
+    .ProsemirrorEditor.focusMenu {
+        // When the toolbar floats above the input, make sure it is still reachable
+        .ProseMirror-menubar {
+            position: sticky !important;
+            top: 0;
+            z-index: 10;
+        }
+    }
+
+    // ── Post/comment create form ─────────────────────────────────────────────
+    .post-form,
+    .wall-entry-form {
+        .ProseMirror {
+            min-height: 60px !important;
+        }
+
+        // Remove resize handle on mobile (doesn't work with touch)
+        textarea {
+            resize: none !important;
+        }
+    }
+}
+
+// ── Extra small devices (≤ 480px) ────────────────────────────────────────────
+@media (max-width: 480px) {
+    .ProseMirror-menubar {
+        padding: 2px 4px !important;
+        min-height: 40px !important;
+    }
+
+    .ProseMirror-menuitem {
+        .ProseMirror-icon {
+            min-width: 32px !important;
+            min-height: 32px !important;
+            padding: 4px 6px !important;
+        }
+    }
+}
+
+// ── Tablet (768 – 991px): slightly enlarged touch targets ────────────────────
+@media (min-width: 768px) and (max-width: 991px) {
+    .ProseMirror-menuitem .ProseMirror-icon {
+        min-width: 32px;
+        min-height: 32px;
+        padding: 5px 6px;
+    }
+}

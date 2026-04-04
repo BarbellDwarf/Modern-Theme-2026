@@ -441,7 +441,53 @@ foreach ($reactions as $type => $data) {
 echo MobileBottomNav::widget();  // Auto-renders with default config
 ```
 
-## Database Migrations
+---
+
+### ⚠️ CRITICAL: HumHub Controller View Overrides — Self-Contained via pathMap
+
+**Never place view overrides outside this module directory.** The module uses Yii2's `pathMap` mechanism to serve overrides from within itself.
+
+**How it works:**
+
+`Events::onBeforeAction()` fires before every action and registers path mappings on `Yii::$app->view->theme->pathMap`. This tells Yii2's theme engine to look inside the module for view overrides instead of (or before) the active theme directory.
+
+```php
+// Registered in Events::onBeforeAction():
+$pathMap[Yii::getAlias('@humhub/modules/user') . '/views/people']
+    = $modulePath . '/views/user/people';
+```
+
+**Override file location (inside this module):**
+```
+views/
+└── user/
+    └── people/
+        └── index.php    ← People page override
+```
+
+**DO NOT place files at:**
+```
+/var/www/humhub/themes/HumHub/views/…    ❌ Outside module — not portable
+themes/ModernTheme2026/views/…           ❌ Wrong path — never loaded by HumHub
+```
+
+**Adding a new view override:**
+1. Create `views/[moduleId]/[controller]/[viewName].php` inside this module
+2. Add the mapping to `Events::onBeforeAction()`:
+```php
+Yii::getAlias('@humhub/modules/[moduleId]') . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . '[controller]'
+    => $modulePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . '[moduleId]' . DIRECTORY_SEPARATOR . '[controller]',
+```
+3. Register nothing outside the module.
+
+| Override type | Location |
+|---|---|
+| HumHub controller view | `views/[moduleId]/[controller]/[view].php` ✅ |
+| This module's widget view | `widgets/views/[view].php` ✅ |
+| This module's admin config view | `views/config/[view].php` ✅ |
+
+**Currently active overrides:**
+- `views/user/people/index.php` — Adds `mt2026-people-search-panel` class (mobile search panel hide) and `.mt2026-people-invite-btn` wrapper (invite button hide on mobile)
 
 Changes to database schema go in `migrations/`:
 

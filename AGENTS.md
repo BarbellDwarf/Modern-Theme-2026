@@ -314,6 +314,40 @@ Render widget views via render() method:
 return $this->render('reactionPicker', ['data' => $data]);
 ```
 
+### ⚠️ HumHub Controller View Overrides — Self-Contained via pathMap
+
+**Do NOT place view overrides outside this module.** Use Yii2's `pathMap` system instead.
+
+The `Events::onBeforeAction()` handler registers path mappings at request time, pointing HumHub's view resolver to override files inside this module:
+
+```php
+// Events.php — onBeforeAction registers this mapping:
+'@humhub/modules/user/views/people'  →  '@modern-theme-2026/views/user/people'
+```
+
+This means view overrides live at:
+```
+views/user/people/index.php   ✅ Inside the module — ships with the module
+```
+
+**Never** place overrides at:
+```
+/var/www/humhub/themes/HumHub/views/…    ❌ Outside module — breaks portability
+themes/ModernTheme2026/views/…           ❌ Wrong dir — never loaded by HumHub
+```
+
+**Adding a new view override:**
+1. Create the file at `views/[moduleId]/[controller]/[viewName].php` inside this module
+2. Add its path mapping to `Events::onBeforeAction()`:
+```php
+Yii::getAlias('@humhub/modules/[moduleId]') . '/views/[controller]'
+    => $modulePath . '/views/[moduleId]/[controller]',
+```
+3. No changes needed outside the module
+
+**Currently active overrides (tracked here):**
+- `views/user/people/index.php` — People page: adds `mt2026-people-search-panel` class to hide search panel on mobile; wraps invite button in `.mt2026-people-invite-btn`
+
 ## File Structure Summary
 
 ### Never Edit These (HumHub Core)

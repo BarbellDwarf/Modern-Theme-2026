@@ -129,4 +129,45 @@ class Events
             }
         }
     }
+
+    /**
+     * Registers module-internal view overrides via Yii2 pathMap so the module
+     * is fully self-contained — no files need to be placed outside the module.
+     *
+     * Called via Application::EVENT_BEFORE_ACTION so it fires before any
+     * controller renders its view.
+     */
+    public static function onBeforeAction($event)
+    {
+        $module = static::getModuleIfThemeActive();
+        if (!$module) {
+            return;
+        }
+
+        $view = Yii::$app->view;
+        if (!$view || !$view->theme) {
+            return;
+        }
+
+        $modulePath = Yii::getAlias('@modern-theme-2026');
+        $overrides = [
+            // HumHub user/people controller views
+            Yii::getAlias('@humhub/modules/user') . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'people'
+                => $modulePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR . 'people',
+        ];
+
+        $pathMap = $view->theme->pathMap ?? [];
+        foreach ($overrides as $original => $override) {
+            $existing = $pathMap[$original] ?? [];
+            if (!is_array($existing)) {
+                $existing = [$existing];
+            }
+            // Prepend so module override takes priority
+            if (!in_array($override, $existing)) {
+                array_unshift($existing, $override);
+                $pathMap[$original] = $existing;
+            }
+        }
+        $view->theme->pathMap = $pathMap;
+    }
 }

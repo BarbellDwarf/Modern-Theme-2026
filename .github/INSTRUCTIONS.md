@@ -2,6 +2,35 @@
 
 This document explains the instruction files created for AI agents working on the Modern Theme 2026 HumHub module.
 
+## Critical Knowledge: View Overrides Are Self-Contained
+
+> ⚠️ **This is the #1 source of silent failures.** Memorize it.
+
+**All view overrides live inside this module.** Nothing is placed outside the module directory.
+
+The module uses Yii2's `pathMap` (registered in `Events::onBeforeAction()`) to intercept HumHub's view resolution and serve override files from within the module:
+
+```
+views/
+└── user/
+    └── people/
+        └── index.php   ← shipped with the module, self-contained
+```
+
+**DO NOT place overrides at:**
+```
+/var/www/humhub/themes/HumHub/views/…    ❌ Outside module
+themes/ModernTheme2026/views/…           ❌ Never loaded by HumHub
+```
+
+The `themes/ModernTheme2026/` directory inside this module is **not** the active theme path and is silently ignored. The `pathMap` approach is the correct, portable solution.
+
+Full documentation: `php-widgets-module.instructions.md` → "CRITICAL: HumHub Controller View Overrides — Self-Contained via pathMap"
+
+---
+
+
+
 ## File Structure
 
 ```

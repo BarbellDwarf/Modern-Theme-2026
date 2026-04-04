@@ -10,6 +10,7 @@ use yii\helpers\Html;
  * @var $user \humhub\modules\user\models\User
  * @var $notificationCount int
  * @var $activeItem string
+ * @var $peopleNavLabel string
  */
 
 // Register inline script to detect mobile and add CSS fallback class
@@ -47,15 +48,15 @@ if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
         <span class="nav-label">Spaces</span>
     </button>
 
-    <!-- People -->
+    <!-- People/Directory -->
     <a href="<?= Url::to(['/user/people']) ?>" 
        class="nav-item<?= $activeItem === 'people' ? ' active' : '' ?>"
-       aria-label="People"
+       aria-label="<?= Html::encode($peopleNavLabel) ?>"
        aria-current="<?= $activeItem === 'people' ? 'page' : 'false' ?>">
         <span class="nav-icon">
             <i class="fa fa-users"></i>
         </span>
-        <span class="nav-label">People</span>
+        <span class="nav-label"><?= Html::encode($peopleNavLabel) ?></span>
     </a>
 
     <!-- Notifications -->
@@ -196,6 +197,39 @@ if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
                     </a>
                 </li>
                 <?php endif; ?>
+                <?php if (\Yii::$app->moduleManager->hasModule('dark-mode')): ?>
+                <?php
+                    $darkModeSetting = new \humhub\modules\darkMode\models\UserSetting();
+                    $currentDarkMode = $darkModeSetting->darkMode;
+                ?>
+                <li class="mobile-more-item mobile-more-darkmode-row" style="cursor:default;">
+                    <span class="mobile-more-icon"><i class="fa fa-adjust"></i></span>
+                    <span class="mobile-more-label">Appearance</span>
+                    <span class="mobile-darkmode-toggle" role="group" aria-label="Color scheme">
+                        <button type="button"
+                                class="mobile-darkmode-btn<?= $currentDarkMode === 'light' ? ' active' : '' ?>"
+                                data-dark-mode="light"
+                                title="Light"
+                                aria-pressed="<?= $currentDarkMode === 'light' ? 'true' : 'false' ?>">
+                            <i class="fa fa-sun-o"></i>
+                        </button>
+                        <button type="button"
+                                class="mobile-darkmode-btn<?= $currentDarkMode === 'default' ? ' active' : '' ?>"
+                                data-dark-mode="default"
+                                title="System"
+                                aria-pressed="<?= $currentDarkMode === 'default' ? 'true' : 'false' ?>">
+                            <i class="fa fa-adjust"></i>
+                        </button>
+                        <button type="button"
+                                class="mobile-darkmode-btn<?= $currentDarkMode === 'dark' ? ' active' : '' ?>"
+                                data-dark-mode="dark"
+                                title="Dark"
+                                aria-pressed="<?= $currentDarkMode === 'dark' ? 'true' : 'false' ?>">
+                            <i class="fa fa-moon-o"></i>
+                        </button>
+                    </span>
+                </li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>
@@ -244,6 +278,39 @@ if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
 
     initSheet('mobile-spaces-btn', 'mobile-spaces-sheet', '.mobile-space-item');
     initSheet('mobile-more-btn',   'mobile-more-sheet',   '.mobile-more-item');
+
+    // Dark mode inline toggle in More sheet
+    document.querySelectorAll('.mobile-darkmode-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var mode = btn.getAttribute('data-dark-mode');
+            // Optimistically update UI
+            document.querySelectorAll('.mobile-darkmode-btn').forEach(function(b) {
+                b.classList.remove('active');
+                b.setAttribute('aria-pressed', 'false');
+            });
+            btn.classList.add('active');
+            btn.setAttribute('aria-pressed', 'true');
+            // POST to dark-mode modal endpoint
+            var csrfToken = document.querySelector('meta[name=\"csrf-token\"]');
+            var formData = new FormData();
+            formData.append('UserSetting[darkMode]', mode);
+            if (csrfToken) {
+                formData.append('_csrf', csrfToken.getAttribute('content'));
+            }
+            fetch('/dark-mode/user/modal', {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            }).then(function() {
+                // Reload to apply theme assets (same as desktop toggle behaviour)
+                window.location.reload();
+            }).catch(function() {
+                // If fetch fails, fall back to opening the modal
+                window.location.href = '/dark-mode/user';
+            });
+        });
+    });
 
     // After pjax navigation to the spaces page, blur any auto-focused input to prevent keyboard pop-up
     $(document).on('pjax:end', function() {

@@ -12,15 +12,34 @@ use Yii;
 
 class ConfigController extends Controller
 {
+    /**
+     * Returns the configured "People" nav label, falling back to "People".
+     */
+    public static function getPeopleNavLabel(): string
+    {
+        $label = Yii::$app->settings->get('peopleNavLabel');
+        return ($label !== null && trim($label) !== '') ? trim($label) : 'People';
+    }
+
     public function actionIndex()
     {
+        $settings = Yii::$app->settings;
+
         if (Yii::$app->request->isPost) {
+            // Save the People nav label if submitted
+            $peopleLabel = Yii::$app->request->post('peopleNavLabel');
+            if ($peopleLabel !== null) {
+                $settings->set('peopleNavLabel', trim($peopleLabel));
+                Yii::$app->cache->flush();
+                $this->view->saved();
+                return $this->redirect(['/modern-theme-2026/config']);
+            }
+
             $palette = Yii::$app->request->post('palette');
             $palettes = self::getPalettes();
 
             if ($palette && isset($palettes[$palette])) {
                 $colors = $palettes[$palette]['colors'];
-                $settings = Yii::$app->settings;
 
                 // Map color keys to their HumHub settings names
                 $colorKeys = [
@@ -56,8 +75,9 @@ class ConfigController extends Controller
         }
 
         return $this->render('index', [
-            'palettes'      => self::getPalettes(),
-            'currentColors' => self::getCurrentColors(),
+            'palettes'        => self::getPalettes(),
+            'currentColors'   => self::getCurrentColors(),
+            'peopleNavLabel'  => self::getPeopleNavLabel(),
         ]);
     }
 

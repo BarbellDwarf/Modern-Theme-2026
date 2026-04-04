@@ -9,6 +9,7 @@ namespace humhub\modules\modernTheme2026;
 
 use humhub\components\View;
 use humhub\modules\modernTheme2026\assets\ModernThemeAsset;
+use humhub\modules\modernTheme2026\controllers\ConfigController;
 use humhub\modules\modernTheme2026\widgets\MobileBottomNav;
 use humhub\widgets\TopMenu;
 use Yii;
@@ -95,6 +96,7 @@ class Events
 
     /**
      * Remove redundant default "Spaces" top menu item when using context switcher.
+     * Also rename the "People" entry if a custom label has been configured.
      */
     public static function onTopMenuRun($event): void
     {
@@ -106,16 +108,25 @@ class Events
         /** @var TopMenu $menu */
         $menu = $event->sender;
 
+        // Remove the Spaces entry (replaced by context switcher)
         $spacesEntry = $menu->getEntryById('spaces');
         if ($spacesEntry) {
             $menu->removeEntry($spacesEntry);
-            return;
+        } else {
+            // Fallback: match by URL
+            $spacesEntry = $menu->getEntryByUrl(['/space/spaces']);
+            if ($spacesEntry) {
+                $menu->removeEntry($spacesEntry);
+            }
         }
 
-        // Fallback in case another module adds Spaces without the standard id.
-        $spacesEntry = $menu->getEntryByUrl(['/space/spaces']);
-        if ($spacesEntry) {
-            $menu->removeEntry($spacesEntry);
+        // Rename "People" entry if a custom label is configured
+        $customLabel = ConfigController::getPeopleNavLabel();
+        if ($customLabel !== 'People') {
+            $peopleEntry = $menu->getEntryByUrl(['/user/people']);
+            if ($peopleEntry) {
+                $peopleEntry->label = $customLabel;
+            }
         }
     }
 }

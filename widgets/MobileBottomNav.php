@@ -7,6 +7,7 @@ use yii\base\Widget;
 use humhub\modules\user\models\User;
 use humhub\modules\space\models\Space;
 use humhub\modules\space\models\Membership;
+use humhub\modules\modernTheme2026\controllers\ConfigController;
 
 /**
  * Mobile Bottom Navigation Widget
@@ -79,6 +80,7 @@ class MobileBottomNav extends Widget
             'notificationCount' => $notificationCount,
             'activeItem' => $activeItem,
             'spaces' => $spaces,
+            'peopleNavLabel' => ConfigController::getPeopleNavLabel(),
         ]);
     }
 

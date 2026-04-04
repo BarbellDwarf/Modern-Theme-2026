@@ -6,6 +6,7 @@
  * @var \humhub\components\View $this
  * @var array $palettes
  * @var array $currentColors
+ * @var string $peopleNavLabel
  */
 
 use humhub\modules\modernTheme2026\controllers\ConfigController;
@@ -108,5 +109,39 @@ $previewKeys = ['primary', 'accent', 'secondary', 'success', 'danger'];
             <a href="<?= Url::to(['/admin/setting/design']) ?>">Admin &rsaquo; Settings &rsaquo; Design</a>.
         </div>
 
+    </div>
+</div>
+
+<!-- Navigation Labels Settings -->
+<div class="panel panel-default" style="margin-top:20px;">
+    <div class="panel-heading">
+        <strong><i class="fa fa-tag"></i> Navigation Labels</strong>
+        <div class="text-muted" style="margin-top:4px;font-size:13px;">
+            Customize the label for the People/Directory navigation item in the topbar and mobile nav.
+        </div>
+    </div>
+    <div class="panel-body">
+        <form method="post" action="<?= Url::to(['/modern-theme-2026/config']) ?>">
+            <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->csrfToken ?>">
+            <div class="form-group">
+                <label for="peopleNavLabel" class="control-label">
+                    "People" tab label
+                </label>
+                <input type="text"
+                       id="peopleNavLabel"
+                       name="peopleNavLabel"
+                       class="form-control"
+                       style="max-width:320px;"
+                       value="<?= Html::encode($peopleNavLabel) ?>"
+                       placeholder="People"
+                       maxlength="40">
+                <p class="help-block">
+                    Leave blank or set to <strong>People</strong> to use the default. Example: <em>Directory</em>.
+                </p>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">
+                <i class="fa fa-save"></i> Save Label
+            </button>
+        </form>
     </div>
 </div>

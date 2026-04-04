@@ -14,7 +14,7 @@
 // Make modal content shrink to the visible viewport when the keyboard is open.
 // --vvh is set dynamically by JS; fall back to 100dvh if not yet available.
 body.mt2026-keyboard-open {
-    @media (max-width: 767px) {
+    @media (max-width: 991px) {
         // Shrink modal to the visual viewport height (keyboard-excluded area)
         .modal-content {
             max-height: calc(var(--vvh, 100dvh) - 60px) !important;
@@ -226,7 +226,7 @@ body.mt2026-keyboard-open {
     min-height: 36px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 991px) {
     .stream-entry-addons {
         padding: 8px 4px 4px !important;
         border-top: 1px solid var(--color-border-light, #f3f4f6);
@@ -484,53 +484,151 @@ body.mt2026-keyboard-open {
 }
 
 
-// ─── People page: collapse filters mobile on ─────────────
-@media (max-width: 767px) {
-  // Hide all non-keyword filter columns by default
-  .panel-body .row.gy-2 > div:not(.form-search-filter-keyword):not(.mt2026-more-filters-btn-wrap) {
-    display: none;
+// ─── People page: FAB search + mobile layout ─────────────────────────────────
+@media (max-width: 991px) {
+  // Hide the filter panel body entirely — replaced by the search FAB below
+  body.mt2026-people-mobile .panel-body:has(form.form-search),
+  .mt2026-people-search-panel {
+    display: none !important;
   }
 
-  // Show all filters when expanded
-  .panel-body .row.gy-2.filters-expanded > div {
-    display: block !important;
-  }
-
-  // "More Filters" toggle button wrapper
-  .mt2026-more-filters-btn-wrap {
-    display: flex !important;
-    justify-content: flex-end;
+  // Floating search button (injected by peopleFocusGuard.js)
+  .mt2026-search-fab {
+    position: fixed;
+    bottom: calc(56px + env(safe-area-inset-bottom, 0) + 14px);
+    right: 16px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--color-primary, #1e6ad6);
+    color: #fff;
+    border: none;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    display: flex;
     align-items: center;
-    padding-top: 4px;
-  }
-
-  // The toggle button itself
-  .mt2026-more-filters-btn {
-    background: transparent;
-    border: 1px solid var(--color-border, #e5e7eb);
-    border-radius: 20px;
-    padding: 4px 12px;
-    font-size: 12px;
-    color: var(--color-text-secondary, #6b7280);
+    justify-content: center;
+    font-size: 20px;
+    z-index: 1025;
     cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    white-space: nowrap;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 
-    i { font-size: 11px; }
+    &:active {
+      transform: scale(0.93);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
 
-    &.active {
-      background: var(--color-primary);
-      color: #fff;
-      border-color: var(--color-primary);
+    [data-bs-theme="dark"] & {
+      background: var(--color-accent, #5a8eeb);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
     }
   }
 
-  // Keyword input — full width on mobile
-  .form-search-filter-keyword input[type="text"],
-  .form-search-filter-keyword input[type="search"] {
-    width: 100%;
+  // Search overlay (injected by peopleFocusGuard.js, shown when FAB is tapped)
+  .mt2026-search-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--color-bg-primary, #fff);
+    z-index: 1040;
+    padding: 10px 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    display: none;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+
+    &.open {
+      display: flex;
+    }
+
+    [data-bs-theme="dark"] & {
+      background: var(--color-bg-secondary, #1e293b);
+      border-bottom-color: var(--color-border, #334155);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .mt2026-search-overlay-back {
+      flex-shrink: 0;
+      width: 38px;
+      height: 38px;
+      border: none;
+      background: transparent;
+      color: var(--color-text-primary, #111827);
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      cursor: pointer;
+      padding: 0;
+
+      &:active {
+        background: var(--color-bg-secondary, #f3f4f6);
+      }
+    }
+
+    input[type="text"],
+    input[type="search"] {
+      flex: 1;
+      height: 40px;
+      font-size: 16px; // prevents iOS zoom
+      border: 1px solid var(--color-border, #e5e7eb);
+      border-radius: 20px;
+      padding: 0 14px;
+      background: var(--color-bg-secondary, #f8fafc);
+      color: var(--color-text-primary, #111827);
+      min-width: 0;
+
+      &:focus {
+        outline: none;
+        border-color: var(--color-primary, #1e6ad6);
+        box-shadow: 0 0 0 3px rgba(30, 106, 214, 0.15);
+      }
+
+      [data-bs-theme="dark"] & {
+        background: var(--color-bg-tertiary, #0f172a);
+        border-color: var(--color-border, #334155);
+        color: var(--color-text-primary, #f1f5f9);
+      }
+    }
+
+    button[type="submit"] {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--color-primary, #1e6ad6);
+      color: #fff;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+
+      &:active {
+        background: var(--color-primary-dark, #1558b0);
+      }
+    }
+  }
+
+  // Invite button: icon-only pill on mobile (hide text, show just icon)
+  .people-heading-buttons .btn,
+  #people-heading-buttons .btn {
+    min-width: 0;
+    padding: 6px 10px !important;
+
+    // Hide text, show only icon
+    strong {
+      display: none !important;
+    }
+
+    // Ensure icon stays
+    i, .fa {
+      margin: 0 !important;
+      font-size: 16px;
+    }
   }
 }
 
@@ -567,7 +665,7 @@ body.mt2026-keyboard-open {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 991px) {
     // Show the injected mobile action bar
     .mt2026-notification-mobile-bar {
         display: block;

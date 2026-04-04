@@ -288,8 +288,8 @@
     z-index: 3200 !important;
 }
 
-// Tablet / small-desktop hardening: keep topbar usable before mobile mode.
-@media (min-width: 768px) and (max-width: 1199px) {
+// Small-desktop hardening: keep topbar compact between 992px and 1199px.
+@media (min-width: 992px) and (max-width: 1199px) {
     #topbar {
         .container {
             gap: 8px;
@@ -472,9 +472,9 @@ body[data-bs-theme="light"] {
     }
 }
 
-// Mobile-specific topbar adjustments
-@media (max-width: 767px) {
-    // Hide top navbar on mobile — bottom navigation replaces it
+// Mobile + tablet topbar: hidden — bottom navigation replaces it
+@media (max-width: 991px) {
+    // Hide top navbar on mobile/tablet — bottom navigation replaces it
     #topbar-first,
     #topbar-second,
     .topbar {

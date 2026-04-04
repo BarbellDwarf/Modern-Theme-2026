@@ -34,7 +34,7 @@ humhub.module('modernTheme.mobileKeyboardFix', function(module, require, $) {
     }
 
     function isMobile() {
-        return window.innerWidth <= 767;
+        return window.innerWidth <= 991;
     }
 
     // Set --vvh CSS variable on :root so CSS can react to visual viewport height
@@ -192,7 +192,7 @@ humhub.module('modernTheme.mobileKeyboardFix', function(module, require, $) {
             window.visualViewport.addEventListener('resize', function() {
                 updateVvhVar();
 
-                if (window.innerWidth > 767) {
+                if (window.innerWidth > 991) {
                     setKeyboardState(false);
                     return;
                 }

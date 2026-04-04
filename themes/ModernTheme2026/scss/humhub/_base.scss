@@ -49,8 +49,8 @@ body > .profile-layout-container {
     }
 }
 
-// Mobile compact layout
-@media (max-width: 767px) {
+// Mobile + tablet compact layout
+@media (max-width: 991px) {
     .container {
         padding-left: 12px;
         padding-right: 12px;

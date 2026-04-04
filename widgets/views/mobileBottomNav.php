@@ -15,7 +15,7 @@ use yii\helpers\Html;
 
 // Register inline script to detect mobile and add CSS fallback class
 $this->registerJs("
-if (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)) {
+if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
     document.body.classList.add('mobile');
     document.body.setAttribute('data-mobile', 'true');
 }

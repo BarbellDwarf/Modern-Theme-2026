@@ -6,7 +6,7 @@
     // Force hide on desktop, override any other rules
     display: none !important;
 
-    @media (max-width: 767px) {
+    @media (max-width: 991px) {
         display: flex !important;
         position: fixed;
         bottom: 0;
@@ -137,14 +137,14 @@
     }
 }
 
-@media (min-width: 381px) and (max-width: 767px) {
+@media (min-width: 381px) and (max-width: 991px) {
     .mobile-more-calendar-fallback {
         display: none !important;
     }
 }
 
 // Add bottom padding to body to prevent content from being hidden by bottom nav
-@media (max-width: 767px) {
+@media (max-width: 991px) {
     body {
         padding-bottom: calc(56px + env(safe-area-inset-bottom, 0));
     }
@@ -198,7 +198,7 @@
 }
 
 // Hide bottom nav when keyboard is open (optional)
-@media (max-width: 767px) and (max-height: 500px) {
+@media (max-width: 991px) and (max-height: 500px) {
     .mobile-bottom-nav {
         display: none !important;
     }
@@ -209,14 +209,14 @@
 }
 
 // Adjust body padding for fixed bottom nav
-@media (max-width: 767px) {
+@media (max-width: 991px) {
     body {
         padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
     }
 }
 
 // Force show only on true mobile widths (fallback for apps that don't respect media queries)
-@media (max-width: 767px) {
+@media (max-width: 991px) {
     body.mobile .mobile-bottom-nav,
     body[data-mobile="true"] .mobile-bottom-nav,
     .mobile-app .mobile-bottom-nav {
@@ -236,15 +236,6 @@
     .mobile-app {
         padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
     }
-}
-
-// Tablet landscape - optional bottom nav
-@media (min-width: 768px) and (max-width: 991px) and (orientation: portrait) {
-    // Can optionally show bottom nav on tablets in portrait mode
-    // Uncomment if desired:
-    // .mobile-bottom-nav {
-    //     display: flex;
-    // }
 }
 
 .modal {

@@ -67,6 +67,7 @@ body.mt2026-keyboard-open {
             display: flex !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
+            justify-content: center !important; // center pills when they fit; scroll handles overflow
             overflow-x: auto !important;
             overflow-y: visible !important; // Allow rounded borders to show
             -webkit-overflow-scrolling: touch;

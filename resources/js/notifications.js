@@ -74,18 +74,22 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
     });
 
     function bindCommentDropdownStackFix() {
-        // Prevent comment attachment dropdowns from being painted under the next stream card.
-        // We temporarily raise the parent stream entry while the dropdown is open.
+        // Prevent comment attachment/controls dropdowns from being painted under the
+        // next stream card.  We temporarily raise the parent stream entry while open.
+        // HumHub renders these as both .btn-group (FileHandlerButtonDropdown) and
+        // .nav-item.dropdown (commentControls.php), so we listen on both.
+        var commentSelector = '.comment_create .btn-group, .comment-controls .nav-item.dropdown';
+
         $(document).off('shown.bs.dropdown.mt2026CommentMenu hidden.bs.dropdown.mt2026CommentMenu');
 
-        $(document).on('shown.bs.dropdown.mt2026CommentMenu', '.comment_create .btn-group', function () {
+        $(document).on('shown.bs.dropdown.mt2026CommentMenu', commentSelector, function () {
             var $entry = $(this).closest('.wall-entry, .stream-entry');
             if ($entry.length) {
                 $entry.addClass('mt2026-dropdown-open');
             }
         });
 
-        $(document).on('hidden.bs.dropdown.mt2026CommentMenu', '.comment_create .btn-group', function () {
+        $(document).on('hidden.bs.dropdown.mt2026CommentMenu', commentSelector, function () {
             var $entry = $(this).closest('.wall-entry, .stream-entry');
             if ($entry.length) {
                 $entry.removeClass('mt2026-dropdown-open');
@@ -94,7 +98,20 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
     }
 
     function bindComposerDropdownStackFix() {
-        var selector = '.contentForm_options .btn-group, .wall-entry-form .btn-group, .post-form .btn-group, .wall-entry-controls .btn-group, .stream-entry-addons .btn-group';
+        // Cover both .btn-group (FileHandlerButtonDropdown / older Bootstrap) and
+        // .nav-item.dropdown (wallEntryControls.php, wallCreateContentFormFooter.php
+        // gear menu) so all post-composer and per-entry menus are handled.
+        var selector = [
+            '.contentForm_options .btn-group',
+            '.contentForm_options .nav-item.dropdown',
+            '.wall-entry-form .btn-group',
+            '.post-form .btn-group',
+            '.wall-entry-controls .btn-group',
+            '.wall-entry-controls .nav-item.dropdown',
+            '.stream-entry-controls .nav-item.dropdown',
+            '.stream-entry-addons .btn-group',
+            '.stream-entry-addons .nav-item.dropdown'
+        ].join(', ');
 
         var applyLift = function ($trigger) {
             $('body').addClass('mt2026-composer-dropdown-open-global');
@@ -144,8 +161,9 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
         });
 
         // Fallback for cases where Bootstrap dropdown events don't bubble reliably.
+        // .btn-group and .nav-item.dropdown are both valid trigger containers.
         $(document).on('click.mt2026ComposerMenu', selector + ' > .dropdown-toggle, ' + selector + ' > [data-bs-toggle="dropdown"], ' + selector + ' > [data-toggle="dropdown"]', function () {
-            var $group = $(this).closest('.btn-group');
+            var $group = $(this).closest('.btn-group, .nav-item.dropdown');
             setTimeout(function () {
                 if ($group.hasClass('open') || $group.hasClass('show')) {
                     applyLift($group);

@@ -12,7 +12,51 @@ body {
     padding-top: var(--mt2026-topbar-height) !important;
 }
 
-// Add a small universal breathing room below the topbar for all page types
+// ── Space / Profile banner image ─────────────────────────────────────────────
+// HumHub core sets width:100% and max-height:192px but no object-fit, causing
+// the banner to stretch horizontally on large screens. Fix it here.
+.panel-profile-header {
+    overflow: hidden; // clip the banner to the container
+
+    .img-profile-header-background {
+        width: 100%;
+        height: 240px;          // consistent height on all breakpoints
+        max-height: none !important; // override core's 192px limit
+        min-height: 100px;
+        object-fit: cover;      // crop/scale without distortion
+        object-position: center center;
+        display: block;
+        border-radius: 0;       // parent handles rounding
+    }
+
+    // Profile/space avatar thumbnail (the round/square photo over the banner)
+    .profile-user-photo {
+        object-fit: cover;
+        object-position: center center;
+    }
+}
+
+// Larger banner on bigger screens
+@media (min-width: 992px) {
+    .panel-profile-header .img-profile-header-background {
+        height: 280px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .panel-profile-header .img-profile-header-background {
+        height: 320px;
+    }
+}
+
+// Compact banner on mobile
+@media (max-width: 767px) {
+    .panel-profile-header .img-profile-header-background {
+        height: 160px;
+    }
+}
+
+
 // (dashboard, space, profile, admin-like pages, and mobile views that still
 // render content containers).
 body > .container,

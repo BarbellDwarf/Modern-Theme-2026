@@ -288,6 +288,31 @@
     z-index: 3200 !important;
 }
 
+// ── Notification dropdown: proper width and alignment ────────────────────────
+// HumHub core targets #topbar-first (old theme), but this theme uses #topbar.
+// Without an explicit width, the panel collapses to the global min-width:200px.
+// Set it to 420px and right-align so it doesn't bleed off-screen.
+@media (min-width: 992px) {
+    #topbar .notifications .dropdown-menu,
+    #dropdown-notifications.dropdown-menu {
+        width: 420px !important;
+        min-width: 420px !important;
+        // Right-align: drop left from the bell, not right (bell is on right side of topbar)
+        right: 0 !important;
+        left: auto !important;
+        margin-left: 0 !important;
+    }
+
+    // Scrollable notification list (prevent overflow when many items)
+    #topbar .notifications .dropdown-menu .hh-list,
+    #dropdown-notifications .hh-list {
+        max-height: 420px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
 // Small-desktop hardening: keep topbar compact between 992px and 1199px.
 @media (min-width: 992px) and (max-width: 1199px) {
     #topbar {

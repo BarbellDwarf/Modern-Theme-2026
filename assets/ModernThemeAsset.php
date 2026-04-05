@@ -20,6 +20,7 @@ class ModernThemeAsset extends AssetBundle
         'js/notifications.js',
         'js/modalFocusFix.js',
         'js/mobileKeyboardFix.js',
+        'js/mobileSwipeFix.js',
     ];
 
     public $depends = [

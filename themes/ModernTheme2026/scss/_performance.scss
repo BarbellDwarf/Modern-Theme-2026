@@ -2,17 +2,20 @@
 // CSS optimizations for better rendering performance
 
 // Use CSS containment for improved layout performance.
-// NOTE: `contain: paint` clips overflow (like overflow:hidden) which breaks
-// absolutely-positioned dropdown menus. Use `contain: layout style` only.
+// NOTE: `contain: paint` clips overflow and `contain: layout` both clip dropdown
+// menus and create stacking contexts. A stacking context on every panel/stream
+// entry means later DOM siblings paint on top of earlier ones regardless of
+// z-index, causing dropdowns to be covered by posts below them.
+// Use `contain: style` only — it scopes CSS counter/property mutations without
+// creating stacking contexts or clipping overflowed children.
 .panel,
 .card {
-    contain: layout style;
+    contain: style;
 }
 
 .s-wall-entry,
 .list-group-item {
-    // Do NOT use paint containment here; it clips dropdown menus/popovers.
-    contain: layout style;
+    contain: style;
 }
 
 // Optimize animations with will-change
@@ -62,10 +65,12 @@
     }
 }
 
-// Reduce paint areas with backface-visibility
-.panel,
-.card,
-.btn,
+// Reduce paint areas with backface-visibility.
+// NOTE: Do NOT apply to .panel, .card, or .btn — backface-visibility:hidden
+// creates a new stacking context in Chrome/Safari, which traps absolutely-
+// positioned dropdown menus inside the element's stacking context and causes
+// them to render behind sibling panels that appear later in the DOM.
+// Only .modal needs this to prevent 3D-flip flicker during its fade animation.
 .modal {
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;

@@ -5,7 +5,8 @@ humhub.module('modernTheme.peopleFocusGuard', function(module, require, $) {
     }
 
     function isPeoplePage() {
-        return (window.location.pathname || '').indexOf('/user/people') !== -1;
+        var p = window.location.pathname || '';
+        return p.indexOf('/user/people') !== -1 || p === '/people' || p.indexOf('/people?') !== -1;
     }
 
     // ─── Autofocus suppression ────────────────────
@@ -97,12 +98,8 @@ humhub.module('modernTheme.peopleFocusGuard', function(module, require, $) {
     function teardown() {
         $('#mt2026-search-fab').remove();
         $('#mt2026-search-overlay').remove();
-        // Restore search panel visibility
-        var $panel = $('.mt2026-people-search-panel');
-        if ($panel.length) {
-            $panel.removeClass('mt2026-people-search-panel');
-            $panel.css('display', '');
-        }
+        // Do NOT remove mt2026-people-search-panel — it's rendered by PHP and
+        // the CSS hide rule is intentional when not on the people page.
         $('.mt2026-people-invite-btn').removeClass('mt2026-people-invite-hidden');
         $(document).off('click.mt2026Fab keydown.mt2026Search');
         fabInjected = false;

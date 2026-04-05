@@ -494,9 +494,8 @@ body.mt2026-keyboard-open {
 }
 
 @media (max-width: 991px) {
-  // Hide the filter panel body — class is rendered by PHP (no flash)
-  // or added by JS as a fallback
-  .mt2026-people-search-panel {
+  // Hide the entire people panel (heading + search body) — FAB replaces it
+  .mt2026-people-panel {
     display: none !important;
   }
 

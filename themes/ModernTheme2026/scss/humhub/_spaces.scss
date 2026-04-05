@@ -1,0 +1,101 @@
+// Modern Theme 2026 - Spaces
+// Styles for space pages: banner/header, sidebar, stream, and space-specific layouts.
+
+// ── Space / Profile banner ────────────────────────────────────────────────────
+// HumHub core sets width:100% max-height:192px but no object-fit, so the
+// banner stretches horizontally on large screens.
+//
+// IMPORTANT: Both the banner and the avatar/logo share .img-profile-header-background.
+// Scope ALL sizing rules to .profile-banner-image-container to avoid resizing the logo.
+//
+// Structure:
+//   .panel-profile-header
+//     .image-upload-container.profile-banner-image-container
+//       img.img-profile-header-background              ← BANNER
+//     .image-upload-container.profile-user-photo-container
+//       img.img-profile-header-background.profile-user-photo  ← AVATAR/LOGO
+
+.panel-profile-header {
+    overflow: visible; // avatar hangs below the banner — must not clip
+
+    .profile-banner-image-container {
+        overflow: hidden; // clip banner image only
+
+        .img-profile-header-background {
+            width: 100%;
+            height: 200px;
+            max-height: none !important;
+            min-height: 80px;
+            object-fit: cover;
+            object-position: center center;
+            display: block;
+            border-radius: 0;
+        }
+    }
+
+    // Avatar / space logo: restore natural sizing
+    .profile-user-photo-container .img-profile-header-background,
+    .profile-user-photo {
+        width: auto;
+        height: auto;
+        max-height: none;
+        object-fit: cover;
+        object-position: center center;
+    }
+}
+
+@media (max-width: 575px) {
+    .panel-profile-header .profile-banner-image-container .img-profile-header-background {
+        height: 140px;
+    }
+}
+
+@media (min-width: 768px) {
+    .panel-profile-header .profile-banner-image-container .img-profile-header-background {
+        height: 240px;
+    }
+}
+
+@media (min-width: 992px) {
+    .panel-profile-header .profile-banner-image-container .img-profile-header-background {
+        height: 280px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .panel-profile-header .profile-banner-image-container .img-profile-header-background {
+        height: 320px;
+    }
+}
+
+// ── Space header meta (name, description, member count) ───────────────────────
+
+.panel-profile-header {
+    .profile-header-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .profile-header-tags {
+        font-size: 0.85rem;
+        color: var(--color-text-secondary, #6b7280);
+    }
+}
+
+// ── Space stream ──────────────────────────────────────────────────────────────
+
+.space-layout-container {
+    // Ensure stream content is never wider than needed
+    .layout-content-container {
+        max-width: 100%;
+    }
+}
+
+// ── Space chooser / switcher ───────────────────────────────────────────────────
+// (detailed chooser styles are in _space-chooser.scss; these are supplemental)
+
+.space-nav-menu {
+    .nav-item.dropdown .dropdown-menu {
+        z-index: 1055;
+    }
+}

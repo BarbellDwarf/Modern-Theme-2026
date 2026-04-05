@@ -1,1 +1,46 @@
+// Modern Theme 2026 - Build File
+// All partials are imported here for SCSS compilation by ThemeHelper.
+// variables.scss is loaded separately by ThemeHelper before this file.
 
+// ── Foundation ────────────────────────────────────────────────────────────────
+@import "root";      // CSS custom properties derived from SCSS variables
+@import "mixins";    // Reusable SCSS mixins
+
+// ── Base / Layout ─────────────────────────────────────────────────────────────
+@import "theme";                // Global body, heading, and utility overrides
+@import "humhub/base";          // Responsive container widths (mobile → 4K)
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+@import "humhub/topbar";        // Top navigation bar
+@import "humhub/nav";           // Navigation links
+@import "humhub/sidebar";       // Left sidebar
+@import "humhub/space-chooser"; // Space chooser UX improvements
+@import "humhub/context-switcher"; // Smart context switcher
+@import "humhub/spaces";        // Spaces page / space cards
+@import "humhub/mobile-bottom-nav"; // Thumb-friendly mobile bottom nav
+
+// ── Components ────────────────────────────────────────────────────────────────
+@import "humhub/button";        // Buttons with depth effects
+@import "humhub/badge";         // Badges and pills
+@import "humhub/cards";         // Cards / panels with elevation
+@import "humhub/dropdown";      // Dropdown menus
+@import "humhub/form";          // Form inputs and labels
+@import "humhub/modal";         // Modal dialogs
+@import "humhub/gridview";      // Tables / GridView
+@import "humhub/list-group";    // List groups
+@import "humhub/richtext";      // Rich text editor
+
+// ── Content ───────────────────────────────────────────────────────────────────
+@import "humhub/stream";        // Activity stream / feed
+@import "humhub/palette-switcher"; // Color palette switcher UI
+@import "humhub/reactions";     // Emoji reaction picker
+@import "humhub/calendar";      // Calendar module styles
+@import "humhub/admin";         // Admin area overrides
+
+// ── Dark Mode ─────────────────────────────────────────────────────────────────
+@import "humhub/dark-mode";     // Comprehensive dark mode support
+@import "humhub/mobile";        // Mobile-specific overrides
+
+// ── Polish ────────────────────────────────────────────────────────────────────
+@import "performance";          // CSS containment and GPU acceleration
+@import "accessibility";        // WCAG 2.1 AA compliance and focus styles

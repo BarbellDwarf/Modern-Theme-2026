@@ -117,14 +117,19 @@ humhub.module('modernTheme.peopleFocusGuard', function(module, require, $) {
         installCaptureGuard();
         setupPeopleMobile();
 
-        // Belt-and-suspenders: blur any search input that cards.js may have focused
+        // Belt-and-suspenders: blur any search input that cards.js may have focused.
+        // Also remove mt2026-keyboard-open — mobileKeyboardFix.js sets it speculatively
+        // on focusin (before the viewport actually shrinks), so the nav bar disappears
+        // on page load.  Removing it here restores the nav immediately after the blur.
         setTimeout(function() {
             var a = document.activeElement;
             if (a && $(a).closest('form.form-search').length) { a.blur(); }
+            $('body').removeClass('mt2026-keyboard-open');
         }, 200);
         setTimeout(function() {
             var a = document.activeElement;
             if (a && $(a).closest('form.form-search').length) { a.blur(); }
+            $('body').removeClass('mt2026-keyboard-open');
             setTimeout(removeCaptureGuard, 100);
         }, 1200);
     };

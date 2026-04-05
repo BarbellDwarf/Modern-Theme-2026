@@ -93,8 +93,43 @@
   gap: var(--space-3);
   padding: var(--space-2) var(--space-4);
   border-top: 1px solid var(--color-border);
-  background: var(--color-bg-secondary);
+  background: transparent; // blend with post panel — no inner box
 }
+
+// ── Flat stream posts on desktop ──────────────────────────────────────────────
+// Remove the "box in a box" appearance where post cards have a contrasting
+// header/footer background making them look nested.  On desktop the individual
+// post panels already have a card background; all sub-sections should be
+// transparent so there's only ONE visible box per post.
+@media (min-width: 992px) {
+  // Stream post panel — sub-sections blend into the card
+  .s2_streamContent > .wall-entry > .panel,
+  .s2_streamContent > .stream-entry > .panel,
+  .s2_streamContent > .panel {
+    > .panel-heading,
+    > .panel-footer,
+    > .panel-body > .wall-entry-footer,
+    > .wall-entry-footer {
+      background: transparent;
+      border-color: var(--color-border);
+    }
+
+    > .panel-heading {
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    > .panel-footer {
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    }
+  }
+
+  // Comment container inside stream post — transparent, no inner box
+  .s2_streamContent .comment-container,
+  .s2_streamContent .comment-entry-footer {
+    background: transparent;
+  }
+}
+
 
 // Make .wall-entry-controls links always visible with readable color
 .wall-entry-controls a {

@@ -64,12 +64,7 @@ class Module extends \humhub\components\Module
 
         $this->enableTheme();
 
-        // Rebuild CSS
-        try {
-            ThemeHelper::buildCss();
-        } catch (Exception $e) {
-            Yii::error('Could not build CSS: ' . $e->getMessage(), 'modern-theme-2026');
-        }
+        $this->rebuildThemeCss();
 
         return $enabled;
     }
@@ -94,6 +89,47 @@ class Module extends \humhub\components\Module
             $modernTheme = ThemeHelper::getThemeByName(self::THEME_NAME);
             $modernTheme?->activate();
         }
+    }
+
+    /**
+     * Rebuilds theme CSS and validates generated output.
+     * HumHub's ThemeHelper::buildCss() may return an error string instead of throwing.
+     */
+    public static function rebuildThemeCss(): bool
+    {
+        $theme = ThemeHelper::getThemeByName(self::THEME_NAME);
+        if ($theme === null) {
+            Yii::error('Could not find theme for CSS rebuild', 'modern-theme-2026');
+            return false;
+        }
+
+        try {
+            // Ensure the current published asset directory exists for this theme hash.
+            $theme->publishResources(true);
+
+            $result = ThemeHelper::buildCss($theme);
+            if ($result !== true) {
+                Yii::warning('ThemeHelper::buildCss failed with custom SCSS: ' . (string)$result, 'modern-theme-2026');
+
+                // Fallback: compile without admin custom SCSS so theme remains usable.
+                $result = ThemeHelper::buildCss($theme, false);
+                if ($result !== true) {
+                    Yii::error('ThemeHelper::buildCss fallback failed: ' . (string)$result, 'modern-theme-2026');
+                    return false;
+                }
+            }
+
+            $cssFile = $theme->publishedResourcesPath . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'theme.css';
+            if (!is_file($cssFile) || filesize($cssFile) < 10240) {
+                Yii::error('Theme CSS output invalid at ' . $cssFile, 'modern-theme-2026');
+                return false;
+            }
+        } catch (Exception $e) {
+            Yii::error('Could not build CSS: ' . $e->getMessage(), 'modern-theme-2026');
+            return false;
+        }
+
+        return true;
     }
 
     /**

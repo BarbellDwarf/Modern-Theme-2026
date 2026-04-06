@@ -7,7 +7,7 @@
 namespace humhub\modules\modernTheme2026\controllers;
 
 use humhub\modules\admin\components\Controller;
-use humhub\helpers\ThemeHelper;
+use humhub\modules\modernTheme2026\Module;
 use Yii;
 
 class ConfigController extends Controller
@@ -61,11 +61,7 @@ class ConfigController extends Controller
                     }
                 }
 
-                try {
-                    ThemeHelper::buildCss();
-                } catch (\Exception $e) {
-                    Yii::error('Could not rebuild CSS: ' . $e->getMessage(), 'modern-theme-2026');
-                }
+                Module::rebuildThemeCss();
 
                 Yii::$app->cache->flush();
 
@@ -83,13 +79,9 @@ class ConfigController extends Controller
 
     public function actionRebuildCss()
     {
-        try {
-            $result = ThemeHelper::buildCss();
-            Yii::$app->cache->flush();
-            return $result === true ? 'ok' : ('error: ' . var_export($result, true));
-        } catch (\Exception $e) {
-            return 'error: ' . $e->getMessage();
-        }
+        $ok = Module::rebuildThemeCss();
+        Yii::$app->cache->flush();
+        return $ok ? 'ok' : 'error: css rebuild failed';
     }
 
     public static function getPalettes(): array

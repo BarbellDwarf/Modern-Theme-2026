@@ -23,11 +23,12 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
 ?>
 
 <!-- Mobile Bottom Navigation -->
-<nav class="mobile-bottom-nav" role="navigation" aria-label="Mobile Navigation">
+<nav id="mt2026-mobile-nav" class="mobile-bottom-nav" role="navigation" aria-label="Mobile Navigation">
     
     <!-- Home/Dashboard -->
     <a href="<?= Url::to(['/dashboard/dashboard']) ?>" 
        class="nav-item<?= $activeItem === 'home' ? ' active' : '' ?>"
+       data-nav-key="home"
        aria-label="Home"
        aria-current="<?= $activeItem === 'home' ? 'page' : 'false' ?>">
         <span class="nav-icon">
@@ -39,6 +40,7 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
     <!-- Spaces - opens bottom sheet -->
     <button type="button"
             class="nav-item<?= $activeItem === 'spaces' ? ' active' : '' ?>"
+            data-nav-key="spaces"
             id="mobile-spaces-btn"
             aria-label="Spaces"
             aria-haspopup="dialog">
@@ -51,6 +53,7 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
     <!-- People/Directory -->
     <a href="<?= Url::to(['/user/people']) ?>" 
        class="nav-item<?= $activeItem === 'people' ? ' active' : '' ?>"
+       data-nav-key="people"
        aria-label="<?= Html::encode($peopleNavLabel) ?>"
        aria-current="<?= $activeItem === 'people' ? 'page' : 'false' ?>">
         <span class="nav-icon">
@@ -62,6 +65,7 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
     <!-- Notifications -->
     <a href="<?= Url::to(['/notification/overview']) ?>" 
        class="nav-item<?= $activeItem === 'notifications' ? ' active' : '' ?>"
+       data-nav-key="notifications"
        aria-label="Notifications<?= $notificationCount > 0 ? " ($notificationCount unread)" : '' ?>"
        aria-current="<?= $activeItem === 'notifications' ? 'page' : 'false' ?>">
         <span class="nav-icon">
@@ -79,6 +83,7 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
     <!-- Calendar (visible on comfortable mobile widths; moved into More on narrow screens) -->
     <a href="<?= Url::to(['/calendar/global/index']) ?>" 
        class="nav-item nav-item-calendar<?= $activeItem === 'calendar' ? ' active' : '' ?>"
+       data-nav-key="calendar"
        aria-label="Calendar"
        aria-current="<?= $activeItem === 'calendar' ? 'page' : 'false' ?>">
         <span class="nav-icon">
@@ -91,6 +96,7 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
     <!-- More Menu -->
     <button type="button"
             class="nav-item<?= $activeItem === 'more' ? ' active' : '' ?>"
+            data-nav-key="more"
             id="mobile-more-btn"
             aria-label="More"
             aria-haspopup="dialog">
@@ -324,5 +330,46 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
             }, 300);
         }
     });
+
+    // Update active nav item after AJAX/pjax navigation
+    function updateMobileNavActive() {
+        var path = window.location.pathname;
+        var activeKey = '';
+
+        if (path === '/' || path.indexOf('/dashboard') !== -1 || path === '') {
+            activeKey = 'home';
+        } else if (path.indexOf('/user/people') !== -1 || path.indexOf('/directory') !== -1) {
+            activeKey = 'people';
+        } else if (path.indexOf('/notification') !== -1) {
+            activeKey = 'notifications';
+        } else if (path.indexOf('/calendar') !== -1) {
+            activeKey = 'calendar';
+        } else if (path.indexOf('/s/') !== -1 || path.indexOf('/space/') !== -1) {
+            activeKey = 'spaces';
+        } else if (path.indexOf('/u/') !== -1 || path.indexOf('/user/account') !== -1 || path.indexOf('/admin') !== -1) {
+            activeKey = 'more';
+        }
+
+        var nav = document.getElementById('mt2026-mobile-nav');
+        if (!nav) return;
+        nav.querySelectorAll('.nav-item').forEach(function(item) {
+            item.classList.remove('active');
+            item.removeAttribute('aria-current');
+        });
+        if (activeKey) {
+            var target = nav.querySelector('.nav-item[data-nav-key="' + activeKey + '"]');
+            if (target) {
+                target.classList.add('active');
+                target.setAttribute('aria-current', 'page');
+            }
+        }
+    }
+
+    // Run on pjax navigation end
+    $(document).on('pjax:end', updateMobileNavActive);
+    // Also run on humhub client navigation
+    $(document).on('humhub:navigate', updateMobileNavActive);
+    // Run once on page load to ensure correct state
+    updateMobileNavActive();
 })();
 ", \yii\web\View::POS_READY); ?>

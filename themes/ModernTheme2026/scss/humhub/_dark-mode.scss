@@ -375,7 +375,9 @@
     }
 
     // Standalone dropdown toggles (outside .dropdown-menu)
-    .dropdown-toggle:not(.btn-primary):not(.btn-success):not(.btn-info):not(.btn-warning):not(.btn-danger) {
+    // Exclude wall-entry-controls (the "..." post settings button) which should
+    // be transparent/icon-only and not get a visible background box.
+    .dropdown-toggle:not(.btn-primary):not(.btn-success):not(.btn-info):not(.btn-warning):not(.btn-danger):not(.nav-link) {
         background-color: var(--color-bg-secondary);
         border-color: var(--color-border);
         color: var(--color-text-primary);

@@ -111,6 +111,12 @@
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   margin-bottom: var(--space-4);
+  overflow: hidden;
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+    border-color: color-mix(in srgb, var(--color-primary) 22%, var(--color-border));
+  }
 
   // Inner .panel: transparent — no box of its own
   > .panel,
@@ -123,14 +129,30 @@
 
     > .panel-body {
       background: transparent;
+      padding-top: var(--space-4);
+      padding-bottom: var(--space-3);
     }
 
     > .panel-heading {
       background: transparent;
-      border-bottom-color: var(--color-border);
+      border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 16%, var(--color-border));
       border-radius: var(--radius-lg) var(--radius-lg) 0 0;
       box-shadow: none;
       margin: 0;
+      position: relative;
+      padding-bottom: var(--space-3);
+
+      // Subtle top accent to make text-only posts feel more "defined"
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+        opacity: 0.55;
+      }
     }
 
     > .panel-footer {
@@ -144,14 +166,28 @@
 
   // Footer/addons bar inside the post — no extra bg
   .wall-entry-footer {
-    background: transparent;
-    border-top-color: var(--color-border);
+    background: color-mix(in srgb, var(--color-primary) 5%, transparent);
+    border-top: 1px solid color-mix(in srgb, var(--color-primary) 16%, var(--color-border));
   }
 
   // Comment container — no inner card
   .comment-container,
   .comment-entry-footer {
     background: transparent;
+  }
+
+  // Improve readability/density for text-only content blocks
+  .wall-entry-body,
+  .stream-entry-content,
+  .wall-entry-content {
+    line-height: 1.62;
+    letter-spacing: 0.01em;
+  }
+
+  .wall-entry-body > p:first-child,
+  .stream-entry-content > p:first-child,
+  .wall-entry-content > p:first-child {
+    margin-top: var(--space-1);
   }
 }
 

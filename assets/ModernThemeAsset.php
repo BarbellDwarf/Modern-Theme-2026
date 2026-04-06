@@ -12,9 +12,7 @@ class ModernThemeAsset extends AssetBundle
 {
     public $sourcePath = '@modern-theme-2026/resources';
 
-    public $css = [
-        'css/spaces.css',
-    ];
+    public $css = [];
 
     public $js = [
         'js/contextSwitcher.js',

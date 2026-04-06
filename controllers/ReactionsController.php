@@ -162,12 +162,11 @@ class ReactionsController extends ContentAddonController
             }
         } else {
             // No reaction yet → create
-            $like = new Like([
-                'object_model'  => $this->contentModel,
-                'object_id'     => $this->contentId,
-                'reaction_type' => $reactionType,
-            ]);
-            $like->save();
+            $like = new Like();
+            $like->object_model  = $this->contentModel;
+            $like->object_id     = (int) $this->contentId;
+            $like->reaction_type = $reactionType;
+            $like->save(false);
             $currentUserReaction = $reactionType;
         }
 

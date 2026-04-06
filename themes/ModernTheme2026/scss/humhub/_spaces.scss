@@ -52,19 +52,19 @@
 
 @media (min-width: 768px) {
     .panel-profile-header .profile-banner-image-container .img-profile-header-background {
-        height: 240px;
+        height: 180px;
     }
 }
 
 @media (min-width: 992px) {
     .panel-profile-header .profile-banner-image-container .img-profile-header-background {
-        height: 280px;
+        height: 200px;
     }
 }
 
 @media (min-width: 1400px) {
     .panel-profile-header .profile-banner-image-container .img-profile-header-background {
-        height: 320px;
+        height: 220px;
     }
 }
 
@@ -97,5 +97,86 @@
 .space-nav-menu {
     .nav-item.dropdown .dropdown-menu {
         z-index: 1055;
+    }
+}
+
+// ── Profile page desktop layout ────────────────────────────────────────────────
+// The core template uses col-lg-2 (nav) + col-lg-10 (content) which creates a
+// very narrow left nav and an extremely wide content area on desktop.
+// Override column proportions and cap content width for a balanced layout.
+
+@media (min-width: 992px) {
+    .profile-layout-container .profile-content {
+        // Nav: use a fixed comfortable width instead of col-lg-2 (16.6%)
+        .layout-nav-container {
+            flex: 0 0 240px;
+            max-width: 240px;
+            width: 240px;
+        }
+
+        // Content: fill the remaining space
+        .layout-content-container {
+            flex: 1 1 auto;
+            min-width: 0;
+            max-width: calc(100% - 240px);
+        }
+    }
+}
+
+@media (min-width: 1200px) {
+    .profile-layout-container .profile-content {
+        // On wider screens give the nav a little more room
+        .layout-nav-container {
+            flex: 0 0 260px;
+            max-width: 260px;
+            width: 260px;
+        }
+
+        .layout-content-container {
+            max-width: calc(100% - 260px);
+        }
+
+        // Keep form fields / panels from stretching too wide
+        .layout-content-container .panel,
+        .layout-content-container .card {
+            max-width: 860px;
+        }
+    }
+}
+
+@media (min-width: 1400px) {
+    .profile-layout-container .profile-content {
+        .layout-nav-container {
+            flex: 0 0 280px;
+            max-width: 280px;
+            width: 280px;
+        }
+
+        .layout-content-container {
+            max-width: calc(100% - 280px);
+        }
+    }
+}
+
+// ── Profile header name/subtitle overlay on desktop ────────────────────────────
+// Core sets a 600px max-width and 30px font-size.  On modern wide screens give
+// names more room and tighten the gradient height so it doesn't cover too much
+// of the banner image.
+
+@media (min-width: 992px) {
+    .panel-profile .panel-profile-header .img-profile-data {
+        h1 a {
+            font-size: 26px;
+        }
+
+        h2 {
+            font-size: 14px;
+        }
+    }
+
+    // The profile controls bar (stats + follow/friend buttons) beneath the banner
+    .panel-profile-controls {
+        padding-top: 8px;
+        padding-bottom: 8px;
     }
 }

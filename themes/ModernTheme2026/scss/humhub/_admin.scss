@@ -1,5 +1,127 @@
 // Modern Theme 2026 - Admin Section Overrides
-// Fixes admin sidebar navigation layout
+// Layout, spacing, and sidebar fixes for all admin sub-sections.
+
+// ============================================================
+// Admin Layout — outer container & column structure
+// ============================================================
+
+// Add comfortable top margin so the fixed topbars don't overlap
+.mt2026-admin-layout {
+  margin-top: var(--space-6);
+  padding-bottom: var(--space-10);
+}
+
+// Admin sidebar column — remove default Bootstrap column padding on desktop
+@media (min-width: 992px) {
+  .mt2026-admin-sidebar {
+    padding-right: var(--space-4);
+  }
+
+  .mt2026-admin-content {
+    padding-left: var(--space-4);
+  }
+}
+
+// ============================================================
+// Admin panels — fix double-padding
+// ============================================================
+// The global .panel gets padding: var(--space-6) from _cards.scss @include card.
+// Admin sub-layouts wrap content in .panel.panel-default THEN views add .panel-body.
+// That creates 24px (panel) + 24px (panel-body) = 48px each side — too much.
+// Fix: admin panels get 0 body-padding; panel-heading/body/footer handle their own.
+
+.mt2026-admin-content {
+
+  // Top-level admin panel (the outer card wrapping each sub-section)
+  > .panel {
+    padding: 0;                    // No body padding — let children handle it
+    overflow: hidden;              // Keep border-radius clipping
+
+    // Reset negative margins from _cards.scss (which compensate for card padding)
+    .panel-heading {
+      padding: var(--space-4) var(--space-5);
+      margin: 0;                   // No negative margin needed (panel has no padding)
+      border-bottom: 1px solid var(--color-border);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      font-weight: $font-weight-semibold;
+      background: var(--color-bg-secondary);
+    }
+
+    // Sub-menu tab bars (UserMenu, SettingsMenu, SpaceMenu, InformationMenu)
+    // These sit between panel-heading and panel-body — give them proper spacing
+    .nav-tabs {
+      padding: 0 var(--space-4);
+      background: var(--color-bg-secondary);
+      border-bottom: 2px solid var(--color-border);
+      flex-wrap: wrap;             // Allow tabs to wrap on small screens
+      gap: 0;
+    }
+
+    // Panel body — moderate padding (no doubling)
+    .panel-body {
+      padding: var(--space-5) var(--space-6);
+
+      @media (max-width: 767px) {
+        padding: var(--space-4);
+      }
+    }
+  }
+
+  // GridView tables inside admin panels — ensure horizontal scroll, not overflow
+  .grid-view,
+  .gridview {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+
+    table {
+      min-width: 600px;
+    }
+
+    @media (max-width: 991px) {
+      table {
+        min-width: 520px;
+      }
+    }
+
+    @media (max-width: 575px) {
+      table {
+        min-width: 480px;
+      }
+    }
+  }
+
+  // Action buttons row (float-end buttons above GridView)
+  // Clear float so the summary/table starts on a new line below buttons
+  .grid-view::before,
+  .gridview::before {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+// ============================================================
+// Admin sidebar — fix list-group-vertical-lg
+// ============================================================
+
+// On mobile, add spacing between stacked admin sidebar and content
+@media (max-width: 991px) {
+  .mt2026-admin-sidebar {
+    margin-bottom: var(--space-4);
+
+    // On mobile, the AdminMenu renders as a horizontal scrollable row
+    #admin-menu,
+    .left-navigation {
+      .list-group {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: var(--space-2); // Space for scrollbar
+      }
+    }
+  }
+}
 
 // Define list-group-vertical-lg used in HumHub's left-navigation template:
 // The template renders: class="list-group list-group-horizontal list-group-vertical-lg"

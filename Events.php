@@ -154,6 +154,9 @@ class Events
             // HumHub user/people controller views
             Yii::getAlias('@humhub/modules/user') . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'people'
                 => $modulePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'user' . DIRECTORY_SEPARATOR . 'people',
+            // Admin module layouts — adds mt2026-admin-layout marker class for CSS targeting
+            Yii::getAlias('@humhub/modules/admin') . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'layouts'
+                => $modulePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'layouts',
         ];
 
         $pathMap = $view->theme->pathMap ?? [];

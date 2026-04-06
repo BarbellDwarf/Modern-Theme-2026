@@ -96,7 +96,7 @@ humhub.module('modernTheme.paletteSwitcher', function(module, require, $) {
 
         var html = '<div id="moderntheme-palette-presets" class="mb-3">';
         html += '<label class="form-label fw-semibold">Preset Color Palettes</label>';
-        html += '<div class="d-flex flex-wrap gap-2 p-3 bg-light rounded">';
+        html += '<div class="d-flex flex-wrap gap-2 p-3 rounded">';
 
         PALETTES.forEach(function(p) {
             html += '<button type="button" class="btn btn-sm moderntheme-preset-btn d-flex align-items-center gap-2"';
@@ -109,8 +109,7 @@ humhub.module('modernTheme.paletteSwitcher', function(module, require, $) {
             html += ' data-warning="' + p.warning + '"';
             html += ' data-info="' + p.info + '"';
             html += ' data-light="' + p.light + '"';
-            html += ' data-dark="' + p.dark + '"';
-            html += ' style="border: 2px solid #dee2e6; background: #fff; padding: 6px 12px;">';
+            html += ' data-dark="' + p.dark + '">';
             html += '<span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:' + p.primary + ';flex-shrink:0;"></span>';
             html += '<span>' + p.label + '</span>';
             html += '</button>';
@@ -135,8 +134,9 @@ humhub.module('modernTheme.paletteSwitcher', function(module, require, $) {
             fillColor('dark',      $btn.data('dark'));
 
             var primary = $btn.data('primary');
-            $('.moderntheme-preset-btn').css({'border-color': '#dee2e6', 'box-shadow': 'none'});
-            $btn.css({'border-color': primary, 'box-shadow': '0 0 0 2px ' + primary + '33'});
+            // Reset via CSS class — let the stylesheet handle border color in both themes
+            $('.moderntheme-preset-btn').removeClass('moderntheme-preset-active').css({'border-color': '', 'box-shadow': ''});
+            $btn.addClass('moderntheme-preset-active').css({'border-color': primary, 'box-shadow': '0 0 0 2px ' + primary + '33'});
 
             applyPalette($btn.data('palette-id'));
             savePalette($btn.data('palette-id'));

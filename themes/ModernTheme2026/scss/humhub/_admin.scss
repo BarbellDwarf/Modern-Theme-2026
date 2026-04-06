@@ -22,3 +22,218 @@
     }
   }
 }
+
+// ============================================================
+// Admin > Settings > Appearance — Theme Customization section
+// ============================================================
+
+// Color picker group containers (bg-light wrappers around each color swatch)
+.input-color-group {
+  border-radius: 8px;
+  transition: background-color 0.2s;
+
+  // Keep the native <input type=color> swatch at a reasonable size
+  input[type="color"] {
+    height: 48px;
+    min-width: 64px;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+}
+
+// Collapsible field group (the "Theme customization" disclosure section)
+.collapsible-fields-group {
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 10px;
+  overflow: hidden;
+
+  .collapsible-fields-header {
+    background-color: var(--color-bg-secondary, #f3f4f6);
+    padding: 12px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+    transition: background 0.2s;
+
+    &:hover {
+      background-color: var(--color-bg-tertiary, #e5e7eb);
+    }
+  }
+
+  .collapsible-fields-body {
+    padding: 20px;
+    background-color: var(--color-bg-primary, #fff);
+  }
+}
+
+// Palette preset buttons injected by paletteSwitcher.js
+#moderntheme-palette-presets {
+  .d-flex.flex-wrap {
+    gap: 8px;
+  }
+
+  .moderntheme-preset-btn {
+    background: var(--color-bg-secondary, #fff) !important;
+    border: 2px solid var(--color-border, #dee2e6) !important;
+    color: var(--color-text-primary, #111827) !important;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    border-radius: 20px;
+    font-size: 13px;
+
+    &:hover {
+      background: var(--color-bg-tertiary, #f3f4f6) !important;
+    }
+  }
+}
+
+// CodeMirror — Custom SCSS textarea
+// CodeMirror injects its own stylesheet with hardcoded white backgrounds;
+// these overrides make it respect the current dark/light theme.
+.CodeMirror {
+  border-radius: 6px;
+  border: 1px solid var(--color-border, #e5e7eb);
+  background: var(--color-bg-primary, #fff);
+  color: var(--color-text-primary, #111827);
+  font-size: 13px;
+  line-height: 1.6;
+
+  .CodeMirror-gutters {
+    background: var(--color-bg-secondary, #f7f7f7);
+    border-right-color: var(--color-border, #ddd);
+  }
+
+  .CodeMirror-linenumber {
+    color: var(--color-text-muted, #999);
+  }
+
+  .CodeMirror-cursor {
+    border-left-color: var(--color-text-primary, #333);
+  }
+
+  .CodeMirror-selected {
+    background: rgba(var(--bs-primary-rgb, 30, 106, 214), 0.15);
+  }
+
+  .CodeMirror-scroll {
+    background: var(--color-bg-primary, #fff);
+  }
+
+  .CodeMirror-scrollbar-filler,
+  .CodeMirror-gutter-filler {
+    background: var(--color-bg-secondary, #fff);
+  }
+}
+
+// ============================================================
+// Dark Mode Overrides for Admin Appearance Section
+// ============================================================
+[data-bs-theme="dark"] {
+  // Color picker group containers
+  .input-color-group {
+    background-color: var(--color-bg-tertiary) !important;
+    border: 1px solid var(--color-border);
+
+    label {
+      color: var(--color-text-primary) !important;
+    }
+  }
+
+  // Palette preset buttons (JS-rendered)
+  #moderntheme-palette-presets {
+    .d-flex.flex-wrap {
+      background-color: var(--color-bg-secondary) !important;
+      border-radius: 8px;
+    }
+
+    .moderntheme-preset-btn {
+      background: var(--color-bg-tertiary) !important;
+      border-color: var(--color-border) !important;
+      color: var(--color-text-primary) !important;
+
+      &:hover {
+        background: var(--color-bg-primary) !important;
+        border-color: var(--color-primary) !important;
+      }
+    }
+
+    small.text-muted {
+      color: var(--color-text-muted) !important;
+    }
+  }
+
+  // CodeMirror dark theme
+  .CodeMirror {
+    background: var(--color-bg-tertiary) !important;
+    color: var(--color-text-primary) !important;
+    border-color: var(--color-border) !important;
+
+    // Gutter (line numbers panel)
+    .CodeMirror-gutters {
+      background: var(--color-bg-secondary) !important;
+      border-right-color: var(--color-border) !important;
+    }
+
+    .CodeMirror-linenumber {
+      color: var(--color-text-muted) !important;
+    }
+
+    .CodeMirror-cursor {
+      border-left-color: var(--color-text-primary) !important;
+    }
+
+    // Text selection highlight
+    .CodeMirror-selected {
+      background: rgba(124, 180, 248, 0.2) !important;
+    }
+
+    // Scrollable content area
+    .CodeMirror-scroll,
+    .CodeMirror-sizer,
+    .CodeMirror-lines {
+      background: var(--color-bg-tertiary) !important;
+      color: var(--color-text-primary) !important;
+    }
+
+    .CodeMirror-scrollbar-filler,
+    .CodeMirror-gutter-filler {
+      background: var(--color-bg-secondary) !important;
+    }
+
+    // SCSS syntax tokens — make them readable on dark bg
+    .cm-comment    { color: #94a3b8; }
+    .cm-string     { color: #86efac; }
+    .cm-number     { color: #fca5a5; }
+    .cm-keyword    { color: #c084fc; }
+    .cm-variable   { color: #7dd3fc; }
+    .cm-variable-2 { color: #93c5fd; }
+    .cm-property   { color: #f9a8d4; }
+    .cm-atom       { color: #fcd34d; }
+    .cm-def        { color: #6ee7b7; }
+    .cm-operator   { color: #e2e8f0; }
+    .cm-tag        { color: #86efac; }
+    .cm-attribute  { color: #fdba74; }
+    .cm-error      { color: #fca5a5; background: rgba(239, 68, 68, 0.15); }
+  }
+
+  // The "Theme customization" collapsible header
+  .collapsible-fields-group {
+    border-color: var(--color-border);
+
+    .collapsible-fields-header {
+      background-color: var(--color-bg-secondary);
+      border-bottom-color: var(--color-border);
+      color: var(--color-text-primary);
+    }
+
+    .collapsible-fields-body {
+      background-color: var(--color-bg-primary);
+    }
+  }
+
+  // Plain label for color fields (rendered outside the group div)
+  .col-lg-4 > label.control-label,
+  .col-lg-4 > label.form-label {
+    color: var(--color-text-primary);
+  }
+}
+

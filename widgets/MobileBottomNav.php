@@ -56,24 +56,31 @@ class MobileBottomNav extends Widget
         $activeItem = $this->getActiveItem($currentRoute);
 
         // Member spaces — cache 5 min per user (memberships change infrequently)
-        $spacesCacheKey = 'mbn_spaces_' . $userId;
-        $spaces = $cache->get($spacesCacheKey);
-        if ($spaces === false) {
+        // Cache only IDs to avoid serializing heavy AR objects across cache backends.
+        $spacesCacheKey = 'mbn_spaces_ids_' . $userId;
+        $spaceIds = $cache->get($spacesCacheKey);
+        if ($spaceIds === false) {
             try {
-                $spaces = Space::find()
-                    ->innerJoin('space_membership', 'space_membership.space_id = space.id')
-                    ->where(['space_membership.user_id' => $userId])
-                    ->andWhere(['space_membership.status' => Membership::STATUS_MEMBER])
-                    ->andWhere(['space.status' => Space::STATUS_ENABLED])
-                    ->orderBy(['space_membership.last_visit' => SORT_DESC])
+                $spaceTable      = Space::tableName();
+                $membershipTable = Membership::tableName();
+                $spaceIds = Space::find()
+                    ->select($spaceTable . '.id')
+                    ->innerJoin($membershipTable, $membershipTable . '.space_id = ' . $spaceTable . '.id')
+                    ->where([$membershipTable . '.user_id' => $userId])
+                    ->andWhere([$membershipTable . '.status' => Membership::STATUS_MEMBER])
+                    ->andWhere([$spaceTable . '.status' => Space::STATUS_ENABLED])
+                    ->orderBy([$membershipTable . '.last_visit' => SORT_DESC])
                     ->limit(8)
-                    ->all();
-                $cache->set($spacesCacheKey, $spaces, 300);
+                    ->column();
+                $cache->set($spacesCacheKey, $spaceIds, 300);
             } catch (\Exception $e) {
                 Yii::error('MobileBottomNav: failed to load spaces: ' . $e->getMessage(), 'modernTheme2026');
-                $spaces = [];
+                $spaceIds = [];
             }
         }
+
+        // Re-query the actual AR models (lightweight — only up to 8 rows, never from cache)
+        $spaces = empty($spaceIds) ? [] : Space::findAll(['id' => $spaceIds]);
 
         return $this->render('mobileBottomNav', [
             'user' => $user,

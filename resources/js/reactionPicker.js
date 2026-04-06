@@ -104,7 +104,7 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         // On mobile viewports center the picker horizontally so it is never
         // clipped on either side, regardless of where the trigger sits.
         var left;
-        if (vpW < 768 && pickW <= vpW - 16) {
+        if (vpW < 992 && pickW <= vpW - 16) {
             left = Math.round((vpW - pickW) / 2);
         } else {
             // Desktop: align left edge with trigger, clamped inside viewport.

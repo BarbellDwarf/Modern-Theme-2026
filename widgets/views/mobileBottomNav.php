@@ -317,13 +317,14 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
             btn.classList.add('active');
             btn.setAttribute('aria-pressed', 'true');
             // POST to dark-mode modal endpoint
+            var csrfParam = document.querySelector('meta[name=\"csrf-param\"]');
             var csrfToken = document.querySelector('meta[name=\"csrf-token\"]');
             var formData = new FormData();
             formData.append('UserSetting[darkMode]', mode);
-            if (csrfToken) {
-                formData.append('_csrf', csrfToken.getAttribute('content'));
+            if (csrfParam && csrfToken) {
+                formData.append(csrfParam.getAttribute('content'), csrfToken.getAttribute('content'));
             }
-            fetch('/dark-mode/user/modal', {
+            fetch(<?= json_encode(Url::to(['/dark-mode/user/modal'])) ?>, {
                 method: 'POST',
                 body: formData,
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -332,7 +333,7 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
                 window.location.reload();
             }).catch(function() {
                 // If fetch fails, fall back to opening the modal
-                window.location.href = '/dark-mode/user';
+                window.location.href = <?= json_encode(Url::to(['/dark-mode/user'])) ?>;
             });
         });
     });
@@ -353,6 +354,11 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
     // Update active nav item after AJAX/pjax navigation
     function updateMobileNavActive() {
         var path = window.location.pathname;
+        // Strip the application base URL so comparisons work in subdirectory installs.
+        var base = <?= json_encode(rtrim(Yii::$app->request->baseUrl, '/')) ?>;
+        if (base && path.indexOf(base) === 0) {
+            path = path.slice(base.length) || '/';
+        }
         var activeKey = '';
 
         if (path === '/' || path === '/dashboard' || path.indexOf('/dashboard') !== -1 || path === '') {

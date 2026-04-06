@@ -6,7 +6,7 @@ humhub.module('modernTheme.peopleFocusGuard', function(module, require, $) {
 
     function isPeoplePage() {
         var p = window.location.pathname || '';
-        return p.indexOf('/user/people') !== -1 || p === '/people' || p.indexOf('/people?') !== -1;
+        return p.indexOf('/user/people') !== -1 || p === '/people';
     }
 
     // ─── Autofocus suppression ────────────────────

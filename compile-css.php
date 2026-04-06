@@ -58,28 +58,42 @@ $compiler->addImportPath($themeBasePath . '/scss');
 
 $scssContent = '';
 
-// Try to read custom colors from DB
-try {
-    $pdo = new PDO('mysql:host=localhost;dbname=humhub', 'humhub', 'aU9l6c2znGhqiMK7FID4Qiih');
-    $colorMap = [
-        'themePrimaryColor' => 'primary', 'themeAccentColor' => 'accent',
-        'themeSecondaryColor' => 'secondary', 'themeSuccessColor' => 'success',
-        'themeDangerColor' => 'danger', 'themeWarningColor' => 'warning',
-        'themeInfoColor' => 'info', 'themeLightColor' => 'light', 'themeDarkColor' => 'dark',
-    ];
-    $stmt = $pdo->query("SELECT name, value FROM setting WHERE module_id='core' AND name LIKE 'theme%Color'");
-    $colors = [];
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $colors[$row['name']] = $row['value'];
-    }
-    foreach ($colorMap as $key => $var) {
-        if (!empty($colors[$key])) {
-            $scssContent .= "\${$var}: {$colors[$key]} !default;\n";
+// Try to read custom colors from DB using environment-provided connection settings
+$dbDsn = getenv('HUMHUB_DB_DSN');
+$dbHost = getenv('HUMHUB_DB_HOST');
+$dbName = getenv('HUMHUB_DB_NAME');
+$dbUser = getenv('HUMHUB_DB_USER');
+$dbPassword = getenv('HUMHUB_DB_PASSWORD');
+
+if (!$dbDsn && $dbHost && $dbName) {
+    $dbDsn = 'mysql:host=' . $dbHost . ';dbname=' . $dbName;
+}
+
+if ($dbDsn && $dbUser !== false && $dbPassword !== false) {
+    try {
+        $pdo = new PDO($dbDsn, $dbUser, $dbPassword);
+        $colorMap = [
+            'themePrimaryColor' => 'primary', 'themeAccentColor' => 'accent',
+            'themeSecondaryColor' => 'secondary', 'themeSuccessColor' => 'success',
+            'themeDangerColor' => 'danger', 'themeWarningColor' => 'warning',
+            'themeInfoColor' => 'info', 'themeLightColor' => 'light', 'themeDarkColor' => 'dark',
+        ];
+        $stmt = $pdo->query("SELECT name, value FROM setting WHERE module_id='core' AND name LIKE 'theme%Color'");
+        $colors = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $colors[$row['name']] = $row['value'];
         }
+        foreach ($colorMap as $key => $var) {
+            if (!empty($colors[$key])) {
+                $scssContent .= "\${$var}: {$colors[$key]} !default;\n";
+            }
+        }
+        echo "Applied " . count($colors) . " custom colors from DB\n";
+    } catch (Exception $e) {
+        echo "Warning: Could not read colors from DB - using defaults\n";
     }
-    echo "Applied " . count($colors) . " custom colors from DB\n";
-} catch (Exception $e) {
-    echo "Warning: Could not read colors from DB - using defaults\n";
+} else {
+    echo "Warning: Database connection settings not provided - using defaults\n";
 }
 
 $scssContent .= '@import "functions";' . "\n";

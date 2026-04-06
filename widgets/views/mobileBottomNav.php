@@ -357,7 +357,7 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
             item.removeAttribute('aria-current');
         });
         if (activeKey) {
-            var target = nav.querySelector('.nav-item[data-nav-key="' + activeKey + '"]');
+            var target = nav.querySelector('.nav-item[data-nav-key=\'' + activeKey + '\']');
             if (target) {
                 target.classList.add('active');
                 target.setAttribute('aria-current', 'page');

@@ -336,9 +336,9 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
         var path = window.location.pathname;
         var activeKey = '';
 
-        if (path === '/' || path.indexOf('/dashboard') !== -1 || path === '') {
+        if (path === '/' || path === '/dashboard' || path.indexOf('/dashboard') !== -1 || path === '') {
             activeKey = 'home';
-        } else if (path.indexOf('/user/people') !== -1 || path.indexOf('/directory') !== -1) {
+        } else if (path === '/people' || path.indexOf('/people') !== -1 || path.indexOf('/user/people') !== -1) {
             activeKey = 'people';
         } else if (path.indexOf('/notification') !== -1) {
             activeKey = 'notifications';

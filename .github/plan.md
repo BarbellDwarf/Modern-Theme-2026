@@ -1,11 +1,47 @@
 # Modern Theme 2026 - Implementation Plan
 
+## Recent Updates (Session 5 - Desktop Layout & Install Validation)
+
+### Issues Fixed & Completed:
+1. **Admin Dark Mode**: CodeMirror textarea, palette preset buttons, and color-picker containers now properly themed in dark mode
+2. **Profile Page Desktop Layout**: Banner height reduced (280→200px), nav column fixed at 240-280px, content panels capped at 860px
+3. **Space Page Desktop Layout**: Same col-lg-2/col-lg-10 imbalance fixed for `.space-layout-container` (settings, stream, all space pages)
+4. **Fresh Install Validation**: Two install-breaking bugs identified and fixed (see below)
+
+### Solutions Implemented:
+
+#### Admin Dark Mode Fixed (COMPLETED ✅)
+- `_admin.scss`: Full CodeMirror dark override (background, text, gutters, syntax tokens)
+- `paletteSwitcher.js`: Removed hardcoded `style="background:#fff"` from injected HTML
+- Palette preset buttons and `.input-color-group` containers now use CSS variables
+
+#### Desktop Layout Fixed (COMPLETED ✅)
+- Profile pages: `col-lg-2` nav (16.6%) replaced with fixed 240-280px; content fills remainder
+- Space pages: Same fix applied to `.space-layout-container .space-content`
+- Banner height reduced on desktop: 768px→180px, 992px→200px, 1400px→220px
+
+#### Fresh Install Blockers Fixed (COMPLETED ✅)
+1. **`spaces.css` not tracked by git** — `*.css` in `.gitignore` meant `spaces.css` was absent on fresh installs (breaking the asset bundle). All space styles are already in compiled `theme.css`, so `spaces.css` was removed from `ModernThemeAsset.$css`.
+2. **Reaction mass-assignment silent failure** — `new Like(['reaction_type' => $type])` silently dropped `reaction_type` on unmodified HumHub (attribute not in `rules()` safe attrs). Fixed to use direct property assignment + `save(false)`.
+
+### Install Validation Summary (COMPLETED ✅)
+The module is now fully self-contained and installable on any fresh HumHub 1.18+ instance:
+- ✅ No composer/npm dependencies
+- ✅ No hardcoded server paths in PHP code
+- ✅ Migrations run automatically on module enable (no CLI needed)
+- ✅ CSS auto-builds on first page request if not present
+- ✅ All tracked assets exist in git
+- ✅ ReactionsController works without core Like.php modifications
+- ⚠️ `activate-theme.sh` has hardcoded `/var/www/humhub` path (utility script only, not used by module)
+
+---
+
 ## Recent Updates (Session 4 - SCSS Build Fix, Mobile Connection & Reactions)
 
 ### Issues Fixed & Completed:
 1. **SCSS Build Broken**: `build.scss` was empty (just a newline), causing silent compilation fallback - all SCSS partials were not being reliably compiled
 2. **Mobile App Connection**: Session timeout increased to 3600s; polling interval reduced from 45s → 20s  
-3. **Like Model**: Added `reaction_type` validation rules and `getReactionCounts()` helper method
+3. **Like Model**: Added `reaction_type` validation rules and `getReactionCounts()` helper method (note: core file mod, not needed by module itself)
 4. **Emoji Reactions**: All backend infrastructure complete (migration applied, ReactionsController, JS, SCSS)
 
 ### Solutions Implemented:

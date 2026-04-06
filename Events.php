@@ -27,6 +27,10 @@ class Events
             return;
         }
 
+        // Theme switching can leave a stale/empty published theme.css.
+        // Ensure CSS is healthy before rendering the page.
+        Module::ensureThemeCssHealthy();
+
         if (Yii::$app->user->isGuest) {
             return;
         }

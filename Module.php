@@ -107,6 +107,24 @@ class Module extends \humhub\components\Module
             // Ensure the current published asset directory exists for this theme hash.
             $theme->publishResources(true);
 
+            $cssDir = $theme->publishedResourcesPath . DIRECTORY_SEPARATOR . 'css';
+            if (!is_dir($cssDir)) {
+                @mkdir($cssDir, 0775, true);
+            }
+
+            // ThemeHelper requires both files to be writable. On some systems old files
+            // may be left read-only after manual operations or user mismatch.
+            $cssFile = $cssDir . DIRECTORY_SEPARATOR . 'theme.css';
+            $mapFile = $cssDir . DIRECTORY_SEPARATOR . 'theme.map';
+            foreach ([$cssFile, $mapFile] as $file) {
+                if (is_file($file) && !is_writable($file)) {
+                    @chmod($file, 0664);
+                }
+                if (is_file($file) && !is_writable($file)) {
+                    @unlink($file);
+                }
+            }
+
             $result = ThemeHelper::buildCss($theme);
             if ($result !== true) {
                 Yii::warning('ThemeHelper::buildCss failed with custom SCSS: ' . (string)$result, 'modern-theme-2026');
@@ -119,7 +137,6 @@ class Module extends \humhub\components\Module
                 }
             }
 
-            $cssFile = $theme->publishedResourcesPath . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'theme.css';
             if (!is_file($cssFile) || filesize($cssFile) < 10240) {
                 Yii::error('Theme CSS output invalid at ' . $cssFile, 'modern-theme-2026');
                 return false;
@@ -130,6 +147,41 @@ class Module extends \humhub\components\Module
         }
 
         return true;
+    }
+
+    /**
+     * Self-healing CSS check for theme switches.
+     * If the active published theme.css is missing or unexpectedly tiny, rebuild it.
+     */
+    public static function ensureThemeCssHealthy(): void
+    {
+        static $checked = false;
+        if ($checked) {
+            return;
+        }
+        $checked = true;
+
+        if (!static::isThemeBasedActive()) {
+            return;
+        }
+
+        $theme = Yii::$app->view->theme ?? null;
+        if ($theme === null || $theme->name !== self::THEME_NAME) {
+            return;
+        }
+
+        try {
+            $theme->publishResources(false);
+            $cssFile = $theme->publishedResourcesPath . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'theme.css';
+            $minValidSize = 10240; // 10KB; valid compiled theme is usually 500KB+
+
+            if (!is_file($cssFile) || filesize($cssFile) < $minValidSize) {
+                Yii::warning('Detected invalid theme.css, rebuilding: ' . $cssFile, 'modern-theme-2026');
+                static::rebuildThemeCss();
+            }
+        } catch (\Throwable $e) {
+            Yii::error('ensureThemeCssHealthy failed: ' . $e->getMessage(), 'modern-theme-2026');
+        }
     }
 
     /**

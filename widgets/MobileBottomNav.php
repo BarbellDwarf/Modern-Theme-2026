@@ -80,7 +80,21 @@ class MobileBottomNav extends Widget
         }
 
         // Re-query the actual AR models (lightweight — only up to 8 rows, never from cache)
-        $spaces = empty($spaceIds) ? [] : Space::findAll(['id' => $spaceIds]);
+        // Restore the last_visit ordering that was captured when the IDs were cached.
+        if (empty($spaceIds)) {
+            $spaces = [];
+        } else {
+            $spaceMap = [];
+            foreach (Space::findAll(['id' => $spaceIds]) as $space) {
+                $spaceMap[$space->id] = $space;
+            }
+            $spaces = [];
+            foreach ($spaceIds as $id) {
+                if (isset($spaceMap[$id])) {
+                    $spaces[] = $spaceMap[$id];
+                }
+            }
+        }
 
         return $this->render('mobileBottomNav', [
             'user' => $user,

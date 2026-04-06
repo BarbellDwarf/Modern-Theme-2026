@@ -69,7 +69,7 @@ if (!$dbDsn && $dbHost && $dbName) {
     $dbDsn = 'mysql:host=' . $dbHost . ';dbname=' . $dbName;
 }
 
-if ($dbDsn && $dbUser !== false && $dbPassword !== false) {
+if ($dbDsn && is_string($dbUser) && is_string($dbPassword)) {
     try {
         $pdo = new PDO($dbDsn, $dbUser, $dbPassword);
         $colorMap = [

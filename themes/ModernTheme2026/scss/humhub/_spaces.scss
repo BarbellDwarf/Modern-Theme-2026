@@ -100,21 +100,20 @@
     }
 }
 
-// ── Profile page desktop layout ────────────────────────────────────────────────
-// The core template uses col-lg-2 (nav) + col-lg-10 (content) which creates a
-// very narrow left nav and an extremely wide content area on desktop.
-// Override column proportions and cap content width for a balanced layout.
+// ── Space & Profile page desktop layout ───────────────────────────────────────
+// Both templates use col-lg-2 (nav) + col-lg-10 (content) which creates a
+// cramped left nav and an overly wide content area on desktop.
+// Override column proportions for both containers.
 
 @media (min-width: 992px) {
+    .space-layout-container .space-content,
     .profile-layout-container .profile-content {
-        // Nav: use a fixed comfortable width instead of col-lg-2 (16.6%)
         .layout-nav-container {
             flex: 0 0 240px;
             max-width: 240px;
             width: 240px;
         }
 
-        // Content: fill the remaining space
         .layout-content-container {
             flex: 1 1 auto;
             min-width: 0;
@@ -124,8 +123,8 @@
 }
 
 @media (min-width: 1200px) {
+    .space-layout-container .space-content,
     .profile-layout-container .profile-content {
-        // On wider screens give the nav a little more room
         .layout-nav-container {
             flex: 0 0 260px;
             max-width: 260px;
@@ -136,7 +135,6 @@
             max-width: calc(100% - 260px);
         }
 
-        // Keep form fields / panels from stretching too wide
         .layout-content-container .panel,
         .layout-content-container .card {
             max-width: 860px;
@@ -145,6 +143,7 @@
 }
 
 @media (min-width: 1400px) {
+    .space-layout-container .space-content,
     .profile-layout-container .profile-content {
         .layout-nav-container {
             flex: 0 0 280px;

@@ -356,7 +356,7 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
         var path = window.location.pathname;
         // Strip the application base URL so comparisons work in subdirectory installs.
         var base = <?= json_encode(rtrim(Yii::$app->request->baseUrl, '/')) ?>;
-        if (base !== '' && path.indexOf(base) === 0) {
+        if (base !== '' && base !== '/' && path.indexOf(base) === 0) {
             path = path.slice(base.length) || '/';
         }
         var activeKey = '';

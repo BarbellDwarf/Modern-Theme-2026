@@ -66,7 +66,12 @@ $dbUser = getenv('HUMHUB_DB_USER');
 $dbPassword = getenv('HUMHUB_DB_PASSWORD');
 
 if (!$dbDsn && $dbHost && $dbName) {
-    $dbDsn = 'mysql:host=' . $dbHost . ';dbname=' . $dbName;
+    // Validate that host/dbname don't contain DSN-injection characters (semicolons).
+    if (strpos($dbHost, ';') !== false || strpos($dbName, ';') !== false) {
+        echo "Warning: Invalid HUMHUB_DB_HOST or HUMHUB_DB_NAME value (contains ';') - skipping DB connection\n";
+    } else {
+        $dbDsn = 'mysql:host=' . $dbHost . ';dbname=' . $dbName;
+    }
 }
 
 if ($dbDsn && is_string($dbUser) && is_string($dbPassword)) {

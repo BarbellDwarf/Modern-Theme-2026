@@ -205,7 +205,7 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
                 <?php endif; ?>
                 <?php if (\humhub\helpers\DeviceDetectorHelper::isAppRequest()): ?>
                 <li>
-                    <button type="button" class="mobile-more-item mobile-switch-network-btn" style="width:100%;background:none;border:none;text-align:left;padding:0;cursor:pointer;">
+                    <button type="button" class="mobile-more-item mobile-switch-network-btn">
                         <span class="mobile-more-icon"><i class="fa fa-exchange"></i></span>
                         <span class="mobile-more-label"><?= Yii::t('base', 'Switch Network') ?></span>
                         <i class="fa fa-chevron-right mobile-more-arrow"></i>

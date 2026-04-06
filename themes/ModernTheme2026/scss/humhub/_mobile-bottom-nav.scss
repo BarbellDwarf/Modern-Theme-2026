@@ -502,7 +502,7 @@
   }
 }
 
-// Switch Network button — renders as a <button> but should look like .mobile-more-item <a>
+// Switch Network button — renders as a <button> but should look identical to .mobile-more-item <a>
 button.mobile-switch-network-btn.mobile-more-item {
   width: 100%;
   background: none;
@@ -510,8 +510,7 @@ button.mobile-switch-network-btn.mobile-more-item {
   cursor: pointer;
   text-align: left;
   font-family: inherit;
-
-  &:hover, &:active {
-    background: var(--color-bg-secondary);
-  }
+  font-size: inherit;
+  line-height: inherit;
+  color: var(--color-text-primary);
 }

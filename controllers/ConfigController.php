@@ -81,6 +81,17 @@ class ConfigController extends Controller
         ]);
     }
 
+    public function actionRebuildCss()
+    {
+        try {
+            $result = ThemeHelper::buildCss();
+            Yii::$app->cache->flush();
+            return $result === true ? 'ok' : ('error: ' . var_export($result, true));
+        } catch (\Exception $e) {
+            return 'error: ' . $e->getMessage();
+        }
+    }
+
     public static function getPalettes(): array
     {
         return [
@@ -92,6 +103,10 @@ class ConfigController extends Controller
             'rose-pink'     => ['label' => 'Rose Pink',     'colors' => ['primary' => '#db2777', 'accent' => '#f472b6', 'secondary' => '#ec4899', 'success' => '#16a34a', 'danger' => '#dc2626', 'warning' => '#d97706', 'info' => '#0284c7', 'light' => '#fdf2f8', 'dark' => '#500724']],
             'teal-cyan'     => ['label' => 'Teal Cyan',     'colors' => ['primary' => '#0891b2', 'accent' => '#22d3ee', 'secondary' => '#0e7490', 'success' => '#059669', 'danger' => '#dc2626', 'warning' => '#d97706', 'info' => '#06b6d4', 'light' => '#ecfeff', 'dark' => '#164e63']],
             'midnight-dark' => ['label' => 'Midnight Dark', 'colors' => ['primary' => '#6366f1', 'accent' => '#818cf8', 'secondary' => '#4f46e5', 'success' => '#10b981', 'danger' => '#f43f5e', 'warning' => '#fbbf24', 'info' => '#38bdf8', 'light' => '#1e1b4b', 'dark' => '#0f0a1e']],
+            'warm-amber'    => ['label' => 'Warm Amber',    'colors' => ['primary' => '#d97706', 'accent' => '#fbbf24', 'secondary' => '#b45309', 'success' => '#16a34a', 'danger' => '#dc2626', 'warning' => '#ca8a04', 'info' => '#0284c7', 'light' => '#fffbeb', 'dark' => '#451a03']],
+            'cobalt-navy'   => ['label' => 'Cobalt Navy',   'colors' => ['primary' => '#1d4ed8', 'accent' => '#3b82f6', 'secondary' => '#1e40af', 'success' => '#16a34a', 'danger' => '#dc2626', 'warning' => '#d97706', 'info' => '#2563eb', 'light' => '#eff6ff', 'dark' => '#1e3a5f']],
+            'ruby-red'      => ['label' => 'Ruby Red',      'colors' => ['primary' => '#b91c1c', 'accent' => '#ef4444', 'secondary' => '#991b1b', 'success' => '#16a34a', 'danger' => '#7f1d1d', 'warning' => '#d97706', 'info' => '#0284c7', 'light' => '#fff5f5', 'dark' => '#450a0a']],
+            'lavender'      => ['label' => 'Soft Lavender', 'colors' => ['primary' => '#8b5cf6', 'accent' => '#c4b5fd', 'secondary' => '#a78bfa', 'success' => '#16a34a', 'danger' => '#dc2626', 'warning' => '#d97706', 'info' => '#6d28d9', 'light' => '#f5f3ff', 'dark' => '#2e1065']],
         ];
     }
 

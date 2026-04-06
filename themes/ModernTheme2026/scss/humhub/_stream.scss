@@ -96,39 +96,69 @@
   background: transparent; // blend with post panel — no inner box
 }
 
-// ── Flat stream posts on desktop ──────────────────────────────────────────────
-// Remove the "box in a box" appearance where post cards have a contrasting
-// header/footer background making them look nested.  On desktop the individual
-// post panels already have a card background; all sub-sections should be
-// transparent so there's only ONE visible box per post.
-@media (min-width: 992px) {
-  // Stream post panel — sub-sections blend into the card
-  .s2_streamContent > .wall-entry > .panel,
-  .s2_streamContent > .stream-entry > .panel,
-  .s2_streamContent > .panel {
-    > .panel-heading,
-    > .panel-footer,
-    > .panel-body > .wall-entry-footer,
-    > .wall-entry-footer {
+// ── Single-box stream posts (all screen sizes) ───────────────────────────────
+// The DOM structure is:  .wall-entry (outer) > .panel.panel-default (inner)
+// Both get card styling from _cards.scss → creates the "double box" appearance.
+//
+// Solution: keep .wall-entry as the sole visible card; make the inner .panel
+// completely transparent so there is only ONE box per post.
+
+.s2_streamContent .wall-entry,
+.s2_streamContent .stream-entry {
+  // The wall-entry IS the card — give it proper card styling
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-4);
+
+  // Inner .panel: transparent — no box of its own
+  > .panel,
+  > div > .panel {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    margin-bottom: 0 !important;
+
+    > .panel-body {
       background: transparent;
-      border-color: var(--color-border);
     }
 
     > .panel-heading {
+      background: transparent;
+      border-bottom-color: var(--color-border);
       border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      box-shadow: none;
+      margin: 0;
     }
 
     > .panel-footer {
+      background: transparent;
+      border-top-color: var(--color-border);
       border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      box-shadow: none;
+      margin: 0;
     }
   }
 
-  // Comment container inside stream post — transparent, no inner box
-  .s2_streamContent .comment-container,
-  .s2_streamContent .comment-entry-footer {
+  // Footer/addons bar inside the post — no extra bg
+  .wall-entry-footer {
+    background: transparent;
+    border-top-color: var(--color-border);
+  }
+
+  // Comment container — no inner card
+  .comment-container,
+  .comment-entry-footer {
     background: transparent;
   }
 }
+
+// ── Old desktop-only flat rule (superseded above, kept for safety) ─────────────
+// Previously only applied at 992px+; now the single-box rule covers all sizes.
+// These selectors are kept as reinforcement.
+
 
 
 // Make .wall-entry-controls links always visible with readable color

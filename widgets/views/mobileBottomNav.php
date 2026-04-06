@@ -250,7 +250,9 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
     </div>
 </div>
 
-<?php $this->registerJs("
+<?php
+$baseUrl = rtrim(Yii::$app->request->baseUrl, '/');
+$this->registerJs("
 (function() {
     function initSheet(btnId, sheetId, itemSelector) {
         var btn = document.getElementById(btnId);
@@ -355,7 +357,7 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
     function updateMobileNavActive() {
         var path = window.location.pathname;
         // Strip the application base URL so comparisons work in subdirectory installs.
-        var base = <?= json_encode(rtrim(Yii::$app->request->baseUrl, '/')) ?>;
+        var base = " . json_encode($baseUrl) . ";
         if (base !== '' && base !== '/' && path.indexOf(base) === 0) {
             path = path.slice(base.length) || '/';
         }

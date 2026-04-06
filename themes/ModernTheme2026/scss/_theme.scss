@@ -265,3 +265,25 @@ html {
     page-break-after: avoid;
   }
 }
+
+// ============================================
+// PROFILE FIELD LINKS (phone/email)
+// ============================================
+.mt2026-tel-link {
+  color: var(--color-link);
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover {
+    text-decoration: underline;
+    color: var(--color-link-hover, var(--color-primary));
+  }
+
+  &::before {
+    content: '\f095';  // fa-phone
+    font-family: 'FontAwesome';
+    margin-right: 4px;
+    font-size: 0.85em;
+    opacity: 0.7;
+  }
+}

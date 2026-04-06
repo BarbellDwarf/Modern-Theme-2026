@@ -501,3 +501,17 @@
     outline-offset: 2px;
   }
 }
+
+// Switch Network button — renders as a <button> but should look like .mobile-more-item <a>
+button.mobile-switch-network-btn.mobile-more-item {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+
+  &:hover, &:active {
+    background: var(--color-bg-secondary);
+  }
+}

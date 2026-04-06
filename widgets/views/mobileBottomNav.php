@@ -203,6 +203,15 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
                     </a>
                 </li>
                 <?php endif; ?>
+                <?php if (\humhub\helpers\DeviceDetectorHelper::isAppRequest()): ?>
+                <li>
+                    <button type="button" class="mobile-more-item mobile-switch-network-btn" style="width:100%;background:none;border:none;text-align:left;padding:0;cursor:pointer;">
+                        <span class="mobile-more-icon"><i class="fa fa-exchange"></i></span>
+                        <span class="mobile-more-label"><?= Yii::t('base', 'Switch Network') ?></span>
+                        <i class="fa fa-chevron-right mobile-more-arrow"></i>
+                    </button>
+                </li>
+                <?php endif; ?>
                 <?php if (\Yii::$app->moduleManager->hasModule('dark-mode')): ?>
                 <?php
                     $darkModeSetting = new \humhub\modules\darkMode\models\UserSetting();
@@ -284,6 +293,16 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
 
     initSheet('mobile-spaces-btn', 'mobile-spaces-sheet', '.mobile-space-item');
     initSheet('mobile-more-btn',   'mobile-more-sheet',   '.mobile-more-item');
+
+    // Switch Network button — sends Flutter showOpener message (mobile app only)
+    var switchNetworkBtn = document.querySelector('.mobile-switch-network-btn');
+    if (switchNetworkBtn) {
+        switchNetworkBtn.addEventListener('click', function() {
+            if (window.flutterChannel) {
+                window.flutterChannel.postMessage(JSON.stringify({ type: 'showOpener' }));
+            }
+        });
+    }
 
     // Dark mode inline toggle in More sheet
     document.querySelectorAll('.mobile-darkmode-btn').forEach(function(btn) {

@@ -49,7 +49,7 @@ The theme will be active immediately after activation.
 
 ### Option 2: Manual Installation
 
-1. Extract the module to: `/var/www/humhub/protected/modules/modern-theme-2026/`
+1. Extract the module to: `/var/www/humhub/protected/modules/modern-theme-2026/` (Or wherever your HumHub installation is)
 2. Set permissions: `sudo chown -R www-data:www-data /var/www/humhub/protected/modules/modern-theme-2026`
 3. Enable via Admin Panel: Modules > Modern Theme 2026 > Enable
 4. Activate theme: Design & Appearance > Select ModernTheme2026

@@ -178,24 +178,6 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
                         <i class="fa fa-chevron-right mobile-more-arrow"></i>
                     </a>
                 </li>
-                <?php if (\Yii::$app->moduleManager->hasModule('calendar')): ?>
-                <li class="mobile-more-calendar-fallback">
-                    <a href="<?= Url::to(['/calendar/global/index']) ?>" class="mobile-more-item">
-                        <span class="mobile-more-icon"><i class="fa fa-calendar"></i></span>
-                        <span class="mobile-more-label">Calendar</span>
-                        <i class="fa fa-chevron-right mobile-more-arrow"></i>
-                    </a>
-                </li>
-                <?php endif; ?>
-                <?php if (\Yii::$app->moduleManager->hasModule('usermap')): ?>
-                <li>
-                    <a href="<?= Url::to(['/usermap/map/index']) ?>" class="mobile-more-item">
-                        <span class="mobile-more-icon"><i class="fa fa-map-marker"></i></span>
-                        <span class="mobile-more-label">User Map</span>
-                        <i class="fa fa-chevron-right mobile-more-arrow"></i>
-                    </a>
-                </li>
-                <?php endif; ?>
                 <?php foreach ($dynamicMoreItems as $dynamicItem): ?>
                 <li>
                     <a href="<?= Html::encode($dynamicItem['url']) ?>" class="mobile-more-item">

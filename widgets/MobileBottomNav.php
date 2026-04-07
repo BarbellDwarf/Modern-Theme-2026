@@ -25,6 +25,18 @@ use humhub\widgets\TopMenu;
 class MobileBottomNav extends Widget
 {
     /**
+     * Top-menu entries captured after all modules initialize the menu.
+     * @var array<int, array{id:string,label:string,url:string,icon:string}>
+     */
+    private array $capturedTopMenuEntries = [];
+
+    public function init()
+    {
+        parent::init();
+        $this->capturedTopMenuEntries = $this->captureTopMenuEntries();
+    }
+
+    /**
      * @inheritdoc
      */
     public function run()
@@ -141,19 +153,14 @@ class MobileBottomNav extends Widget
             'groups' => 'fa-users',
         ];
 
-        $menu = new TopMenu();
-        $entries = $menu->getEntries(MenuLink::class, true);
+        $entries = $this->capturedTopMenuEntries;
         $items = [];
         $seen = [];
 
         foreach ($entries as $entry) {
-            if (!$entry instanceof MenuLink) {
-                continue;
-            }
-
-            $id = strtolower((string)$entry->getId());
-            $label = trim(strip_tags((string)$entry->getLabel()));
-            $url = (string)$entry->getUrl();
+            $id = strtolower((string)($entry['id'] ?? ''));
+            $label = trim(strip_tags((string)($entry['label'] ?? '')));
+            $url = (string)($entry['url'] ?? '');
 
             if ($id === '' || $url === '' || $label === '') {
                 continue;
@@ -174,7 +181,7 @@ class MobileBottomNav extends Widget
             }
             $seen[$url] = true;
 
-            $icon = 'fa-link';
+            $icon = $entry['icon'] ?? 'fa-link';
             foreach ($iconMap as $needle => $mappedIcon) {
                 if (str_contains($id, $needle) || str_contains(strtolower($label), $needle)) {
                     $icon = $mappedIcon;
@@ -195,6 +202,35 @@ class MobileBottomNav extends Widget
         });
 
         return $items;
+    }
+
+    /**
+     * Create a TopMenu instance and collect the final, visible links after module events.
+     *
+     * @return array<int, array{id:string,label:string,url:string,icon:string}>
+     */
+    private function captureTopMenuEntries(): array
+    {
+        $menu = new TopMenu();
+        // run() triggers TopMenu::EVENT_RUN and module menu mutations.
+        $menu->run();
+        $entries = $menu->getEntries(MenuLink::class, true);
+        $result = [];
+
+        foreach ($entries as $entry) {
+            if (!$entry instanceof MenuLink) {
+                continue;
+            }
+            $result[] = [
+                'id' => (string)$entry->getId(),
+                'label' => (string)$entry->getLabel(),
+                'url' => (string)$entry->getUrl(),
+                // Keep empty by default; icon is inferred later.
+                'icon' => '',
+            ];
+        }
+
+        return $result;
     }
 
     /**

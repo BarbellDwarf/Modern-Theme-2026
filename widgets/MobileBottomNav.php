@@ -4,6 +4,7 @@ namespace humhub\modules\modernTheme2026\widgets;
 
 use Yii;
 use yii\base\Widget;
+use yii\helpers\Url;
 use humhub\modules\space\models\Space;
 use humhub\modules\space\models\Membership;
 use humhub\modules\modernTheme2026\controllers\ConfigController;
@@ -153,11 +154,10 @@ class MobileBottomNav extends Widget
             'groups' => 'fa-users',
         ];
 
-        $entries = $this->capturedTopMenuEntries;
         $items = [];
         $seen = [];
 
-        foreach ($entries as $entry) {
+        foreach ($this->capturedTopMenuEntries as $entry) {
             $id = strtolower((string)($entry['id'] ?? ''));
             $label = trim(strip_tags((string)($entry['label'] ?? '')));
             $url = (string)($entry['url'] ?? '');
@@ -195,6 +195,49 @@ class MobileBottomNav extends Widget
                 'url' => $url,
                 'icon' => $icon,
             ];
+        }
+
+        // Fallback discovery from enabled modules for entries not present in top menu.
+        // This catches modules like "mail" when top-menu rendering differs by context.
+        $moduleManager = Yii::$app->moduleManager;
+        foreach ($moduleManager->getEnabledModules() as $moduleId => $module) {
+            $id = strtolower((string)$moduleId);
+            if (in_array($id, $excludedIds, true) || in_array($id, $hiddenIds, true)) {
+                continue;
+            }
+            if (isset($seen['module:' . $id])) {
+                continue;
+            }
+
+            $routeMap = [
+                'mail' => ['/mail/mail/index'],
+                'calendar' => ['/calendar/global/index'],
+                'usermap' => ['/usermap/map/index'],
+                'marketplace' => ['/marketplace/browse/index'],
+            ];
+            if (!isset($routeMap[$id])) {
+                continue;
+            }
+
+            $url = Url::to($routeMap[$id]);
+            if (isset($seen[$url])) {
+                continue;
+            }
+
+            $label = trim((string)$module->getName());
+            if ($label === '') {
+                $label = ucfirst($id);
+            }
+            $icon = $iconMap[$id] ?? 'fa-link';
+
+            $items[] = [
+                'id' => $id,
+                'label' => $label,
+                'url' => $url,
+                'icon' => $icon,
+            ];
+            $seen[$url] = true;
+            $seen['module:' . $id] = true;
         }
 
         usort($items, static function ($a, $b) {

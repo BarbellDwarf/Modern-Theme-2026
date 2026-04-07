@@ -1,0 +1,99 @@
+// Modern Theme 2026 - Mail/Messenger module refresh
+// Applied only when mail module markup is present.
+
+#mail-conversation-overview,
+#mail-conversation-root > .panel,
+.mail-message-form {
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, var(--color-border));
+  box-shadow: var(--shadow-sm);
+  background: color-mix(in srgb, var(--color-bg-primary) 96%, var(--color-primary) 4%);
+}
+
+#mail-conversation-overview .panel-heading,
+#mail-conversation-header {
+  border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 20%, var(--color-border));
+  background: color-mix(in srgb, var(--color-bg-secondary) 88%, var(--color-primary) 12%);
+}
+
+#mail-conversation-overview .panel-heading {
+  padding: 12px 14px;
+}
+
+.mail-inbox-messages .messagePreviewEntry {
+  border-radius: var(--radius-md);
+  margin: 6px 10px;
+  border: 1px solid transparent;
+  transition: background-color .15s ease, border-color .15s ease, transform .12s ease;
+}
+
+.mail-inbox-messages .messagePreviewEntry:hover {
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border));
+  transform: translateY(-1px);
+}
+
+.mail-inbox-messages .messagePreviewEntry.active {
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 36%, var(--color-border));
+}
+
+.mail-inbox-messages .messagePreviewEntry.unread {
+  border-left: 3px solid var(--color-primary);
+}
+
+.mail-conversation-entry {
+  margin: 10px 0;
+}
+
+.mail-conversation-entry .conversation-entry-content {
+  border-radius: 14px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 14%, var(--color-border));
+  box-shadow: var(--shadow-xs);
+}
+
+.mail-conversation-entry .conversation-entry-content.own {
+  border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border));
+  box-shadow: var(--shadow-sm);
+}
+
+.conversation-entry-badge span {
+  box-shadow: var(--shadow-xs);
+  background: color-mix(in srgb, var(--color-bg-secondary) 88%, var(--color-primary) 12%);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, var(--color-border));
+}
+
+.mail-message-form {
+  padding: 12px;
+}
+
+.mail-message-form .humhub-ui-richtext {
+  border: 1px solid color-mix(in srgb, var(--color-primary) 16%, var(--color-border));
+  border-radius: 14px;
+  background: var(--color-bg-primary);
+}
+
+.mail-message-form .richtext-create-buttons .btn {
+  border-radius: 10px;
+}
+
+@media (max-width: 991px) {
+  #mail-conversation-overview {
+    margin-bottom: 10px;
+  }
+
+  #inbox {
+    max-height: 42vh !important;
+    border-radius: 10px;
+  }
+
+  #mail-conversation-root > .panel {
+    height: calc(100vh - 140px - var(--hh-mobile-app-safe-area-inset-bottom, env(safe-area-inset-bottom)));
+  }
+
+  .mail-conversation-entry .conversation-entry-content {
+    max-width: 82%;
+    font-size: 14px;
+  }
+}

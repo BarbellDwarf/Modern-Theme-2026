@@ -252,6 +252,8 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
 
 <?php
 $baseUrl = rtrim(Yii::$app->request->baseUrl, '/');
+$darkModeModalUrl = Url::to(['/dark-mode/user/modal']);
+$darkModeSettingsUrl = Url::to(['/dark-mode/user']);
 $this->registerJs("
 (function() {
     function initSheet(btnId, sheetId, itemSelector) {
@@ -326,7 +328,7 @@ $this->registerJs("
             if (csrfParam && csrfToken) {
                 formData.append(csrfParam.getAttribute('content'), csrfToken.getAttribute('content'));
             }
-            fetch(<?= json_encode(Url::to(['/dark-mode/user/modal'])) ?>, {
+            fetch(" . json_encode($darkModeModalUrl) . ", {
                 method: 'POST',
                 body: formData,
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -335,7 +337,7 @@ $this->registerJs("
                 window.location.reload();
             }).catch(function() {
                 // If fetch fails, fall back to opening the modal
-                window.location.href = <?= json_encode(Url::to(['/dark-mode/user'])) ?>;
+                window.location.href = " . json_encode($darkModeSettingsUrl) . ";
             });
         });
     });

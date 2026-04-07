@@ -164,6 +164,9 @@ class Events
             // Admin module layouts — adds mt2026-admin-layout marker class for CSS targeting
             Yii::getAlias('@humhub/modules/admin') . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'layouts'
                 => $modulePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'layouts',
+            // Mail views — structural conversation layout override for fixed composer shell
+            Yii::getAlias('@humhub/modules/mail') . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'mail'
+                => $modulePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'mail' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'mail',
         ];
 
         $pathMap = $view->theme->pathMap ?? [];

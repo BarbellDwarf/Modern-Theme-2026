@@ -3,37 +3,24 @@
 
 #mail-conversation-root {
   position: relative;
+  height: 100%;
 }
 
 .mt2026-mail-fullscreen,
 .mt2026-mail-fullscreen #layout-content,
 .mt2026-mail-fullscreen #layout-content .container,
 .mt2026-mail-fullscreen #layout-content .container-fluid,
-.mt2026-mail-fullscreen #layout-content .layout-content-container {
-  height: calc(100vh - var(--mt2026-topbar-height)) !important;
-  max-height: calc(100vh - var(--mt2026-topbar-height)) !important;
+.mt2026-mail-fullscreen #layout-content .layout-content-container,
+.mt2026-mail-fullscreen #mail-conversation-root,
+.mt2026-mail-fullscreen #mail-conversation-root .messages {
+  height: calc(100dvh - var(--mt2026-topbar-height) - 56px - env(safe-area-inset-bottom, 0)) !important;
+  max-height: calc(100dvh - var(--mt2026-topbar-height) - 56px - env(safe-area-inset-bottom, 0)) !important;
 }
 
-.mt2026-mail-fullscreen #layout-content {
+.mt2026-mail-fullscreen #layout-content,
+.mt2026-mail-fullscreen #layout-content .layout-content-container {
   overflow: hidden !important;
   padding-bottom: 0 !important;
-}
-
-.mt2026-mail-fullscreen {
-  overflow: hidden !important;
-}
-
-#mt2026-mail-composer-dock {
-  display: none;
-}
-
-.mt2026-mail-fullscreen #layout-content .layout-content-container {
-  overflow: hidden !important;
-}
-
-#mail-conversation-root,
-#mail-conversation-root > .panel {
-  height: 100% !important;
 }
 
 #mail-conversation-root .container,
@@ -63,11 +50,11 @@
   padding-right: 0 !important;
 }
 
-#mail-conversation-root > .panel,
-#mail-conversation-root .messages > .panel {
+#mail-conversation-root > .mt2026-mail-shell,
+#mail-conversation-root .messages > .mt2026-mail-shell {
   height: 100% !important;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
   overflow: hidden !important;
   border-radius: 0 !important;
   border: 0 !important;
@@ -136,8 +123,8 @@ body.mail-list-open::before {
   background: color-mix(in srgb, var(--color-bg-primary) 96%, var(--color-primary) 4%);
 }
 
-#mail-conversation-root > .panel,
-#mail-conversation-root .messages > .panel,
+#mail-conversation-root > .mt2026-mail-shell,
+#mail-conversation-root .messages > .mt2026-mail-shell,
 #mail-conversation-root .mail-message-form {
   border: 0 !important;
   box-shadow: none !important;
@@ -209,12 +196,12 @@ body.mail-list-open::before {
 }
 
 .conversation-entry-container {
-  height: auto !important;
-  flex: 1 1 auto;
+  height: 100% !important;
   overflow: hidden !important;
   display: flex;
   flex-direction: column;
   min-height: 0;
+  padding-bottom: 0 !important;
 }
 
 .conversation-entry-list {
@@ -242,38 +229,20 @@ body.mail-list-open::before {
   border: 1px solid color-mix(in srgb, var(--color-primary) 18%, var(--color-border));
 }
 
+.mt2026-mail-composer-dock {
+  position: relative;
+  z-index: 3;
+}
+
 .mail-message-form {
   flex: 0 0 auto;
-  margin-top: auto;
+  margin-top: 0;
   margin-bottom: 0 !important;
-  position: sticky;
-  bottom: 0;
+  position: relative;
   z-index: 3;
   padding: 12px;
   background: color-mix(in srgb, var(--color-bg-primary) 94%, var(--color-primary) 6%);
   border-top: 1px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border));
-}
-
-body.mt2026-mail-composer-docked #mt2026-mail-composer-dock {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: calc(56px + env(safe-area-inset-bottom, 0));
-  z-index: 1041;
-  display: block;
-  background: color-mix(in srgb, var(--color-bg-primary) 94%, var(--color-primary) 6%);
-}
-
-body.mt2026-mail-composer-docked #mt2026-mail-composer-dock .mail-message-form {
-  position: static !important;
-  margin: 0 !important;
-  border-radius: 0 !important;
-  border-left: 0 !important;
-  border-right: 0 !important;
-}
-
-body.mt2026-mail-composer-docked #mail-conversation-root .conversation-entry-container {
-  padding-bottom: var(--mt2026-mail-composer-height, 136px) !important;
 }
 
 .mail-message-form .humhub-ui-richtext {
@@ -311,9 +280,11 @@ body.mt2026-mail-composer-docked #mail-conversation-root .conversation-entry-con
   .mt2026-mail-fullscreen #layout-content,
   .mt2026-mail-fullscreen #layout-content .container,
   .mt2026-mail-fullscreen #layout-content .container-fluid,
-  .mt2026-mail-fullscreen #layout-content .layout-content-container {
-    height: calc(100vh - var(--mt2026-topbar-height) - 56px - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100vh - var(--mt2026-topbar-height) - 56px - env(safe-area-inset-bottom, 0)) !important;
+  .mt2026-mail-fullscreen #layout-content .layout-content-container,
+  .mt2026-mail-fullscreen #mail-conversation-root,
+  .mt2026-mail-fullscreen #mail-conversation-root .messages {
+    height: calc(100dvh - var(--mt2026-topbar-height) - 56px - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100dvh - var(--mt2026-topbar-height) - 56px - env(safe-area-inset-bottom, 0)) !important;
   }
 
   #mail-conversation-header .mt2026-mail-topbar-toggle {
@@ -323,6 +294,25 @@ body.mt2026-mail-composer-docked #mail-conversation-root .conversation-entry-con
 
   .conversation-entry-container {
     height: auto !important;
+  }
+
+  .mt2026-mail-fullscreen #mail-conversation-root .mt2026-mail-composer-dock {
+    position: fixed !important;
+    left: 0;
+    right: 0;
+    bottom: calc(56px + env(safe-area-inset-bottom, 0));
+    z-index: 1042;
+  }
+
+  .mt2026-mail-fullscreen #mail-conversation-root .mt2026-mail-composer-dock .mail-message-form {
+    margin: 0 !important;
+    border-radius: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+  }
+
+  .mt2026-mail-fullscreen #mail-conversation-root .conversation-entry-container {
+    padding-bottom: 150px !important;
   }
 
   body.device-mobile.mt2026-mail-fullscreen #mail-conversation-root .conversation-entry-list,

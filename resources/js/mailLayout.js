@@ -1,6 +1,5 @@
 humhub.module('modernTheme.mailLayout', function(module, require, $) {
     'use strict';
-    var composerObserver = null;
 
     function isMailPage() {
         return window.location.pathname.indexOf('/mail/') !== -1
@@ -20,66 +19,8 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
             document.body.classList.add('mt2026-mail-fullscreen');
         } else {
             document.body.classList.remove('mt2026-mail-fullscreen');
-            document.body.classList.remove('mt2026-mail-composer-docked');
-            document.body.style.removeProperty('--mt2026-mail-composer-height');
             closeMailList();
         }
-    }
-
-    function updateComposerHeight() {
-        var dock = document.getElementById('mt2026-mail-composer-dock');
-        if (!dock || !dock.firstElementChild) {
-            return;
-        }
-        var height = dock.getBoundingClientRect().height;
-        if (height > 0) {
-            document.body.style.setProperty('--mt2026-mail-composer-height', (Math.ceil(height) + 12) + 'px');
-        }
-    }
-
-    function dockComposer() {
-        if (!isMailPage()) {
-            var oldDock = document.getElementById('mt2026-mail-composer-dock');
-            if (oldDock) {
-                oldDock.remove();
-            }
-            document.body.classList.remove('mt2026-mail-composer-docked');
-            document.body.style.removeProperty('--mt2026-mail-composer-height');
-            return;
-        }
-
-        var root = document.getElementById('mail-conversation-root');
-        if (!root) {
-            return;
-        }
-        var composer = root.querySelector('.mail-message-form');
-        if (!composer) {
-            return;
-        }
-
-        var dock = document.getElementById('mt2026-mail-composer-dock');
-        if (!dock) {
-            dock = document.createElement('div');
-            dock.id = 'mt2026-mail-composer-dock';
-            document.body.appendChild(dock);
-        }
-
-        if (composer.parentElement !== dock) {
-            dock.appendChild(composer);
-        }
-
-        document.body.classList.add('mt2026-mail-composer-docked');
-        updateComposerHeight();
-    }
-
-    function ensureObserver() {
-        if (composerObserver) {
-            return;
-        }
-        composerObserver = new MutationObserver(function() {
-            dockComposer();
-        });
-        composerObserver.observe(document.body, {childList: true, subtree: true});
     }
 
     function initMailDrawer() {
@@ -88,8 +29,6 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
             return;
         }
         setFullscreenMode(true);
-        ensureObserver();
-        dockComposer();
 
         var sidebar = document.getElementById('mail-conversation-overview');
 
@@ -152,9 +91,6 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
     }
 
     $(document).on('humhub:ready pjax:end humhub:navigate', initMailDrawer);
-    $(window).on('resize orientationchange', function() {
-        updateComposerHeight();
-    });
     module.export({
         init: initMailDrawer
     });

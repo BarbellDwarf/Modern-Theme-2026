@@ -4,10 +4,11 @@ namespace humhub\modules\modernTheme2026\widgets;
 
 use Yii;
 use yii\base\Widget;
-use humhub\modules\user\models\User;
 use humhub\modules\space\models\Space;
 use humhub\modules\space\models\Membership;
 use humhub\modules\modernTheme2026\controllers\ConfigController;
+use humhub\modules\ui\menu\MenuLink;
+use humhub\widgets\TopMenu;
 
 /**
  * Mobile Bottom Navigation Widget
@@ -54,6 +55,7 @@ class MobileBottomNav extends Widget
 
         // Determine active nav item based on current route
         $activeItem = $this->getActiveItem($currentRoute);
+        $mobileNavLabels = ConfigController::getMobileNavLabels();
 
         // Member spaces — cache 5 min per user (memberships change infrequently)
         // Cache only IDs to avoid serializing heavy AR objects across cache backends.
@@ -102,7 +104,97 @@ class MobileBottomNav extends Widget
             'activeItem' => $activeItem,
             'spaces' => $spaces,
             'peopleNavLabel' => ConfigController::getPeopleNavLabel(),
+            'mobileNavLabels' => $mobileNavLabels,
+            'dynamicMoreItems' => $this->getDynamicMoreItems(),
         ]);
+    }
+
+    /**
+     * Build dynamic More menu items from enabled top menu entries.
+     */
+    private function getDynamicMoreItems(): array
+    {
+        if (!ConfigController::isMobileMoreAutoModulesEnabled()) {
+            return [];
+        }
+
+        $hiddenIds = ConfigController::getMobileMoreHiddenModuleIds();
+        $excludedIds = ['dashboard', 'spaces', 'people', 'notifications', 'more', 'profile'];
+        $excludedUrls = [
+            '/dashboard/dashboard',
+            '/user/people',
+            '/notification/overview',
+            '/space/spaces',
+        ];
+
+        $iconMap = [
+            'calendar' => 'fa-calendar',
+            'mail' => 'fa-envelope',
+            'admin' => 'fa-cog',
+            'marketplace' => 'fa-shopping-bag',
+            'wiki' => 'fa-book',
+            'tasks' => 'fa-check-square-o',
+            'usermap' => 'fa-map-marker',
+            'files' => 'fa-folder-open',
+            'events' => 'fa-calendar-check-o',
+            'polls' => 'fa-bar-chart',
+            'groups' => 'fa-users',
+        ];
+
+        $menu = new TopMenu();
+        $entries = $menu->getEntries(MenuLink::class, true);
+        $items = [];
+        $seen = [];
+
+        foreach ($entries as $entry) {
+            if (!$entry instanceof MenuLink) {
+                continue;
+            }
+
+            $id = strtolower((string)$entry->getId());
+            $label = trim(strip_tags((string)$entry->getLabel()));
+            $url = (string)$entry->getUrl();
+
+            if ($id === '' || $url === '' || $label === '') {
+                continue;
+            }
+
+            if (in_array($id, $excludedIds, true) || in_array($id, $hiddenIds, true)) {
+                continue;
+            }
+
+            foreach ($excludedUrls as $excludedUrl) {
+                if (str_starts_with($url, $excludedUrl)) {
+                    continue 2;
+                }
+            }
+
+            if (isset($seen[$url])) {
+                continue;
+            }
+            $seen[$url] = true;
+
+            $icon = 'fa-link';
+            foreach ($iconMap as $needle => $mappedIcon) {
+                if (str_contains($id, $needle) || str_contains(strtolower($label), $needle)) {
+                    $icon = $mappedIcon;
+                    break;
+                }
+            }
+
+            $items[] = [
+                'id' => $id,
+                'label' => $label,
+                'url' => $url,
+                'icon' => $icon,
+            ];
+        }
+
+        usort($items, static function ($a, $b) {
+            return strcmp($a['label'], $b['label']);
+        });
+
+        return $items;
     }
 
     /**

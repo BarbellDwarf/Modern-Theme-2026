@@ -11,6 +11,8 @@ use yii\helpers\Html;
  * @var $notificationCount int
  * @var $activeItem string
  * @var $peopleNavLabel string
+ * @var $mobileNavLabels array
+ * @var $dynamicMoreItems array
  */
 
 // Register inline script to detect mobile and add CSS fallback class
@@ -34,7 +36,7 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
         <span class="nav-icon">
             <i class="fa fa-home"></i>
         </span>
-        <span class="nav-label">Home</span>
+        <span class="nav-label"><?= Html::encode($mobileNavLabels['home'] ?? 'Home') ?></span>
     </a>
 
     <!-- Spaces - opens bottom sheet -->
@@ -47,7 +49,7 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
         <span class="nav-icon">
             <i class="fa fa-th-large"></i>
         </span>
-        <span class="nav-label">Spaces</span>
+        <span class="nav-label"><?= Html::encode($mobileNavLabels['spaces'] ?? 'Spaces') ?></span>
     </button>
 
     <!-- People/Directory -->
@@ -59,7 +61,7 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
         <span class="nav-icon">
             <i class="fa fa-users"></i>
         </span>
-        <span class="nav-label"><?= Html::encode($peopleNavLabel) ?></span>
+        <span class="nav-label"><?= Html::encode($mobileNavLabels['people'] ?? $peopleNavLabel) ?></span>
     </a>
 
     <!-- Notifications -->
@@ -76,7 +78,7 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
                 </span>
             <?php endif; ?>
         </span>
-        <span class="nav-label">Notifications</span>
+        <span class="nav-label"><?= Html::encode($mobileNavLabels['notifications'] ?? 'Notifications') ?></span>
     </a>
 
     <?php if (\Yii::$app->moduleManager->hasModule('calendar')): ?>
@@ -103,7 +105,7 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
         <span class="nav-icon">
             <i class="fa fa-ellipsis-h"></i>
         </span>
-        <span class="nav-label">More</span>
+        <span class="nav-label"><?= Html::encode($mobileNavLabels['more'] ?? 'More') ?></span>
     </button>
     
 </nav>
@@ -194,6 +196,15 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
                     </a>
                 </li>
                 <?php endif; ?>
+                <?php foreach ($dynamicMoreItems as $dynamicItem): ?>
+                <li>
+                    <a href="<?= Html::encode($dynamicItem['url']) ?>" class="mobile-more-item">
+                        <span class="mobile-more-icon"><i class="fa <?= Html::encode($dynamicItem['icon']) ?>"></i></span>
+                        <span class="mobile-more-label"><?= Html::encode($dynamicItem['label']) ?></span>
+                        <i class="fa fa-chevron-right mobile-more-arrow"></i>
+                    </a>
+                </li>
+                <?php endforeach; ?>
                 <?php if (!\Yii::$app->user->isGuest && \Yii::$app->user->identity->isSystemAdmin()): ?>
                 <li>
                     <a href="<?= Url::to(['/admin/index']) ?>" class="mobile-more-item">

@@ -12,6 +12,14 @@ use Yii;
 
 class ConfigController extends Controller
 {
+    private const DEFAULT_MOBILE_NAV_LABELS = [
+        'home' => 'Home',
+        'spaces' => 'Spaces',
+        'people' => 'People',
+        'notifications' => 'Notifications',
+        'more' => 'More',
+    ];
+
     /**
      * Returns the configured "People" nav label, falling back to "People".
      */
@@ -26,6 +34,25 @@ class ConfigController extends Controller
         $settings = Yii::$app->settings;
 
         if (Yii::$app->request->isPost) {
+            if (Yii::$app->request->post('mobileNavSettingsSubmit') !== null) {
+                $labels = self::DEFAULT_MOBILE_NAV_LABELS;
+                foreach (array_keys($labels) as $key) {
+                    $value = Yii::$app->request->post('mobileNavLabel_' . $key);
+                    if ($value !== null && trim($value) !== '') {
+                        $labels[$key] = trim($value);
+                    }
+                }
+
+                $settings->set('peopleNavLabel', $labels['people']);
+                $settings->set('mobileNavLabels', json_encode($labels));
+                $settings->set('mobileMoreAutoModules', Yii::$app->request->post('mobileMoreAutoModules') ? 1 : 0);
+                $settings->set('mobileMoreHiddenModuleIds', trim((string)Yii::$app->request->post('mobileMoreHiddenModuleIds', '')));
+
+                Yii::$app->cache->flush();
+                $this->view->saved();
+                return $this->redirect(['/modern-theme-2026/config']);
+            }
+
             // Save the People nav label if submitted
             $peopleLabel = Yii::$app->request->post('peopleNavLabel');
             if ($peopleLabel !== null) {
@@ -74,6 +101,9 @@ class ConfigController extends Controller
             'palettes'        => self::getPalettes(),
             'currentColors'   => self::getCurrentColors(),
             'peopleNavLabel'  => self::getPeopleNavLabel(),
+            'mobileNavLabels' => self::getMobileNavLabels(),
+            'mobileMoreAutoModules' => self::isMobileMoreAutoModulesEnabled(),
+            'mobileMoreHiddenModuleIds' => self::getMobileMoreHiddenModuleIdsRaw(),
         ]);
     }
 
@@ -112,5 +142,49 @@ class ConfigController extends Controller
             'success'   => $settings->get('themeSuccessColor') ?: '#10b981',
             'danger'    => $settings->get('themeDangerColor') ?: '#ef4444',
         ];
+    }
+
+    public static function getMobileNavLabels(): array
+    {
+        $raw = Yii::$app->settings->get('mobileNavLabels');
+        $decoded = is_string($raw) ? json_decode($raw, true) : null;
+        $labels = self::DEFAULT_MOBILE_NAV_LABELS;
+
+        if (is_array($decoded)) {
+            foreach (array_keys($labels) as $key) {
+                if (!empty($decoded[$key]) && is_string($decoded[$key])) {
+                    $labels[$key] = trim($decoded[$key]);
+                }
+            }
+        }
+
+        // Keep legacy single-setting compatibility for People/Directory.
+        $labels['people'] = self::getPeopleNavLabel();
+        return $labels;
+    }
+
+    public static function isMobileMoreAutoModulesEnabled(): bool
+    {
+        $value = Yii::$app->settings->get('mobileMoreAutoModules');
+        if ($value === null || $value === '') {
+            return true;
+        }
+        return (bool)$value;
+    }
+
+    public static function getMobileMoreHiddenModuleIdsRaw(): string
+    {
+        return (string)Yii::$app->settings->get('mobileMoreHiddenModuleIds', '');
+    }
+
+    public static function getMobileMoreHiddenModuleIds(): array
+    {
+        $raw = self::getMobileMoreHiddenModuleIdsRaw();
+        if ($raw === '') {
+            return [];
+        }
+
+        $parts = preg_split('/[\s,]+/', strtolower($raw), -1, PREG_SPLIT_NO_EMPTY);
+        return array_values(array_unique($parts ?: []));
     }
 }

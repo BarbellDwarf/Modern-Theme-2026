@@ -7,6 +7,9 @@
  * @var array $palettes
  * @var array $currentColors
  * @var string $peopleNavLabel
+ * @var array $mobileNavLabels
+ * @var bool $mobileMoreAutoModules
+ * @var string $mobileMoreHiddenModuleIds
  */
 
 use humhub\modules\modernTheme2026\controllers\ConfigController;
@@ -109,6 +112,85 @@ $previewKeys = ['primary', 'accent', 'secondary', 'success', 'danger'];
             <a href="<?= Url::to(['/admin/setting/design']) ?>">Admin &rsaquo; Settings &rsaquo; Design</a>.
         </div>
 
+    </div>
+</div>
+
+<!-- Mobile Navigation Settings -->
+<div class="panel panel-default" style="margin-top:20px;">
+    <div class="panel-heading">
+        <strong><i class="fa fa-mobile"></i> Mobile Navigation Settings</strong>
+        <div class="text-muted" style="margin-top:4px;font-size:13px;">
+            Customize mobile nav labels and control which module links are auto-added under More.
+        </div>
+    </div>
+    <div class="panel-body">
+        <form method="post" action="<?= Url::to(['/modern-theme-2026/config']) ?>">
+            <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->csrfToken ?>">
+            <input type="hidden" name="mobileNavSettingsSubmit" value="1">
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="mobileNavLabel_home">Home label</label>
+                        <input type="text" id="mobileNavLabel_home" name="mobileNavLabel_home" class="form-control"
+                               value="<?= Html::encode($mobileNavLabels['home'] ?? 'Home') ?>" maxlength="24">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="mobileNavLabel_spaces">Spaces label</label>
+                        <input type="text" id="mobileNavLabel_spaces" name="mobileNavLabel_spaces" class="form-control"
+                               value="<?= Html::encode($mobileNavLabels['spaces'] ?? 'Spaces') ?>" maxlength="24">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="mobileNavLabel_people">People label</label>
+                        <input type="text" id="mobileNavLabel_people" name="mobileNavLabel_people" class="form-control"
+                               value="<?= Html::encode($mobileNavLabels['people'] ?? $peopleNavLabel) ?>" maxlength="24">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="mobileNavLabel_notifications">Notifications label</label>
+                        <input type="text" id="mobileNavLabel_notifications" name="mobileNavLabel_notifications" class="form-control"
+                               value="<?= Html::encode($mobileNavLabels['notifications'] ?? 'Notifications') ?>" maxlength="24">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="mobileNavLabel_more">More label</label>
+                        <input type="text" id="mobileNavLabel_more" name="mobileNavLabel_more" class="form-control"
+                               value="<?= Html::encode($mobileNavLabels['more'] ?? 'More') ?>" maxlength="24">
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="mobileMoreAutoModules" value="1" <?= $mobileMoreAutoModules ? 'checked' : '' ?>>
+                    Auto-add enabled top-menu modules to <strong>More</strong>
+                </label>
+            </div>
+
+            <div class="form-group" style="max-width:520px;">
+                <label for="mobileMoreHiddenModuleIds">Hide module IDs from auto-add</label>
+                <input type="text" id="mobileMoreHiddenModuleIds" name="mobileMoreHiddenModuleIds" class="form-control"
+                       value="<?= Html::encode($mobileMoreHiddenModuleIds) ?>" placeholder="calendar, usermap, wiki">
+                <p class="help-block">
+                    Comma-separated module IDs to exclude from auto-added More links.
+                </p>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-sm">
+                <i class="fa fa-save"></i> Save Mobile Navigation Settings
+            </button>
+        </form>
     </div>
 </div>
 

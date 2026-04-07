@@ -74,6 +74,18 @@
   background: var(--color-bg-primary);
 }
 
+.mail-message-form .ProseMirror-menubar,
+#mail-create .ProseMirror-menubar,
+#mail-edit .ProseMirror-menubar,
+#mail-conversation-root .ProseMirror-menubar {
+  display: none !important;
+}
+
+.mail-message-form .ProseMirror-menubar-wrapper,
+#mail-conversation-root .ProseMirror-menubar-wrapper {
+  border-top: 0 !important;
+}
+
 .mail-message-form .richtext-create-buttons .btn {
   border-radius: 10px;
 }

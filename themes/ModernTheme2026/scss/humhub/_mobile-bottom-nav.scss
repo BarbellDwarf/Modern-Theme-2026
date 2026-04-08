@@ -6,7 +6,7 @@
     // Force hide on desktop, override any other rules
     display: none !important;
 
-    @media (max-width: 767px) {
+    @media (max-width: 991px) {
         display: flex !important;
         position: fixed;
         bottom: 0;
@@ -123,11 +123,28 @@
                 opacity: 0.7;
             }
         }
+
+        // Calendar is shown in bar on comfortable widths, moved into "More" on narrow screens.
+        .nav-item-calendar {
+            display: flex;
+        }
+    }
+}
+
+@media (max-width: 380px) {
+    .mobile-bottom-nav .nav-item-calendar {
+        display: none !important;
+    }
+}
+
+@media (min-width: 381px) and (max-width: 991px) {
+    .mobile-more-calendar-fallback {
+        display: none !important;
     }
 }
 
 // Add bottom padding to body to prevent content from being hidden by bottom nav
-@media (max-width: 767px) {
+@media (max-width: 991px) {
     body {
         padding-bottom: calc(56px + env(safe-area-inset-bottom, 0));
     }
@@ -181,7 +198,7 @@
 }
 
 // Hide bottom nav when keyboard is open (optional)
-@media (max-width: 767px) and (max-height: 500px) {
+@media (max-width: 991px) and (max-height: 500px) {
     .mobile-bottom-nav {
         display: none !important;
     }
@@ -191,64 +208,34 @@
     }
 }
 
-// Runtime keyboard-open state from JS for devices where max-height media query is unreliable
-body.mt2026-keyboard-open {
-    .mobile-bottom-nav {
-        display: none !important;
-    }
-}
-
-// Must override force-show rules used by body.mobile/mobile-app fallbacks.
-body.mt2026-keyboard-open.mobile .mobile-bottom-nav,
-body.mt2026-keyboard-open[data-mobile="true"] .mobile-bottom-nav,
-body.mt2026-keyboard-open .mobile-app .mobile-bottom-nav,
-.mobile-app body.mt2026-keyboard-open .mobile-bottom-nav {
-    display: none !important;
-}
-
 // Adjust body padding for fixed bottom nav
-@media (max-width: 767px) {
+@media (max-width: 991px) {
     body {
         padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
     }
 }
 
-// Force show on mobile devices (fallback for apps that don't respect media queries)
-body.mobile .mobile-bottom-nav,
-body[data-mobile="true"] .mobile-bottom-nav,
-.mobile-app .mobile-bottom-nav {
-    display: flex !important;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 56px;
-    overflow: hidden;
-    z-index: 1030;
-}
+// Force show only on true mobile widths (fallback for apps that don't respect media queries)
+@media (max-width: 991px) {
+    body.mobile .mobile-bottom-nav,
+    body[data-mobile="true"] .mobile-bottom-nav,
+    .mobile-app .mobile-bottom-nav {
+        display: flex !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        overflow: hidden;
+        z-index: 1030;
+    }
 
-// Also adjust body padding if mobile class is present
-body.mobile,
-body[data-mobile="true"],
-.mobile-app {
-    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
-}
-
-// While keyboard is open, remove reserved nav space so editor can move up.
-body.mt2026-keyboard-open,
-body.mt2026-keyboard-open.mobile,
-body.mt2026-keyboard-open[data-mobile="true"],
-body.mt2026-keyboard-open.mobile-app {
-    padding-bottom: env(safe-area-inset-bottom, 0) !important;
-}
-
-// Tablet landscape - optional bottom nav
-@media (min-width: 768px) and (max-width: 991px) and (orientation: portrait) {
-    // Can optionally show bottom nav on tablets in portrait mode
-    // Uncomment if desired:
-    // .mobile-bottom-nav {
-    //     display: flex;
-    // }
+    // Also adjust body padding if mobile class is present
+    body.mobile,
+    body[data-mobile="true"],
+    .mobile-app {
+        padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
+    }
 }
 
 .modal {
@@ -459,4 +446,71 @@ body.mt2026-keyboard-open.mobile-app {
 .mobile-more-arrow {
   color: var(--color-text-muted);
   font-size: 12px;
+}
+
+// Dark mode inline toggle row
+.mobile-more-darkmode-row {
+  pointer-events: auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+
+  .mobile-more-icon {
+    flex-shrink: 0;
+  }
+
+  .mobile-more-label {
+    white-space: nowrap;
+    min-width: 0;
+  }
+}
+
+.mobile-darkmode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  background: var(--color-bg-secondary);
+  border-radius: 20px;
+  padding: 3px;
+}
+
+.mobile-darkmode-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+
+  &.active {
+    background: var(--color-primary);
+    color: #fff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+// Switch Network button — renders as a <button> but should look identical to .mobile-more-item <a>
+button.mobile-switch-network-btn.mobile-more-item {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: var(--color-text-primary);
 }

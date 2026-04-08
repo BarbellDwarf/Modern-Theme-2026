@@ -33,6 +33,24 @@ use humhub\modules\user\widgets\PeopleActionButtons;
         <?php else : ?>
             <div class="mt2026-pc-title mt2026-pc-title-empty">&nbsp;</div>
         <?php endif; ?>
+        <?php
+            $phone = '';
+            if (!empty($user->profile->phone_work)) {
+                $phone = $user->profile->phone_work;
+            } elseif (!empty($user->profile->mobile)) {
+                $phone = $user->profile->mobile;
+            } elseif (!empty($user->profile->phone_private)) {
+                $phone = $user->profile->phone_private;
+            }
+        ?>
+        <?php if (!empty($phone)) : ?>
+            <div class="mt2026-pc-phone">
+                <a href="tel:<?= Html::encode(preg_replace('/\s+/', '', $phone)) ?>" class="mt2026-pc-phone-link">
+                    <i class="fa fa-phone" aria-hidden="true"></i>
+                    <?= Html::encode($phone) ?>
+                </a>
+            </div>
+        <?php endif; ?>
     </div>
     <?= PeopleActionButtons::widget([
         'user' => $user,

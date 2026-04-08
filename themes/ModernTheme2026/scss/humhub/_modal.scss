@@ -11,8 +11,11 @@
   @include fade-in();
 }
 
-.modal-dialog {
-  @include scale-in();
+// The topbar is fixed at z-index 3000 — above Bootstrap's modal z-index (1055).
+// Apply margin-top to the dialog box so it clears the fixed topbar.
+// .modal-dialog-centered and fullscreen modals are excluded (they fill the viewport).
+.modal-dialog:not(.modal-dialog-centered):not(.modal-fullscreen) {
+  margin-top: calc(var(--mt2026-topbar-height, 60px) + 8px);
 }
 
 .modal-content {
@@ -74,4 +77,11 @@
 
 .modal-sm {
   max-width: 400px;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .modal-lg,
+  .modal-xl {
+    max-width: 90vw;
+  }
 }

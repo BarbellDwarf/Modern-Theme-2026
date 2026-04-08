@@ -2,12 +2,123 @@
 // Clean, modern top bar with proper styling
 
 .navbar.topbar {
+    // Override HumHub core's .topbar { height: 50px } which clips content
+    height: auto !important;
+
     // Better spacing and alignment
     .container {
         display: flex;
         align-items: center;
+        min-height: 60px;
         padding-left: 16px;
         padding-right: 16px;
+        gap: 8px;
+        flex-wrap: nowrap;
+    }
+
+    .topbar-brand {
+        display: inline-flex;
+        align-items: center;
+        flex: 0 0 auto;
+        min-width: 48px;
+        max-width: 180px;
+        overflow: hidden;
+
+        img,
+        svg {
+            max-height: 48px;
+            width: auto;
+        }
+    }
+
+    #search-menu-nav {
+        display: inline-flex;
+        align-items: center;
+        flex: 0 0 auto;
+        margin-left: auto;
+        gap: 10px;
+        height: 100%;
+    }
+
+    .notifications,
+    .topbar-actions {
+        display: inline-flex;
+        align-items: center;
+        flex: 0 0 auto;
+        height: 100%;
+        margin-left: 14px;
+    }
+
+    // Space out notification bell and dark-mode toggle (both .btn-group children)
+    .notifications {
+        gap: 10px;
+    }
+
+    .topbar-actions {
+        margin-left: 10px;
+    }
+
+    // The notification bell and dark-mode toggle use plain <a> tags (not .dropdown-toggle).
+    // Target both .btn-group > a and .dropdown-toggle to cover all variants.
+    .notifications .btn-group > a,
+    .notifications .dropdown-toggle,
+    .topbar-actions .dropdown-toggle,
+    #search-menu-nav > li > a {
+        height: 46px;
+        min-height: 46px;
+        width: 46px;
+        min-width: 46px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        font-size: 20px;
+    }
+
+    #top-menu-nav > li,
+    #search-menu-nav > li {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #top-menu-nav > li > a {
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 3px;
+        min-height: 34px;
+        line-height: 1.05;
+        text-align: center;
+        padding: 4px 8px;
+    }
+
+    // Remove the <br> from the flex flow — line-height:0 has no effect on <br>.
+    // display:none is the only reliable way to collapse it.
+    #top-menu-nav > li > a br {
+        display: none;
+    }
+
+    .topbar-actions .dropdown.account .dropdown-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 4px 12px;
+        min-height: 42px;
+        width: auto;
+        min-width: auto;
+        font-size: inherit;
+    }
+
+    .topbar-actions .dropdown.account .user-title {
+        margin-right: 4px;
+        line-height: 1.05;
+    }
+
+    .topbar-actions .dropdown.account #user-account-image {
+        flex-shrink: 0;
     }
 }
 
@@ -16,10 +127,11 @@
     background-color: var(--color-bg-primary, #ffffff);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     
-    // Add sticky positioning to keep menu visible
-    position: sticky;
+    // Fixed single-bar top nav; body offset is handled in _base.scss
+    position: fixed;
     top: 0;
-    z-index: 1020;
+    // Keep all topbar dropdowns above stream cards/panels on desktop+tablet.
+    z-index: 3000;
     overflow: visible;
     
     [data-bs-theme="dark"] & {
@@ -50,7 +162,7 @@
     
     // Navigation items
     .nav-link {
-        padding: 12px 16px;
+        padding: 6px 10px;
         border-radius: $border-radius-md;
         transition: all $transition-fast;
         color: var(--color-text-primary, #111827);
@@ -135,17 +247,86 @@
     }
 }
 
-// Tablet / small-desktop hardening: keep topbar usable before mobile mode.
-@media (min-width: 768px) and (max-width: 1199px) {
+#topbar .dropdown,
+#topbar .btn-group,
+#topbar .open,
+#topbar .nav > li {
+    position: relative;
+}
+
+// Notification badge: sibling of the bell <a>, not nested inside it.
+// Must be absolutely positioned over the icon, not inline beside it.
+#topbar .notifications .btn-group {
+    position: relative;
+
+    .badge-notifications {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 18px;
+        border-radius: 999px;
+        background-color: var(--color-danger, #ef4444);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 1;
+        box-sizing: border-box;
+    }
+}
+
+#topbar .dropdown-menu,
+#topbar .popover,
+#topbar .tooltip {
+    z-index: 3200 !important;
+}
+
+// ── Notification dropdown: proper width and alignment ────────────────────────
+// HumHub core targets #topbar-first (old theme), but this theme uses #topbar.
+// Without an explicit width, the panel collapses to the global min-width:200px.
+// Set it to 420px and right-align so it doesn't bleed off-screen.
+@media (min-width: 992px) {
+    #topbar .notifications .dropdown-menu,
+    #dropdown-notifications.dropdown-menu {
+        width: 420px !important;
+        min-width: 420px !important;
+        // Right-align: drop left from the bell, not right (bell is on right side of topbar)
+        right: 0 !important;
+        left: auto !important;
+        margin-left: 0 !important;
+    }
+
+    // Scrollable notification list (prevent overflow when many items)
+    #topbar .notifications .dropdown-menu .hh-list,
+    #dropdown-notifications .hh-list {
+        max-height: 420px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+// Small-desktop hardening: keep topbar compact between 992px and 1199px.
+@media (min-width: 992px) and (max-width: 1199px) {
     #topbar {
         .container {
             gap: 8px;
             min-width: 0;
+            min-height: 60px;
+            padding-left: 10px;
+            padding-right: 10px;
         }
 
         .topbar-brand {
             flex: 0 0 auto;
-            max-width: 34vw;
+            max-width: 30vw;
             min-width: 0;
         }
 
@@ -154,23 +335,133 @@
             flex: 1 1 auto;
             display: flex;
             flex-wrap: nowrap;
-            overflow-x: auto;
-            overflow-y: visible;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-
-            &::-webkit-scrollbar {
-                display: none;
-            }
+            overflow: visible !important;
+            margin-right: 4px;
+            align-items: center;
         }
 
         #top-menu-nav > li {
             flex: 0 0 auto;
+            display: inline-flex;
+            align-items: center;
+            overflow: visible;
+        }
+
+        #top-menu-sub {
+            display: none !important;
         }
 
         #top-menu-nav > li > a {
-            padding: 10px 10px;
+            padding: 4px 6px;
             white-space: nowrap;
+            font-size: 13px;
+            line-height: 1.05;
+        }
+
+        #search-menu-nav {
+            gap: 6px;
+        }
+
+        .notifications {
+            margin-left: 8px;
+            gap: 6px;
+        }
+
+        .topbar-actions {
+            margin-left: 6px;
+        }
+
+        .notifications .btn-group > a,
+        #search-menu-nav > li > a,
+        .notifications .dropdown-toggle,
+        .topbar-actions .dropdown-toggle {
+            width: 46px;
+            min-width: 46px;
+            height: 46px;
+            min-height: 46px;
+            padding: 0;
+            font-size: 20px;
+        }
+
+        .topbar-actions .dropdown.account .dropdown-toggle {
+            width: auto;
+            min-width: auto;
+            padding: 3px 10px;
+            font-size: inherit;
+        }
+
+        .topbar-actions .dropdown.account .user-title {
+            display: none !important;
+        }
+    }
+}
+
+@media (min-width: 992px) {
+    #topbar {
+        .container {
+            gap: 10px;
+        }
+
+        #top-menu-nav {
+            flex: 1 1 auto;
+            display: flex;
+            flex-wrap: nowrap;
+            overflow: visible !important;
+            margin-right: 8px;
+            min-width: 0;
+            align-items: center;
+        }
+
+        #top-menu-nav > li {
+            flex: 0 1 auto;
+            min-width: 0;
+            overflow: visible;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        #top-menu-sub {
+            display: none !important;
+        }
+
+        // Keep nav-link padding consistent with base — don't override with 6px
+        #top-menu-nav > li > a {
+            white-space: nowrap;
+            padding: 4px 8px;
+            font-size: 13px;
+            line-height: 1.05;
+        }
+
+        #search-menu-nav {
+            gap: 10px;
+        }
+
+        .notifications {
+            margin-left: 14px;
+            gap: 10px;
+        }
+
+        .topbar-actions {
+            margin-left: 10px;
+        }
+
+        .notifications .btn-group > a,
+        #search-menu-nav > li > a,
+        .notifications .dropdown-toggle,
+        .topbar-actions .dropdown-toggle {
+            width: 46px;
+            min-width: 46px;
+            height: 46px;
+            min-height: 46px;
+            padding: 0;
+            font-size: 20px;
+        }
+
+        .topbar-actions .dropdown.account .dropdown-toggle {
+            width: auto;
+            min-width: auto;
+            padding: 4px 12px;
+            font-size: inherit;
         }
     }
 }
@@ -206,9 +497,9 @@ body[data-bs-theme="light"] {
     }
 }
 
-// Mobile-specific topbar adjustments
-@media (max-width: 767px) {
-    // Hide top navbar on mobile — bottom navigation replaces it
+// Mobile + tablet topbar: hidden — bottom navigation replaces it
+@media (max-width: 991px) {
+    // Hide top navbar on mobile/tablet — bottom navigation replaces it
     #topbar-first,
     #topbar-second,
     .topbar {

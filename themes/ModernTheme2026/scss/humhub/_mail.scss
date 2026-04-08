@@ -1,0 +1,421 @@
+// Modern Theme 2026 - Mail/Messenger module refresh
+// Applied only when mail module markup is present.
+
+#mail-conversation-root {
+  position: relative;
+  height: 100%;
+}
+
+// ── DESKTOP fullscreen (>991px): topbar visible, no bottom nav ─────────────
+// Apply height ONLY to layout containers — NOT to body itself.
+@media (min-width: 992px) {
+  .mt2026-mail-fullscreen #layout-content,
+  .mt2026-mail-fullscreen #layout-content .container,
+  .mt2026-mail-fullscreen #layout-content .container-fluid,
+  .mt2026-mail-fullscreen #layout-content .layout-content-container {
+    // body has padding-top: 60px; layout-content has margin-top: 8px from _base
+    // Available space = 100dvh - 60px - 8px
+    height: calc(100dvh - var(--mt2026-topbar-height, 60px) - 8px) !important;
+    max-height: calc(100dvh - var(--mt2026-topbar-height, 60px) - 8px) !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+  }
+
+  .mt2026-mail-fullscreen #mail-conversation-root,
+  .mt2026-mail-fullscreen #mail-conversation-root .messages {
+    height: 100% !important;
+    max-height: 100% !important;
+  }
+}
+
+body.mt2026-mail-page {
+  padding-bottom: 0 !important;
+}
+
+body.mt2026-mail-page .mobile-bottom-nav {
+  z-index: 1035;
+}
+
+.mt2026-mail-fullscreen .mt2026-mail-index {
+  margin-top: 0 !important;
+}
+
+// Strip ALL spacing from every layout wrapper inside the mail fullscreen
+.mt2026-mail-fullscreen #mail-conversation-root .container,
+.mt2026-mail-fullscreen #mail-conversation-root .container-fluid,
+.mt2026-mail-fullscreen #mail-conversation-root .row,
+.mt2026-mail-fullscreen #mail-conversation-root .messages,
+.mt2026-mail-fullscreen #mail-conversation-root [class*="col-"] {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#mail-conversation-root .container,
+#mail-conversation-root .container-fluid,
+.mail-conversation-single-message .container,
+.mail-conversation-single-message .container-fluid,
+.mt2026-mail-index.container,
+.mt2026-mail-index.container-fluid {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+#mail-conversation-root .row,
+.mail-conversation-single-message .row,
+.mt2026-mail-index .row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+#mail-conversation-root .messages,
+.mail-conversation-single-message .messages,
+.mt2026-mail-index .messages {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+// Keep desktop two-column mail layout stable (prevents topbar/layout clipping side-effects)
+@media (min-width: 1200px) {
+  .mt2026-mail-index > .row > .col-lg-4 {
+    flex: 0 0 33.333333% !important;
+    max-width: 33.333333% !important;
+    width: 33.333333% !important;
+  }
+
+  .mt2026-mail-index > .row > .col-lg-8 {
+    flex: 0 0 66.666667% !important;
+    max-width: 66.666667% !important;
+    width: 66.666667% !important;
+  }
+}
+
+#mail-conversation-root > .mt2026-mail-shell,
+#mail-conversation-root .messages > .mt2026-mail-shell {
+  height: 100% !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: var(--color-bg-primary);
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+// The .messages wrapper itself must be transparent and fill its parent
+#mail-conversation-root .messages {
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+#mail-conversation-overview {
+  position: fixed;
+  top: var(--hh-fixed-header-height);
+  left: 0;
+  bottom: 0;
+  width: min(420px, 88vw);
+  max-width: 88vw;
+  z-index: 1090;
+  transform: translateX(-102%);
+  transition: transform .2s ease;
+  border-radius: 0;
+  border-left: 0;
+  border-top: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+body.mail-list-open #mail-conversation-overview {
+  transform: translateX(0);
+}
+
+body.mail-list-open {
+  overflow: hidden;
+}
+
+body.mail-list-open::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1089;
+}
+
+#mail-conversation-overview .panel-heading {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+#mail-conversation-overview .panel-heading > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#mail-conversation-overview .panel-heading > a::before {
+  content: '\f0c9';
+  font-family: FontAwesome;
+  font-size: 14px;
+  opacity: .9;
+}
+
+#mail-conversation-overview,
+.mail-message-form {
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, var(--color-border));
+  box-shadow: var(--shadow-sm);
+  background: color-mix(in srgb, var(--color-bg-primary) 96%, var(--color-primary) 4%);
+}
+
+#mail-conversation-root > .mt2026-mail-shell,
+#mail-conversation-root .messages > .mt2026-mail-shell,
+#mail-conversation-root .mail-message-form {
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+#mail-conversation-overview .panel-heading,
+#mail-conversation-header {
+  border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 20%, var(--color-border));
+  background: color-mix(in srgb, var(--color-bg-secondary) 88%, var(--color-primary) 12%);
+}
+
+#mail-conversation-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+
+#mail-conversation-header .mt2026-mail-topbar-toggle {
+  display: none;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 24%, var(--color-border));
+  background: color-mix(in srgb, var(--color-bg-secondary) 85%, var(--color-primary) 15%);
+  color: var(--color-text-primary);
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+#mail-conversation-header .mt2026-mail-topbar-toggle:hover {
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
+#mail-conversation-header .mt2026-mail-topbar-toggle i {
+  margin-right: 6px;
+}
+
+#mail-conversation-overview .panel-heading {
+  padding: 12px 14px;
+}
+
+.mail-inbox-messages .messagePreviewEntry {
+  border-radius: var(--radius-md);
+  margin: 6px 10px;
+  border: 1px solid transparent;
+  transition: background-color .15s ease, border-color .15s ease, transform .12s ease;
+}
+
+.mail-inbox-messages .messagePreviewEntry:hover {
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border));
+  transform: translateY(-1px);
+}
+
+.mail-inbox-messages .messagePreviewEntry.active {
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 36%, var(--color-border));
+}
+
+.mail-inbox-messages .messagePreviewEntry.unread {
+  border-left: 3px solid var(--color-primary);
+}
+
+.mail-conversation-entry {
+  margin: 10px 0;
+}
+
+.mt2026-mail-shell > .conversation-entry-container {
+  flex: 1 1 0 !important;
+  height: auto !important;
+  overflow: hidden !important;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding-bottom: 0 !important;
+}
+
+.conversation-entry-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.conversation-entry-list {
+  overflow-y: auto !important;
+  flex: 1;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mail-conversation-entry .conversation-entry-content {
+  border-radius: 14px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 14%, var(--color-border));
+  box-shadow: var(--shadow-xs);
+}
+
+.mail-conversation-entry .conversation-entry-content.own {
+  border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border));
+  box-shadow: var(--shadow-sm);
+}
+
+.conversation-entry-badge span {
+  box-shadow: var(--shadow-xs);
+  background: color-mix(in srgb, var(--color-bg-secondary) 88%, var(--color-primary) 12%);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, var(--color-border));
+}
+
+.mt2026-mail-composer-dock {
+  flex: 0 0 auto;
+  z-index: 3;
+  position: relative;
+  background: color-mix(in srgb, var(--color-bg-primary) 94%, var(--color-primary) 6%);
+  border-top: 1px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border));
+  padding-bottom: calc(6px + env(safe-area-inset-bottom, 0));
+}
+
+.mail-message-form {
+  flex: 0 0 auto;
+  margin-top: 0;
+  margin-bottom: 0 !important;
+  position: relative;
+  z-index: 3;
+  padding: 12px;
+  background: transparent;
+  border-top: 0;
+}
+
+.mail-message-form .humhub-ui-richtext {
+  border: 1px solid color-mix(in srgb, var(--color-primary) 16%, var(--color-border));
+  border-radius: 14px;
+  background: var(--color-bg-primary);
+}
+
+.mail-message-form .ProseMirror-menubar,
+#mail-create .ProseMirror-menubar,
+#mail-edit .ProseMirror-menubar,
+#mail-conversation-root .ProseMirror-menubar {
+  display: none !important;
+}
+
+.mail-message-form .ProseMirror-menubar-wrapper,
+#mail-conversation-root .ProseMirror-menubar-wrapper {
+  border-top: 0 !important;
+}
+
+.mail-message-form .richtext-create-buttons .btn {
+  border-radius: 10px;
+}
+
+// Mobile fullscreen: pin the shell with fixed positioning so parent chain
+// margin/padding doesn't create gaps. Bypasses height calc chain entirely.
+@media (max-width: 991px) {
+  #mail-conversation-overview {
+    margin-bottom: 10px;
+  }
+
+  #inbox {
+    max-height: 42vh !important;
+    border-radius: 10px;
+  }
+
+  // Do NOT pin shell fixed on mobile; keep it in normal flow to avoid viewport cut-off
+  body.mt2026-mail-fullscreen #mail-conversation-root > .mt2026-mail-shell,
+  body.mt2026-mail-fullscreen #mail-conversation-root .messages > .mt2026-mail-shell {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: calc(100dvh - var(--mt2026-topbar-height, 60px) - 56px - env(safe-area-inset-bottom, 0)) !important;
+  }
+
+  // Keep parent chain natural to prevent clipping/cropping
+  .mt2026-mail-fullscreen #layout-content,
+  .mt2026-mail-fullscreen #layout-content .container,
+  .mt2026-mail-fullscreen #layout-content .container-fluid,
+  .mt2026-mail-fullscreen #layout-content .layout-content-container,
+  .mt2026-mail-fullscreen #mail-conversation-root,
+  .mt2026-mail-fullscreen #mail-conversation-root .messages {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  #mail-conversation-header .mt2026-mail-topbar-toggle {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .mt2026-mail-shell > .conversation-entry-container {
+    flex: 1 1 auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  // Composer stays visible above bottom nav, with extra safe-area spacing
+  .mt2026-mail-fullscreen #mail-conversation-root .mt2026-mail-composer-dock {
+    flex: 0 0 auto;
+    position: sticky !important;
+    bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
+    z-index: 6;
+  }
+
+  .mt2026-mail-fullscreen #mail-conversation-root .mt2026-mail-composer-dock .mail-message-form {
+    margin: 0 !important;
+    border-radius: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    padding-bottom: max(8px, env(safe-area-inset-bottom, 0)) !important;
+  }
+
+  // Space so last message is not hidden behind sticky composer
+  .mt2026-mail-fullscreen #mail-conversation-root .conversation-entry-list {
+    padding-bottom: calc(92px + env(safe-area-inset-bottom, 0)) !important;
+  }
+
+  // Allow page to scroll naturally on mobile instead of clipping
+  body.device-mobile.mt2026-mail-fullscreen,
+  body.device-mobile-app.mt2026-mail-fullscreen,
+  body.device-mobile.mt2026-mail-fullscreen #layout-content,
+  body.device-mobile-app.mt2026-mail-fullscreen #layout-content,
+  body.device-mobile.mt2026-mail-fullscreen .layout-content-container,
+  body.device-mobile-app.mt2026-mail-fullscreen .layout-content-container {
+    overflow: visible !important;
+  }
+
+  .mail-conversation-entry .conversation-entry-content {
+    max-width: 82%;
+    font-size: 14px;
+  }
+}

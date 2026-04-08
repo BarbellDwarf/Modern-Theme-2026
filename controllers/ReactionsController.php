@@ -153,21 +153,29 @@ class ReactionsController extends ContentAddonController
         if ($existing !== null) {
             if ($existing->reaction_type === $reactionType) {
                 // Same reaction → toggle off (delete)
-                $existing->delete();
+                if ($existing->delete() === false) {
+                    Yii::error('ReactionsController: failed to delete reaction for content ' . $this->contentId, 'modernTheme2026');
+                    return ['error' => 'Failed to remove reaction.'];
+                }
             } else {
                 // Different reaction → switch
                 $existing->reaction_type = $reactionType;
-                $existing->save(false);
+                if (!$existing->save(false)) {
+                    Yii::error('ReactionsController: failed to update reaction for content ' . $this->contentId, 'modernTheme2026');
+                    return ['error' => 'Failed to update reaction.'];
+                }
                 $currentUserReaction = $reactionType;
             }
         } else {
             // No reaction yet → create
-            $like = new Like([
-                'object_model'  => $this->contentModel,
-                'object_id'     => $this->contentId,
-                'reaction_type' => $reactionType,
-            ]);
-            $like->save();
+            $like = new Like();
+            $like->object_model  = $this->contentModel;
+            $like->object_id     = (int) $this->contentId;
+            $like->reaction_type = $reactionType;
+            if (!$like->save(false)) {
+                Yii::error('ReactionsController: failed to save reaction for content ' . $this->contentId, 'modernTheme2026');
+                return ['error' => 'Failed to save reaction.'];
+            }
             $currentUserReaction = $reactionType;
         }
 

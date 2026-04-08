@@ -6,8 +6,6 @@ use humhub\assets\AppAsset;
 use humhub\components\View;
 use humhub\helpers\DeviceDetectorHelper;
 use humhub\helpers\Html;
-use humhub\modules\cleanTheme\models\Configuration;
-use humhub\modules\cleanTheme\Module;
 use humhub\modules\modernTheme2026\widgets\ContextSwitcher;
 use humhub\modules\space\widgets\Chooser;
 use humhub\modules\user\widgets\AccountTopMenu;
@@ -16,19 +14,10 @@ use humhub\widgets\SiteLogo;
 use humhub\widgets\TopMenu;
 use humhub\widgets\TopMenuRightStack;
 
-/** @var Module $module */
-$module = Yii::$app->getModule('clean-theme');
-$googleFontsCss2UrlParams = $module?->configuration->getGoogleFontsCss2UrlParams();
-
 AppAsset::register($this);
 
 $bodyClasses = DeviceDetectorHelper::getBodyClasses();
-$bodyClasses[] = 'clean-theme';
 $bodyClasses[] = 'modern-theme-2026';
-$bodyClasses[] = 'hh-ct-menu-style-' . ($module?->configuration->menuStyle ?? Configuration::MENU_STYLE_BACKGROUND);
-if (Yii::$app->user->isGuest) {
-    $bodyClasses[] = 'hh-ct-is-guest';
-}
 
 $useContextSwitcher = !Yii::$app->user->isGuest;
 ?>
@@ -43,11 +32,6 @@ $useContextSwitcher = !Yii::$app->user->isGuest;
         <?php $this->head() ?>
         <?= $this->render('head') ?>
 
-        <?php if ($googleFontsCss2UrlParams) : ?>
-            <link rel="preconnect" href="https://fonts.googleapis.com">
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?<?= $googleFontsCss2UrlParams ?>:wght@100;200;300;400;500;600;700;800;900&display=swap">
-        <?php endif; ?>
     </head>
 
     <?= Html::beginTag('body', ['class' => $bodyClasses]) ?>
@@ -60,7 +44,7 @@ $useContextSwitcher = !Yii::$app->user->isGuest;
                     <?= SiteLogo::widget() ?>
                 </div>
 
-                <ul id="top-menu-nav" class="flex-grow-1 nav<?= $module?->configuration->hideTextInBottomMenuItems ? ' hide-menu-item-texts' : '' ?>">
+                <ul id="top-menu-nav" class="flex-grow-1 nav">
                     <?php if ($useContextSwitcher): ?>
                         <!-- Modern Theme 2026: Context Switcher replaces Space Chooser -->
                         <?= ContextSwitcher::widget() ?>
@@ -71,6 +55,13 @@ $useContextSwitcher = !Yii::$app->user->isGuest;
                     <!-- load navigation from widget -->
                     <?= TopMenu::widget() ?>
                 </ul>
+
+                <!--
+                    Hidden stub so core humhub.ui.topNavigation.js finds #topbar-second.
+                    height: 9999px (with visibility:hidden + position:absolute) ensures
+                    isOverflow() always returns false: nav height (56px) < 9999px → no items migrate.
+                -->
+                <div id="topbar-second" style="position:absolute;visibility:hidden;height:9999px;width:0;overflow:hidden;pointer-events:none;" aria-hidden="true"></div>
 
                 <ul class="nav" id="search-menu-nav">
                     <?= TopMenuRightStack::widget() ?>

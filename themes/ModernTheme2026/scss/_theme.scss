@@ -12,6 +12,8 @@ body {
   line-height: $line-height-normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
 }
 
 // ============================================
@@ -205,6 +207,10 @@ a {
 
 html {
   scroll-behavior: smooth;
+  // Prevent the page viewport from scrolling horizontally (overflow causes
+  // white space to appear on right when user swipes past scroll-end on mobile).
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
 }
 
 // Custom scrollbar (webkit browsers)
@@ -257,5 +263,68 @@ html {
   
   h2, h3 {
     page-break-after: avoid;
+  }
+}
+
+// ============================================
+// PROFILE FIELD LINKS (phone/email)
+// ============================================
+.mt2026-tel-link {
+  color: var(--color-link);
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover {
+    text-decoration: underline;
+    color: var(--color-link-hover, var(--color-primary));
+  }
+
+  &::before {
+    content: '\f095';  // fa-phone
+    font-family: 'FontAwesome';
+    margin-right: 4px;
+    font-size: 0.85em;
+    opacity: 0.7;
+  }
+}
+
+// ============================================
+// PROFILE ABOUT — Tab Button Styling
+// ============================================
+#user-profile-about {
+  .nav-tabs {
+    border-bottom: 2px solid var(--color-border, rgba(0, 0, 0, 0.12));
+    gap: 8px;
+    padding-bottom: 0;
+
+    .nav-item {
+      margin-bottom: -2px;
+    }
+
+    .nav-link {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 6px 6px 0 0;
+      border: 1px solid var(--color-border, rgba(0, 0, 0, 0.15));
+      border-bottom: none;
+      background: var(--color-surface-2, rgba(0, 0, 0, 0.04));
+      color: var(--color-text-secondary, #666);
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+
+      &:hover {
+        background: var(--color-surface-3, rgba(0, 0, 0, 0.08));
+        color: var(--color-text-primary, #333);
+      }
+
+      &.active {
+        background: var(--color-primary, #1e6ad6);
+        color: #fff;
+        border-color: var(--color-primary, #1e6ad6);
+        font-weight: 600;
+      }
+    }
   }
 }

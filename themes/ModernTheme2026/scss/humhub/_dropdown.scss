@@ -69,15 +69,27 @@
 
 // Ensure panels/cards that contain dropdowns allow menus to visually overflow.
 // This overrides any Bootstrap overflow:hidden on ancestor containers.
+// .nav-item.dropdown is the structure used by HumHub's wallEntryControls,
+// commentControls, and the composer gear menu.
 .dropdown,
 .btn-group,
-.dropup {
+.dropup,
+.nav-item.dropdown {
+  overflow: visible !important;
+
   &.open,
   &.show {
     // When a dropdown is open, its direct parent needs overflow:visible
     // so the .dropdown-menu is not clipped by a containing block.
     overflow: visible;
   }
+}
+
+// Ensure the ancestor chain of wall-entry and comment controls never clips.
+.wall-entry-controls,
+.stream-entry-controls,
+.comment-controls {
+  overflow: visible !important;
 }
 
 // Space/user profile header: prevent the panel and its ancestors from
@@ -143,7 +155,6 @@
 .space-content {
   position: relative;
   z-index: 1;
-  isolation: isolate;
 }
 
 // Prevent the profile panel's hover transform from creating a stacking
@@ -168,6 +179,7 @@
 .comment-entry-form,
 .comment-controls,
 .comment-controls .dropdown,
+.comment-controls .nav-item.dropdown,
 .comment-controls .dropdown-menu {
   overflow: visible !important;
 }
@@ -176,16 +188,29 @@
   z-index: $z-dropdown + 20 !important;
 }
 
-// While a comment attachment dropdown is open, raise the whole stream entry
-// above sibling entries so the menu cannot be covered by the next card.
+// While a comment attachment/controls dropdown is open, raise the whole stream
+// entry above sibling entries so the menu cannot be covered by the next card.
 .wall-entry.mt2026-dropdown-open,
 .stream-entry.mt2026-dropdown-open {
   position: relative;
   z-index: $z-dropdown + 30;
 }
 
-.comment_create .btn-group.show .dropdown-menu {
+.comment_create .btn-group.show .dropdown-menu,
+.comment-controls .nav-item.dropdown.show .dropdown-menu {
   z-index: $z-dropdown + 40 !important;
+}
+
+// Wall/stream entry controls (the "…" three-dot menu on each post) must overflow
+// and sit above sibling cards while open.
+.wall-entry-controls .nav-item.dropdown,
+.stream-entry-controls .nav-item.dropdown {
+  overflow: visible !important;
+}
+
+.wall-entry-controls .nav-item.dropdown.show .dropdown-menu,
+.stream-entry-controls .nav-item.dropdown.show .dropdown-menu {
+  z-index: $z-dropdown + 35 !important;
 }
 
 // Stream post composer settings dropdown ("gear") can be inside wrappers that clip.
@@ -202,14 +227,17 @@
 .wall-entry-form .editor-toolbar,
 .post-form .editor-toolbar,
 .wall-entry-form .btn-group,
-.post-form .btn-group {
+.post-form .btn-group,
+.contentForm_options .nav-item.dropdown,
+.contentForm_options .nav.nav-pills {
   overflow: visible !important;
 }
 
 .wall-entry-form .btn-group > .dropdown-menu,
 .post-form .btn-group > .dropdown-menu,
 .content-form-body .btn-group > .dropdown-menu,
-.content-form-body .dropdown-menu {
+.content-form-body .dropdown-menu,
+.contentForm_options .nav-item.dropdown .dropdown-menu {
   z-index: $z-dropdown + 45 !important;
 }
 
@@ -274,4 +302,31 @@ body.mt2026-composer-dropdown-open-global .contentForm_options,
 body.mt2026-composer-dropdown-open-global .contentForm_options .dropdown-menu {
   position: relative;
   z-index: $z-dropdown + 60 !important;
+}
+
+// -----------------------------------------------------------------------
+// CSS-only permanent fix: post composer panel always above stream entries.
+//
+// When contain:layout was on .panel/.s-wall-entry, every panel created its
+// own stacking context, so stream entries (later in DOM) would paint over
+// the composer panel's dropdown no matter what z-index the dropdown had.
+// We removed contain:layout, but as a belt-and-suspenders guarantee we use
+// CSS :has() to permanently elevate the panel containing the post form above
+// any sibling stream entry panels — without any JavaScript.
+// -----------------------------------------------------------------------
+.panel:has(.contentForm_options),
+.panel:has(#contentFormBody),
+.panel:has(#contentFormBodyModal),
+.panel:has(.wall-entry-form),
+.panel:has(.post-form) {
+  position: relative;
+  z-index: $z-dropdown + 55;
+  overflow: visible !important;
+}
+
+// Ensure the layout container itself doesn't clip the overflowed dropdown.
+.layout-content-container,
+.space-layout-container,
+.space-content {
+  overflow: visible !important;
 }

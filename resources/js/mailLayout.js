@@ -17,8 +17,10 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
     function setFullscreenMode(active) {
         if (active) {
             document.body.classList.add('mt2026-mail-fullscreen');
+            document.body.classList.add('mt2026-mail-page');
         } else {
             document.body.classList.remove('mt2026-mail-fullscreen');
+            document.body.classList.remove('mt2026-mail-page');
             closeMailList();
         }
     }

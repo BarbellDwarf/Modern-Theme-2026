@@ -50,9 +50,6 @@ body.mt2026-mail-page .mobile-bottom-nav {
   padding-right: 0 !important;
   margin-left: 0 !important;
   margin-right: 0 !important;
-  max-width: 100% !important;
-  width: 100% !important;
-  flex: 0 0 100% !important;
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -77,17 +74,26 @@ body.mt2026-mail-page .mobile-bottom-nav {
   margin-right: 0 !important;
 }
 
-#mail-conversation-root .col-lg-4,
-#mail-conversation-root .col-lg-8,
-.mail-conversation-single-message .col-lg-4,
-.mail-conversation-single-message .col-lg-8,
-.mt2026-mail-index .col-lg-4,
-.mt2026-mail-index .col-lg-8 {
-  width: 100%;
-  max-width: 100%;
-  flex: 0 0 100%;
+#mail-conversation-root .messages,
+.mail-conversation-single-message .messages,
+.mt2026-mail-index .messages {
   padding-left: 0 !important;
   padding-right: 0 !important;
+}
+
+// Keep desktop two-column mail layout stable (prevents topbar/layout clipping side-effects)
+@media (min-width: 1200px) {
+  .mt2026-mail-index > .row > .col-lg-4 {
+    flex: 0 0 33.333333% !important;
+    max-width: 33.333333% !important;
+    width: 33.333333% !important;
+  }
+
+  .mt2026-mail-index > .row > .col-lg-8 {
+    flex: 0 0 66.666667% !important;
+    max-width: 66.666667% !important;
+    width: 66.666667% !important;
+  }
 }
 
 #mail-conversation-root > .mt2026-mail-shell,
@@ -291,6 +297,9 @@ body.mail-list-open::before {
   flex: 0 0 auto;
   z-index: 3;
   position: relative;
+  background: color-mix(in srgb, var(--color-bg-primary) 94%, var(--color-primary) 6%);
+  border-top: 1px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border));
+  padding-bottom: calc(6px + env(safe-area-inset-bottom, 0));
 }
 
 .mail-message-form {
@@ -300,8 +309,8 @@ body.mail-list-open::before {
   position: relative;
   z-index: 3;
   padding: 12px;
-  background: color-mix(in srgb, var(--color-bg-primary) 94%, var(--color-primary) 6%);
-  border-top: 1px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border));
+  background: transparent;
+  border-top: 0;
 }
 
 .mail-message-form .humhub-ui-richtext {
@@ -338,19 +347,20 @@ body.mail-list-open::before {
     border-radius: 10px;
   }
 
+  // Do NOT pin shell fixed on mobile; keep it in normal flow to avoid viewport cut-off
   body.mt2026-mail-fullscreen #mail-conversation-root > .mt2026-mail-shell,
   body.mt2026-mail-fullscreen #mail-conversation-root .messages > .mt2026-mail-shell {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
     height: auto !important;
-    z-index: 1041;
     max-height: none !important;
+    min-height: calc(100dvh - var(--mt2026-topbar-height, 60px) - 56px - env(safe-area-inset-bottom, 0)) !important;
   }
 
-  // Parent containers no longer need explicit heights - shell handles it
+  // Keep parent chain natural to prevent clipping/cropping
   .mt2026-mail-fullscreen #layout-content,
   .mt2026-mail-fullscreen #layout-content .container,
   .mt2026-mail-fullscreen #layout-content .container-fluid,
@@ -359,6 +369,7 @@ body.mail-list-open::before {
   .mt2026-mail-fullscreen #mail-conversation-root .messages {
     height: auto !important;
     max-height: none !important;
+    overflow: visible !important;
   }
 
   #mail-conversation-header .mt2026-mail-topbar-toggle {
@@ -367,15 +378,17 @@ body.mail-list-open::before {
   }
 
   .mt2026-mail-shell > .conversation-entry-container {
-    flex: 1 1 0 !important;
+    flex: 1 1 auto !important;
     height: auto !important;
+    min-height: 0 !important;
   }
 
-  // Composer stays in flex flow so scrollbar stops at composer top
+  // Composer stays visible above bottom nav, with extra safe-area spacing
   .mt2026-mail-fullscreen #mail-conversation-root .mt2026-mail-composer-dock {
     flex: 0 0 auto;
-    position: relative !important;
-    z-index: 3;
+    position: sticky !important;
+    bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
+    z-index: 6;
   }
 
   .mt2026-mail-fullscreen #mail-conversation-root .mt2026-mail-composer-dock .mail-message-form {
@@ -383,20 +396,22 @@ body.mail-list-open::before {
     border-radius: 0 !important;
     border-left: 0 !important;
     border-right: 0 !important;
+    padding-bottom: max(8px, env(safe-area-inset-bottom, 0)) !important;
   }
 
-  // Small padding so last message isn't flush against composer
+  // Space so last message is not hidden behind sticky composer
   .mt2026-mail-fullscreen #mail-conversation-root .conversation-entry-list {
-    padding-bottom: 8px !important;
+    padding-bottom: calc(92px + env(safe-area-inset-bottom, 0)) !important;
   }
 
+  // Allow page to scroll naturally on mobile instead of clipping
   body.device-mobile.mt2026-mail-fullscreen,
   body.device-mobile-app.mt2026-mail-fullscreen,
   body.device-mobile.mt2026-mail-fullscreen #layout-content,
   body.device-mobile-app.mt2026-mail-fullscreen #layout-content,
   body.device-mobile.mt2026-mail-fullscreen .layout-content-container,
   body.device-mobile-app.mt2026-mail-fullscreen .layout-content-container {
-    overflow: hidden !important;
+    overflow: visible !important;
   }
 
   .mail-conversation-entry .conversation-entry-content {

@@ -1,0 +1,60 @@
+services:
+  humhub:
+    image: humhub/humhub:1.18.2
+    container_name: humhub-testing
+    ports:
+      - "8081:80"  # 8080 reserved for static test server (scss-validation tests)
+      - "8443:443"  # Expose HTTPS for local testing (container 443 -> host 8443)
+    environment:
+      - HUMHUB_DB_TYPE=mysql
+      - HUMHUB_DB_HOST=db
+      - HUMHUB_DB_PORT=3306
+      - HUMHUB_DB_USER=humhub
+      - HUMHUB_DB_PASSWORD=humhub_secret
+      - HUMHUB_DB_NAME=humhub
+      - HUMHUB_ADMIN_EMAIL=admin@example.com
+      - HUMHUB_ADMIN_LOGIN=admin
+      - HUMHUB_ADMIN_PASSWORD=admin123
+      - HUMHUB_AUTO_INSTALL=1
+      - HUMHUB_FORCE_SSL=false
+      - HUMHUB_BASE_URL=http://humhub-testing
+      - HUMHUB_CONFIG__MODULES__INSTALLER__ENABLE_AUTO_SETUP=true
+      - "HUMHUB_CONFIG__COMPONENTS__DB__DSN=mysql:host=db;dbname=humhub"
+      - HUMHUB_CONFIG__COMPONENTS__DB__USERNAME=humhub
+      - HUMHUB_CONFIG__COMPONENTS__DB__PASSWORD=humhub_secret
+      - "HUMHUB_CLI_CONFIG__COMPONENTS__DB__DSN=mysql:host=db;dbname=humhub"
+      - HUMHUB_CLI_CONFIG__COMPONENTS__DB__USERNAME=humhub
+      - HUMHUB_CLI_CONFIG__COMPONENTS__DB__PASSWORD=humhub_secret
+    volumes:
+      # Persist HumHub config and uploads across restarts (named volumes — don't bind-mount htdocs root)
+      - humhub-config:/var/www/localhost/htdocs/protected/config
+      - humhub-uploads:/var/www/localhost/htdocs/uploads
+      # Bind-mount our module into the modules directory (correct htdocs path)
+      - type: bind
+        source: D:/Users/river/Repositories/Github/Modern-Theme-2026
+        target: /var/www/localhost/htdocs/protected/modules/modern-theme-2026
+      # Mount custom Caddyfile to disable automatic HTTPS (read-only)
+      - type: bind
+        source: D:/Users/river/Repositories/Github/Modern-Theme-2026/caddy/Caddyfile
+        target: /etc/caddy/Caddyfile
+        read_only: true
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.0
+    container_name: humhub-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_secret
+      - MYSQL_DATABASE=humhub
+      - MYSQL_USER=humhub
+      - MYSQL_PASSWORD=humhub_secret
+    volumes:
+      - humhub-db:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  humhub-db:
+  humhub-config:
+  humhub-uploads:

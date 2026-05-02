@@ -9,7 +9,8 @@ const path = require('path');
   function logLine(...args) { fs.appendFileSync(log, new Date().toISOString() + ' ' + args.join(' ') + '\n'); }
 
   const browser = await chromium.launch();
-  const page = await browser.newPage();
+  const context = await browser.newContext({ ignoreHTTPSErrors: true });
+  const page = await context.newPage();
   page.on('console', msg => { try { logLine('CONSOLE', msg.type(), msg.text()); } catch (e) {} });
   page.on('pageerror', err => { try { logLine('PAGEERROR', err.message); } catch (e) {} });
   page.on('requestfailed', req => { try { logLine('REQFAILED', req.url(), JSON.stringify(req.failure())); } catch (e) {} });

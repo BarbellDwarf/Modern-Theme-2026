@@ -7,10 +7,24 @@
  * Use this after modifying SCSS files if the web-based rebuild is not available.
  */
 
-require __DIR__ . '/../../../vendor/autoload.php';
-
-use ScssPhp\ScssPhp\Compiler;
-use ScssPhp\ScssPhp\OutputStyle;
+// Attempt to locate Composer autoload in several common locations so this script
+// can be run inside a full HumHub project or as a standalone theme repository.
+$autoloadCandidates = [
+    __DIR__ . '/../../../vendor/autoload.php', // HumHub project layout
+    __DIR__ . '/vendor/autoload.php',         // theme root composer
+    __DIR__ . '/../vendor/autoload.php',      // alternate layouts
+];
+$autoload = null;
+foreach ($autoloadCandidates as $p) {
+    if (file_exists($p)) { $autoload = $p; break; }
+}
+$hasScssPhp = false;
+if ($autoload) {
+    require $autoload;
+    if (class_exists('\\ScssPhp\\ScssPhp\\Compiler')) {
+        $hasScssPhp = true;
+    }
+}
 
 $themeBasePath = __DIR__ . '/themes/ModernTheme2026';
 $parentThemeBasePath = dirname(__DIR__, 3) . '/themes/HumHub';
@@ -37,24 +51,31 @@ if (!$assetDir) {
 }
 
 if (!$assetDir) {
-    echo "ERROR: Could not find published asset directory\n";
-    exit(1);
+    // Fall back to writing into the theme folder for standalone development.
+    $outputDir = $themeBasePath . '/dist';
+    if (!is_dir($outputDir)) {
+        mkdir($outputDir, 0755, true);
+    }
+    echo "NOTICE: Published asset directory not found. Falling back to: {$outputDir}\n\n";
+} else {
+    $outputDir = $assetDir . '/resources/css';
+    if (!is_dir($outputDir)) {
+        mkdir($outputDir, 0755, true);
+    }
+    echo "Theme: {$themeBasePath}\n";
+    echo "Output: {$outputDir}\n\n";
 }
 
-$outputDir = $assetDir . '/resources/css';
-if (!is_dir($outputDir)) {
-    mkdir($outputDir, 0755, true);
+if ($hasScssPhp) {
+    $compiler = new \ScssPhp\ScssPhp\Compiler();
+    $compiler->setOutputStyle(\ScssPhp\ScssPhp\OutputStyle::COMPRESSED);
+    $compiler->setImportPaths($webroot . '/protected/vendor/twbs/bootstrap/scss');
+    $compiler->addImportPath($webroot . '/static/scss');
+    $compiler->addImportPath($parentThemeBasePath . '/scss');
+    $compiler->addImportPath($themeBasePath . '/scss');
+} else {
+    echo "NOTICE: scssphp library not available via Composer autoload. This script will write aggregated SCSS to '{$outputDir}/theme.scss' for manual compilation.\n\n";
 }
-
-echo "Theme: {$themeBasePath}\n";
-echo "Output: {$outputDir}\n\n";
-
-$compiler = new Compiler();
-$compiler->setOutputStyle(OutputStyle::COMPRESSED);
-$compiler->setImportPaths($webroot . '/protected/vendor/twbs/bootstrap/scss');
-$compiler->addImportPath($webroot . '/static/scss');
-$compiler->addImportPath($parentThemeBasePath . '/scss');
-$compiler->addImportPath($themeBasePath . '/scss');
 
 $scssContent = '';
 
@@ -111,12 +132,26 @@ $scssContent .= '@import "bootstrap";' . "\n";
 $scssContent .= '@import "' . $webroot . '/static/scss/build";' . "\n";
 $scssContent .= '@import "' . $themeBasePath . '/scss/build";' . "\n";
 
-try {
-    $result = $compiler->compileString($scssContent);
-    $css = $result->getCss();
-    file_put_contents($outputDir . '/theme.css', $css);
-    echo "SUCCESS: CSS compiled (" . number_format(strlen($css)) . " bytes → {$outputDir}/theme.css)\n";
-} catch (Exception $e) {
-    echo "ERROR: " . $e->getMessage() . "\n";
-    exit(1);
+if ($hasScssPhp) {
+    try {
+        $result = $compiler->compileString($scssContent);
+        $css = $result->getCss();
+        file_put_contents($outputDir . '/theme.css', $css);
+        echo "SUCCESS: CSS compiled (" . number_format(strlen($css)) . " bytes → {$outputDir}/theme.css)\n";
+    } catch (Exception $e) {
+        echo "ERROR: " . $e->getMessage() . "\n";
+        exit(1);
+    }
+} else {
+    // Write aggregated SCSS for manual compilation using `sass`/`dart-sass` or `npx sass`.
+    file_put_contents($outputDir . '/theme.scss', $scssContent);
+    echo "WROTE: Aggregated SCSS to {$outputDir}/theme.scss\n\n";
+    echo "To compile locally:\n";
+    echo "  # Install dart-sass (preferred):\n";
+    echo "  npx sass {$outputDir}/theme.scss {$outputDir}/theme.css --style=compressed\n\n";
+    echo "Or use Composer to install scssphp and re-run this script:\n";
+    echo "  composer require scssphp/scssphp --no-interaction\n";
+    echo "  php compile-css.php\n\n";
+    echo "After compilation, measure gzipped size:\n";
+    echo "  php -r \"echo strlen(gzencode(file_get_contents('{$outputDir}/theme.css'))).PHP_EOL;\"\n";
 }

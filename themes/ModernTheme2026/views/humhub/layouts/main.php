@@ -5,7 +5,7 @@
 use humhub\assets\AppAsset;
 use humhub\components\View;
 use humhub\helpers\DeviceDetectorHelper;
-use humhub\helpers\Html;
+use humhub\libs\Html;
 use humhub\modules\modernTheme2026\widgets\ContextSwitcher;
 use humhub\modules\space\widgets\Chooser;
 use humhub\modules\user\widgets\AccountTopMenu;
@@ -15,6 +15,15 @@ use humhub\widgets\TopMenu;
 use humhub\widgets\TopMenuRightStack;
 
 AppAsset::register($this);
+
+// Load our overlay CSS via the asset manager using the theme's base path.
+// This works regardless of whether the theme is installed in /themes/, /modules/, or elsewhere.
+$distCssFile = $this->theme->getBasePath() . DIRECTORY_SEPARATOR . 'dist' . DIRECTORY_SEPARATOR . 'theme.css';
+if (is_file($distCssFile)) {
+    $distDir = $this->theme->getBasePath() . DIRECTORY_SEPARATOR . 'dist';
+    [$distPublishedPath, $distPublishedUrl] = Yii::$app->assetManager->publish($distDir, ['forceCopy' => true]);
+    $this->registerCssFile($distPublishedUrl . '/theme.css');
+}
 
 $bodyClasses = DeviceDetectorHelper::getBodyClasses();
 $bodyClasses[] = 'modern-theme-2026';

@@ -679,3 +679,48 @@ body.mt2026-keyboard-open {
         min-width: 40px;
     }
 }
+
+// ── Fix #4: ProseMirror editor toolbar overflow on mobile ────────────────────
+@media (max-width: 991px) {
+    .ProseMirror-menubar {
+        overflow-x: auto;
+        overflow-y: hidden;
+        max-width: 100%;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        &::-webkit-scrollbar { display: none; }
+    }
+
+    .ProseMirror-menuitem {
+        min-height: 44px;
+        display: flex !important;
+        align-items: center;
+    }
+}
+
+// ── Fix #5: Stream empty-state card full-width on mobile ─────────────────────
+@media (max-width: 991px) {
+    .stream-entry,
+    .content-topic-empty,
+    [class*="stream-entry"],
+    .empty-stream-placeholder {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+}
+
+// ── Fix #6: Dashboard card equal horizontal margins on mobile ─────────────────
+// Bootstrap col-* gutters can produce asymmetric spacing when the row has
+// a non-zero margin. Normalise padding so left and right are equal.
+@media (max-width: 991px) {
+    #dashboard .s2_streamContent,
+    #dashboard .stream-wrapper,
+    #dashboard > .container,
+    #dashboard > .container-fluid {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+}

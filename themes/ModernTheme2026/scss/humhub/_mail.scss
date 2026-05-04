@@ -244,7 +244,10 @@ body.mt2026-mail-page #layout-content {
 
 .col-lg-8.messages .panel-heading {
   flex: 0 0 auto !important;
-  padding: 10px 15px !important;
+  padding: 6px 12px !important;
+  min-height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 .col-lg-8.messages .panel-body.conversation-entry-container {
@@ -303,7 +306,11 @@ body.mail-list-open::before {
   position: sticky;
   top: 0;
   z-index: 2;
-  padding: 12px 14px;
+  padding: 8px 12px !important;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
   border-bottom: 1px solid var(--color-border-light, rgba(0, 0, 0, 0.08));
   background: var(--color-bg-secondary, #f9fafb);
 }
@@ -351,8 +358,9 @@ body.mail-list-open::before {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 44px;
-  padding: 12px 16px;
+  min-height: 40px;
+  padding: 6px 12px;
+  flex: 0 0 auto !important;
 }
 
 // Mobile toggle button for conversation list
@@ -440,7 +448,33 @@ body.mail-list-open::before {
 
 // ── CONVERSATION ENTRIES ─────────────────────────────────────────────────────
 .mail-conversation-entry {
-  margin: 10px 0;
+  margin: 4px 0;
+  padding: 0 8px;
+  flex: 0 0 auto;
+}
+
+// Optimize conversation tags widget to be compact
+.mail-conversation-tags,
+.conversation-tags {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px 8px !important;
+  margin: 0 !important;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.mail-conversation-tags .tag,
+.conversation-tags .tag,
+.mail-conversation-tags .badge,
+.conversation-tags .badge {
+  padding: 3px 8px !important;
+  margin: 0 !important;
+  font-size: 12px !important;
+  height: auto;
+  white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .mt2026-mail-shell > .conversation-entry-container {
@@ -467,10 +501,11 @@ body.mail-list-open::before {
 }
 
 .mail-conversation-entry .conversation-entry-content {
-  border-radius: 14px;
-  padding: 12px 14px;
+  border-radius: 12px;
+  padding: 10px 12px;
   border: 1px solid color-mix(in srgb, var(--color-primary) 14%, var(--color-border, #e5e7eb));
   box-shadow: var(--shadow-xs, 0 1px 2px rgba(0, 0, 0, 0.05));
+  margin: 0 !important;
   
   &.own {
     border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border, #e5e7eb));
@@ -500,16 +535,19 @@ body.mail-list-open::before {
   margin-bottom: 0 !important;
   position: relative;
   z-index: 3;
-  padding: 12px;
+  padding: 8px;
   background: transparent;
   border-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .mail-message-form .humhub-ui-richtext {
   border: 1px solid color-mix(in srgb, var(--color-primary) 16%, var(--color-border, #e5e7eb));
   border-radius: 14px;
   background: var(--color-bg-primary, #ffffff);
-  min-height: 44px;
+  min-height: 40px;
 }
 
 // Hide ProseMirror menubar
@@ -532,10 +570,10 @@ body.mail-list-open::before {
 .mail-message-form [type="search"],
 .mail-message-form [type="email"],
 .mail-message-form [type="number"] {
-  min-height: 44px !important;
+  min-height: 36px !important;
 }
 
-// Ensure all buttons in the mail module meet WCAG 2.1 AA touch target requirement (44px minimum)
+// Ensure all buttons in the mail module meet WCAG 2.1 AA touch target requirement
 .mail-message-form button,
 .mail-message-form [type="submit"],
 .mail-message-form [type="button"],
@@ -543,7 +581,21 @@ body.mail-list-open::before {
 .richtext-create-buttons button,
 .richtext-create-buttons [type="submit"],
 .richtext-create-buttons .btn {
-  min-height: 44px !important;
+  min-height: 36px !important;
+  padding: 6px 12px !important;
+  font-size: 13px !important;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  margin: 0 !important;
+}
+
+// Fix button group layout to prevent overlap
+.richtext-create-buttons {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 // ── MOBILE FULLSCREEN (<992px) ───────────────────────────────────────────────

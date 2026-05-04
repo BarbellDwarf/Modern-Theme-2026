@@ -26,6 +26,21 @@
     max-height: 100% !important;
   }
 
+  // Ensure messages column is visible and fills available space on desktop
+  .mt2026-mail-index .col-lg-8.messages {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .mt2026-mail-index .col-lg-8.messages > div {
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
   // On desktop the inbox panel flows in the document (not a slide-in drawer).
   // Reset all mobile drawer positioning so the panel is visible.
   #mail-conversation-overview {
@@ -51,16 +66,21 @@
   }
 }
 
-// On desktop there is no bottom nav, so suppress the default body padding-bottom.
-// On mobile (<992px) we keep the default padding so content stays above the 56px bottom nav.
+// Standardize bottom padding on both desktop and mobile (44px for bottom nav height + 20px buffer).
+// This ensures consistent spacing for the sticky composer above the bottom nav.
 @media (min-width: 992px) {
   body.mt2026-mail-page {
-    padding-bottom: 0 !important;
+    padding-bottom: 64px !important;
   }
 }
 
 body.mt2026-mail-page .mobile-bottom-nav {
   z-index: 1035;
+}
+
+// Standardize body padding on mobile to match desktop (64px for consistent spacing)
+body.mt2026-mail-page {
+  padding-bottom: 64px !important;
 }
 
 .mt2026-mail-fullscreen .mt2026-mail-index {
@@ -123,6 +143,42 @@ body.mt2026-mail-page .mobile-bottom-nav {
   }
 }
 
+// ── MAIL INDEX LAYOUT HEIGHT PROPAGATION ────────────────────────────────────────
+// Ensure mail page has proper height for flexbox layout
+body.mt2026-mail-page,
+body.mt2026-mail-page #layout-content {
+  height: auto !important;
+}
+
+// Mail index container should be flex to distribute space to columns
+.mt2026-mail-index {
+  display: flex !important;
+  flex-direction: column !important;
+  height: auto !important;
+}
+
+.mt2026-mail-index > .container,
+.mt2026-mail-index > .container-fluid {
+  display: flex !important;
+  flex-direction: column !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.mt2026-mail-index .row {
+  display: flex !important;
+  flex-direction: row !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.mt2026-mail-index .col-lg-4,
+.mt2026-mail-index .col-lg-8 {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+}
+
 // ── MAIL SHELL (Main Container) ──────────────────────────────────────────────
 #mail-conversation-root > .mt2026-mail-shell,
 #mail-conversation-root .messages > .mt2026-mail-shell {
@@ -146,6 +202,64 @@ body.mt2026-mail-page .mobile-bottom-nav {
   height: 100% !important;
   display: flex !important;
   flex-direction: column !important;
+}
+
+// Ensure panel-body inside mail shell expands to fill available space
+.mt2026-mail-shell .panel-body {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+// Ensure panel-heading stays fixed at top
+.mt2026-mail-shell .panel-heading {
+  flex: 0 0 auto !important;
+}
+
+// ── DESKTOP LAYOUT (col-lg-8.messages > .panel) ────────────────────
+// On desktop, the .panel.panel-default is directly under .col-lg-8.messages
+.col-lg-8.messages {
+  display: flex !important;
+  flex-direction: column !important;
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+
+.col-lg-8.messages > .panel {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: var(--color-bg-primary, #ffffff) !important;
+  box-shadow: none !important;
+}
+
+.col-lg-8.messages .panel-heading {
+  flex: 0 0 auto !important;
+  padding: 10px 15px !important;
+}
+
+.col-lg-8.messages .panel-body.conversation-entry-container {
+  flex: 1 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 0 !important;
+}
+
+.col-lg-8.messages .conversation-entry-list {
+  flex: 1 !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
 }
 
 // ── CONVERSATION SIDEBAR (Inbox List) ────────────────────────────────────────
@@ -395,6 +509,7 @@ body.mail-list-open::before {
   border: 1px solid color-mix(in srgb, var(--color-primary) 16%, var(--color-border, #e5e7eb));
   border-radius: 14px;
   background: var(--color-bg-primary, #ffffff);
+  min-height: 44px;
 }
 
 // Hide ProseMirror menubar
@@ -410,19 +525,86 @@ body.mail-list-open::before {
   border-top: 0 !important;
 }
 
-.mail-message-form .richtext-create-buttons .btn {
-  border-radius: 10px;
+// Ensure all inputs in the mail module meet WCAG 2.1 AA touch target requirement (44px minimum)
+.mail-message-form input,
+.mail-message-form textarea,
+.mail-message-form [type="text"],
+.mail-message-form [type="search"],
+.mail-message-form [type="email"],
+.mail-message-form [type="number"] {
+  min-height: 44px !important;
+}
+
+// Ensure all buttons in the mail module meet WCAG 2.1 AA touch target requirement (44px minimum)
+.mail-message-form button,
+.mail-message-form [type="submit"],
+.mail-message-form [type="button"],
+.mail-message-form .btn,
+.richtext-create-buttons button,
+.richtext-create-buttons [type="submit"],
+.richtext-create-buttons .btn {
+  min-height: 44px !important;
 }
 
 // ── MOBILE FULLSCREEN (<992px) ───────────────────────────────────────────────
 @media (max-width: 991px) {
-  #mail-conversation-overview {
-    margin-bottom: 10px;
+  // Default mobile state: the conversations list is the main page view
+  // (in the document flow, full-width, full-height).
+  // A conversation being "active" (JS adds mt2026-mail-has-conversation) switches
+  // it to the slide-in drawer behaviour.
+  body.mt2026-mail-page #mail-conversation-overview {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    transform: none !important;
+    transition: none !important;
+    z-index: auto !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-top: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    min-height: calc(100dvh - 64px) !important;
+    margin-bottom: 0 !important;
+    overflow-y: auto !important;
   }
 
-  #inbox {
-    max-height: 42vh !important;
-    border-radius: 10px;
+  // When a conversation is active: slide overview off-screen as a drawer
+  body.mt2026-mail-page.mt2026-mail-has-conversation #mail-conversation-overview {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: min(420px, 88vw) !important;
+    max-width: 88vw !important;
+    z-index: 1090 !important;
+    transform: translateX(-102%) !important;
+    transition: transform 0.2s ease !important;
+    border-radius: 0 !important;
+    min-height: auto !important;
+    box-shadow: var(--shadow-lg, 0 10px 15px rgba(0, 0, 0, 0.1)) !important;
+    border-left: 0 !important;
+    overflow-y: auto !important;
+  }
+
+  // Show drawer when explicitly toggled
+  body.mt2026-mail-page.mt2026-mail-has-conversation.mail-list-open #mail-conversation-overview {
+    transform: translateX(0) !important;
+  }
+
+  // Inbox list fills the available height in the in-flow state
+  body.mt2026-mail-page:not(.mt2026-mail-has-conversation) #inbox {
+    max-height: none !important;
+    flex: 1 !important;
+    overflow-y: auto !important;
+  }
+
+  // Conversation root fills viewport when active
+  body.mt2026-mail-page.mt2026-mail-has-conversation #mail-conversation-root {
+    min-height: calc(100dvh - 64px) !important;
   }
 
   // Shell positioning for mobile
@@ -639,8 +821,17 @@ body.mail-list-open::before {
   input[type="search"],
   input[type="text"] {
     width: 100%;
-    height: 36px;
+    min-height: 44px;
     padding: 0 10px 0 32px;
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: 18px;
+    background: var(--color-bg-primary, #ffffff);
+    color: var(--color-text-primary, #111827);
+    font-size: 13px;
+    font-family: inherit;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    -webkit-appearance: none;
+    appearance: none;
     border: 1px solid var(--color-border, #e5e7eb);
     border-radius: 18px;
     background: var(--color-bg-primary, #ffffff);

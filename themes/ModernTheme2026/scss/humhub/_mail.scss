@@ -26,13 +26,30 @@
     max-height: 100% !important;
   }
 
+  // Ensure mail index container fills viewport
+  .mt2026-mail-index {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+  }
+
+  // Ensure row inside mail index stretches to fill container
+  .mt2026-mail-index .row {
+    display: flex !important;
+    flex-direction: row !important;
+    flex: 1 1 auto !important;
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+
   // Ensure messages column is visible and fills available space on desktop
   .mt2026-mail-index .col-lg-8.messages {
     display: flex !important;
     flex-direction: column !important;
-    height: auto !important;
+    height: 100% !important;
     min-height: 0 !important;
     overflow: hidden !important;
+    flex: 1 1 auto !important;
   }
 
   .mt2026-mail-index .col-lg-8.messages > div {
@@ -224,10 +241,11 @@ body.mt2026-mail-page #layout-content {
 .col-lg-8.messages {
   display: flex !important;
   flex-direction: column !important;
-  height: auto !important;
+  height: 100% !important;
   min-height: 0 !important;
   overflow: hidden !important;
   padding: 0 !important;
+  flex: 1 1 auto !important;
 }
 
 .col-lg-8.messages > .panel {
@@ -248,10 +266,11 @@ body.mt2026-mail-page #layout-content {
   min-height: 40px !important;
   display: flex !important;
   align-items: center !important;
+  margin: 0 !important;
 }
 
 .col-lg-8.messages .panel-body.conversation-entry-container {
-  flex: 1 !important;
+  flex: 1 1 0 !important;
   min-height: 0 !important;
   overflow: hidden !important;
   display: flex !important;
@@ -357,10 +376,42 @@ body.mail-list-open::before {
 #mail-conversation-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-height: 40px;
-  padding: 6px 12px;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 8px;
   flex: 0 0 auto !important;
+  background: color-mix(in srgb, var(--color-bg-secondary) 88%, var(--color-primary) 12%);
+}
+
+// Header title area (center, flex-grow)
+#mail-conversation-header .mail-header-title {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 0;
+  padding: 0 8px;
+  
+  h4 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text-primary, #111827);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--color-text-secondary, #6b7280);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 // Mobile toggle button for conversation list
@@ -377,6 +428,12 @@ body.mail-list-open::before {
   white-space: nowrap;
   cursor: pointer;
   transition: all 0.15s ease;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
   
   &:hover {
     background: color-mix(in srgb, var(--color-primary) 12%, transparent);
@@ -384,19 +441,19 @@ body.mail-list-open::before {
   }
   
   i {
-    margin-right: 6px;
+    margin-right: 0;
   }
 }
 
-// Mobile back button (← injected by mailLayout.js in conversation header)
-#mail-conversation-header .mt2026-mail-back-btn {
+// Settings button (new - for mobile drawer)
+#mail-conversation-header .mt2026-mail-settings-btn {
   display: none;
   width: 40px;
   height: 40px;
   border: none;
   background: transparent;
-  color: var(--color-primary, #1e6ad6);
-  font-size: 18px;
+  color: var(--color-text-primary, #111827);
+  font-size: 16px;
   border-radius: 8px;
   align-items: center;
   justify-content: center;
@@ -406,6 +463,193 @@ body.mail-list-open::before {
   
   &:hover {
     background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  }
+}
+
+// Mobile back button (← removed, using hamburger menu instead)
+#mail-conversation-header .mt2026-mail-back-btn {
+  display: none !important;
+}
+
+// ── DRAWER OVERLAYS (Mobile Only) ────────────────────────────────────────────
+// Generic drawer container styling
+.mt2026-drawer {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  z-index: 1000;
+  background: var(--color-bg-primary, #ffffff);
+  box-shadow: var(--shadow-lg, 0 10px 15px rgba(0, 0, 0, 0.1));
+  animation: slideIn 300ms ease-out forwards;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+// Conversations drawer (left side)
+.mt2026-drawer-conversations {
+  left: 0;
+  width: 85%;
+  max-width: 320px;
+  animation: slideInLeft 300ms ease-out forwards;
+}
+
+// Settings drawer (right side)
+.mt2026-drawer-settings {
+  right: 0;
+  width: 75%;
+  max-width: 300px;
+  animation: slideInRight 300ms ease-out forwards;
+}
+
+// Drawer header styling
+.mt2026-drawer-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  padding: 0 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 20%, var(--color-border, #e5e7eb));
+  background: color-mix(in srgb, var(--color-bg-secondary) 88%, var(--color-primary) 12%);
+  flex: 0 0 44px;
+}
+
+.mt2026-drawer-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+}
+
+.mt2026-drawer-header .mt2026-drawer-close {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary, #111827);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+  
+  &:hover {
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  }
+}
+
+// Drawer content area
+.mt2026-drawer-content {
+  padding: 8px 0;
+}
+
+// Drawer backdrop/overlay
+.mt2026-drawer-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 150ms ease-out;
+}
+
+// Animations
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+// Drawer content list styling (for conversations drawer)
+.mt2026-drawer-conversations-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.mt2026-drawer-conversations-list .conversation-item {
+  padding: 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 10%, var(--color-border, #e5e7eb));
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  
+  &:hover {
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+  
+  &.active {
+    background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+    border-left: 3px solid var(--color-primary, #1e6ad6);
+    padding-left: 9px;
+  }
+}
+
+// Drawer content options (for settings drawer)
+.mt2026-drawer-settings-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.mt2026-drawer-settings-list .setting-item {
+  padding: 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 10%, var(--color-border, #e5e7eb));
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  
+  &:hover {
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+  
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+  }
+}
+
+.mt2026-drawer-settings-list .setting-label {
+  flex: 1;
+  font-size: 14px;
+  color: var(--color-text-primary, #111827);
+}
+
+.mt2026-drawer-settings-list .destructive-btn {
+  margin: 16px 12px;
+  width: calc(100% - 24px);
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  
+  &:hover {
+    background: #dc2626;
   }
 }
 
@@ -453,16 +697,11 @@ body.mail-list-open::before {
   flex: 0 0 auto;
 }
 
-// Optimize conversation tags widget to be compact
+// Hide conversation tags widget (My Tags) - not needed on desktop or mobile
 .mail-conversation-tags,
-.conversation-tags {
-  display: flex !important;
-  flex-wrap: wrap;
-  gap: 4px;
-  padding: 4px 8px !important;
-  margin: 0 !important;
-  flex: 0 0 auto;
-  align-items: center;
+.conversation-tags,
+#conversation-tags-root {
+  display: none !important;
 }
 
 .mail-conversation-tags .tag,
@@ -521,7 +760,7 @@ body.mail-list-open::before {
 
 // ── COMPOSER DOCK ────────────────────────────────────────────────────────────
 .mt2026-mail-composer-dock {
-  flex: 0 0 auto;
+  flex: 0 0 auto !important;
   z-index: 3;
   position: relative;
   background: color-mix(in srgb, var(--color-bg-primary) 94%, var(--color-primary) 6%);
@@ -541,6 +780,15 @@ body.mail-list-open::before {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  width: 100% !important;
+}
+
+.mail-message-form .panel-body {
+  flex: 1 !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
 }
 
 .mail-message-form .humhub-ui-richtext {
@@ -548,6 +796,7 @@ body.mail-list-open::before {
   border-radius: 14px;
   background: var(--color-bg-primary, #ffffff);
   min-height: 40px;
+  width: 100% !important;
 }
 
 // Hide ProseMirror menubar
@@ -596,6 +845,8 @@ body.mail-list-open::before {
   gap: 4px;
   margin: 0 !important;
   padding: 0 !important;
+  width: 100% !important;
+  flex: 1 1 auto !important;
 }
 
 // ── MOBILE FULLSCREEN (<992px) ───────────────────────────────────────────────
@@ -684,15 +935,23 @@ body.mail-list-open::before {
     overflow: visible !important;
   }
 
-  // Show mobile toggle button
+  // Show mobile hamburger button (conversations drawer toggle)
   #mail-conversation-header .mt2026-mail-topbar-toggle {
-    display: inline-flex;
+    display: flex !important;
     align-items: center;
+    justify-content: center;
+    flex: 0 0 40px;
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    padding: 0;
   }
   
-  // Show mobile back button
-  #mail-conversation-header .mt2026-mail-back-btn {
-    display: inline-flex;
+  // Show mobile settings button
+  #mail-conversation-header .mt2026-mail-settings-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
   }
 
   // Shell container adjustments

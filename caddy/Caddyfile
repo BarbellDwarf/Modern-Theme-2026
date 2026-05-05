@@ -1,5 +1,0 @@
-:80 {
-    root {$SERVER_ROOT:public/}
-    encode zstd br gzip
-    php_server
-}

@@ -4,10 +4,18 @@ All notable changes to this project are documented in this file.
 
 The format follows Keep a Changelog and this project uses Semantic Versioning.
 
-## [1.0.0] - 2026-05-07
+## [1.0.2] - 2026-05-07
 
 ### Added
-- Initial release of Modern Theme 2026 for HumHub 1.18+.
+- Development branch initialized for Stream UI and Messages UI issue fixes.
+
+### Changed
+- Pending targeted layout and interaction improvements for Stream UI.
+- Pending targeted layout and interaction improvements for Messages UI.
+
+## [1.0.1] - 2026-05-07
+
+### Added
 - Theme customization panel with preset palettes and configurable color tokens.
 - Mobile navigation enhancements and context-switcher refinements.
 - Mail interaction enhancements in `resources/js/mailLayout.js`, including desktop Enter-to-send and Ctrl/Cmd+Enter newline behavior.

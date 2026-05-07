@@ -10,6 +10,7 @@ Do you enjoy using HumHub but find the UI a little clunky? Tried the Clean Theme
 - Improved Typography with modern font scaling and readability
 - Smooth Animations and microinteractions throughout the interface
 - Enhanced Mobile Experience with touch-optimized interactions
+- Enhanced Mail UI on desktop and mobile (chat-style alignment, drawer behavior, Enter-to-send on desktop)
 - Full Dark Mode Support compatible with HumHub's dark-mode module
 - Emoji Reactions System with 6 reaction types (like, love, laugh, wow, sad, pray)
 - Better Administration Interface with improved spacing and layout
@@ -71,6 +72,21 @@ To update the theme to a newer version:
 3. The theme will rebuild automatically on next page load
 
 Note: Database migrations (if any) are applied automatically when you reload HumHub.
+
+## Recent Branch Changes (V2026.0.0)
+
+- Mail conversation UI refinements across desktop and mobile:
+   - own messages align right, other users align left
+   - improved bubble spacing and timestamp placement
+   - edit button placement next to the related message bubble
+   - desktop Enter sends message, Ctrl/Cmd+Enter inserts a newline
+   - improved auto-scroll behavior to newest messages
+- Legacy local infrastructure files removed from this branch:
+   - `docker-compose.yml`
+   - `caddy/Caddyfile`
+- Playwright helper scripts were streamlined. Current lightweight scripts in `tests/playwright/` are:
+   - `test_android_nav.js`
+   - `view_ui_mcp.js`
 
 ## Customization
 
@@ -152,8 +168,7 @@ The theme includes a dedicated admin panel for customization:
 - Automatically cleaned up if module is uninstalled
 
 ### Performance
-- Optimized CSS (550KB minified)
-- No additional JavaScript required for styling
+- Optimized compiled CSS and lightweight JavaScript modules for interactive behavior
 - Theme compiles on first page load if needed
 - Cached assets for optimal performance
 
@@ -171,7 +186,8 @@ The theme includes a dedicated admin panel for customization:
 - Ensure www-data user has proper file permissions
 
 ### Styles look broken or incomplete
-- Check that CSS file was compiled: `/var/www/humhub/assets/*/resources/css/theme.css`
+- Check that CSS file was compiled: `/var/www/humhub/protected/modules/modern-theme-2026/themes/ModernTheme2026/dist/theme.css`
+- Confirm published assets were refreshed under `/var/www/humhub/assets/*/theme.css`
 - Clear application cache and reload
 - Verify ModernTheme2026 is selected as active theme
 

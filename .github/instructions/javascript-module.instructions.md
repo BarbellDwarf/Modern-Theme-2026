@@ -33,6 +33,9 @@ public $js = [
     'js/notifications.js',
     'js/modalFocusFix.js',
     'js/mobileKeyboardFix.js',
+    'js/mobileSwipeFix.js',
+    'js/mailLayout.js',
+    'js/mobileCommentCompose.js',
 ];
 ```
 
@@ -257,6 +260,24 @@ const pickers = document.querySelectorAll('[data-mt2026-reaction-picker]');
 ### 2. contextSwitcher.js
 
 **Purpose**: Keyboard shortcut (Ctrl/Cmd+K) for space switching
+
+### 3. mailLayout.js
+
+**Purpose**: Mail conversation behavior tuning for desktop and mobile.
+
+**Current responsibilities**:
+- Mobile drawer/open-close behavior for conversation list
+- Conversation state detection (`mt2026-mail-has-conversation`)
+- Scroll-to-latest handling after async updates
+- Desktop composer keyboard behavior:
+    - Enter sends message
+    - Ctrl/Cmd+Enter inserts newline
+
+**Guardrails**:
+- Keep mobile and desktop logic separated via width checks
+- Prefer delegated events for elements replaced by PJAX/AJAX
+- When changing Enter-to-send behavior, ensure richtext content is synced before submit
+- Do not break HumHub mail defaults outside the mail page context
 
 **Features**:
 - Ctrl+K / Cmd+K opens context menu

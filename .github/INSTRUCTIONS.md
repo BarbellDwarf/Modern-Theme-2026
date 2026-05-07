@@ -39,7 +39,7 @@ modern-theme-2026/
 └── .github/instructions/
     ├── theme-scss.instructions.md               ← SCSS/Theme development
     ├── php-widgets-module.instructions.md       ← PHP widgets & components
-    ├── javascript-modules.instructions.md       ← JavaScript modules
+  ├── javescript-module.instructions.md        ← JavaScript modules
     └── module-lifecycle-installation.instructions.md ← Installation/uninstallation
 ```
 
@@ -106,7 +106,7 @@ modern-theme-2026/
 
 **Use when**: Creating/modifying widgets, event handlers, controllers, database migrations, module configuration.
 
-### javascript-modules.instructions.md
+### javescript-module.instructions.md
 
 **Auto-triggers**: When working on JavaScript files (`resources/js/**/*.js`)
 
@@ -121,6 +121,8 @@ modern-theme-2026/
   - peopleFocusGuard.js (accessibility focus trap)
   - modalFocusFix.js (modal focus management)
   - mobileKeyboardFix.js (iOS keyboard fixes)
+  - mailLayout.js (mail view behavior for mobile drawer and desktop composer keyboard behavior)
+  - mobileSwipeFix.js and mobileCommentCompose.js (mobile interaction refinements)
 - JavaScript best practices (event delegation, caching, error handling, accessibility)
 - Common patterns (debouncing, custom events, CSRF tokens)
 - Mobile detection
@@ -163,9 +165,9 @@ When an AI agent receives a task on this module:
 |------|----------------------|------------------------|
 | "Add a new color palette" | theme-scss.instructions.md | AGENTS.md |
 | "Create a new widget" | php-widgets-module.instructions.md | AGENTS.md |
-| "Fix mobile keyboard on iOS" | javascript-modules.instructions.md | theme-scss.instructions.md |
+| "Fix mobile keyboard on iOS" | javescript-module.instructions.md | theme-scss.instructions.md |
 | "Debug CSS not compiling" | module-lifecycle-installation.instructions.md | AGENTS.md |
-| "Add theme palette switching" | javascript-modules.instructions.md + theme-scss.instructions.md | AGENTS.md |
+| "Add theme palette switching" | javescript-module.instructions.md + theme-scss.instructions.md | AGENTS.md |
 | "Test clean installation" | module-lifecycle-installation.instructions.md | AGENTS.md |
 | "Fix widget permissions" | php-widgets-module.instructions.md | AGENTS.md |
 

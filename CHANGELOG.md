@@ -17,6 +17,8 @@ The format follows Keep a Changelog and this project uses Semantic Versioning.
   - own messages align right, other users align left
   - improved bubble spacing and timestamp placement
   - edit button placement refined to remain adjacent to its message
+  - fixed z-index clipping issues with compose overlay and message interactions
+  - refined spacing between messages and improved layout constraints
   - conversation auto-scroll behavior improved after updates and sends
 - Additional mobile UX and dropdown handling refinements.
 

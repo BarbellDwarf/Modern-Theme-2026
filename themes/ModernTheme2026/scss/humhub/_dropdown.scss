@@ -257,6 +257,33 @@
   z-index: $z-dropdown + 50 !important;
 }
 
+// ── MAIL COMPOSER DROPDOWNS ──────────────────────────────────────────────────────
+// Ensure mail composer dropdowns (upload, attachment menu) render above bottom nav
+// and aren't clipped by overflow-hidden containers
+.mt2026-mail-composer-dock,
+.mt2026-mail-composer-dock .mail-message-form,
+.mt2026-mail-composer-dock .richtext-create-buttons,
+.mt2026-mail-composer-dock .richtext-create-input-group,
+.mt2026-mail-composer-dock .btn-group,
+.mt2026-mail-composer-dock .dropdown {
+  overflow: visible !important;
+}
+
+// Mail composer attachment/upload buttons and menus
+.mt2026-mail-composer-dock .dropdown-menu,
+.mt2026-mail-composer-dock .btn-group > .dropdown-menu,
+.mail-message-form .dropdown-menu,
+.mail-message-form .btn-group > .dropdown-menu {
+  z-index: $z-mt2026-dropdown !important;
+  position: absolute !important;
+}
+
+// When mail composer menu is open, lift the composer above bottom nav and other content
+.mt2026-mail-composer-dock.show,
+.mt2026-mail-composer-dock .dropdown.show {
+  z-index: $z-mt2026-dropdown !important;
+}
+
 // Desktop stream card overlap: when composer menu is open, lift parent panel/layout too.
 .panel.mt2026-composer-panel-open,
 .layout-content-container.mt2026-composer-layout-open,

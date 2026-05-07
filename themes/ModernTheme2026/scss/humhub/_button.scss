@@ -77,6 +77,25 @@
   @include button-variant(var(--color-danger), darken($danger, 10%));
 }
 
+// Default button — Bootstrap 3 fallback; keep consistent with theme borders
+.btn-default {
+  background-color: var(--color-bg-primary, #ffffff);
+  border-color: var(--color-border, #e5e7eb);
+  color: var(--color-text-primary, #111827);
+
+  &:hover:not(:disabled):not(.disabled),
+  &:focus {
+    background-color: var(--color-bg-secondary, #f3f4f6);
+    border-color: var(--color-border-dark, #d1d5db);
+    color: var(--color-text-primary, #111827);
+  }
+
+  &:active:not(:disabled):not(.disabled) {
+    background-color: var(--color-bg-tertiary, #e5e7eb);
+    border-color: var(--color-border-dark, #d1d5db);
+  }
+}
+
 // Outline buttons
 .btn-outline-primary {
   @include button-base;

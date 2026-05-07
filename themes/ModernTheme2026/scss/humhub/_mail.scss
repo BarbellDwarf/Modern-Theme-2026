@@ -95,9 +95,12 @@ body.mt2026-mail-page .mobile-bottom-nav {
   z-index: 1035;
 }
 
-// Standardize body padding on mobile to match desktop (64px for consistent spacing)
-body.mt2026-mail-page {
-  padding-bottom: 64px !important;
+// On mobile, include safe-area so transparent OS navigation regions do not overlap mail UI.
+// But NOT on fullscreen mail view to prevent overall page scrolling
+@media (max-width: 991px) {
+  body.mt2026-mail-page:not(.mt2026-mail-fullscreen) {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0)) !important;
+  }
 }
 
 .mt2026-mail-fullscreen .mt2026-mail-index {
@@ -202,7 +205,7 @@ body.mt2026-mail-page #layout-content {
   height: 100% !important;
   display: flex;
   flex-direction: column;
-  overflow: hidden !important;
+  overflow: visible !important; // visible to prevent clipping of composer buttons/dropdowns
   border-radius: 0 !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -315,12 +318,16 @@ body.mail-list-open {
 body.mail-list-open::before {
   content: '';
   position: fixed;
-  inset: 0;
+  top: max(56px, var(--hh-fixed-header-height, 60px));
+  right: 0;
+  bottom: calc(56px + env(safe-area-inset-bottom, 0));
+  left: 0;
   background: rgba(0, 0, 0, 0.45);
-  z-index: 1089;
+  z-index: 1039; /* Below Bootstrap modal backdrop (1040) so compose modals appear above */
+  pointer-events: auto !important; /* Accept clicks to close drawer */
 }
 
-// Sidebar panel heading
+// Sidebar panel heading - enhanced for drawer mode
 #mail-conversation-overview .panel-heading {
   position: sticky;
   top: 0;
@@ -329,6 +336,7 @@ body.mail-list-open::before {
   min-height: 36px;
   display: flex;
   align-items: center;
+  justify-content: space-between !important;
   flex: 0 0 auto;
   border-bottom: 1px solid var(--color-border-light, rgba(0, 0, 0, 0.08));
   background: var(--color-bg-secondary, #f9fafb);
@@ -341,13 +349,29 @@ body.mail-list-open::before {
   color: var(--color-text-primary, #111827);
   text-decoration: none;
   font-weight: 600;
+  flex: 1;
 }
 
-#mail-conversation-overview .panel-heading > a::before {
-  content: '\f0c9';
-  font-family: FontAwesome;
-  font-size: 14px;
-  opacity: 0.9;
+// Add drawer close button indicator
+@media (max-width: 991px) {
+  body.mt2026-mail-page.mt2026-mail-has-conversation.mail-list-open #mail-conversation-overview .panel-heading::after {
+    content: '✕';
+    font-size: 20px;
+    line-height: 1;
+    color: var(--color-text-secondary, #6b7280);
+    cursor: pointer;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+
+  body.mt2026-mail-page.mt2026-mail-has-conversation.mail-list-open #mail-conversation-overview .panel-heading::after:hover {
+    opacity: 1;
+  }
 }
 
 // ── MAIL HEADER ──────────────────────────────────────────────────────────────
@@ -440,6 +464,14 @@ body.mail-list-open::before {
     border-color: var(--color-primary, #1e6ad6);
   }
   
+  .mt2026-mail-topbar-toggle-icon {
+    display: inline-block;
+    font-size: 18px;
+    line-height: 1;
+    font-weight: 700;
+    color: currentColor;
+  }
+
   i {
     margin-right: 0;
   }
@@ -759,44 +791,118 @@ body.mail-list-open::before {
 }
 
 // ── COMPOSER DOCK ────────────────────────────────────────────────────────────
+// Ensure composer dock stays above all other elements and maintains proper layout
 .mt2026-mail-composer-dock {
   flex: 0 0 auto !important;
-  z-index: 3;
-  position: relative;
+  z-index: 1050 !important;
+  position: relative !important;
   background: color-mix(in srgb, var(--color-bg-primary) 94%, var(--color-primary) 6%);
   border-top: 1px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border, #e5e7eb));
   padding-bottom: calc(6px + env(safe-area-inset-bottom, 0));
+  width: 100% !important;
+  max-width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
+// Ensure message form maintains proper layout with buttons correctly positioned
 .mail-message-form {
-  flex: 0 0 auto;
-  margin-top: 0;
+  flex: 0 0 auto !important;
+  margin-top: 0 !important;
   margin-bottom: 0 !important;
-  position: relative;
-  z-index: 3;
-  padding: 8px;
-  background: transparent;
-  border-top: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  width: 100% !important;
-}
-
-.mail-message-form .panel-body {
-  flex: 1 !important;
-  width: 100% !important;
+  position: relative !important;
+  z-index: 1050 !important;
+  padding: 8px !important;
+  background: transparent !important;
+  border-top: 0 !important;
   display: flex !important;
   flex-direction: column !important;
   gap: 6px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: visible !important;
 }
 
+// Fix panel-body within composer to properly contain children
+.mail-message-form .panel-body {
+  flex: 0 0 auto !important;
+  width: 100% !important;
+  display: block !important;
+  flex-shrink: 0 !important;
+  padding: 8px !important;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, var(--color-border, #e5e7eb));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-bg-primary) 96%, var(--color-primary) 4%);
+  overflow: visible !important;
+}
+
+// The form wraps input + buttons; keep it full-width.
+.mail-message-form form {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+// Keep message input and action buttons aligned in one row.
+.mail-message-form .richtext-create-input-group {
+  display: flex !important;
+  align-items: flex-end !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.mail-message-form .richtext-create-input-group > .field-replyform-message {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  width: auto !important;
+}
+
+// Normalize composer children in case HumHub core applies absolute/floats.
+.mail-message-form .richtext-create-input-group > .field-replyform-message,
+.mail-message-form .richtext-create-input-group > .richtext-create-buttons {
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+}
+
+.mail-message-form .richtext-create-input-group .field-replyform-message,
+.mail-message-form .richtext-create-input-group .mb-3 {
+  margin-bottom: 0 !important;
+}
+
+// Rich text editor container - ensure it doesn't clip
 .mail-message-form .humhub-ui-richtext {
-  border: 1px solid color-mix(in srgb, var(--color-primary) 16%, var(--color-border, #e5e7eb));
+  border: 0 !important;
   border-radius: 14px;
   background: var(--color-bg-primary, #ffffff);
   min-height: 40px;
   width: 100% !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+}
+
+.mail-message-form .richtext-create-input-group > .field-replyform-message,
+.mail-message-form .richtext-create-input-group > .field-replyform-message > .ProsemirrorEditor,
+.mail-message-form .richtext-create-input-group > .field-replyform-message > .ProsemirrorEditor .ProseMirror-menubar-wrapper,
+.mail-message-form .richtext-create-input-group > .field-replyform-message > .ProsemirrorEditor .ProseMirror {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+// Desktop chat-app compose behavior: compact input row with right-aligned actions.
+@media (min-width: 992px) {
+  .mail-message-form .richtext-create-input-group > .field-replyform-message > .ProsemirrorEditor .ProseMirror {
+    min-height: 42px !important;
+    max-height: 140px !important;
+    overflow-y: auto !important;
+    padding: 10px 12px !important;
+  }
+
+  .mail-message-form .richtext-create-input-group > .field-replyform-message > .ProsemirrorEditor .ProseMirror p {
+    margin: 0 !important;
+  }
 }
 
 // Hide ProseMirror menubar
@@ -823,30 +929,55 @@ body.mail-list-open::before {
 }
 
 // Ensure all buttons in the mail module meet WCAG 2.1 AA touch target requirement
+// and are properly positioned without clipping
 .mail-message-form button,
 .mail-message-form [type="submit"],
 .mail-message-form [type="button"],
 .mail-message-form .btn,
-.richtext-create-buttons button,
-.richtext-create-buttons [type="submit"],
-.richtext-create-buttons .btn {
-  min-height: 36px !important;
-  padding: 6px 12px !important;
-  font-size: 13px !important;
+.mail-message-form .richtext-create-buttons button,
+.mail-message-form .richtext-create-buttons [type="submit"],
+.mail-message-form .richtext-create-buttons .btn {
+  min-height: 44px !important;
+  min-width: 44px !important;
+  padding: 8px 14px !important;
+  font-size: 14px !important;
   white-space: nowrap;
-  flex: 0 0 auto;
+  flex: 0 0 auto !important;
   margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px;
+  position: relative !important;
+  z-index: 1060 !important;
+  overflow: visible !important;
 }
 
-// Fix button group layout to prevent overlap
-.richtext-create-buttons {
+// Fix button group layout to prevent overlap and ensure single row on mobile
+// Use flexbox with proper wrapping and overflow handling
+.mail-message-form .richtext-create-buttons {
   display: flex !important;
-  flex-wrap: wrap;
+  flex-wrap: nowrap !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start;
   gap: 4px;
-  margin: 0 !important;
+  margin: 0 0 0 8px !important;
   padding: 0 !important;
-  width: 100% !important;
-  flex: 1 1 auto !important;
+  width: auto !important;
+  flex: 0 0 auto !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  flex-shrink: 0 !important;
+  position: relative !important;
+  z-index: 1055 !important;
+}
+
+// Override global button group gap from _button.scss inside mail composer controls.
+.mail-message-form .richtext-create-buttons .btn-group {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  gap: 0 !important;
 }
 
 // ── MOBILE FULLSCREEN (<992px) ───────────────────────────────────────────────
@@ -875,6 +1006,11 @@ body.mail-list-open::before {
     overflow-y: auto !important;
   }
 
+  // Chat-app pattern: when no conversation is selected, show only the list screen.
+  body.mt2026-mail-page:not(.mt2026-mail-has-conversation) #mail-conversation-root {
+    display: none !important;
+  }
+
   // When a conversation is active: slide overview off-screen as a drawer
   body.mt2026-mail-page.mt2026-mail-has-conversation #mail-conversation-overview {
     position: fixed !important;
@@ -891,6 +1027,24 @@ body.mail-list-open::before {
     box-shadow: var(--shadow-lg, 0 10px 15px rgba(0, 0, 0, 0.1)) !important;
     border-left: 0 !important;
     overflow-y: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    pointer-events: all !important;
+  }
+
+  // Ensure chat items are clickable in drawer
+  body.mt2026-mail-page.mt2026-mail-has-conversation #mail-conversation-overview .messagePreviewEntry {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+  }
+
+  // Chat-app pattern: with an active conversation, default to chat screen only.
+  body.mt2026-mail-page.mt2026-mail-has-conversation:not(.mail-list-open) #mail-conversation-overview {
+    display: none !important;
+  }
+
+  body.mt2026-mail-page.mt2026-mail-has-conversation #mail-conversation-root {
+    display: block !important;
   }
 
   // Show drawer when explicitly toggled
@@ -898,8 +1052,22 @@ body.mail-list-open::before {
     transform: translateX(0) !important;
   }
 
-  // Inbox list fills the available height in the in-flow state
-  body.mt2026-mail-page:not(.mt2026-mail-has-conversation) #inbox {
+  // Only dim the conversation area to the right; keep drawer content fully visible.
+  body.mt2026-mail-page.mt2026-mail-has-conversation.mail-list-open::before {
+    left: min(420px, 88vw) !important;
+  }
+
+  // HumHub marks inbox wrapper as d-none on mobile; force drawer list visible.
+  #mail-conversation-overview > .inbox-wrapper.d-none {
+    display: block !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+  }
+
+  // Inbox list fills the available height in the in-flow state or drawer
+  body.mt2026-mail-page:not(.mt2026-mail-has-conversation) #inbox,
+  body.mt2026-mail-page.mt2026-mail-has-conversation.mail-list-open #inbox {
     max-height: none !important;
     flex: 1 !important;
     overflow-y: auto !important;
@@ -908,6 +1076,19 @@ body.mail-list-open::before {
   // Conversation root fills viewport when active
   body.mt2026-mail-page.mt2026-mail-has-conversation #mail-conversation-root {
     min-height: calc(100dvh - 64px) !important;
+  }
+
+  // Ensure inbox container inside drawer is properly sized for scrolling
+  body.mt2026-mail-page.mt2026-mail-has-conversation.mail-list-open .mail-inbox-messages {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  body.mt2026-mail-page.mt2026-mail-has-conversation.mail-list-open #inbox {
+    display: flex !important;
+    flex-direction: column !important;
   }
 
   // Shell positioning for mobile
@@ -945,6 +1126,51 @@ body.mail-list-open::before {
     border: none;
     font-size: 18px;
     padding: 0;
+    color: var(--color-text-primary, #111827);
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 3;
+    margin-right: 2px !important;
+    pointer-events: auto !important;
+  }
+
+  // Keep header controls compact on mobile: hamburger + chevron grouped on the left.
+  #mail-conversation-header {
+    justify-content: flex-start !important;
+    gap: 4px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  #mail-conversation-header .float-end {
+    float: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex: 0 0 auto !important;
+  }
+
+  #mail-conversation-header .float-end .fa-chevron-down,
+  #mail-conversation-header .float-end [data-bs-toggle="dropdown"] {
+    margin: 0 !important;
+    padding: 6px !important;
+    font-size: 16px !important;
+    cursor: pointer;
+  }
+
+  #mail-conversation-header h1 {
+    margin: 0 0 0 6px !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    font-size: 15px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #mail-conversation-header small {
+    display: none !important;
   }
   
   // Show mobile settings button
@@ -961,12 +1187,14 @@ body.mail-list-open::before {
     min-height: 0 !important;
   }
 
-  // Sticky composer above bottom nav
+  // Sticky composer above bottom nav - use fixed on mobile for reliable positioning
   .mt2026-mail-fullscreen #mail-conversation-root .mt2026-mail-composer-dock {
     flex: 0 0 auto;
-    position: sticky !important;
+    position: fixed !important;
     bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
-    z-index: 6;
+    left: 0;
+    right: 0;
+    z-index: 1010;
   }
 
   .mt2026-mail-fullscreen #mail-conversation-root .mt2026-mail-composer-dock .mail-message-form {
@@ -982,20 +1210,112 @@ body.mail-list-open::before {
     padding-bottom: calc(92px + env(safe-area-inset-bottom, 0)) !important;
   }
 
-  // Natural page scrolling on mobile
+  // Lock page scrolling on mobile - only chat stream should scroll, not whole page
   body.device-mobile.mt2026-mail-fullscreen,
-  body.device-mobile-app.mt2026-mail-fullscreen,
+  body.device-mobile-app.mt2026-mail-fullscreen {
+    overflow: hidden !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    position: fixed !important;
+    width: 100% !important;
+  }
+
   body.device-mobile.mt2026-mail-fullscreen #layout-content,
   body.device-mobile-app.mt2026-mail-fullscreen #layout-content,
   body.device-mobile.mt2026-mail-fullscreen .layout-content-container,
   body.device-mobile-app.mt2026-mail-fullscreen .layout-content-container {
-    overflow: visible !important;
+    overflow: hidden !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  // Mail conversation root must not exceed viewport on mobile
+  .mt2026-mail-fullscreen #mail-conversation-root {
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  // Conversation shell must fill available space
+  .mt2026-mail-fullscreen .mt2026-mail-shell {
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+    flex: 1 1 auto !important;
+  }
+
+  // Message container takes remaining space and scrolls internally
+  .mt2026-mail-fullscreen .mt2026-mail-shell > .conversation-entry-container,
+  .mt2026-mail-fullscreen .mt2026-mail-shell .panel-body.conversation-entry-container {
+    flex: 1 1 auto !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  // Message list scrolls within container only
+  .mt2026-mail-fullscreen .conversation-entry-list {
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    flex: 1 1 auto !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
   }
 
   // Message bubble sizing on mobile
   .mail-conversation-entry .conversation-entry-content {
     max-width: 82%;
     font-size: 14px;
+  }
+
+  // Mobile composer dock - ensure proper spacing and button layout with no clipping
+  .mt2026-mail-fullscreen #mail-conversation-root .mt2026-mail-composer-dock {
+    padding: 8px 10px !important;
+    overflow: visible !important;
+  }
+
+  // Mobile buttons - compact but touch-friendly with proper positioning
+  .mt2026-mail-fullscreen .mail-message-form .richtext-create-input-group {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 6px !important;
+  }
+
+  .mt2026-mail-fullscreen .mail-message-form .richtext-create-input-group > .richtext-create-buttons {
+    order: 1;
+    align-self: flex-end;
+    margin: 0 0 4px 0 !important;
+    width: auto !important;
+    overflow-x: visible !important;
+  }
+
+  .mt2026-mail-fullscreen .mail-message-form .richtext-create-input-group > .field-replyform-message {
+    order: 2;
+    width: 100% !important;
+  }
+
+  .mt2026-mail-fullscreen .mail-message-form .richtext-create-buttons {
+    gap: 4px;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+  }
+
+  .mt2026-mail-fullscreen .mail-message-form button,
+  .mt2026-mail-fullscreen .mail-message-form .btn {
+    min-height: 40px !important;
+    min-width: 40px !important;
+    padding: 6px 10px !important;
+    font-size: 13px !important;
+    position: relative !important;
+    z-index: 1060 !important;
   }
 }
 
@@ -1234,5 +1554,47 @@ body.mail-list-open::before {
   .unread-count-badge {
     transition: none;
     animation: none;
+  }
+}
+
+// ── COMPOSER BUTTONS CLIPPING FIX ─────────────────────────────────────────────
+// Additional rules to prevent composer buttons from being clipped
+// when dropdowns/popovers open within the composer dock.
+
+// Ensure the composer dock and its children never clip overflowing content
+.mt2026-mail-composer-dock,
+.mt2026-mail-composer-dock *,
+.mail-message-form,
+.mail-message-form * {
+  overflow: visible !important;
+}
+
+// Ensure button containers don't clip their children
+.mail-message-form .richtext-create-buttons,
+.mail-message-form .richtext-create-input-group,
+.mail-message-form .panel-body {
+  overflow: visible !important;
+  position: relative !important;
+}
+
+// Make sure file dropdown menus open above other content
+.mail-message-form .file-dropzone-menu,
+.mail-message-form .dropdown-menu {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+// On mobile, ensure the composer dock has proper z-index stacking
+@media (max-width: 991px) {
+  .mt2026-mail-composer-dock {
+    z-index: 1010 !important;
+    position: relative !important;
+  }
+  
+  // Prevent any parent from clipping the composer buttons
+  .mt2026-mail-composer-dock,
+  #mail-conversation-root,
+  .mt2026-mail-shell {
+    overflow: visible !important;
   }
 }

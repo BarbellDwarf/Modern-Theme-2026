@@ -9,16 +9,15 @@
     @media (max-width: 991px) {
         display: flex !important;
         position: fixed;
-        bottom: 0;
+        bottom: env(safe-area-inset-bottom, 0);
         left: 0;
         right: 0;
         height: 56px;
         background-color: var(--color-bg-secondary, #f8fafc);
         border-top: 1px solid var(--color-border, #e5e7eb);
         box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
-        z-index: 1030;
+        z-index: $z-mt2026-mobile-nav;
         padding: 0;
-        padding-bottom: env(safe-area-inset-bottom, 0); // iPhone notch
         align-items: stretch;
         justify-content: space-around;
         overflow: hidden; // clip all children to bar bounds
@@ -146,7 +145,20 @@
 // Add bottom padding to body to prevent content from being hidden by bottom nav
 @media (max-width: 991px) {
     body {
-        padding-bottom: calc(56px + env(safe-area-inset-bottom, 0));
+        padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
+        
+        // Fill the safe-area space (behind OS nav buttons) with solid background
+        &::after {
+            content: '';
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: env(safe-area-inset-bottom, 0);
+            background-color: var(--color-bg-primary, #ffffff);
+            z-index: -1;
+            pointer-events: none;
+        }
     }
 
     // Adjust main content area
@@ -179,6 +191,13 @@
             }
         }
     }
+    
+    // Fill safe-area with dark mode background
+    @media (max-width: 991px) {
+        body::after {
+            background-color: var(--color-bg-primary, #1a202c);
+        }
+    }
 }
 
 // Animation when bottom nav appears
@@ -208,13 +227,6 @@
     }
 }
 
-// Adjust body padding for fixed bottom nav
-@media (max-width: 991px) {
-    body {
-        padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
-    }
-}
-
 // Force show only on true mobile widths (fallback for apps that don't respect media queries)
 @media (max-width: 991px) {
     body.mobile .mobile-bottom-nav,
@@ -222,12 +234,12 @@
     .mobile-app .mobile-bottom-nav {
         display: flex !important;
         position: fixed;
-        bottom: 0;
+        bottom: env(safe-area-inset-bottom, 0);
         left: 0;
         right: 0;
         height: 56px;
         overflow: hidden;
-        z-index: 1030;
+        z-index: $z-mt2026-mobile-nav;
     }
 
     // Also adjust body padding if mobile class is present
@@ -239,7 +251,30 @@
 }
 
 .modal {
-    z-index: 1050; // Modals should appear above bottom nav
+    z-index: $z-mt2026-modal; // Modals should appear above bottom nav and composer
+}
+
+// ─── MOBILE NAV POSITIONING ACROSS ALL PAGE TYPES ────────────────────────────────
+// Standardize body padding on mobile for all page types to ensure consistent spacing
+// between content and the fixed bottom navigation bar. This section ensures that
+// regardless of page type, content won't be hidden behind the bottom nav.
+
+@media (max-width: 991px) {
+    // Ensure main content containers have appropriate bottom margin
+    #layout-content,
+    .layout-content-container,
+    .space-layout-container,
+    .space-content,
+    .container-fluid {
+        margin-bottom: 0 !important; // Let body padding handle the spacing
+    }
+
+    // Stream containers - add extra buffer to prevent hiding comments
+    .s2_streamContent,
+    .stream-wrapper,
+    .wall-stream {
+        padding-bottom: var(--space-4); // Extra buffer inside container
+    }
 }
 
 // ─── Mobile Bottom Sheet ────────────
@@ -248,7 +283,7 @@
     display: none;
     position: fixed;
     inset: 0;
-    z-index: 1100;
+    z-index: $z-mt2026-keyboard-overlay;
 
     &.open {
         display: block;

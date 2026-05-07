@@ -724,3 +724,69 @@ body.mt2026-keyboard-open {
         margin-right: 0 !important;
     }
 }
+
+// ── MOBILE DROPDOWN ADJUSTMENTS ───────────────────────────────────────────────
+// Ensure dropdowns don't clip or overflow incorrectly on mobile devices
+@media (max-width: 991px) {
+    // Dropdowns should position themselves relative to viewport or nearest overflow:visible ancestor
+    .dropdown-menu {
+        position: absolute !important;
+        max-width: calc(100vw - 16px) !important; // Account for device margins
+    }
+
+    // On very small screens (<380px), flip dropdown direction if it would go off-screen
+    @media (max-width: 380px) {
+        .dropdown-menu {
+            max-width: calc(100vw - 8px) !important;
+        }
+
+        // Check if dropdown needs to flip up
+        body .btn-group[role="group"] .dropdown-menu,
+        body .nav-item.dropdown .dropdown-menu {
+            // Default: dropdown below button
+            top: 100% !important;
+            bottom: auto !important;
+
+            // But allow it to flip if needed (JS or browser handling)
+            &[data-placement="top"] {
+                top: auto !important;
+                bottom: 100% !important;
+            }
+        }
+    }
+
+    // Mail composer attachment preview - ensure it doesn't clip
+    .mail-message-form .file-upload-preview,
+    .mail-message-form .humhub-ui-richtext-editor-insertFiles-preview {
+        max-height: 200px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    // Comment dropdown menus
+    .comment-controls .dropdown-menu {
+        max-width: calc(100vw - 16px) !important;
+    }
+
+    // Stream entry controls dropdown
+    .wall-entry-controls .dropdown-menu,
+    .stream-entry-controls .dropdown-menu {
+        max-width: calc(100vw - 16px) !important;
+    }
+
+    // Ensure form dropdowns (select, date pickers, etc.) don't overflow
+    .form-group .dropdown-menu,
+    .form-control ~ .dropdown-menu {
+        max-width: calc(100vw - 16px) !important;
+    }
+
+    // Keyboard handling: hide dropdowns when virtual keyboard is open
+    body.mt2026-keyboard-open .dropdown-menu {
+        display: none !important;
+    }
+
+    // On keyboard-open state, hide composer dropdown menus
+    body.mt2026-keyboard-open .mail-message-form .dropdown-menu {
+        display: none !important;
+    }
+}

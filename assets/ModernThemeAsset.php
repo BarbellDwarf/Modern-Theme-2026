@@ -24,6 +24,7 @@ class ModernThemeAsset extends AssetBundle
         'js/mobileKeyboardFix.js',
         'js/mobileSwipeFix.js',
         'js/mailLayout.js',
+        'js/mobileCommentCompose.js',
     ];
 
     public $depends = [

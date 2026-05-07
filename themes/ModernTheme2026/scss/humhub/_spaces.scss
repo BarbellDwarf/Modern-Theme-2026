@@ -118,6 +118,16 @@
             flex: 1 1 auto;
             min-width: 0;
             max-width: calc(100% - 240px);
+
+            // Keep inner stream/sidebar columns on one row.
+            // _base.scss sets a global fixed width on #layout-sidebar-right at
+            // very large breakpoints; inside space/profile content this can
+            // force the right column (Upcoming Events) to wrap below stream.
+            #layout-sidebar-right,
+            #layout-sidebar-left {
+                width: auto;
+                max-width: 100%;
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ The format follows Keep a Changelog and this project uses Semantic Versioning.
 - Development branch initialized for Stream UI and Messages UI issue fixes.
 
 ### Changed
-- Pending targeted layout and interaction improvements for Stream UI.
+- Space Stream desktop layout fix: keep Upcoming Events in the right sidebar instead of wrapping below the stream.
 - Pending targeted layout and interaction improvements for Messages UI.
 
 ## [1.0.1] - 2026-05-07

@@ -132,10 +132,11 @@
       }
 
       > label {
-        display: flex;
+        display: inline-flex;
         align-items: flex-start;
         gap: var(--space-2);
-        width: 100%;
+        width: auto;
+        max-width: 100%;
         min-height: 0;
         margin: 0;
         cursor: pointer;
@@ -146,14 +147,23 @@
       }
 
       > label > input[type="checkbox"] {
-        flex: 0 0 18px;
-        float: none;
-        position: static;
-        width: 18px;
-        min-width: 18px;
-        max-width: 18px;
-        height: 18px;
-        margin: 0.15rem 0 0;
+        flex: 0 0 16px !important;
+        float: none !important;
+        position: static !important;
+        display: inline-block !important;
+        width: 16px !important;
+        min-width: 16px !important;
+        max-width: 16px !important;
+        height: 16px !important;
+        min-height: 16px !important;
+        max-height: 16px !important;
+        padding: 0 !important;
+        margin: 0.2rem 0 0 !important;
+        box-shadow: none !important;
+        border-radius: 3px !important;
+        background: transparent !important;
+        -webkit-appearance: checkbox !important;
+        appearance: auto !important;
       }
 
       > label > br {
@@ -165,6 +175,41 @@
         margin: var(--space-1) 0 0 calc(18px + var(--space-2));
         line-height: 1.45;
       }
+    }
+
+    .form-check {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+      min-height: 0;
+      margin: 0;
+      padding-left: 0;
+    }
+
+    .form-check .form-check-input {
+      float: none !important;
+      flex: 0 0 16px !important;
+      width: 16px !important;
+      min-width: 16px !important;
+      max-width: 16px !important;
+      height: 16px !important;
+      min-height: 16px !important;
+      max-height: 16px !important;
+      margin: 0.2rem 0 0 !important;
+      padding: 0 !important;
+      box-shadow: none !important;
+      border-radius: 3px !important;
+      background: transparent !important;
+      background-image: none !important;
+      -webkit-appearance: checkbox !important;
+      appearance: auto !important;
+    }
+
+    .form-check .form-check-label {
+      margin: 0;
+      line-height: 1.45;
+      color: var(--color-text-primary);
+      font-weight: $font-weight-medium;
     }
   }
 

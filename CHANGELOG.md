@@ -11,6 +11,7 @@ The format follows Keep a Changelog and this project uses Semantic Versioning.
 
 ### Changed
 - Space Stream desktop layout fixes: keep Upcoming Events in the right sidebar and correct three-column width allocation so the right rail does not wrap below the stream.
+- Calendar event modal fixes: normalize checkbox/toggle field layout to prevent stretched controls and simplify the dark-mode form chrome.
 - Pending targeted layout and interaction improvements for Messages UI.
 
 ## [1.0.1] - 2026-05-07

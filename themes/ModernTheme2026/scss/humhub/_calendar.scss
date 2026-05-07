@@ -131,7 +131,7 @@
         display: none;
       }
 
-      .form-check {
+      > label {
         display: grid;
         grid-template-columns: 18px minmax(0, 1fr);
         align-items: start;
@@ -140,25 +140,25 @@
         width: 100%;
         min-height: 0;
         margin: 0;
-        padding-left: 0;
+        cursor: pointer;
+        font-weight: $font-weight-medium;
+        color: var(--color-text-primary);
+        line-height: 1.45;
       }
 
-      .form-check-input {
+      > label > input[type="checkbox"] {
         grid-column: 1;
         float: none;
         position: static;
         width: 18px;
         min-width: 18px;
+        max-width: 18px;
         height: 18px;
         margin: 0.15rem 0 0;
       }
 
-      .form-check-label {
-        grid-column: 2;
-        margin: 0;
-        line-height: 1.45;
-        color: var(--color-text-primary);
-        font-weight: $font-weight-medium;
+      > label > br {
+        display: none;
       }
 
       > .text-body-secondary,
@@ -229,7 +229,7 @@
     .field-calendarentryform-is_public,
     .field-calendarentryform-sendupdatenotification {
       .checkbox {
-        .form-check-label {
+        > label {
           color: var(--color-text-secondary);
         }
 

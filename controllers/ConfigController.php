@@ -7,20 +7,66 @@
 namespace humhub\modules\modernTheme2026\controllers;
 
 use humhub\modules\admin\components\Controller;
-use humhub\helpers\ThemeHelper;
+use humhub\modules\modernTheme2026\Module;
 use Yii;
 
 class ConfigController extends Controller
 {
+    private const DEFAULT_MOBILE_NAV_LABELS = [
+        'home' => 'Home',
+        'spaces' => 'Spaces',
+        'people' => 'People',
+        'notifications' => 'Notifications',
+        'more' => 'More',
+    ];
+
+    /**
+     * Returns the configured "People" nav label, falling back to "People".
+     */
+    public static function getPeopleNavLabel(): string
+    {
+        $label = Yii::$app->settings->get('peopleNavLabel');
+        return ($label !== null && trim($label) !== '') ? trim($label) : 'People';
+    }
+
     public function actionIndex()
     {
+        $settings = Yii::$app->settings;
+
         if (Yii::$app->request->isPost) {
+            if (Yii::$app->request->post('mobileNavSettingsSubmit') !== null) {
+                $labels = self::DEFAULT_MOBILE_NAV_LABELS;
+                foreach (array_keys($labels) as $key) {
+                    $value = Yii::$app->request->post('mobileNavLabel_' . $key);
+                    if ($value !== null && trim($value) !== '') {
+                        $labels[$key] = trim($value);
+                    }
+                }
+
+                $settings->set('peopleNavLabel', $labels['people']);
+                $settings->set('mobileNavLabels', json_encode($labels));
+                $settings->set('mobileMoreAutoModules', Yii::$app->request->post('mobileMoreAutoModules') ? 1 : 0);
+                $settings->set('mobileMoreHiddenModuleIds', trim((string)Yii::$app->request->post('mobileMoreHiddenModuleIds', '')));
+
+                Yii::$app->cache->flush();
+                $this->view->saved();
+                return $this->redirect(['/modern-theme-2026/config']);
+            }
+
+            // Save the People nav label if submitted
+            $peopleLabel = Yii::$app->request->post('peopleNavLabel');
+            if ($peopleLabel !== null) {
+                $settings->set('peopleNavLabel', trim($peopleLabel));
+                Yii::$app->cache->flush();
+                $this->view->saved();
+                return $this->redirect(['/modern-theme-2026/config']);
+            }
+
             $palette = Yii::$app->request->post('palette');
             $palettes = self::getPalettes();
 
             if ($palette && isset($palettes[$palette])) {
                 $colors = $palettes[$palette]['colors'];
-                $settings = Yii::$app->settings;
 
                 // Map color keys to their HumHub settings names
                 $colorKeys = [
@@ -42,11 +88,7 @@ class ConfigController extends Controller
                     }
                 }
 
-                try {
-                    ThemeHelper::buildCss();
-                } catch (\Exception $e) {
-                    Yii::error('Could not rebuild CSS: ' . $e->getMessage(), 'modern-theme-2026');
-                }
+                Module::rebuildThemeCss();
 
                 Yii::$app->cache->flush();
 
@@ -56,9 +98,20 @@ class ConfigController extends Controller
         }
 
         return $this->render('index', [
-            'palettes'      => self::getPalettes(),
-            'currentColors' => self::getCurrentColors(),
+            'palettes'        => self::getPalettes(),
+            'currentColors'   => self::getCurrentColors(),
+            'peopleNavLabel'  => self::getPeopleNavLabel(),
+            'mobileNavLabels' => self::getMobileNavLabels(),
+            'mobileMoreAutoModules' => self::isMobileMoreAutoModulesEnabled(),
+            'mobileMoreHiddenModuleIds' => self::getMobileMoreHiddenModuleIdsRaw(),
         ]);
+    }
+
+    public function actionRebuildCss()
+    {
+        $ok = Module::rebuildThemeCss();
+        Yii::$app->cache->flush();
+        return $ok ? 'ok' : 'error: css rebuild failed';
     }
 
     public static function getPalettes(): array
@@ -72,6 +125,10 @@ class ConfigController extends Controller
             'rose-pink'     => ['label' => 'Rose Pink',     'colors' => ['primary' => '#db2777', 'accent' => '#f472b6', 'secondary' => '#ec4899', 'success' => '#16a34a', 'danger' => '#dc2626', 'warning' => '#d97706', 'info' => '#0284c7', 'light' => '#fdf2f8', 'dark' => '#500724']],
             'teal-cyan'     => ['label' => 'Teal Cyan',     'colors' => ['primary' => '#0891b2', 'accent' => '#22d3ee', 'secondary' => '#0e7490', 'success' => '#059669', 'danger' => '#dc2626', 'warning' => '#d97706', 'info' => '#06b6d4', 'light' => '#ecfeff', 'dark' => '#164e63']],
             'midnight-dark' => ['label' => 'Midnight Dark', 'colors' => ['primary' => '#6366f1', 'accent' => '#818cf8', 'secondary' => '#4f46e5', 'success' => '#10b981', 'danger' => '#f43f5e', 'warning' => '#fbbf24', 'info' => '#38bdf8', 'light' => '#1e1b4b', 'dark' => '#0f0a1e']],
+            'warm-amber'    => ['label' => 'Warm Amber',    'colors' => ['primary' => '#d97706', 'accent' => '#fbbf24', 'secondary' => '#b45309', 'success' => '#16a34a', 'danger' => '#dc2626', 'warning' => '#ca8a04', 'info' => '#0284c7', 'light' => '#fffbeb', 'dark' => '#451a03']],
+            'cobalt-navy'   => ['label' => 'Cobalt Navy',   'colors' => ['primary' => '#1d4ed8', 'accent' => '#3b82f6', 'secondary' => '#1e40af', 'success' => '#16a34a', 'danger' => '#dc2626', 'warning' => '#d97706', 'info' => '#2563eb', 'light' => '#eff6ff', 'dark' => '#1e3a5f']],
+            'ruby-red'      => ['label' => 'Ruby Red',      'colors' => ['primary' => '#b91c1c', 'accent' => '#ef4444', 'secondary' => '#991b1b', 'success' => '#16a34a', 'danger' => '#7f1d1d', 'warning' => '#d97706', 'info' => '#0284c7', 'light' => '#fff5f5', 'dark' => '#450a0a']],
+            'lavender'      => ['label' => 'Soft Lavender', 'colors' => ['primary' => '#8b5cf6', 'accent' => '#c4b5fd', 'secondary' => '#a78bfa', 'success' => '#16a34a', 'danger' => '#dc2626', 'warning' => '#d97706', 'info' => '#6d28d9', 'light' => '#f5f3ff', 'dark' => '#2e1065']],
         ];
     }
 
@@ -85,5 +142,49 @@ class ConfigController extends Controller
             'success'   => $settings->get('themeSuccessColor') ?: '#10b981',
             'danger'    => $settings->get('themeDangerColor') ?: '#ef4444',
         ];
+    }
+
+    public static function getMobileNavLabels(): array
+    {
+        $raw = Yii::$app->settings->get('mobileNavLabels');
+        $decoded = is_string($raw) ? json_decode($raw, true) : null;
+        $labels = self::DEFAULT_MOBILE_NAV_LABELS;
+
+        if (is_array($decoded)) {
+            foreach (array_keys($labels) as $key) {
+                if (!empty($decoded[$key]) && is_string($decoded[$key])) {
+                    $labels[$key] = trim($decoded[$key]);
+                }
+            }
+        }
+
+        // Keep legacy single-setting compatibility for People/Directory.
+        $labels['people'] = self::getPeopleNavLabel();
+        return $labels;
+    }
+
+    public static function isMobileMoreAutoModulesEnabled(): bool
+    {
+        $value = Yii::$app->settings->get('mobileMoreAutoModules');
+        if ($value === null || $value === '') {
+            return true;
+        }
+        return (bool)$value;
+    }
+
+    public static function getMobileMoreHiddenModuleIdsRaw(): string
+    {
+        return (string)Yii::$app->settings->get('mobileMoreHiddenModuleIds', '');
+    }
+
+    public static function getMobileMoreHiddenModuleIds(): array
+    {
+        $raw = self::getMobileMoreHiddenModuleIdsRaw();
+        if ($raw === '') {
+            return [];
+        }
+
+        $parts = preg_split('/[\s,]+/', strtolower($raw), -1, PREG_SPLIT_NO_EMPTY);
+        return array_values(array_unique($parts ?: []));
     }
 }

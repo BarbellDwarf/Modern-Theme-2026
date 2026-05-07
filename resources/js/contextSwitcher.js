@@ -3,6 +3,7 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
     var isOpen = false;
 
     var init = function(pjax) {
+        console.log('[MT2026] ContextSwitcher init called, pjax=' + pjax + ', width=' + window.innerWidth);
         bindToggleButton();
         bindOutsideClick();
         bindKeyboard();

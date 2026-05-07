@@ -34,3 +34,5 @@ ehthumbs.db
 
 # Generated SCSS config files
 config-generated-*.scss
+screenshots/*
+tests/*

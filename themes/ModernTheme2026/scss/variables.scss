@@ -2,8 +2,8 @@
 // Contemporary design with glassmorphism, depth, and adaptive colors
 // Variables are imported by ThemeHelper
 
-// Set Clean Theme as parent
-$baseTheme: "Clean";
+// Self-contained parent theme
+$baseTheme: "HumHub";
 
 // ============================================
 // COLOR SYSTEM - Adaptive with Presets
@@ -181,6 +181,7 @@ $transition-slow: $transition-speed-slow $transition-timing !default;
 // Z-INDEX LAYERS
 // ============================================
 
+// Base Bootstrap/HumHub z-index values
 $z-dropdown: 1000 !default;
 $z-sticky: 1020 !default;
 $z-fixed: 1030 !default;
@@ -188,6 +189,16 @@ $z-modal-backdrop: 1040 !default;
 $z-modal: 1050 !default;
 $z-popover: 1060 !default;
 $z-tooltip: 1070 !default;
+
+// Modern Theme 2026 - Component-specific z-index hierarchy (mobile/responsive)
+// Used for: mobile navigation, composer, dropdowns, and overlays
+$z-mt2026-mobile-nav: 1000 !default;          // Mobile bottom navigation
+$z-mt2026-composer: 1010 !default;            // Message composer/sticky form
+$z-mt2026-dropdown: 1035 !default;            // Dropdowns, menus, and attachments
+$z-mt2026-modal-backdrop: 1050 !default;      // Modal backdrop overlay
+$z-mt2026-modal: 1055 !default;               // Modal dialogs and drawers
+$z-mt2026-drawer: 1090 !default;              // Slide-in drawers (conversation list, settings)
+$z-mt2026-keyboard-overlay: 1100 !default;    // Virtual keyboard overlay handling
 
 // ============================================
 // BREAKPOINTS (Responsive)

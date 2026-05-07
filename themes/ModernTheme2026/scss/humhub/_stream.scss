@@ -1,6 +1,18 @@
 // Modern Theme 2026 - Activity Stream
 // Modern stream/feed design
 
+// Chrome converts float:right on a flex item to flex:0 0 100%, so the empty
+// .stream-entry-loader placeholder div consumes the full container width and
+// pushes .wall-entry-header-image (avatar) off-screen. Fix universally.
+.stream-entry-header, .wall-entry-header {
+  .stream-entry-loader {
+    flex: 0 0 0px !important;
+    width: 0 !important;
+    overflow: hidden !important;
+    float: none !important;
+  }
+}
+
 .stream-container, .wall-stream {
   .stream-entry, .wall-entry {
     @include card-hover;
@@ -16,7 +28,7 @@
       align-items: center;
       gap: var(--space-3);
       margin-bottom: var(--space-3);
-      
+
       .media-object {
         width: 48px;
         height: 48px;
@@ -93,8 +105,114 @@
   gap: var(--space-3);
   padding: var(--space-2) var(--space-4);
   border-top: 1px solid var(--color-border);
-  background: var(--color-bg-secondary);
+  background: transparent; // blend with post panel — no inner box
 }
+
+// ── Single-box stream posts (all screen sizes) ───────────────────────────────
+// The DOM structure is:  .wall-entry (outer) > .panel.panel-default (inner)
+// Both get card styling from _cards.scss → creates the "double box" appearance.
+//
+// Solution: keep .wall-entry as the sole visible card; make the inner .panel
+// completely transparent so there is only ONE box per post.
+
+.s2_streamContent .wall-entry,
+.s2_streamContent .stream-entry {
+  // The wall-entry IS the card — give it proper card styling
+  background: color-mix(in srgb, var(--color-bg-primary) 94%, var(--color-primary) 6%);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 24%, var(--color-border));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-4);
+  overflow: hidden;
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+    border-color: color-mix(in srgb, var(--color-primary) 32%, var(--color-border));
+  }
+
+  // Inner .panel: transparent — no box of its own
+  > .panel,
+  > div > .panel {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    margin-bottom: 0 !important;
+
+    > .panel-body {
+      background: transparent;
+      padding-top: var(--space-4);
+      padding-bottom: var(--space-5);
+    }
+
+    > .panel-heading {
+      background: transparent;
+      border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border));
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      box-shadow: none;
+      margin: 0;
+      position: relative;
+      padding-bottom: var(--space-3);
+
+      // Subtle top accent to make text-only posts feel more "defined"
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+        opacity: 0.68;
+      }
+    }
+
+    > .panel-footer {
+      background: transparent;
+      border-top-color: var(--color-border);
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      box-shadow: none;
+      margin: 0;
+    }
+  }
+
+  // Footer/addons bar inside the post — no extra bg
+  .wall-entry-footer {
+    background: color-mix(in srgb, var(--color-primary) 9%, transparent);
+    border-top: 1px solid color-mix(in srgb, var(--color-primary) 24%, var(--color-border));
+    margin-bottom: var(--space-2);
+  }
+
+  // Comment container — no inner card
+  .comment-container,
+  .comment-entry-footer {
+    background: transparent;
+  }
+
+  .comment-container {
+    padding-top: var(--space-2);
+  }
+
+  // Improve readability/density for text-only content blocks
+  .wall-entry-body,
+  .stream-entry-content,
+  .wall-entry-content {
+    line-height: 1.62;
+    letter-spacing: 0.01em;
+  }
+
+  .wall-entry-body > p:first-child,
+  .stream-entry-content > p:first-child,
+  .wall-entry-content > p:first-child {
+    margin-top: var(--space-1);
+  }
+}
+
+// ── Old desktop-only flat rule (superseded above, kept for safety) ─────────────
+// Previously only applied at 992px+; now the single-box rule covers all sizes.
+// These selectors are kept as reinforcement.
+
+
 
 // Make .wall-entry-controls links always visible with readable color
 .wall-entry-controls a {
@@ -150,6 +268,19 @@
   font-size: 14px;
 }
 
+// The same ' · ' text node separator appears inside comment-level controls
+// (between Reply and the emoji button). Apply the same font-size:0 trick.
+.comment-container .wall-entry-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0;
+
+  > * {
+    font-size: 14px;
+  }
+}
+
 // The like/unlike anchor links are REPLACED by our emoji trigger visually.
 // Before JS runs: show them via the Clean Theme FA icon (fallback).
 // After JS runs: [data-mt2026-reactions] is set, clip rule in _reactions.scss hides them.
@@ -172,5 +303,123 @@
   }
 }
 
+// Once picker is attached, hide native like/unlike links in both stream and comment addons.
+.wall-entry-controls .likeLinkContainer[data-mt2026-reactions] a.likeAnchor {
+  display: none !important;
+}
+
 // Reaction summary pushed to the right end of the addons bar (styled in _reactions.scss)
 // .mt2026-summary-link uses margin-left:auto to right-align
+
+// ─── MOBILE OPTIMIZATIONS FOR COMMENTS ───────────────────────────────────────
+@media (max-width: 991px) {
+
+  // ── Widen comment area ─────────────────────────────────────────────────────
+  // Root cause: the inner .panel has 21px horizontal padding (Bootstrap default)
+  // which stacks with panel-body/footer/addons padding and squeezes the comment
+  // form to only ~300px on a 390px phone.
+  //
+  // Fix: reduce .panel side padding to 8px; zero out everything below it so
+  // the comment container reaches near-full card width (~350px).
+
+  // 1. Inner panel: 21px → 8px each side
+  .s2_streamContent .wall-entry > .panel,
+  .s2_streamContent .wall-entry > div > .panel,
+  .s2_streamContent .stream-entry > .panel,
+  .s2_streamContent .stream-entry > div > .panel {
+    padding-left: var(--space-2) !important;   // 8px
+    padding-right: var(--space-2) !important;
+  }
+
+  // 2. panel-body: all horizontal → 0 (panel already provides the 8px margin)
+  .s2_streamContent .wall-entry .panel-body,
+  .s2_streamContent .stream-entry .panel-body {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  // 3. Footer bar: zero horizontal
+  .wall-entry-footer,
+  .stream-entry-footer {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  // 4. Addons bar: shorthand override to zero horizontal (individual property
+  //    overrides didn't beat the global shorthand rule in the cascade)
+  .stream-entry-addons {
+    padding: var(--space-2) 0 !important;
+  }
+
+  // 5. Comment container: Bootstrap .p-2 adds 8px with !important — zero sides
+  .comment-container {
+    padding: var(--space-2) 0 !important;
+  }
+
+  // ── Hide formatting toolbar inside comment forms on mobile ─────────────────
+  // The ProseMirror menubar (Aa/B/I/S/<>/link/list buttons) adds no value on
+  // touch keyboards. Hide it so the input area is clean.
+  .comment-container .ProseMirror-menubar,
+  .comment_create .ProseMirror-menubar,
+  .comment-entry-form .ProseMirror-menubar {
+    display: none !important;
+  }
+
+  // ── Hide compose box by default; show only when needed via show-on-mobile ──
+  // On mobile, the comment section opens showing existing comments.
+  // The compose box is hidden by default; it appears via JS adding show-on-mobile.
+  .comment_create {
+    display: none !important;
+    
+    // When shown, collapse editor to single line until tapped
+    &.show-on-mobile {
+      display: block !important;
+    }
+
+    &.show-on-mobile {
+      .richtext-create-buttons {
+        display: none !important;
+      }
+
+      .ProseMirror {
+        min-height: 36px !important;
+        max-height: 36px !important;
+        overflow: hidden;
+      }
+
+      &:focus-within {
+        .ProseMirror {
+          min-height: 72px !important;
+          max-height: 300px !important;
+          overflow: auto;
+        }
+
+        .richtext-create-buttons {
+          display: flex !important;
+        }
+      }
+    }
+  }
+
+  // ── Wall entry controls spacing ────────────────────────────────────────────
+  .wall-entry-controls {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding: var(--space-2) 0;
+    margin-top: var(--space-2);
+    clear: both;
+  }
+
+  // ── Post separation ────────────────────────────────────────────────────────
+  .wall-entry,
+  .stream-entry {
+    margin-bottom: var(--space-4);
+  }
+
+  // ── Bottom padding so last post isn't hidden under the nav bar ─────────────
+  .wall-stream,
+  .stream-container {
+    padding-bottom: calc(56px + var(--space-4) + env(safe-area-inset-bottom, 0));
+  }
+}

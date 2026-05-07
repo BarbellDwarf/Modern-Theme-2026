@@ -1,46 +1,47 @@
 // Modern Theme 2026 - Build File
-// Variables are imported separately by the \humhub\helpers\ThemeHelper class
+// All partials are imported here for SCSS compilation by ThemeHelper.
+// variables.scss is loaded separately by ThemeHelper before this file.
 
-// Import mixins
-@import "mixins";
+// ── Foundation ────────────────────────────────────────────────────────────────
+@import "root";      // CSS custom properties derived from SCSS variables
+@import "mixins";    // Reusable SCSS mixins
 
-// Import CSS custom properties for dynamic theming
-@import "root";
+// ── Base / Layout ─────────────────────────────────────────────────────────────
+@import "theme";                // Global body, heading, and utility overrides
+@import "humhub/base";          // Responsive container widths (mobile → 4K)
 
-// General theme styles (typography, links, utilities, loading states)
-@import "theme";
+// ── Navigation ────────────────────────────────────────────────────────────────
+@import "humhub/topbar";        // Top navigation bar
+@import "humhub/nav";           // Navigation links
+@import "humhub/sidebar";       // Left sidebar
+@import "humhub/space-chooser"; // Space chooser UX improvements
+@import "humhub/context-switcher"; // Smart context switcher
+@import "humhub/spaces";        // Spaces page / space cards
+@import "humhub/mobile-bottom-nav"; // Thumb-friendly mobile bottom nav
 
-// Performance optimizations (early)
-@import "performance";
+// ── Components ────────────────────────────────────────────────────────────────
+@import "humhub/button";        // Buttons with depth effects
+@import "humhub/badge";         // Badges and pills
+@import "humhub/cards";         // Cards / panels with elevation
+@import "humhub/dropdown";      // Dropdown menus
+@import "humhub/form";          // Form inputs and labels
+@import "humhub/modal";         // Modal dialogs
+@import "humhub/gridview";      // Tables / GridView
+@import "humhub/list-group";    // List groups
+@import "humhub/richtext";      // Rich text editor
 
-// Accessibility enhancements (early)
-@import "accessibility";
+// ── Content ───────────────────────────────────────────────────────────────────
+@import "humhub/stream";        // Activity stream / feed
+@import "humhub/palette-switcher"; // Color palette switcher UI
+@import "humhub/reactions";     // Emoji reaction picker
+@import "humhub/calendar";      // Calendar module styles
+@import "humhub/mail";          // Messenger/mail module UI revamp
+@import "humhub/admin";         // Admin area overrides
 
-// Import base layout overrides (MUST come before components)
-@import "humhub/base";
+// ── Dark Mode ─────────────────────────────────────────────────────────────────
+@import "humhub/dark-mode";     // Comprehensive dark mode support
+@import "humhub/mobile";        // Mobile-specific overrides
 
-// Import component overrides
-@import "humhub/badge";
-@import "humhub/button";
-@import "humhub/cards";
-@import "humhub/dropdown";
-@import "humhub/form";
-@import "humhub/gridview";
-@import "humhub/list-group";
-@import "humhub/admin";
-@import "humhub/nav";
-@import "humhub/topbar";
-@import "humhub/sidebar";
-@import "humhub/stream";
-@import "humhub/modal";
-@import "humhub/space-chooser";
-@import "humhub/mobile-bottom-nav";
-@import "humhub/reactions";
-@import "humhub/context-switcher";
-
-// Dark mode support (before mobile)
-@import "humhub/palette-switcher";
-@import "humhub/dark-mode";
-
-// Mobile overrides (must come last)
-@import "humhub/mobile";
+// ── Polish ────────────────────────────────────────────────────────────────────
+@import "performance";          // CSS containment and GPU acceleration
+@import "accessibility";        // WCAG 2.1 AA compliance and focus styles

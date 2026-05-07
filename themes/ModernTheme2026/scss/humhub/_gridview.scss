@@ -171,6 +171,29 @@
     }
 }
 
+@media (min-width: 768px) and (max-width: 991px) {
+    .grid-view,
+    .gridview {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+
+        table {
+            min-width: 680px;
+            white-space: nowrap;
+
+            thead th {
+                padding: space(2) space(3);
+                font-size: $font-size-xs;
+            }
+
+            tbody td {
+                padding: space(2) space(3);
+                font-size: $font-size-sm;
+            }
+        }
+    }
+}
+
 // Compact table variant
 .table-compact {
     .grid-view,

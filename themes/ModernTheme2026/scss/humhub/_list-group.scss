@@ -24,12 +24,14 @@
         &:hover {
             background-color: var(--color-bg-secondary, #f3f4f6);
             border-color: var(--color-primary, #1e6ad6);
-            transform: translateX(4px);
+            border-left-width: 4px;
+            padding-left: calc(#{space(4)} - 3px); // compensate for extra border width
             @include shadow('sm');
         }
         
         &:active {
-            transform: translateX(2px);
+            border-left-width: 3px;
+            padding-left: calc(#{space(4)} - 2px);
             @include shadow('xs');
         }
         
@@ -108,7 +110,7 @@
     
     .list-group-item {
         &:hover {
-            transform: translateY(-2px);
+            box-shadow: 0 -3px 0 0 var(--color-primary, #1e6ad6) inset;
         }
         
         &.active::before {

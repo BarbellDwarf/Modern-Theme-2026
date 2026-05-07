@@ -344,3 +344,49 @@ body[data-bs-theme="light"] .context-switcher {
     border-radius: 0 !important;
   }
 }
+
+// ── FILTERS TOGGLE BUTTON (JS-injected) ──────────────────────────────────────
+// Injected by contextSwitcher.js on the Spaces/People filter row on mobile.
+.mt2026-more-filters-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 500;
+  line-height: 1.5;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: var(--radius-full, 9999px);
+  background-color: var(--color-bg-primary, #ffffff);
+  color: var(--color-text-secondary, #4b5563);
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  white-space: nowrap;
+
+  &:hover,
+  &:focus {
+    background-color: var(--color-bg-secondary, #f3f4f6);
+    border-color: var(--color-primary, #1e6ad6);
+    color: var(--color-text-primary, #111827);
+    outline: none;
+  }
+
+  &.active {
+    background-color: var(--color-primary, #1e6ad6);
+    border-color: var(--color-primary, #1e6ad6);
+    color: #ffffff;
+  }
+
+  [data-bs-theme="dark"] & {
+    background-color: var(--color-bg-tertiary, #334155);
+    border-color: var(--color-border, #334155);
+    color: var(--color-text-secondary, #cbd5e1);
+
+    &:hover,
+    &:focus {
+      background-color: var(--color-bg-secondary, #1e293b);
+      border-color: var(--color-primary, #5a8eeb);
+      color: var(--color-text-primary, #f1f5f9);
+    }
+  }
+}

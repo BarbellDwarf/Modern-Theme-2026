@@ -1,0 +1,89 @@
+name: Release Module Package
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-main
+  cancel-in-progress: false
+
+jobs:
+  package-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve version from module.json
+        id: version
+        run: |
+          VERSION=$(jq -r '.version' module.json)
+          if [[ -z "$VERSION" || "$VERSION" == "null" ]]; then
+            echo "::error::Unable to read .version from module.json"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "zip_name=modern-theme-2026-v${VERSION}.zip" >> "$GITHUB_OUTPUT"
+
+      - name: Validate changelog entry for version
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          if ! grep -q "^## \[$VERSION\]" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md does not contain an entry for version $VERSION"
+            echo "Expected heading format: ## [$VERSION] - YYYY-MM-DD"
+            exit 1
+          fi
+
+      - name: Build module zip
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          ZIP_NAME="${{ steps.version.outputs.zip_name }}"
+          mkdir -p dist
+          zip -r "dist/$ZIP_NAME" . \
+            -x ".git/*" \
+               ".github/*" \
+               "tests/*" \
+               "dist/*" \
+               "**/*.log" \
+               "**/.DS_Store"
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: modern-theme-2026-v${{ steps.version.outputs.version }}
+          path: dist/${{ steps.version.outputs.zip_name }}
+          if-no-files-found: error
+
+      - name: Extract release notes for current version
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          awk -v v="$VERSION" '
+            $0 ~ "^## \\[" v "\\]" {found=1}
+            $0 ~ /^## \[/ && found && $0 !~ "^## \\[" v "\\]" {exit}
+            found {print}
+          ' CHANGELOG.md > RELEASE_NOTES.md
+
+          if [[ ! -s RELEASE_NOTES.md ]]; then
+            echo "::error::Failed to extract release notes for version $VERSION"
+            exit 1
+          fi
+
+      - name: Create or update GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: v${{ steps.version.outputs.version }}
+          name: Modern Theme 2026 v${{ steps.version.outputs.version }}
+          bodyFile: RELEASE_NOTES.md
+          artifacts: dist/${{ steps.version.outputs.zip_name }}
+          allowUpdates: true
+          replacesArtifacts: true
+          artifactErrorsFailBuild: true
+          makeLatest: true

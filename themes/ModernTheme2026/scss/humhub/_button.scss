@@ -26,6 +26,41 @@
   @include button-variant(var(--color-secondary), $secondary-dark);
 }
 
+// Accent — maps to the theme accent colour (similar to primary but distinct)
+// HumHub's Button::accent() generates .btn-accent
+.btn-accent {
+  background-color: var(--color-accent, #5a8eeb);
+  border-color: var(--color-accent, #5a8eeb);
+  color: #fff;
+  @include shadow('sm');
+
+  &:hover:not(:disabled):not(.disabled) {
+    background-color: var(--color-primary, #1e6ad6);
+    border-color: var(--color-primary, #1e6ad6);
+    color: #fff;
+    @include shadow('md');
+  }
+
+  &:active:not(:disabled):not(.disabled),
+  &:focus {
+    background-color: var(--color-primary, #1e6ad6);
+    border-color: var(--color-primary, #1e6ad6);
+    color: #fff;
+    box-shadow: 0 0 0 3px rgba(30, 106, 214, 0.3) !important;
+  }
+
+  [data-bs-theme="dark"] & {
+    background-color: var(--color-accent, #5a8eeb);
+    border-color: var(--color-accent, #5a8eeb);
+    color: #fff;
+
+    &:hover:not(:disabled):not(.disabled) {
+      background-color: var(--color-primary, #1e6ad6);
+      border-color: var(--color-primary, #1e6ad6);
+    }
+  }
+}
+
 .btn-success {
   @include button-variant(var(--color-success), darken($success, 10%));
 }
@@ -40,6 +75,25 @@
 
 .btn-danger {
   @include button-variant(var(--color-danger), darken($danger, 10%));
+}
+
+// Default button — Bootstrap 3 fallback; keep consistent with theme borders
+.btn-default {
+  background-color: var(--color-bg-primary, #ffffff);
+  border-color: var(--color-border, #e5e7eb);
+  color: var(--color-text-primary, #111827);
+
+  &:hover:not(:disabled):not(.disabled),
+  &:focus {
+    background-color: var(--color-bg-secondary, #f3f4f6);
+    border-color: var(--color-border-dark, #d1d5db);
+    color: var(--color-text-primary, #111827);
+  }
+
+  &:active:not(:disabled):not(.disabled) {
+    background-color: var(--color-bg-tertiary, #e5e7eb);
+    border-color: var(--color-border-dark, #d1d5db);
+  }
 }
 
 // Outline buttons

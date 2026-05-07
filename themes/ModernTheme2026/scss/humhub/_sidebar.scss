@@ -101,7 +101,7 @@
     }
   }
 
-  // Force space menu back to vertical list in this range.
+  // Use a horizontal pill row in this range to avoid cramped stacked sidebars.
   .space-layout-container #space-main-menu {
     width: 100%;
 
@@ -110,20 +110,29 @@
     .list-group.list-group-horizontal,
     .list-group.list-group-vertical-lg {
       display: flex !important;
-      flex-direction: column !important;
+      flex-direction: row !important;
       flex-wrap: nowrap !important;
       width: 100%;
-      overflow: visible !important;
-      gap: 0;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      gap: 6px;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
 
     .list-group > .list-group-item {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      width: 100%;
+      width: auto;
       min-height: 44px;
-      white-space: normal;
-      margin-bottom: var(--space-1);
+      min-width: max-content;
+      white-space: nowrap;
+      margin-bottom: 0;
+      flex: 0 0 auto;
     }
   }
 }

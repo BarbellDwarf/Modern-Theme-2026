@@ -45,11 +45,11 @@
 }
 
 // Floating picker popup
+// NOTE: position, top, left, bottom, right are all managed via JS inline styles
+// (the picker is teleported to <body> with position:fixed). Do NOT add placement
+// properties here — they conflict with the JS-applied inline styles.
 .mt2026-reaction-picker {
   display: none;
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 0;
   z-index: 9999;
   flex-direction: row;
   align-items: center;
@@ -60,12 +60,32 @@
   border-radius: 999px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.15);
   white-space: nowrap;
+  max-width: calc(100vw - 24px);
+  overflow-x: auto;
 
   // Show when JS adds .visible class
   &.visible {
     display: flex;
     animation: mt2026PickerIn 0.18s ease-out;
   }
+}
+
+// Core comment markup wraps content/controls in overflow-hidden utility containers.
+// The comment root element uses class "single-comment" (not "comment-entry").
+// .single-comment > .flex-grow-1.overflow-hidden clips the picker — override it.
+.single-comment > .flex-grow-1.overflow-hidden,
+.comment-container .single-comment > .flex-grow-1.overflow-hidden,
+.single-comment .wall-entry-controls,
+.comment-container .wall-entry-controls {
+  overflow: visible !important;
+}
+
+// Ensure the comment stacking context doesn't trap the picker below sibling elements.
+.single-comment,
+.comment-container,
+.comment-container .comment {
+  position: relative;
+  z-index: 20;
 }
 
 @keyframes mt2026PickerIn {

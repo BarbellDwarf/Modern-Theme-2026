@@ -50,6 +50,30 @@ humhub.module('modernTheme.paletteSwitcher', function(module, require, $) {
             primary: '#6366f1', accent: '#818cf8', secondary: '#4f46e5',
             success: '#10b981', danger: '#f43f5e', warning: '#fbbf24',
             info: '#38bdf8', light: '#1e1b4b', dark: '#0f0a1e'
+        },
+        {
+            id: 'warm-amber', label: 'Warm Amber',
+            primary: '#d97706', accent: '#fbbf24', secondary: '#b45309',
+            success: '#16a34a', danger: '#dc2626', warning: '#ca8a04',
+            info: '#0284c7', light: '#fffbeb', dark: '#451a03'
+        },
+        {
+            id: 'cobalt-navy', label: 'Cobalt Navy',
+            primary: '#1d4ed8', accent: '#3b82f6', secondary: '#1e40af',
+            success: '#16a34a', danger: '#dc2626', warning: '#d97706',
+            info: '#2563eb', light: '#eff6ff', dark: '#1e3a5f'
+        },
+        {
+            id: 'ruby-red', label: 'Ruby Red',
+            primary: '#b91c1c', accent: '#ef4444', secondary: '#991b1b',
+            success: '#16a34a', danger: '#7f1d1d', warning: '#d97706',
+            info: '#0284c7', light: '#fff5f5', dark: '#450a0a'
+        },
+        {
+            id: 'lavender', label: 'Soft Lavender',
+            primary: '#8b5cf6', accent: '#c4b5fd', secondary: '#a78bfa',
+            success: '#16a34a', danger: '#dc2626', warning: '#d97706',
+            info: '#6d28d9', light: '#f5f3ff', dark: '#2e1065'
         }
     ];
 
@@ -96,7 +120,7 @@ humhub.module('modernTheme.paletteSwitcher', function(module, require, $) {
 
         var html = '<div id="moderntheme-palette-presets" class="mb-3">';
         html += '<label class="form-label fw-semibold">Preset Color Palettes</label>';
-        html += '<div class="d-flex flex-wrap gap-2 p-3 bg-light rounded">';
+        html += '<div class="d-flex flex-wrap gap-2 p-3 rounded">';
 
         PALETTES.forEach(function(p) {
             html += '<button type="button" class="btn btn-sm moderntheme-preset-btn d-flex align-items-center gap-2"';
@@ -109,8 +133,7 @@ humhub.module('modernTheme.paletteSwitcher', function(module, require, $) {
             html += ' data-warning="' + p.warning + '"';
             html += ' data-info="' + p.info + '"';
             html += ' data-light="' + p.light + '"';
-            html += ' data-dark="' + p.dark + '"';
-            html += ' style="border: 2px solid #dee2e6; background: #fff; padding: 6px 12px;">';
+            html += ' data-dark="' + p.dark + '">';
             html += '<span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:' + p.primary + ';flex-shrink:0;"></span>';
             html += '<span>' + p.label + '</span>';
             html += '</button>';
@@ -135,8 +158,9 @@ humhub.module('modernTheme.paletteSwitcher', function(module, require, $) {
             fillColor('dark',      $btn.data('dark'));
 
             var primary = $btn.data('primary');
-            $('.moderntheme-preset-btn').css({'border-color': '#dee2e6', 'box-shadow': 'none'});
-            $btn.css({'border-color': primary, 'box-shadow': '0 0 0 2px ' + primary + '33'});
+            // Reset via CSS class — let the stylesheet handle border color in both themes
+            $('.moderntheme-preset-btn').removeClass('moderntheme-preset-active').css({'border-color': '', 'box-shadow': ''});
+            $btn.addClass('moderntheme-preset-active').css({'border-color': primary, 'box-shadow': '0 0 0 2px ' + primary + '33'});
 
             applyPalette($btn.data('palette-id'));
             savePalette($btn.data('palette-id'));

@@ -1,0 +1,59 @@
+<?php
+/**
+ * Modern Theme 2026 — People page override
+ *
+ * Adds `mt2026-people-page` class to the filter panel-body so CSS can reliably
+ * hide it on mobile WITHOUT needing a JS-added body class (which causes a flash).
+ */
+
+use humhub\assets\CardsAsset;
+use humhub\helpers\Html;
+use humhub\modules\user\components\PeopleQuery;
+use humhub\modules\user\widgets\PeopleCard;
+use humhub\modules\user\widgets\PeopleFilters;
+use humhub\modules\user\widgets\PeopleHeadingButtons;
+use yii\web\View;
+
+/* @var $this View */
+/* @var $people PeopleQuery */
+
+CardsAsset::register($this);
+?>
+<div class="panel panel-default mt2026-people-panel">
+
+    <div class="panel-heading">
+        <?= Yii::t('UserModule.base', '<strong>People</strong>') ?>
+        <span class="mt2026-people-invite-btn"><?= PeopleHeadingButtons::widget() ?></span>
+    </div>
+
+    <div class="panel-body mt2026-people-search-panel">
+        <?= PeopleFilters::widget(['query' => $people]) ?>
+    </div>
+
+</div>
+
+<div class="row cards">
+    <?php if (!$people->exists()): ?>
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <strong><?= Yii::t('UserModule.base', 'No results found!'); ?></strong><br/>
+                    <?= Yii::t('UserModule.base', 'Try other keywords or remove filters.'); ?>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php foreach ($people->all() as $user) : ?>
+        <?= PeopleCard::widget(['user' => $user]); ?>
+    <?php endforeach; ?>
+</div>
+
+<?php if (!$people->isLastPage()) : ?>
+    <?= Html::tag('div', '', [
+        'class' => 'cards-end',
+        'data-current-page' => $people->pagination->getPage() + 1,
+        'data-total-pages' => $people->pagination->getPageCount(),
+        'data-ui-loader' => '',
+    ]) ?>
+<?php endif; ?>

@@ -1,12 +1,134 @@
 // Modern Theme 2026 - Admin Section Overrides
-// Fixes admin sidebar navigation layout
+// Layout, spacing, and sidebar fixes for all admin sub-sections.
+
+// ============================================================
+// Admin Layout — outer container & column structure
+// ============================================================
+
+// Add comfortable top margin so the fixed topbars don't overlap
+.mt2026-admin-layout {
+  margin-top: var(--space-6);
+  padding-bottom: var(--space-10);
+}
+
+// Admin sidebar column — remove default Bootstrap column padding on desktop
+@media (min-width: 992px) {
+  .mt2026-admin-sidebar {
+    padding-right: var(--space-4);
+  }
+
+  .mt2026-admin-content {
+    padding-left: var(--space-4);
+  }
+}
+
+// ============================================================
+// Admin panels — fix double-padding
+// ============================================================
+// The global .panel gets padding: var(--space-6) from _cards.scss @include card.
+// Admin sub-layouts wrap content in .panel.panel-default THEN views add .panel-body.
+// That creates 24px (panel) + 24px (panel-body) = 48px each side — too much.
+// Fix: admin panels get 0 body-padding; panel-heading/body/footer handle their own.
+
+.mt2026-admin-content {
+
+  // Top-level admin panel (the outer card wrapping each sub-section)
+  > .panel {
+    padding: 0;                    // No body padding — let children handle it
+    overflow: hidden;              // Keep border-radius clipping
+
+    // Reset negative margins from _cards.scss (which compensate for card padding)
+    .panel-heading {
+      padding: var(--space-4) var(--space-5);
+      margin: 0;                   // No negative margin needed (panel has no padding)
+      border-bottom: 1px solid var(--color-border);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      font-weight: $font-weight-semibold;
+      background: var(--color-bg-secondary);
+    }
+
+    // Sub-menu tab bars (UserMenu, SettingsMenu, SpaceMenu, InformationMenu)
+    // These sit between panel-heading and panel-body — give them proper spacing
+    .nav-tabs {
+      padding: 0 var(--space-4);
+      background: var(--color-bg-secondary);
+      border-bottom: 2px solid var(--color-border);
+      flex-wrap: wrap;             // Allow tabs to wrap on small screens
+      gap: 0;
+    }
+
+    // Panel body — moderate padding (no doubling)
+    .panel-body {
+      padding: var(--space-5) var(--space-6);
+
+      @media (max-width: 767px) {
+        padding: var(--space-4);
+      }
+    }
+  }
+
+  // GridView tables inside admin panels — ensure horizontal scroll, not overflow
+  .grid-view,
+  .gridview {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+
+    table {
+      min-width: 600px;
+    }
+
+    @media (max-width: 991px) {
+      table {
+        min-width: 520px;
+      }
+    }
+
+    @media (max-width: 575px) {
+      table {
+        min-width: 480px;
+      }
+    }
+  }
+
+  // Action buttons row (float-end buttons above GridView)
+  // Clear float so the summary/table starts on a new line below buttons
+  .grid-view::before,
+  .gridview::before {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+// ============================================================
+// Admin sidebar — fix list-group-vertical-lg
+// ============================================================
+
+// On mobile, add spacing between stacked admin sidebar and content
+@media (max-width: 991px) {
+  .mt2026-admin-sidebar {
+    margin-bottom: var(--space-4);
+
+    // On mobile, the AdminMenu renders as a horizontal scrollable row
+    #admin-menu,
+    .left-navigation {
+      .list-group {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: var(--space-2); // Space for scrollbar
+      }
+    }
+  }
+}
 
 // Define list-group-vertical-lg used in HumHub's left-navigation template:
 // The template renders: class="list-group list-group-horizontal list-group-vertical-lg"
 // Intended: horizontal on small screens, vertical (column) sidebar on lg+ screens.
 // Without this definition, list-group-horizontal's flex-direction:row wins on all
 // breakpoints, squishing items sideways inside the narrow col-lg-3 admin sidebar.
-@media (min-width: 992px) {
+@media (min-width: 768px) {
   .list-group-vertical-lg {
     flex-direction: column !important;
     flex-wrap: nowrap;
@@ -16,9 +138,224 @@
 // Ensure the admin panel sidebar list items display correctly as a vertical nav
 #admin-menu,
 .left-navigation {
-  @media (min-width: 992px) {
+  @media (min-width: 768px) {
     .list-group {
       flex-direction: column;
     }
   }
 }
+
+// ============================================================
+// Admin > Settings > Appearance — Theme Customization section
+// ============================================================
+
+// Color picker group containers (bg-light wrappers around each color swatch)
+.input-color-group {
+  border-radius: 8px;
+  transition: background-color 0.2s;
+
+  // Keep the native <input type=color> swatch at a reasonable size
+  input[type="color"] {
+    height: 48px;
+    min-width: 64px;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+}
+
+// Collapsible field group (the "Theme customization" disclosure section)
+.collapsible-fields-group {
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 10px;
+  overflow: hidden;
+
+  .collapsible-fields-header {
+    background-color: var(--color-bg-secondary, #f3f4f6);
+    padding: 12px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+    transition: background 0.2s;
+
+    &:hover {
+      background-color: var(--color-bg-tertiary, #e5e7eb);
+    }
+  }
+
+  .collapsible-fields-body {
+    padding: 20px;
+    background-color: var(--color-bg-primary, #fff);
+  }
+}
+
+// Palette preset buttons injected by paletteSwitcher.js
+#moderntheme-palette-presets {
+  .d-flex.flex-wrap {
+    gap: 8px;
+  }
+
+  .moderntheme-preset-btn {
+    background: var(--color-bg-secondary, #fff) !important;
+    border: 2px solid var(--color-border, #dee2e6) !important;
+    color: var(--color-text-primary, #111827) !important;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    border-radius: 20px;
+    font-size: 13px;
+
+    &:hover {
+      background: var(--color-bg-tertiary, #f3f4f6) !important;
+    }
+  }
+}
+
+// CodeMirror — Custom SCSS textarea
+// CodeMirror injects its own stylesheet with hardcoded white backgrounds;
+// these overrides make it respect the current dark/light theme.
+.CodeMirror {
+  border-radius: 6px;
+  border: 1px solid var(--color-border, #e5e7eb);
+  background: var(--color-bg-primary, #fff);
+  color: var(--color-text-primary, #111827);
+  font-size: 13px;
+  line-height: 1.6;
+
+  .CodeMirror-gutters {
+    background: var(--color-bg-secondary, #f7f7f7);
+    border-right-color: var(--color-border, #ddd);
+  }
+
+  .CodeMirror-linenumber {
+    color: var(--color-text-muted, #999);
+  }
+
+  .CodeMirror-cursor {
+    border-left-color: var(--color-text-primary, #333);
+  }
+
+  .CodeMirror-selected {
+    background: rgba(var(--bs-primary-rgb, 30, 106, 214), 0.15);
+  }
+
+  .CodeMirror-scroll {
+    background: var(--color-bg-primary, #fff);
+  }
+
+  .CodeMirror-scrollbar-filler,
+  .CodeMirror-gutter-filler {
+    background: var(--color-bg-secondary, #fff);
+  }
+}
+
+// ============================================================
+// Dark Mode Overrides for Admin Appearance Section
+// ============================================================
+[data-bs-theme="dark"] {
+  // Color picker group containers
+  .input-color-group {
+    background-color: var(--color-bg-tertiary) !important;
+    border: 1px solid var(--color-border);
+
+    label {
+      color: var(--color-text-primary) !important;
+    }
+  }
+
+  // Palette preset buttons (JS-rendered)
+  #moderntheme-palette-presets {
+    .d-flex.flex-wrap {
+      background-color: var(--color-bg-secondary) !important;
+      border-radius: 8px;
+    }
+
+    .moderntheme-preset-btn {
+      background: var(--color-bg-tertiary) !important;
+      border-color: var(--color-border) !important;
+      color: var(--color-text-primary) !important;
+
+      &:hover {
+        background: var(--color-bg-primary) !important;
+        border-color: var(--color-primary) !important;
+      }
+    }
+
+    small.text-muted {
+      color: var(--color-text-muted) !important;
+    }
+  }
+
+  // CodeMirror dark theme
+  .CodeMirror {
+    background: var(--color-bg-tertiary) !important;
+    color: var(--color-text-primary) !important;
+    border-color: var(--color-border) !important;
+
+    // Gutter (line numbers panel)
+    .CodeMirror-gutters {
+      background: var(--color-bg-secondary) !important;
+      border-right-color: var(--color-border) !important;
+    }
+
+    .CodeMirror-linenumber {
+      color: var(--color-text-muted) !important;
+    }
+
+    .CodeMirror-cursor {
+      border-left-color: var(--color-text-primary) !important;
+    }
+
+    // Text selection highlight
+    .CodeMirror-selected {
+      background: rgba(124, 180, 248, 0.2) !important;
+    }
+
+    // Scrollable content area
+    .CodeMirror-scroll,
+    .CodeMirror-sizer,
+    .CodeMirror-lines {
+      background: var(--color-bg-tertiary) !important;
+      color: var(--color-text-primary) !important;
+    }
+
+    .CodeMirror-scrollbar-filler,
+    .CodeMirror-gutter-filler {
+      background: var(--color-bg-secondary) !important;
+    }
+
+    // SCSS syntax tokens — make them readable on dark bg
+    .cm-comment    { color: #94a3b8; }
+    .cm-string     { color: #86efac; }
+    .cm-number     { color: #fca5a5; }
+    .cm-keyword    { color: #c084fc; }
+    .cm-variable   { color: #7dd3fc; }
+    .cm-variable-2 { color: #93c5fd; }
+    .cm-property   { color: #f9a8d4; }
+    .cm-atom       { color: #fcd34d; }
+    .cm-def        { color: #6ee7b7; }
+    .cm-operator   { color: #e2e8f0; }
+    .cm-tag        { color: #86efac; }
+    .cm-attribute  { color: #fdba74; }
+    .cm-error      { color: #fca5a5; background: rgba(239, 68, 68, 0.15); }
+  }
+
+  // The "Theme customization" collapsible header
+  .collapsible-fields-group {
+    border-color: var(--color-border);
+
+    .collapsible-fields-header {
+      background-color: var(--color-bg-secondary);
+      border-bottom-color: var(--color-border);
+      color: var(--color-text-primary);
+    }
+
+    .collapsible-fields-body {
+      background-color: var(--color-bg-primary);
+    }
+  }
+
+  // Plain label for color fields (rendered outside the group div)
+  .col-lg-4 > label.control-label,
+  .col-lg-4 > label.form-label {
+    color: var(--color-text-primary);
+  }
+}
+

@@ -73,6 +73,23 @@ To update the theme to a newer version:
 
 Note: Database migrations (if any) are applied automatically when you reload HumHub.
 
+## Releases & Packaging
+
+This repository includes automated release packaging on pushes to `main`.
+
+- Workflow: `.github/workflows/release-module.yml`
+- Trigger: push to `main`
+- Output: GitHub Release artifact zip named `modern-theme-2026-v<version>.zip`
+- Version source: `module.json` (`version` field)
+- Release notes source: `CHANGELOG.md` entry matching the version
+
+Before merging to `main`:
+
+1. Update `module.json` version if needed.
+2. Add a matching `CHANGELOG.md` section header in this format:
+   `## [<version>] - YYYY-MM-DD`
+3. Merge to `main` to trigger zip packaging and release publication.
+
 ## Recent Branch Changes (V2026.0.0)
 
 - Mail conversation UI refinements across desktop and mobile:

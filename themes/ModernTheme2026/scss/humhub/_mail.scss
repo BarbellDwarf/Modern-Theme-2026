@@ -729,6 +729,90 @@ body.mail-list-open::before {
   flex: 0 0 auto;
 }
 
+.mail-conversation-entry > .d-flex {
+  width: 100% !important;
+  align-items: center !important;
+}
+
+.mail-conversation-entry .conversation-entry-content {
+  float: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+}
+
+.mail-conversation-entry .conversation-entry-content .markdown-render {
+  float: none !important;
+  display: block !important;
+  width: auto !important;
+  min-width: 0 !important;
+}
+
+.mail-conversation-entry .conversation-entry-time {
+  float: none !important;
+  display: block !important;
+  clear: both !important;
+  align-self: flex-end !important;
+  margin-top: 6px !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+  line-height: 1.1 !important;
+}
+
+.mail-conversation-entry.own > .d-flex {
+  justify-content: flex-end !important;
+  width: auto !important;
+  margin-left: auto !important;
+}
+
+.mail-conversation-entry.own .conversation-entry-content {
+  margin-left: 0 !important;
+}
+
+.mail-conversation-entry:not(.own) > .d-flex {
+  justify-content: flex-start !important;
+}
+
+// Keep the edit action usable and prevent it from collapsing into the bubble area.
+.mail-conversation-entry .conversation-menu {
+  padding-left: 0 !important;
+  margin: 0 6px 0 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
+}
+
+.mail-conversation-entry .conversation-menu .conversation-menu-item {
+  margin: 0 !important;
+}
+
+.mail-conversation-entry .conversation-menu .conversation-edit-button {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  min-height: 34px !important;
+  padding: 0 !important;
+  border-radius: 999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+@media (min-width: 992px) {
+  .conversation-entry-list {
+    padding: 8px 12px !important;
+  }
+
+  .mail-conversation-entry {
+    margin: 6px 0 !important;
+    padding: 0 !important;
+  }
+
+  .mail-conversation-entry .conversation-entry-content {
+    max-width: min(72%, 760px) !important;
+  }
+}
+
 // Hide conversation tags widget (My Tags) - not needed on desktop or mobile
 .mail-conversation-tags,
 .conversation-tags,

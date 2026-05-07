@@ -161,13 +161,35 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
         if (!editor) return;
 
         if (!e.ctrlKey && !e.metaKey && !e.shiftKey) {
-            // Plain Enter → submit the message
+            // Plain Enter → submit the message.
+            // Must blur the ProseMirror editor first so its focusout handler serialises
+            // content into the hidden input before the form submits.
             e.preventDefault();
             e.stopImmediatePropagation();
-            var form = e.target.closest('.mail-message-form');
+            var editorEl = editor;
+            var form = editorEl.closest('.mail-message-form');
             if (form) {
                 var submitBtn = form.querySelector('.reply-button');
-                if (submitBtn) { submitBtn.click(); }
+                if (submitBtn) {
+                    // Trigger the widget sync path used by HumHub richtext.
+                    editorEl.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+                    editorEl.blur();
+
+                    // Fallback: if sync has not populated the input yet, push plain text.
+                    var messageInput = form.querySelector('[name$="[message]"]');
+                    if (messageInput && !String(messageInput.value || '').trim()) {
+                        var plainText = String(editorEl.textContent || '').replace(/\u200B/g, '').trim();
+                        if (plainText.length > 0) {
+                            messageInput.value = plainText;
+                            $(messageInput).trigger('change').trigger('blur');
+                        }
+                    }
+
+                    window.setTimeout(function() {
+                        submitBtn.click();
+                        scrollConversationToLatest();
+                    }, 0);
+                }
             }
         } else if ((e.ctrlKey || e.metaKey) && !e.shiftKey) {
             // Ctrl/Cmd+Enter → insert a newline via Shift+Enter (ProseMirror hard break)
@@ -216,8 +238,8 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
             setConversationActive(true);
             if (isMobileWidth()) {
                 sizeMobileConversationList();
-                scrollConversationToLatest();
             }
+            scrollConversationToLatest();
         } else {
             setConversationActive(false);
         }
@@ -268,8 +290,10 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
     $(document).on('ajaxComplete.mt2026Mail', function() {
         if (isMailPage()) {
             ensureHeaderToggle(4);
-            if (hasActiveConversation() && isMobileWidth()) {
-                sizeMobileConversationList();
+            if (hasActiveConversation()) {
+                if (isMobileWidth()) {
+                    sizeMobileConversationList();
+                }
                 scrollConversationToLatest();
             }
         }

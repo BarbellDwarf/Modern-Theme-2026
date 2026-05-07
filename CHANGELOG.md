@@ -21,10 +21,7 @@ The format follows Keep a Changelog and this project uses Semantic Versioning.
 - Additional mobile UX and dropdown handling refinements.
 
 ### Removed
+- Entire `tests/` folder containing outdated Playwright debug and MCP server testing scripts (local development only, not part of release).
 - Obsolete local infra files no longer required in this branch:
   - `docker-compose.yml`
   - `caddy/Caddyfile`
-- Outdated Playwright helper scripts removed to streamline test coverage.
-
-### Notes
-- Current lightweight Playwright helpers are under `tests/playwright/`.

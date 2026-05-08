@@ -1443,6 +1443,40 @@ body.mail-list-open::before {
   }
 }
 
+// Defensive light-mode override for mixed state cases where nested widgets
+// keep dark attributes/classes after toggle.
+[data-bs-theme="light"] {
+  #mail-conversation-overview {
+    color-scheme: light;
+    background: var(--color-bg-primary, #ffffff);
+  }
+
+  #mail-conversation-overview .panel-heading {
+    background: var(--color-bg-secondary, #f9fafb);
+    border-bottom-color: var(--color-border-light, rgba(0, 0, 0, 0.08));
+  }
+
+  #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry,
+  #mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry,
+  #mail-conversation-overview [data-bs-theme="dark"] .messagePreviewEntry {
+    background: var(--color-bg-primary, #ffffff) !important;
+    border-color: var(--color-border, #e5e7eb) !important;
+    color: var(--color-text-primary, #111827) !important;
+  }
+
+  #mail-conversation-overview .messagePreviewEntry .mail-message-preview-title,
+  #mail-conversation-overview .messagePreviewEntry .mail-message-preview-text,
+  #mail-conversation-overview .messagePreviewEntry .mail-message-preview-time,
+  #mail-conversation-overview .messagePreviewEntry .mail-conversation-snippet,
+  #mail-conversation-overview .messagePreviewEntry .media-heading,
+  #mail-conversation-overview .messagePreviewEntry .media-body,
+  #mail-conversation-overview .messagePreviewEntry a,
+  #mail-conversation-overview .messagePreviewEntry span,
+  #mail-conversation-overview .messagePreviewEntry div {
+    color: inherit !important;
+  }
+}
+
 // ── ACCESSIBILITY ────────────────────────────────────────────────────────────
 // Reduced motion
 @media (prefers-reduced-motion: reduce) {

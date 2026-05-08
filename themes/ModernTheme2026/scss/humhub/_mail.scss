@@ -1404,7 +1404,7 @@ body.mail-list-open::before {
 }
 
 // ── DARK MODE SUPPORT ────────────────────────────────────────────────────────
-@media (prefers-color-scheme: dark) {
+[data-bs-theme="dark"] {
   #mail-conversation-overview {
     background: var(--color-bg-dark, #1f2937);
   }
@@ -1611,7 +1611,7 @@ body.mail-list-open::before {
 }
 
 // Dark mode for new components
-@media (prefers-color-scheme: dark) {
+[data-bs-theme="dark"] {
   .mt2026-mail-sidebar-search {
     background: var(--color-bg-darker, #111827);
     border-color: rgba(255, 255, 255, 0.06);

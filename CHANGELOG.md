@@ -15,6 +15,7 @@ The format follows Keep a Changelog and this project uses Semantic Versioning.
 - Context switcher recent list fixes: dedupe repeated entries per context/space and auto-remove stale items not visited for a few days.
 - Messages conversation picker dark-mode fix: sidebar styling now follows the in-app light/dark toggle instead of OS color-scheme preference.
 - Messages sidebar state fix: unselected conversation cards no longer stay dark when viewing the picker in light mode.
+- Messages sidebar active-card fix: Bootstrap list-group active state is now explicitly overridden so selected conversation cards keep light-mode colors.
 - Pending targeted layout and interaction improvements for Messages UI.
 
 ## [1.0.1] - 2026-05-07

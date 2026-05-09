@@ -1520,6 +1520,12 @@ body:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entr
 // global theme attribute so mixed theme attributes do not invert list colors.
 #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry,
 #mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry {
+  --bs-list-group-bg: color-mix(in srgb, var(--color-bg-primary, #ffffff) 98%, var(--color-primary) 2%);
+  --bs-list-group-color: var(--color-text-primary, #111827);
+  --bs-list-group-border-color: color-mix(in srgb, var(--color-primary) 14%, var(--color-border, #e5e7eb));
+  --bs-list-group-active-bg: color-mix(in srgb, var(--color-primary) 12%, var(--color-bg-primary, #ffffff));
+  --bs-list-group-active-color: var(--color-text-primary, #111827);
+  --bs-list-group-active-border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border, #e5e7eb));
   background: color-mix(in srgb, var(--color-bg-primary, #ffffff) 98%, var(--color-primary) 2%) !important;
   border-color: color-mix(in srgb, var(--color-primary) 14%, var(--color-border, #e5e7eb)) !important;
   color: var(--color-text-primary, #111827) !important;
@@ -1534,6 +1540,14 @@ body:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entr
 #mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry.active {
   background: color-mix(in srgb, var(--color-primary) 12%, var(--color-bg-primary, #ffffff)) !important;
   border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border, #e5e7eb)) !important;
+  color: var(--color-text-primary, #111827) !important;
+}
+
+#mail-conversation-overview .mail-inbox-messages .messagePreviewEntry.list-group-item.active,
+#mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry.list-group-item.active {
+  background-color: var(--bs-list-group-active-bg) !important;
+  border-color: var(--bs-list-group-active-border-color) !important;
+  color: var(--bs-list-group-active-color) !important;
 }
 
 #mail-conversation-overview .messagePreviewEntry .mail-message-preview-title,

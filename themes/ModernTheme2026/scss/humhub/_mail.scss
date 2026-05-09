@@ -1443,38 +1443,48 @@ body.mail-list-open::before {
   }
 }
 
-// Defensive light-mode override for mixed state cases where nested widgets
-// keep dark attributes/classes after toggle.
-[data-bs-theme="light"] {
-  #mail-conversation-overview {
-    color-scheme: light;
-    background: var(--color-bg-primary, #ffffff);
-  }
+// Defensive light-mode override for mixed-state cases where a nested widget
+// keeps dark attributes/classes after the app is switched back to light mode.
+html:not([data-bs-theme="dark"]) #mail-conversation-overview,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview {
+  color-scheme: light;
+  background: var(--color-bg-primary, #ffffff);
+}
 
-  #mail-conversation-overview .panel-heading {
-    background: var(--color-bg-secondary, #f9fafb);
-    border-bottom-color: var(--color-border-light, rgba(0, 0, 0, 0.08));
-  }
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .panel-heading,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .panel-heading {
+  background: var(--color-bg-secondary, #f9fafb);
+  border-bottom-color: var(--color-border-light, rgba(0, 0, 0, 0.08));
+}
 
-  #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry,
-  #mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry,
-  #mail-conversation-overview [data-bs-theme="dark"] .messagePreviewEntry {
-    background: var(--color-bg-primary, #ffffff) !important;
-    border-color: var(--color-border, #e5e7eb) !important;
-    color: var(--color-text-primary, #111827) !important;
-  }
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry {
+  background: var(--color-bg-primary, #ffffff) !important;
+  border-color: var(--color-border, #e5e7eb) !important;
+  color: var(--color-text-primary, #111827) !important;
+}
 
-  #mail-conversation-overview .messagePreviewEntry .mail-message-preview-title,
-  #mail-conversation-overview .messagePreviewEntry .mail-message-preview-text,
-  #mail-conversation-overview .messagePreviewEntry .mail-message-preview-time,
-  #mail-conversation-overview .messagePreviewEntry .mail-conversation-snippet,
-  #mail-conversation-overview .messagePreviewEntry .media-heading,
-  #mail-conversation-overview .messagePreviewEntry .media-body,
-  #mail-conversation-overview .messagePreviewEntry a,
-  #mail-conversation-overview .messagePreviewEntry span,
-  #mail-conversation-overview .messagePreviewEntry div {
-    color: inherit !important;
-  }
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-message-preview-title,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-message-preview-text,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-message-preview-time,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-conversation-snippet,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .media-heading,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .media-body,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry a,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry span,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry div,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-message-preview-title,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-message-preview-text,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-message-preview-time,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-conversation-snippet,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .media-heading,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .media-body,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry a,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry span,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry div {
+  color: inherit !important;
 }
 
 // ── ACCESSIBILITY ────────────────────────────────────────────────────────────

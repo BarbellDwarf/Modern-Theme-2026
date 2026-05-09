@@ -1516,6 +1516,38 @@ body:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entr
   color: inherit !important;
 }
 
+// Sidebar conversation cards: use item state (active vs inactive) rather than
+// global theme attribute so mixed theme attributes do not invert list colors.
+#mail-conversation-overview .mail-inbox-messages .messagePreviewEntry,
+#mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry {
+  background: color-mix(in srgb, var(--color-bg-primary, #ffffff) 98%, var(--color-primary) 2%) !important;
+  border-color: color-mix(in srgb, var(--color-primary) 14%, var(--color-border, #e5e7eb)) !important;
+  color: var(--color-text-primary, #111827) !important;
+}
+
+#mail-conversation-overview .mail-inbox-messages .messagePreviewEntry:not(.active),
+#mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry:not(.active) {
+  background: color-mix(in srgb, var(--color-bg-primary, #ffffff) 98%, var(--color-primary) 2%) !important;
+}
+
+#mail-conversation-overview .mail-inbox-messages .messagePreviewEntry.active,
+#mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry.active {
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-bg-primary, #ffffff)) !important;
+  border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border, #e5e7eb)) !important;
+}
+
+#mail-conversation-overview .messagePreviewEntry .mail-message-preview-title,
+#mail-conversation-overview .messagePreviewEntry .mail-message-preview-text,
+#mail-conversation-overview .messagePreviewEntry .mail-message-preview-time,
+#mail-conversation-overview .messagePreviewEntry .mail-conversation-snippet,
+#mail-conversation-overview .messagePreviewEntry .media-heading,
+#mail-conversation-overview .messagePreviewEntry .media-body,
+#mail-conversation-overview .messagePreviewEntry a,
+#mail-conversation-overview .messagePreviewEntry span,
+#mail-conversation-overview .messagePreviewEntry div {
+  color: inherit !important;
+}
+
 // ── ACCESSIBILITY ────────────────────────────────────────────────────────────
 // Reduced motion
 @media (prefers-reduced-motion: reduce) {

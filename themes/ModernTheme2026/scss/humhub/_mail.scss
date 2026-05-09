@@ -1466,6 +1466,17 @@ body:not([data-bs-theme="dark"]) #mail-conversation-overview [data-mt2026-messag
   color: var(--color-text-primary, #111827) !important;
 }
 
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry:not(.active),
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry:not(.active) {
+  background: var(--color-bg-primary, #ffffff) !important;
+}
+
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry.active,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry.active {
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-bg-primary, #ffffff)) !important;
+  border-color: color-mix(in srgb, var(--color-primary) 26%, var(--color-border, #e5e7eb)) !important;
+}
+
 html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-message-preview-title,
 html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-message-preview-text,
 html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-message-preview-time,
@@ -1484,6 +1495,24 @@ body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntr
 body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry a,
 body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry span,
 body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry div {
+  color: inherit !important;
+}
+
+html:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entry .conversation-entry-content,
+body:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entry .conversation-entry-content {
+  background: var(--color-bg-primary, #ffffff) !important;
+  border-color: var(--color-border, #e5e7eb) !important;
+  color: var(--color-text-primary, #111827) !important;
+}
+
+html:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entry.own .conversation-entry-content,
+body:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entry.own .conversation-entry-content {
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-bg-primary, #ffffff)) !important;
+  border-color: color-mix(in srgb, var(--color-primary) 20%, var(--color-border, #e5e7eb)) !important;
+}
+
+html:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entry .conversation-entry-content *,
+body:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entry .conversation-entry-content * {
   color: inherit !important;
 }
 

@@ -163,7 +163,6 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
             if (!$c.find('a.likeAnchor').length) {
                 return;
             }
-            $c.attr('data-mt2026-reactions', '1');
 
             var params = getUrlParams($c);
             $c.data('mt2026-params', params);
@@ -175,6 +174,10 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
             $c.prepend('<button type="button" class="mt2026-reaction-trigger" title="React" aria-haspopup="true">'
                 + '<i class="fa fa-smile-o" aria-hidden="true"></i>'
                 + '</button>');
+
+            // Mark as initialized only after trigger injection succeeds, so
+            // native like links are not hidden by CSS if setup aborts early.
+            $c.attr('data-mt2026-reactions', '1');
 
             // 2. No longer appending an inline picker — we use a single teleported body picker.
             // (kept as comment for clarity)

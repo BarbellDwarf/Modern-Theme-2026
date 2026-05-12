@@ -368,7 +368,7 @@
   // ── Hide compose box by default; show only when needed via show-on-mobile ──
   // On mobile, the comment section opens showing existing comments.
   // The compose box is hidden by default; it appears via JS adding show-on-mobile.
-  .comment_create {
+  .comment-container > .comment_create {
     display: none !important;
     
     // When shown, collapse editor to single line until tapped

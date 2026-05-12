@@ -126,6 +126,17 @@
     };
 
     var showForTrigger = function(triggerEl) {
+        var actionClick = triggerEl && triggerEl.getAttribute && triggerEl.getAttribute('data-action-click');
+
+        // Keep reply handling with HumHub core to avoid overriding nested reply UX.
+        if (actionClick && actionClick.indexOf('comment.reply') !== -1) {
+            return;
+        }
+
+        if (triggerEl && (triggerEl.classList.contains('comment-reply-link') || triggerEl.classList.contains('reply-comment-link'))) {
+            return;
+        }
+
         var container = getEntryContainer(triggerEl);
 
         if (!container) {
@@ -149,9 +160,8 @@
             var trigger = closestElement(
                 ev.target,
                 '[data-action-click*="comment.toggleComment"], '
-                + '[data-action-click*="comment.reply"], '
                 + '[data-action-click="ui.modal.load"][data-action-url*="/comment/comment/show"], '
-                + '.comment-reply-link, .reply-comment-link'
+                + '.comment-link'
             );
             if (!trigger) {
                 return;

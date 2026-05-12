@@ -35,22 +35,6 @@
         // The top-level new-comment form is a direct child of .comment-container.
         // Nested comments also contain .comment_create forms (reply forms), which
         // should not be toggled when tapping the main Comment action.
-        var focusCompose = function(form) {
-            if (!form) {
-                return;
-            }
-
-            var target = form.querySelector('.ProseMirror[contenteditable="true"], [contenteditable="true"], textarea, input[type="text"]');
-            if (!target) {
-                return;
-            }
-
-            try {
-                target.focus({ preventScroll: true });
-            } catch (e) {
-                target.focus();
-            }
-        };
         for (var i = 0; i < container.children.length; i++) {
             var child = container.children[i];
             if (child.classList && child.classList.contains('comment_create')) {
@@ -90,16 +74,34 @@
         return containers.length ? containers[0] : null;
     };
 
+    var focusCompose = function(form) {
+        if (!form) {
+            return;
+        }
+
+        var target = form.querySelector('.ProseMirror[contenteditable="true"], [contenteditable="true"], textarea, input[type="text"]');
+        if (!target) {
+            return;
+        }
+
+        try {
+            target.focus({ preventScroll: true });
+        } catch (e) {
+            target.focus();
+        }
+    };
+
     var showCompose = function(form) {
-            // On mobile, tapping Comment should place the cursor directly in composer.
-            setTimeout(function() {
-                focusCompose(form);
-            }, 60);
         if (!form) {
             return;
         }
         form.classList.remove('d-none');
         form.classList.add('show-on-mobile');
+
+        // On mobile, tapping Comment should place the cursor directly in composer.
+        setTimeout(function() {
+            focusCompose(form);
+        }, 60);
     };
 
     var hideCompose = function(form) {

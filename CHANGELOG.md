@@ -4,6 +4,15 @@ All notable changes to this project are documented in this file.
 
 The format follows Keep a Changelog and this project uses Semantic Versioning.
 
+## [1.0.3] - 2026-05-12
+
+### Fixed
+- Mobile comment composer regression where tapping `Send` could fail after composer focus/visibility changes.
+- Mobile comment trigger handling to avoid overriding nested reply actions.
+
+### Changed
+- Improved mobile comment composer focus behavior when tapping `Comment`.
+
 ## [1.0.2] - 2026-05-07
 
 ### Added

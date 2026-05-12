@@ -344,15 +344,15 @@ body.mt2026-mail-page #layout-content {
   box-shadow: var(--shadow-lg, 0 10px 15px rgba(0, 0, 0, 0.1));
 }
 
-body.mail-list-open #mail-conversation-overview {
+body.mt2026-mail-has-conversation.mail-list-open #mail-conversation-overview {
   transform: translateX(0);
 }
 
-body.mail-list-open {
+body.mt2026-mail-has-conversation.mail-list-open {
   overflow: hidden;
 }
 
-body.mail-list-open::before {
+body.mt2026-mail-has-conversation.mail-list-open::before {
   content: '';
   position: fixed;
   top: max(56px, var(--hh-fixed-header-height, 60px));
@@ -1129,6 +1129,12 @@ body.mail-list-open::before {
 
   // Chat-app pattern: when no conversation is selected, show only the list screen.
   body.mt2026-mail-page:not(.mt2026-mail-has-conversation) #mail-conversation-root {
+    display: none !important;
+  }
+
+  // On inbox-first screen the list is already visible, so hamburger should not
+  // present a drawer affordance.
+  body.mt2026-mail-page:not(.mt2026-mail-has-conversation) #mail-conversation-header .mt2026-mail-topbar-toggle {
     display: none !important;
   }
 

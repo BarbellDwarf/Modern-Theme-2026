@@ -66,6 +66,19 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
         return window.innerWidth <= 991;
     }
 
+    function isComposingMessage() {
+        var active = document.activeElement;
+        if (!active || !active.closest) {
+            return false;
+        }
+
+        if (!active.closest('.mail-message-form, .mt2026-mail-composer-dock')) {
+            return false;
+        }
+
+        return true;
+    }
+
     function scrollConversationToLatest() {
         var list = document.querySelector('.conversation-entry-list');
         if (!list) {
@@ -221,6 +234,14 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
     $(document).on('click.mt2026Mail', '.mt2026-mail-topbar-toggle', function(e) {
         e.preventDefault();
         e.stopPropagation();
+
+        // On the inbox-first mobile screen there is no active conversation yet.
+        // In that state the list is already visible, so drawer overlay should not open.
+        if (!document.body.classList.contains('mt2026-mail-has-conversation')) {
+            closeMailList();
+            return;
+        }
+
         openMailList();
     });
 
@@ -257,6 +278,12 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
             headingToggle.setAttribute('data-mt2026-mail-toggle', '1');
             headingToggle.addEventListener('click', function(e) {
                 e.preventDefault();
+
+                if (!document.body.classList.contains('mt2026-mail-has-conversation')) {
+                    closeMailList();
+                    return;
+                }
+
                 if (document.body.classList.contains('mail-list-open')) {
                     closeMailList();
                 } else {
@@ -301,6 +328,12 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
 
     $(window).on('resize.mt2026Mail orientationchange.mt2026Mail', function() {
         if (isMailPage() && hasActiveConversation() && isMobileWidth()) {
+            // Keyboard-driven viewport resize while composing can cause visible jank.
+            // Skip forced list resize/auto-scroll until composition settles.
+            if (isComposingMessage() || document.body.classList.contains('mt2026-keyboard-open')) {
+                return;
+            }
+
             sizeMobileConversationList();
             scrollConversationToLatest();
         }

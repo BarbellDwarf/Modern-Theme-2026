@@ -73,9 +73,10 @@
     box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05)) !important;
   }
 
-  // No scroll-lock or dark overlay on desktop
-  body.mail-list-open {
-    overflow: auto !important;
+  // Desktop mail should scroll inside panes, not the whole page.
+  body.mt2026-mail-page,
+  body.mt2026-mail-page.mail-list-open {
+    overflow: hidden !important;
   }
 
   body.mail-list-open::before {
@@ -168,6 +169,21 @@ body.mt2026-mail-page .mobile-bottom-nav {
 body.mt2026-mail-page,
 body.mt2026-mail-page #layout-content {
   height: auto !important;
+}
+
+@media (min-width: 992px) {
+  body.mt2026-mail-page.mt2026-mail-fullscreen,
+  body.mt2026-mail-page.mt2026-mail-fullscreen #layout-content {
+    height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  body.mt2026-mail-page.mt2026-mail-fullscreen #mail-conversation-overview,
+  body.mt2026-mail-page.mt2026-mail-fullscreen #mail-conversation-overview .mail-inbox-messages,
+  body.mt2026-mail-page.mt2026-mail-fullscreen #mail-conversation-overview #inbox {
+    max-height: 100% !important;
+    overflow-y: auto !important;
+  }
 }
 
 // Mail index container should be flex to distribute space to columns
@@ -1449,6 +1465,28 @@ html:not([data-bs-theme="dark"]) #mail-conversation-overview,
 body:not([data-bs-theme="dark"]) #mail-conversation-overview {
   color-scheme: light;
   background: var(--color-bg-primary, #ffffff);
+}
+
+// If nested widgets keep data-bs-theme="dark" after switching to light mode,
+// force the conversation pane subtree back to light tokens.
+html[data-bs-theme="light"] #mail-conversation-overview [data-bs-theme="dark"],
+body[data-bs-theme="light"] #mail-conversation-overview [data-bs-theme="dark"],
+html:not([data-bs-theme="dark"]) #mail-conversation-overview [data-bs-theme="dark"],
+body:not([data-bs-theme="dark"]) #mail-conversation-overview [data-bs-theme="dark"] {
+  color-scheme: light;
+  --bs-body-bg: var(--color-bg-primary, #ffffff);
+  --bs-body-color: var(--color-text-primary, #111827);
+  --bs-secondary-bg: var(--color-bg-secondary, #f9fafb);
+  --bs-tertiary-bg: var(--color-bg-secondary, #f9fafb);
+}
+
+html[data-bs-theme="light"] #mail-conversation-overview [data-bs-theme="dark"] .messagePreviewEntry,
+body[data-bs-theme="light"] #mail-conversation-overview [data-bs-theme="dark"] .messagePreviewEntry,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview [data-bs-theme="dark"] .messagePreviewEntry,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview [data-bs-theme="dark"] .messagePreviewEntry {
+  background: color-mix(in srgb, var(--color-bg-primary, #ffffff) 98%, var(--color-primary) 2%) !important;
+  border-color: color-mix(in srgb, var(--color-primary) 14%, var(--color-border, #e5e7eb)) !important;
+  color: var(--color-text-primary, #111827) !important;
 }
 
 html:not([data-bs-theme="dark"]) #mail-conversation-overview .panel-heading,

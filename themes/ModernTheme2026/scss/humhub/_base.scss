@@ -26,6 +26,16 @@ body > .profile-layout-container {
     z-index: 1;
 }
 
+// Mail fullscreen manages its own viewport sizing; avoid extra top spacing that
+// can cut off the conversation header on desktop.
+@media (min-width: 992px) {
+    body.mt2026-mail-page.mt2026-mail-fullscreen > #layout-content,
+    body.mt2026-mail-page.mt2026-mail-fullscreen > .container,
+    body.mt2026-mail-page.mt2026-mail-fullscreen > .container-fluid {
+        margin-top: 0 !important;
+    }
+}
+
 // Only override container width on very large screens to avoid
 // conflicting with Bootstrap's 3-column layout at normal desktop widths
 @media (min-width: 1600px) {

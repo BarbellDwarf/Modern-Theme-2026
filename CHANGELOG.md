@@ -4,6 +4,15 @@ All notable changes to this project are documented in this file.
 
 The format follows Keep a Changelog and this project uses Semantic Versioning.
 
+## [1.0.4] - 2026-05-12
+
+### Fixed
+- Mobile stream comment reliability by scoping hidden mobile composer behavior to top-level stream composer forms only.
+- Reaction picker initialization order so native like/unlike links remain available as fallback if custom picker setup is interrupted.
+
+### Changed
+- AI lifecycle instructions now require release branch version alignment across `module.json`, `package.json`, and `CHANGELOG.md`.
+
 ## [1.0.3] - 2026-05-12
 
 ### Fixed

@@ -149,6 +149,18 @@ modern-theme-2026/
 
 **Use when**: Setting up module for testing, verifying installation works, debugging theme activation, testing uninstallation, creating migrations, troubleshooting CSS compilation.
 
+### BRANCH-VERSION-UPDATE-RULES.md
+
+**Use for release branches**: When creating a branch named `VMAJOR.MINOR.PATCH` (example: `V1.0.4`).
+
+**Contains**:
+- Mandatory version metadata updates for release branches
+- Required file alignment across `module.json`, `package.json`, and `CHANGELOG.md`
+- PR checklist to prevent version drift
+- Fast verification commands before PR creation
+
+**Use when**: Starting a new release branch and preparing PRs from release branches into `main`.
+
 ## How Agents Should Use These Instructions
 
 ### Discovery Process

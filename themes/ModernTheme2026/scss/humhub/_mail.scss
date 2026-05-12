@@ -90,6 +90,11 @@
   body.mt2026-mail-page {
     padding-bottom: 64px !important;
   }
+
+  // Fullscreen mail manages its own internal pane spacing; keep page box tight.
+  body.mt2026-mail-page.mt2026-mail-fullscreen {
+    padding-bottom: 0 !important;
+  }
 }
 
 body.mt2026-mail-page .mobile-bottom-nav {
@@ -173,9 +178,14 @@ body.mt2026-mail-page #layout-content {
 
 @media (min-width: 992px) {
   html:has(body.mt2026-mail-page.mt2026-mail-fullscreen),
-  body.mt2026-mail-page.mt2026-mail-fullscreen,
-  body.mt2026-mail-page.mt2026-mail-fullscreen #layout-content {
+  body.mt2026-mail-page.mt2026-mail-fullscreen {
     height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  body.mt2026-mail-page.mt2026-mail-fullscreen #layout-content {
+    height: calc(100dvh - var(--mt2026-topbar-height, 60px)) !important;
+    max-height: calc(100dvh - var(--mt2026-topbar-height, 60px)) !important;
     overflow: hidden !important;
   }
 

@@ -1,0 +1,27 @@
+{
+  "name": "modern-theme-2026",
+  "version": "1.0.0",
+  "description": "Do you enjoy using HumHub but find the UI a little clunky? Tried the Clean Theme and it just doesn't seem to scratch that itch? Well that was me. And I decided to do something about it. I built this theme from the ground up to fix all the issues I saw with the base theme and the Clean Theme. Try it out and let me know what you think!",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BarbellDwarf/Modern-Theme-2026.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/BarbellDwarf/Modern-Theme-2026/issues"
+  },
+  "homepage": "https://github.com/BarbellDwarf/Modern-Theme-2026#readme",
+  "devDependencies": {
+    "playwright": "^1.60.0"
+  }
+}

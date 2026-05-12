@@ -1730,7 +1730,8 @@ body:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entr
 }
 
 // Dark mode for new components
-[data-bs-theme="dark"] {
+html[data-bs-theme="dark"],
+body[data-bs-theme="dark"] {
   .mt2026-mail-sidebar-search {
     background: var(--color-bg-darker, #111827);
     border-color: rgba(255, 255, 255, 0.06);
@@ -1748,6 +1749,47 @@ body:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entr
   .mail-inbox-messages .messagePreviewEntry .user-status-dot {
     border-color: var(--color-bg-dark, #1f2937);
   }
+}
+
+// Respect the UI light-mode toggle at the root level for the two problematic
+// regions: conversation list item states and message composer dock.
+html[data-bs-theme="light"] #mail-conversation-overview,
+body[data-bs-theme="light"] #mail-conversation-overview {
+  color-scheme: light;
+  background: var(--color-bg-primary, #ffffff) !important;
+}
+
+html[data-bs-theme="light"] #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry,
+html[data-bs-theme="light"] #mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry,
+body[data-bs-theme="light"] #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry,
+body[data-bs-theme="light"] #mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry {
+  background: color-mix(in srgb, var(--color-bg-primary, #ffffff) 98%, var(--color-primary) 2%) !important;
+  border-color: color-mix(in srgb, var(--color-primary) 14%, var(--color-border, #e5e7eb)) !important;
+  color: var(--color-text-primary, #111827) !important;
+}
+
+html[data-bs-theme="light"] #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry.active,
+html[data-bs-theme="light"] #mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry.active,
+body[data-bs-theme="light"] #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry.active,
+body[data-bs-theme="light"] #mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry.active {
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-bg-primary, #ffffff)) !important;
+  border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border, #e5e7eb)) !important;
+  color: var(--color-text-primary, #111827) !important;
+}
+
+html[data-bs-theme="light"] .mt2026-mail-composer-dock,
+body[data-bs-theme="light"] .mt2026-mail-composer-dock {
+  background: color-mix(in srgb, var(--color-bg-primary, #ffffff) 94%, var(--color-primary) 6%) !important;
+  border-top: 1px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border, #e5e7eb)) !important;
+}
+
+html[data-bs-theme="light"] .mail-message-form .panel-body,
+body[data-bs-theme="light"] .mail-message-form .panel-body,
+html[data-bs-theme="light"] .mail-message-form .humhub-ui-richtext,
+body[data-bs-theme="light"] .mail-message-form .humhub-ui-richtext {
+  background: var(--color-bg-primary, #ffffff) !important;
+  border-color: var(--color-border, #e5e7eb) !important;
+  color: var(--color-text-primary, #111827) !important;
 }
 
 // Reduced motion for new components

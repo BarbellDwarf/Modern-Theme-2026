@@ -62,7 +62,7 @@ To update the theme to a newer version:
 1. Pull the latest changes:
    ```bash
    cd /var/www/humhub/protected/modules/modern-theme-2026
-   git pull origin V2026.0.0
+   git pull origin V1.0.3
    ```
 
 2. Clear HumHub cache:
@@ -90,7 +90,7 @@ Before merging to `main`:
    `## [<version>] - YYYY-MM-DD`
 3. Merge to `main` to trigger zip packaging and release publication.
 
-## Recent Branch Changes (V2026.0.0)
+## Recent Branch Changes (V1.0.3)
 
 - Mail conversation UI refinements across desktop and mobile:
    - own messages align right, other users align left
@@ -226,7 +226,10 @@ Please report bugs with:
 
 ## Version
 
-1.0.0 - Initial Release
+- 1.0.3 - Mobile comment composer focus/scope regression fixes and improved mobile comment handling
+- 1.0.2 - Stream and messages UI refinements
+- 1.0.1 - Mail layout and mobile UX refinements
+- 1.0.0 - Initial release
 
 ## License
 

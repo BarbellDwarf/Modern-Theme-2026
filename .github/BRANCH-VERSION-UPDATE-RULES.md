@@ -21,7 +21,9 @@ Required file updates:
 
 3. CHANGELOG.md
 - Add a new top section in this format:
-  - ## [1.0.4] - YYYY-MM-DD
+  ```md
+  ## [1.0.4] - YYYY-MM-DD
+  ```
 - Include concise Fixed/Changed notes for the branch changes.
 
 ## Branch-to-Version Mapping

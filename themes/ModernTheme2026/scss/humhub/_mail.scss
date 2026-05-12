@@ -1307,6 +1307,13 @@ body.mt2026-mail-has-conversation.mail-list-open::before {
     justify-content: center;
   }
 
+  // In the active mobile thread view, let the composer own the bottom edge.
+  // Keeping the global mobile nav visible here creates a second moving bottom bar
+  // when keyboard-open state toggles.
+  body.mt2026-mail-fullscreen.mt2026-mail-has-conversation .mobile-bottom-nav {
+    display: none !important;
+  }
+
   // Shell container adjustments
   .mt2026-mail-shell > .conversation-entry-container {
     flex: 1 1 auto !important;
@@ -1318,7 +1325,7 @@ body.mt2026-mail-has-conversation.mail-list-open::before {
   .mt2026-mail-fullscreen #mail-conversation-root .mt2026-mail-composer-dock {
     flex: 0 0 auto;
     position: fixed !important;
-    bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
+    bottom: env(safe-area-inset-bottom, 0) !important;
     left: 0;
     right: 0;
     z-index: 1010;
@@ -1330,10 +1337,6 @@ body.mt2026-mail-has-conversation.mail-list-open::before {
     border-left: 0 !important;
     border-right: 0 !important;
     padding-bottom: max(8px, env(safe-area-inset-bottom, 0)) !important;
-  }
-
-  body.mt2026-keyboard-open.mt2026-mail-fullscreen #mail-conversation-root .mt2026-mail-composer-dock {
-    bottom: env(safe-area-inset-bottom, 0) !important;
   }
 
   // Spacing for last message (not hidden behind composer)

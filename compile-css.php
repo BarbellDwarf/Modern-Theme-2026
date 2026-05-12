@@ -29,6 +29,10 @@ if ($autoload) {
 $themeBasePath = __DIR__ . '/themes/ModernTheme2026';
 $parentThemeBasePath = dirname(__DIR__, 3) . '/themes/HumHub';
 $webroot = dirname(__DIR__, 3);
+$canonicalOutputDirs = [
+    $themeBasePath . '/dist',
+    $themeBasePath . '/resources/css',
+];
 
 // Find the published asset directory for this theme
 $possibleHashes = array_filter(glob($webroot . '/assets/*/README.md'), function ($f) use ($themeBasePath) {
@@ -64,6 +68,13 @@ if (!$assetDir) {
     }
     echo "Theme: {$themeBasePath}\n";
     echo "Output: {$outputDir}\n\n";
+}
+
+$outputDirs = array_values(array_unique(array_merge([$outputDir], $canonicalOutputDirs)));
+foreach ($outputDirs as $dir) {
+    if (!is_dir($dir)) {
+        mkdir($dir, 0755, true);
+    }
 }
 
 if ($hasScssPhp) {
@@ -136,19 +147,27 @@ if ($hasScssPhp) {
     try {
         $result = $compiler->compileString($scssContent);
         $css = $result->getCss();
-        file_put_contents($outputDir . '/theme.css', $css);
-        echo "SUCCESS: CSS compiled (" . number_format(strlen($css)) . " bytes → {$outputDir}/theme.css)\n";
+        foreach ($outputDirs as $dir) {
+            file_put_contents($dir . '/theme.css', $css);
+        }
+        echo "SUCCESS: CSS compiled (" . number_format(strlen($css)) . " bytes → " . implode(', ', array_map(function ($dir) {
+            return $dir . '/theme.css';
+        }, $outputDirs)) . ")\n";
     } catch (Exception $e) {
         echo "ERROR: " . $e->getMessage() . "\n";
         exit(1);
     }
 } else {
     // Write aggregated SCSS for manual compilation using `sass`/`dart-sass` or `npx sass`.
-    file_put_contents($outputDir . '/theme.scss', $scssContent);
-    echo "WROTE: Aggregated SCSS to {$outputDir}/theme.scss\n\n";
+    foreach ($outputDirs as $dir) {
+        file_put_contents($dir . '/theme.scss', $scssContent);
+    }
+    echo "WROTE: Aggregated SCSS to " . implode(', ', array_map(function ($dir) {
+        return $dir . '/theme.scss';
+    }, $outputDirs)) . "\n\n";
     echo "To compile locally:\n";
     echo "  # Install dart-sass (preferred):\n";
-    echo "  npx sass {$outputDir}/theme.scss {$outputDir}/theme.css --style=compressed\n\n";
+    echo "  npx sass {$themeBasePath}/dist/theme.scss {$themeBasePath}/dist/theme.css --style=compressed\n\n";
     echo "Or use Composer to install scssphp and re-run this script:\n";
     echo "  composer require scssphp/scssphp --no-interaction\n";
     echo "  php compile-css.php\n\n";

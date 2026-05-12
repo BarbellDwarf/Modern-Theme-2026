@@ -172,9 +172,20 @@ body.mt2026-mail-page #layout-content {
 }
 
 @media (min-width: 992px) {
+  html:has(body.mt2026-mail-page.mt2026-mail-fullscreen),
   body.mt2026-mail-page.mt2026-mail-fullscreen,
   body.mt2026-mail-page.mt2026-mail-fullscreen #layout-content {
     height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  body.mt2026-mail-page.mt2026-mail-fullscreen .layout-content-container,
+  body.mt2026-mail-page.mt2026-mail-fullscreen .container,
+  body.mt2026-mail-page.mt2026-mail-fullscreen .container-fluid,
+  body.mt2026-mail-page.mt2026-mail-fullscreen .mt2026-mail-index,
+  body.mt2026-mail-page.mt2026-mail-fullscreen .mt2026-mail-index > .row {
+    height: 100% !important;
+    max-height: 100% !important;
     overflow: hidden !important;
   }
 

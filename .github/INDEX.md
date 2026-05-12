@@ -57,6 +57,11 @@ AGENTS.md
 │   ├── Shows discovery process
 │   └── Lists task examples
 │
+├── HUMHUB-POST-CHANGE-CHECKLIST.md
+│   ├── Post-change cache/asset/migration checklist
+│   ├── Verification workflow after module edits
+│   └── HumHub CLI commands for refresh/flush
+│
 └── DELIVERY-SUMMARY.md
     ├── What was delivered
     ├── File statistics
@@ -128,6 +133,7 @@ modern-theme-2026/
 | Full context | `AGENTS.md` | 15 min |
 | Quick lookup | `QUICK-REFERENCE.md` | 2 min |
 | How to use | `.github/INSTRUCTIONS.md` | 5 min |
+| Post-change deploy checks | `.github/HUMHUB-POST-CHANGE-CHECKLIST.md` | 5 min |
 | SCSS help | `.github/instructions/theme-scss.instructions.md` | 10 min |
 | PHP help | `.github/instructions/php-widgets-module.instructions.md` | 12 min |
 | JS help | `.github/instructions/javascript-modules.instructions.md` | 12 min |

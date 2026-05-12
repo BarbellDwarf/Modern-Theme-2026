@@ -167,7 +167,14 @@ humhub.module('modernTheme.mobileKeyboardFix', function(module, require, $) {
 
         $(document).on('focusin.mt2026Keyboard', SELECTORS, function() {
             var el = this;
-            setKeyboardState(true);
+            // Prefer viewport-driven detection when available to avoid sticky
+            // keyboard-open state on mobile browsers that keep contenteditable focused.
+            if (window.visualViewport) {
+                setKeyboardState();
+                setTimeout(setKeyboardState, 120);
+            } else {
+                setKeyboardState(true);
+            }
             // Scroll after keyboard animation: 300ms (Android), 400ms (iOS), 600ms (safety)
             setTimeout(function() { scrollIntoSafeView(el); }, 300);
             setTimeout(function() { scrollIntoSafeView(el); }, 600);
@@ -186,6 +193,38 @@ humhub.module('modernTheme.mobileKeyboardFix', function(module, require, $) {
                     setKeyboardState();
                 }
             }, 50);
+        });
+
+        // Some mobile browsers keep contenteditable focused after tapping outside,
+        // which can leave .mt2026-keyboard-open stuck and hide the bottom nav.
+        // Re-evaluate keyboard state shortly after outside taps.
+        $(document).on('touchstart.mt2026Keyboard mousedown.mt2026Keyboard', function(evt) {
+            var target = evt.target;
+            if (!target || !target.closest) {
+                return;
+            }
+
+            if (target.closest(SELECTORS)) {
+                return;
+            }
+
+            setTimeout(function() {
+                var active = document.activeElement;
+                var stillTyping = active && active.matches && active.matches(SELECTORS);
+                if (!stillTyping) {
+                    setKeyboardState(false);
+                } else {
+                    setKeyboardState();
+                }
+            }, 120);
+        });
+
+        // Extra safety: keep keyboard/nav state in sync across viewport/layout changes.
+        window.addEventListener('resize', function() {
+            setKeyboardState();
+        });
+        window.addEventListener('orientationchange', function() {
+            setTimeout(setKeyboardState, 120);
         });
 
         if (window.visualViewport) {

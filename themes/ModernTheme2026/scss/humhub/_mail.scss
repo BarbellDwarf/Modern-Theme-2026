@@ -1404,7 +1404,7 @@ body.mail-list-open::before {
 }
 
 // ── DARK MODE SUPPORT ────────────────────────────────────────────────────────
-@media (prefers-color-scheme: dark) {
+[data-bs-theme="dark"] {
   #mail-conversation-overview {
     background: var(--color-bg-dark, #1f2937);
   }
@@ -1441,6 +1441,125 @@ body.mail-list-open::before {
     background: var(--color-bg-darker, #111827);
     border-color: rgba(255, 255, 255, 0.1);
   }
+}
+
+// Defensive light-mode override for mixed-state cases where a nested widget
+// keeps dark attributes/classes after the app is switched back to light mode.
+html:not([data-bs-theme="dark"]) #mail-conversation-overview,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview {
+  color-scheme: light;
+  background: var(--color-bg-primary, #ffffff);
+}
+
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .panel-heading,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .panel-heading {
+  background: var(--color-bg-secondary, #f9fafb);
+  border-bottom-color: var(--color-border-light, rgba(0, 0, 0, 0.08));
+}
+
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry {
+  background: var(--color-bg-primary, #ffffff) !important;
+  border-color: var(--color-border, #e5e7eb) !important;
+  color: var(--color-text-primary, #111827) !important;
+}
+
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry:not(.active),
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry:not(.active) {
+  background: var(--color-bg-primary, #ffffff) !important;
+}
+
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry.active,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry.active {
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-bg-primary, #ffffff)) !important;
+  border-color: color-mix(in srgb, var(--color-primary) 26%, var(--color-border, #e5e7eb)) !important;
+}
+
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-message-preview-title,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-message-preview-text,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-message-preview-time,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-conversation-snippet,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .media-heading,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .media-body,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry a,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry span,
+html:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry div,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-message-preview-title,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-message-preview-text,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-message-preview-time,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .mail-conversation-snippet,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .media-heading,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry .media-body,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry a,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry span,
+body:not([data-bs-theme="dark"]) #mail-conversation-overview .messagePreviewEntry div {
+  color: inherit !important;
+}
+
+html:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entry .conversation-entry-content,
+body:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entry .conversation-entry-content {
+  background: var(--color-bg-primary, #ffffff) !important;
+  border-color: var(--color-border, #e5e7eb) !important;
+  color: var(--color-text-primary, #111827) !important;
+}
+
+html:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entry.own .conversation-entry-content,
+body:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entry.own .conversation-entry-content {
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-bg-primary, #ffffff)) !important;
+  border-color: color-mix(in srgb, var(--color-primary) 20%, var(--color-border, #e5e7eb)) !important;
+}
+
+html:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entry .conversation-entry-content *,
+body:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entry .conversation-entry-content * {
+  color: inherit !important;
+}
+
+// Sidebar conversation cards: use item state (active vs inactive) rather than
+// global theme attribute so mixed theme attributes do not invert list colors.
+#mail-conversation-overview .mail-inbox-messages .messagePreviewEntry,
+#mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry {
+  --bs-list-group-bg: color-mix(in srgb, var(--color-bg-primary, #ffffff) 98%, var(--color-primary) 2%);
+  --bs-list-group-color: var(--color-text-primary, #111827);
+  --bs-list-group-border-color: color-mix(in srgb, var(--color-primary) 14%, var(--color-border, #e5e7eb));
+  --bs-list-group-active-bg: color-mix(in srgb, var(--color-primary) 12%, var(--color-bg-primary, #ffffff));
+  --bs-list-group-active-color: var(--color-text-primary, #111827);
+  --bs-list-group-active-border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border, #e5e7eb));
+  background: color-mix(in srgb, var(--color-bg-primary, #ffffff) 98%, var(--color-primary) 2%) !important;
+  border-color: color-mix(in srgb, var(--color-primary) 14%, var(--color-border, #e5e7eb)) !important;
+  color: var(--color-text-primary, #111827) !important;
+}
+
+#mail-conversation-overview .mail-inbox-messages .messagePreviewEntry:not(.active),
+#mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry:not(.active) {
+  background: color-mix(in srgb, var(--color-bg-primary, #ffffff) 98%, var(--color-primary) 2%) !important;
+}
+
+#mail-conversation-overview .mail-inbox-messages .messagePreviewEntry.active,
+#mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry.active {
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-bg-primary, #ffffff)) !important;
+  border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border, #e5e7eb)) !important;
+  color: var(--color-text-primary, #111827) !important;
+}
+
+#mail-conversation-overview .mail-inbox-messages .messagePreviewEntry.list-group-item.active,
+#mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry.list-group-item.active {
+  background-color: var(--bs-list-group-active-bg) !important;
+  border-color: var(--bs-list-group-active-border-color) !important;
+  color: var(--bs-list-group-active-color) !important;
+}
+
+#mail-conversation-overview .messagePreviewEntry .mail-message-preview-title,
+#mail-conversation-overview .messagePreviewEntry .mail-message-preview-text,
+#mail-conversation-overview .messagePreviewEntry .mail-message-preview-time,
+#mail-conversation-overview .messagePreviewEntry .mail-conversation-snippet,
+#mail-conversation-overview .messagePreviewEntry .media-heading,
+#mail-conversation-overview .messagePreviewEntry .media-body,
+#mail-conversation-overview .messagePreviewEntry a,
+#mail-conversation-overview .messagePreviewEntry span,
+#mail-conversation-overview .messagePreviewEntry div {
+  color: inherit !important;
 }
 
 // ── ACCESSIBILITY ────────────────────────────────────────────────────────────
@@ -1611,7 +1730,8 @@ body.mail-list-open::before {
 }
 
 // Dark mode for new components
-@media (prefers-color-scheme: dark) {
+html[data-bs-theme="dark"],
+body[data-bs-theme="dark"] {
   .mt2026-mail-sidebar-search {
     background: var(--color-bg-darker, #111827);
     border-color: rgba(255, 255, 255, 0.06);
@@ -1629,6 +1749,47 @@ body.mail-list-open::before {
   .mail-inbox-messages .messagePreviewEntry .user-status-dot {
     border-color: var(--color-bg-dark, #1f2937);
   }
+}
+
+// Respect the UI light-mode toggle at the root level for the two problematic
+// regions: conversation list item states and message composer dock.
+html[data-bs-theme="light"] #mail-conversation-overview,
+body[data-bs-theme="light"] #mail-conversation-overview {
+  color-scheme: light;
+  background: var(--color-bg-primary, #ffffff) !important;
+}
+
+html[data-bs-theme="light"] #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry,
+html[data-bs-theme="light"] #mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry,
+body[data-bs-theme="light"] #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry,
+body[data-bs-theme="light"] #mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry {
+  background: color-mix(in srgb, var(--color-bg-primary, #ffffff) 98%, var(--color-primary) 2%) !important;
+  border-color: color-mix(in srgb, var(--color-primary) 14%, var(--color-border, #e5e7eb)) !important;
+  color: var(--color-text-primary, #111827) !important;
+}
+
+html[data-bs-theme="light"] #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry.active,
+html[data-bs-theme="light"] #mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry.active,
+body[data-bs-theme="light"] #mail-conversation-overview .mail-inbox-messages .messagePreviewEntry.active,
+body[data-bs-theme="light"] #mail-conversation-overview [data-mt2026-messages-inbox] .messagePreviewEntry.active {
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-bg-primary, #ffffff)) !important;
+  border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border, #e5e7eb)) !important;
+  color: var(--color-text-primary, #111827) !important;
+}
+
+html[data-bs-theme="light"] .mt2026-mail-composer-dock,
+body[data-bs-theme="light"] .mt2026-mail-composer-dock {
+  background: color-mix(in srgb, var(--color-bg-primary, #ffffff) 94%, var(--color-primary) 6%) !important;
+  border-top: 1px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border, #e5e7eb)) !important;
+}
+
+html[data-bs-theme="light"] .mail-message-form .panel-body,
+body[data-bs-theme="light"] .mail-message-form .panel-body,
+html[data-bs-theme="light"] .mail-message-form .humhub-ui-richtext,
+body[data-bs-theme="light"] .mail-message-form .humhub-ui-richtext {
+  background: var(--color-bg-primary, #ffffff) !important;
+  border-color: var(--color-border, #e5e7eb) !important;
+  color: var(--color-text-primary, #111827) !important;
 }
 
 // Reduced motion for new components

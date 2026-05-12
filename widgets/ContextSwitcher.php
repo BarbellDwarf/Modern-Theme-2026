@@ -13,6 +13,7 @@ class ContextSwitcher extends Widget
     /** Max spaces to show in the menu */
     public int $maxSpaces = 10;
     private const RECENT_HISTORY_LIMIT = 5;
+    private const RECENT_RETENTION_DAYS = 3;
 
     public function run(): string
     {
@@ -96,7 +97,9 @@ class ContextSwitcher extends Widget
         }
 
         $raw = Yii::$app->session->get('mt2026.context.recent', []);
-        return is_array($raw) ? $raw : [];
+        $items = $this->normalizeRecentItems(is_array($raw) ? $raw : []);
+        Yii::$app->session->set('mt2026.context.recent', $items);
+        return $items;
     }
 
     private function trackRecentContext(string $context, string $route, ?Space $currentSpace): void
@@ -110,21 +113,111 @@ class ContextSwitcher extends Widget
         $entry = [
             'context' => $context,
             'route' => $route,
-            'url' => Yii::$app->request->url,
+            'url' => $this->normalizeRecentUrl(Yii::$app->request->url),
             'label' => $this->buildRecentLabel($context, $currentSpace),
             'icon' => $this->buildRecentIcon($context),
             'spaceId' => $currentSpace?->id,
             'spaceGuid' => $currentSpace?->guid,
+            'visitedAt' => time(),
         ];
 
-        $items = array_values(array_filter($items, function ($item) use ($entry) {
-            return ($item['url'] ?? null) !== $entry['url'];
-        }));
-
-        array_unshift($items, $entry);
-        $items = array_slice($items, 0, self::RECENT_HISTORY_LIMIT);
+        $items[] = $entry;
+        $items = $this->normalizeRecentItems($items);
 
         Yii::$app->session->set('mt2026.context.recent', $items);
+    }
+
+    /**
+     * Ensure recents are canonical and compact:
+     * - only one entry per context key (space/profile/dashboard)
+     * - remove stale items older than a few days
+     * - keep newest entries first, capped by history limit
+     */
+    private function normalizeRecentItems(array $items): array
+    {
+        $now = time();
+        $cutoff = $now - (self::RECENT_RETENTION_DAYS * 86400);
+        $deduped = [];
+
+        foreach ($items as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+
+            $visitedAt = (int)($item['visitedAt'] ?? $now);
+            if ($visitedAt < $cutoff) {
+                continue;
+            }
+
+            $context = (string)($item['context'] ?? 'dashboard');
+            $spaceGuid = isset($item['spaceGuid']) && is_string($item['spaceGuid']) ? $item['spaceGuid'] : null;
+            $normalizedUrl = $this->normalizeRecentUrl((string)($item['url'] ?? ''));
+
+            $normalizedItem = [
+                'context' => $context,
+                'route' => (string)($item['route'] ?? ''),
+                'url' => $normalizedUrl,
+                'label' => (string)($item['label'] ?? ''),
+                'icon' => (string)($item['icon'] ?? ''),
+                'spaceId' => isset($item['spaceId']) ? (int)$item['spaceId'] : null,
+                'spaceGuid' => $spaceGuid,
+                'visitedAt' => $visitedAt,
+            ];
+
+            $dedupeKey = $this->buildRecentDedupeKey($normalizedItem);
+
+            if (!isset($deduped[$dedupeKey]) || $visitedAt > (int)$deduped[$dedupeKey]['visitedAt']) {
+                $deduped[$dedupeKey] = $normalizedItem;
+            }
+        }
+
+        $result = array_values($deduped);
+
+        usort($result, static function (array $a, array $b): int {
+            return ((int)$b['visitedAt']) <=> ((int)$a['visitedAt']);
+        });
+
+        return array_slice($result, 0, self::RECENT_HISTORY_LIMIT);
+    }
+
+    private function buildRecentDedupeKey(array $item): string
+    {
+        $context = (string)($item['context'] ?? 'dashboard');
+
+        if ($context === 'space') {
+            $guid = $item['spaceGuid'] ?? null;
+            if (is_string($guid) && $guid !== '') {
+                return 'space:' . $guid;
+            }
+
+            return 'space-url:' . (string)($item['url'] ?? '');
+        }
+
+        if ($context === 'profile') {
+            return 'profile';
+        }
+
+        if ($context === 'dashboard') {
+            return 'dashboard';
+        }
+
+        return $context . ':' . (string)($item['url'] ?? '');
+    }
+
+    private function normalizeRecentUrl(?string $url): string
+    {
+        if (!is_string($url) || $url === '') {
+            return '/';
+        }
+
+        $parts = parse_url($url);
+
+        if ($parts === false) {
+            return rtrim($url, '/') ?: '/';
+        }
+
+        $path = $parts['path'] ?? '/';
+        return rtrim($path, '/') ?: '/';
     }
 
     private function buildRecentLabel(string $context, ?Space $currentSpace): string

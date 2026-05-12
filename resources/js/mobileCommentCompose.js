@@ -14,14 +14,87 @@
         return el.classList.contains('d-none') || window.getComputedStyle(el).display === 'none';
     };
 
+    var closestElement = function(node, selector) {
+        if (!node) {
+            return null;
+        }
+
+        var el = (node.nodeType === 1) ? node : node.parentElement;
+        if (!el || typeof el.closest !== 'function') {
+            return null;
+        }
+
+        return el.closest(selector);
+    };
+
     var getComposeForm = function(container) {
         if (!container) {
             return null;
         }
-        return container.querySelector('.comment_create');
+
+        // The top-level new-comment form is a direct child of .comment-container.
+        // Nested comments also contain .comment_create forms (reply forms), which
+        // should not be toggled when tapping the main Comment action.
+        var focusCompose = function(form) {
+            if (!form) {
+                return;
+            }
+
+            var target = form.querySelector('.ProseMirror[contenteditable="true"], [contenteditable="true"], textarea, input[type="text"]');
+            if (!target) {
+                return;
+            }
+
+            try {
+                target.focus({ preventScroll: true });
+            } catch (e) {
+                target.focus();
+            }
+        };
+        for (var i = 0; i < container.children.length; i++) {
+            var child = container.children[i];
+            if (child.classList && child.classList.contains('comment_create')) {
+                return child;
+            }
+        }
+
+        return null;
+    };
+
+    var getEntryContainer = function(triggerEl) {
+        if (!triggerEl) {
+            return null;
+        }
+
+        var actionTarget = triggerEl.getAttribute('data-action-target');
+        if (actionTarget && actionTarget.charAt(0) === '#') {
+            var targeted = document.querySelector(actionTarget);
+            if (targeted) {
+                return targeted;
+            }
+        }
+
+        var entry = triggerEl.closest('.wall-entry, .stream-entry');
+        if (!entry) {
+            return null;
+        }
+
+        var containers = entry.querySelectorAll('.comment-container');
+        for (var i = 0; i < containers.length; i++) {
+            var container = containers[i];
+            if (!container.closest('.nested-comments-root')) {
+                return container;
+            }
+        }
+
+        return containers.length ? containers[0] : null;
     };
 
     var showCompose = function(form) {
+            // On mobile, tapping Comment should place the cursor directly in composer.
+            setTimeout(function() {
+                focusCompose(form);
+            }, 60);
         if (!form) {
             return;
         }
@@ -46,32 +119,38 @@
 
             if (isHidden(container)) {
                 hideCompose(form);
-                return;
             }
-
-            // For open containers, keep the collapsed composer visible.
-            showCompose(form);
         });
     };
 
     var showForTrigger = function(triggerEl) {
-        var entry = triggerEl && triggerEl.closest('.wall-entry, .stream-entry');
-        var container = entry ? entry.querySelector('.comment-container') : null;
-
-        if (!container || isHidden(container)) {
-            container = document.querySelector('.comment-container:not(.d-none)');
-        }
+        var container = getEntryContainer(triggerEl);
 
         if (!container) {
             return;
         }
 
-        showCompose(getComposeForm(container));
+        var form = getComposeForm(container);
+        if (!form) {
+            return;
+        }
+
+        // Let HumHub handle open/close first. If container is still visible,
+        // force the top-level composer visible for mobile typing.
+        if (!isHidden(container)) {
+            showCompose(form);
+        }
     };
 
     var bindActions = function() {
         document.addEventListener('click', function(ev) {
-            var trigger = ev.target.closest('[data-action-click*="comment.toggleComment"], [data-action-click*="comment.reply"], .comment-reply-link, .reply-comment-link');
+            var trigger = closestElement(
+                ev.target,
+                '[data-action-click*="comment.toggleComment"], '
+                + '[data-action-click*="comment.reply"], '
+                + '[data-action-click="ui.modal.load"][data-action-url*="/comment/comment/show"], '
+                + '.comment-reply-link, .reply-comment-link'
+            );
             if (!trigger) {
                 return;
             }
@@ -80,14 +159,23 @@
             setTimeout(function() {
                 showForTrigger(trigger);
                 syncContainers();
-            }, 120);
+            }, 220);
         }, true);
+
+        // Popup comments are rendered into #globalModal after ui.modal.load resolves.
+        document.addEventListener('shown.bs.modal', function(ev) {
+            if (!ev.target || ev.target.id !== 'globalModal') {
+                return;
+            }
+
+            setTimeout(syncContainers, 120);
+            setTimeout(syncContainers, 320);
+        });
     };
 
     var init = function() {
         bindActions();
         syncContainers();
-        setInterval(syncContainers, 350);
 
         if (typeof $ !== 'undefined') {
             $(document).on('pjax:end', function() {

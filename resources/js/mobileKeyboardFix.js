@@ -37,6 +37,10 @@ humhub.module('modernTheme.mobileKeyboardFix', function(module, require, $) {
         return window.innerWidth <= 991;
     }
 
+    function isMailComposerElement(el) {
+        return !!(el && el.closest && el.closest('#mail-conversation-root .mail-message-form, #mail-conversation-root .mt2026-mail-composer-dock'));
+    }
+
     // Set --vvh CSS variable on :root so CSS can react to visual viewport height
     // (e.g. modal max-height when keyboard is open on iOS).
     function updateVvhVar() {
@@ -74,6 +78,13 @@ humhub.module('modernTheme.mobileKeyboardFix', function(module, require, $) {
         if (!el || !isMobile()) {
             return;
         }
+
+        // Mail fullscreen manages its own chat/composer layout. Extra smooth-scroll
+        // corrections here fight the OS keyboard animation and make the composer stutter.
+        if (isMailComposerElement(el)) {
+            return;
+        }
+
         // Only act when this element (or one of its children for contenteditable) is still active
         var active = document.activeElement;
         var stillActive = active === el || (el.contains && el.contains(active));

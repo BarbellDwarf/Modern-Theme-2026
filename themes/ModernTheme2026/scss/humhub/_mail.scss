@@ -1332,6 +1332,10 @@ body.mt2026-mail-has-conversation.mail-list-open::before {
     padding-bottom: max(8px, env(safe-area-inset-bottom, 0)) !important;
   }
 
+  body.mt2026-keyboard-open.mt2026-mail-fullscreen #mail-conversation-root .mt2026-mail-composer-dock {
+    bottom: env(safe-area-inset-bottom, 0) !important;
+  }
+
   // Spacing for last message (not hidden behind composer)
   .mt2026-mail-fullscreen #mail-conversation-root .conversation-entry-list {
     padding-bottom: calc(92px + env(safe-area-inset-bottom, 0)) !important;

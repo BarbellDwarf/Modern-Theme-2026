@@ -84,6 +84,12 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
         if (!list) {
             return;
         }
+
+        // Skip scroll-to-latest during mail fullscreen to prevent layout thrash during keyboard animation.
+        if (document.body.classList.contains('mt2026-mail-fullscreen')) {
+            return;
+        }
+
         // Wait for layout/async content updates before forcing latest-message view.
         window.requestAnimationFrame(function() {
             list.scrollTop = list.scrollHeight;
@@ -101,6 +107,13 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
 
     function sizeMobileConversationList() {
         if (!isMobileWidth()) {
+            return;
+        }
+
+        // The mobile browser fires resize events repeatedly while the keyboard
+        // opens/closes. Recomputing list height in that window causes visible
+        // composer/list jitter, so keep the list geometry stable during Mail fullscreen.
+        if (document.body.classList.contains('mt2026-mail-fullscreen')) {
             return;
         }
 
@@ -257,7 +270,7 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
         // and async cases where entries are not mounted yet).
         if (hasActiveConversation()) {
             setConversationActive(true);
-            if (isMobileWidth()) {
+            if (isMobileWidth() && !document.body.classList.contains('mt2026-mail-fullscreen')) {
                 sizeMobileConversationList();
             }
             scrollConversationToLatest();
@@ -318,22 +331,25 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
         if (isMailPage()) {
             ensureHeaderToggle(4);
             if (hasActiveConversation()) {
-                if (isMobileWidth()) {
+                if (isMobileWidth() && !document.body.classList.contains('mt2026-mail-fullscreen')) {
                     sizeMobileConversationList();
                 }
-                scrollConversationToLatest();
+                // Skip scroll-to-latest in fullscreen to prevent keyboard animation jitter.
+                if (!document.body.classList.contains('mt2026-mail-fullscreen')) {
+                    scrollConversationToLatest();
+                }
             }
         }
     });
 
     $(window).on('resize.mt2026Mail orientationchange.mt2026Mail', function() {
-        if (isMailPage() && hasActiveConversation() && isMobileWidth()) {
-            // Keyboard-driven viewport resize while composing can cause visible jank.
-            // Skip forced list resize/auto-scroll until composition settles.
-            if (isComposingMessage() || document.body.classList.contains('mt2026-keyboard-open')) {
-                return;
-            }
+        // Mail fullscreen has CSS-driven fixed docking. Resize-driven recalculations during
+        // keyboard open/close can cause visible composer jitter. Skip all geometry work in fullscreen.
+        if (document.body.classList.contains('mt2026-mail-fullscreen')) {
+            return;
+        }
 
+        if (isMailPage() && hasActiveConversation() && isMobileWidth()) {
             sizeMobileConversationList();
             scrollConversationToLatest();
         }

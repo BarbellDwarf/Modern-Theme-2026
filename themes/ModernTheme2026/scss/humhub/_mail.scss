@@ -99,6 +99,8 @@
 
 body.mt2026-mail-page .mobile-bottom-nav {
   z-index: 1035;
+  animation: none !important;
+  bottom: 0 !important;
 }
 
 // On mobile, include safe-area so transparent OS navigation regions do not overlap mail UI.
@@ -1228,7 +1230,8 @@ body.mt2026-mail-has-conversation.mail-list-open::before {
     bottom: auto !important;
     height: auto !important;
     max-height: none !important;
-    min-height: calc(100dvh - var(--mt2026-topbar-height, 60px) - 56px - env(safe-area-inset-bottom, 0)) !important;
+    min-height: 0 !important;
+    height: 100% !important;
   }
 
   // Natural scrolling for parent containers
@@ -1320,7 +1323,7 @@ body.mt2026-mail-has-conversation.mail-list-open::before {
   .mt2026-mail-fullscreen #mail-conversation-root .mt2026-mail-composer-dock {
     flex: 0 0 auto;
     position: fixed !important;
-    bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
+    bottom: 56px !important;
     left: 0;
     right: 0;
     z-index: 1010;
@@ -1333,18 +1336,31 @@ body.mt2026-mail-has-conversation.mail-list-open::before {
     display: flex !important;
   }
 
+  // On short visual viewports (keyboard-open), _mobile-bottom-nav.scss has a
+  // global max-height rule that hides the nav and drops body padding to 0.
+  // In Mail fullscreen this causes bottom-edge jump/stutter while keyboard animates.
+  @media (max-height: 500px) {
+    body.mt2026-mail-fullscreen .mobile-bottom-nav {
+      display: flex !important;
+    }
+
+    body.mt2026-mail-page.mt2026-mail-fullscreen {
+      padding-bottom: 56px !important;
+    }
+  }
+
   .mt2026-mail-fullscreen #mail-conversation-root .mt2026-mail-composer-dock .mail-message-form {
     margin: 0 !important;
     border-radius: 0 !important;
     border-left: 0 !important;
     border-right: 0 !important;
-    padding-bottom: max(8px, env(safe-area-inset-bottom, 0)) !important;
+    padding-bottom: 8px !important;
   }
 
   // Spacing for last message (not hidden behind composer + nav)
   // Composer is ~56px tall, nav is 56px, plus safe-area
   .mt2026-mail-fullscreen #mail-conversation-root .conversation-entry-list {
-    padding-bottom: calc(120px + env(safe-area-inset-bottom, 0)) !important;
+    padding-bottom: 120px !important;
   }
 
   // Lock page scrolling on mobile - only chat stream should scroll, not whole page
@@ -1908,7 +1924,17 @@ body[data-bs-theme="light"] .mail-message-form .humhub-ui-richtext {
 @media (max-width: 991px) {
   .mt2026-mail-composer-dock {
     z-index: 1010 !important;
-    position: relative !important;
+  }
+
+  // Keep a single authoritative docking model in fullscreen mail.
+  // A later relative-position override causes bouncing while the keyboard opens.
+  body.mt2026-mail-fullscreen .mt2026-mail-composer-dock {
+    position: fixed !important;
+    bottom: 56px !important;
+    left: 0;
+    right: 0;
+    transform: none !important;
+    transition: none !important;
   }
   
   // Prevent any parent from clipping the composer buttons

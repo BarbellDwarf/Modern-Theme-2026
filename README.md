@@ -21,7 +21,39 @@ Do you enjoy using HumHub but find the UI a little clunky? Tried the Clean Theme
 
 ## Install Instructions
 
-### Option 1: Via Module Directory (Recommended)
+### Option 1: Automated Installation Script (Easiest)
+
+The `install.sh` script handles all the heavy lifting - it copies the module, clears cache, and removes old assets.
+
+1. Navigate to the module directory:
+   ```bash
+   cd /path/to/modern-theme-2026
+   ```
+
+2. Run the installation script with your HumHub installation path:
+   ```bash
+   ./install.sh /var/www/humhub
+   ```
+   
+   Or if you need sudo:
+   ```bash
+   sudo ./install.sh /var/www/humhub
+   ```
+
+3. The script will:
+   - Copy the module to HumHub's modules directory
+   - Set proper permissions
+   - Clear all caches
+   - Remove old published assets
+   - Display the current theme status
+
+4. Activate the theme:
+   - Log in to HumHub as Administrator
+   - Go to Administration > Settings > Design & Appearance
+   - Select "ModernTheme2026" from the Theme dropdown
+   - Click Save
+
+### Option 2: Via Module Directory (Manual)
 
 1. Download the module files to your HumHub installation:
    ```bash
@@ -48,12 +80,13 @@ Do you enjoy using HumHub but find the UI a little clunky? Tried the Clean Theme
 
 The theme will be active immediately after activation.
 
-### Option 2: Manual Installation
+### Option 3: Manual File Placement
 
 1. Extract the module to: `/var/www/humhub/protected/modules/modern-theme-2026/` (Or wherever your HumHub installation is)
 2. Set permissions: `sudo chown -R www-data:www-data /var/www/humhub/protected/modules/modern-theme-2026`
-3. Enable via Admin Panel: Modules > Modern Theme 2026 > Enable
-4. Activate theme: Design & Appearance > Select ModernTheme2026
+3. Clear cache: `php /var/www/humhub/protected/yii cache/flush-all`
+4. Enable via Admin Panel: Modules > Modern Theme 2026 > Enable
+5. Activate theme: Design & Appearance > Select ModernTheme2026
 
 ## Update Instructions
 
@@ -197,21 +230,40 @@ The theme includes a dedicated admin panel for customization:
 
 ## Troubleshooting
 
+### Installation Issues
+
+**If the installation script fails:**
+- Ensure you have write permissions to the HumHub modules directory
+- Try with `sudo`: `sudo ./install.sh /var/www/humhub`
+- Check that HumHub path is correct
+- Verify `www-data` user exists or run as your app user
+
+**Using install.sh with custom HumHub user:**
+```bash
+# The script auto-detects www-data, but you can modify the WWW_USER variable if needed
+./install.sh /path/to/humhub
+```
+
 ### Theme not appearing after installation
-- Clear browser cache (Ctrl+Shift+Delete or Cmd+Shift+Delete)
-- Clear HumHub cache: Administration > Settings > Advanced > Caching
+- Run the install script if you haven't already: `./install.sh /var/www/humhub`
+- Manually clear browser cache (Ctrl+Shift+Delete or Cmd+Shift+Delete)
+- Clear HumHub cache: `php /var/www/humhub/protected/yii cache/flush-all`
+- Remove old published assets: `rm -rf /var/www/humhub/assets/*`
 - Ensure www-data user has proper file permissions
+- Verify ModernTheme2026 is selected in Administration > Settings > Design & Appearance
 
 ### Styles look broken or incomplete
 - Check that CSS file was compiled: `/var/www/humhub/protected/modules/modern-theme-2026/themes/ModernTheme2026/dist/theme.css`
-- Confirm published assets were refreshed under `/var/www/humhub/assets/*/theme.css`
-- Clear application cache and reload
+- Clear all caches: `php /var/www/humhub/protected/yii cache/flush-all`
+- Remove published assets: `rm -rf /var/www/humhub/assets/*`
+- Run install script: `./install.sh /var/www/humhub`
 - Verify ModernTheme2026 is selected as active theme
 
 ### Issues with mobile app
-- Ensure you're on the latest version
+- Ensure you're on the latest version of Modern Theme 2026
 - Clear app cache and data, then restart the app
 - Check that JavaScript is enabled in your browser
+- Clear HumHub cache via admin panel or command line
 
 ## Support & Feedback
 

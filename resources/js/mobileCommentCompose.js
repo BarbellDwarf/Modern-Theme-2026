@@ -99,7 +99,6 @@
         if (!form) {
             return;
         }
-        console.log('[MT2026:mobileCommentCompose] showCompose called');
         form.classList.remove('d-none');
         form.classList.add('show-on-mobile');
 
@@ -113,7 +112,6 @@
         if (!form) {
             return;
         }
-        console.log('[MT2026:mobileCommentCompose] hideCompose called');
         form.classList.remove('show-on-mobile');
         form.classList.add('d-none');
     };
@@ -128,13 +126,8 @@
             var isContainerHidden = isHidden(container);
             var isSubmitting = submittingForms.has(form);
             
-            console.log('[MT2026:mobileCommentCompose] syncContainers: container hidden=' + isContainerHidden + 
-                        ', form has show-on-mobile=' + form.classList.contains('show-on-mobile') +
-                        ', form submitting=' + isSubmitting);
-            
             // Don't hide if form is currently being submitted (iOS send button tap)
             if (isContainerHidden && !isSubmitting) {
-                console.log('[MT2026:mobileCommentCompose] Container is hidden, hiding compose');
                 hideCompose(form);
             }
         });
@@ -182,8 +175,6 @@
                 return;
             }
 
-            console.log('[MT2026:mobileCommentCompose] Comment action clicked');
-
             // Let HumHub toggle/open first, then reveal composer.
             setTimeout(function() {
                 showForTrigger(trigger);
@@ -197,7 +188,6 @@
                 return;
             }
 
-            console.log('[MT2026:mobileCommentCompose] Modal shown');
             setTimeout(syncContainers, 120);
             setTimeout(syncContainers, 320);
         });
@@ -209,7 +199,6 @@
                 return;
             }
 
-            console.log('[MT2026:mobileCommentCompose] Comment form submitted');
             submittingForms.add(form);
 
             // Clear the submission flag after submission completes + buffer time
@@ -217,7 +206,6 @@
                 clearTimeout(submitTimeout);
             }
             submitTimeout = setTimeout(function() {
-                console.log('[MT2026:mobileCommentCompose] Clearing submission flag after 3 seconds');
                 submittingForms.clear();
             }, 3000);
         }, true);
@@ -229,7 +217,6 @@
 
         if (typeof $ !== 'undefined') {
             $(document).on('pjax:end', function() {
-                console.log('[MT2026:mobileCommentCompose] pjax:end fired - syncing comment containers');
                 setTimeout(syncContainers, 120);
             });
         }

@@ -10,6 +10,10 @@
         return;
     }
 
+    // Track submission state to prevent premature hiding during form send
+    var submittingForms = new Set();
+    var submitTimeout = null;
+
     var isHidden = function(el) {
         return el.classList.contains('d-none') || window.getComputedStyle(el).display === 'none';
     };
@@ -119,7 +123,11 @@
                 return;
             }
 
-            if (isHidden(container)) {
+            var isContainerHidden = isHidden(container);
+            var isSubmitting = submittingForms.has(form);
+            
+            // Don't hide if form is currently being submitted (iOS send button tap)
+            if (isContainerHidden && !isSubmitting) {
                 hideCompose(form);
             }
         });
@@ -183,6 +191,24 @@
             setTimeout(syncContainers, 120);
             setTimeout(syncContainers, 320);
         });
+
+        // Track form submissions to prevent hiding during send on iOS
+        document.addEventListener('submit', function(ev) {
+            var form = ev.target;
+            if (!form.classList.contains('comment_create')) {
+                return;
+            }
+
+            submittingForms.add(form);
+
+            // Clear the submission flag after submission completes + buffer time
+            if (submitTimeout) {
+                clearTimeout(submitTimeout);
+            }
+            submitTimeout = setTimeout(function() {
+                submittingForms.clear();
+            }, 3000);
+        }, true);
     };
 
     var init = function() {

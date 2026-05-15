@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 
 The format follows Keep a Changelog and this project uses Semantic Versioning.
 
+## [1.0.5] - 2026-05-15
+
+### Fixed
+- Continued investigation and stabilization of mobile keyboard behavior on Android devices.
+- Mobile mail fullscreen composer positioning and viewport handling.
+
 ## [1.0.4] - 2026-05-12
 
 ### Fixed

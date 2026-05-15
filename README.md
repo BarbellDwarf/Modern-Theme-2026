@@ -25,9 +25,18 @@ Do you enjoy using HumHub but find the UI a little clunky? Tried the Clean Theme
 
 The `install.sh` script handles all the heavy lifting - it copies the module, clears cache, and removes old assets.
 
-1. Navigate to the module directory:
+**Important:** The script must be run from within the module directory and expects the directory to be named `modern-theme-2026`.
+
+1. Extract the zip file (if you downloaded from GitHub Releases):
    ```bash
-   cd /path/to/modern-theme-2026
+   unzip modern-theme-2026-v1.0.5.zip
+   cd modern-theme-2026
+   ```
+   
+   **Note:** If the extracted directory has different casing (e.g., `Modern-Theme-2026`), rename it first:
+   ```bash
+   mv Modern-Theme-2026 modern-theme-2026
+   cd modern-theme-2026
    ```
 
 2. Run the installation script with your HumHub installation path:
@@ -41,8 +50,11 @@ The `install.sh` script handles all the heavy lifting - it copies the module, cl
    ```
 
 3. The script will:
-   - Copy the module to HumHub's modules directory
-   - Set proper permissions
+   - Verify you're running it from the correct module directory
+   - Check that HumHub is installed correctly
+   - Copy the module to HumHub's modules directory with correct casing (`modern-theme-2026`)
+   - Detect and replace any existing installations (fixes casing if needed)
+   - Set proper permissions for the www-data user
    - Clear all caches
    - Remove old published assets
    - Display the current theme status
@@ -233,16 +245,16 @@ The theme includes a dedicated admin panel for customization:
 ### Installation Issues
 
 **If the installation script fails:**
-- Ensure you have write permissions to the HumHub modules directory
+- Ensure you're running the script FROM the module directory: `cd modern-theme-2026 && ./install.sh /var/www/humhub`
+- Ensure the module directory is named exactly `modern-theme-2026` (lowercase with hyphens)
+- Check that you have write permissions to the HumHub modules directory
 - Try with `sudo`: `sudo ./install.sh /var/www/humhub`
-- Check that HumHub path is correct
-- Verify `www-data` user exists or run as your app user
+- Check that HumHub path is correct (typically `/var/www/humhub`)
 
-**Using install.sh with custom HumHub user:**
-```bash
-# The script auto-detects www-data, but you can modify the WWW_USER variable if needed
-./install.sh /path/to/humhub
-```
+**Directory naming issue from extracted zip:**
+- The zip file should extract with the correct casing: `modern-theme-2026`
+- If you see a different name (e.g., `Modern-Theme-2026` or `MODERN-THEME-2026`), the script will auto-detect and rename it
+- Or manually rename: `mv Modern-Theme-2026 modern-theme-2026`
 
 ### Theme not appearing after installation
 - Run the install script if you haven't already: `./install.sh /var/www/humhub`
@@ -251,6 +263,7 @@ The theme includes a dedicated admin panel for customization:
 - Remove old published assets: `rm -rf /var/www/humhub/assets/*`
 - Ensure www-data user has proper file permissions
 - Verify ModernTheme2026 is selected in Administration > Settings > Design & Appearance
+- Verify the module directory is correctly named: `/var/www/humhub/protected/modules/modern-theme-2026`
 
 ### Styles look broken or incomplete
 - Check that CSS file was compiled: `/var/www/humhub/protected/modules/modern-theme-2026/themes/ModernTheme2026/dist/theme.css`
@@ -258,6 +271,7 @@ The theme includes a dedicated admin panel for customization:
 - Remove published assets: `rm -rf /var/www/humhub/assets/*`
 - Run install script: `./install.sh /var/www/humhub`
 - Verify ModernTheme2026 is selected as active theme
+- Verify directory casing: module should be at `/var/www/humhub/protected/modules/modern-theme-2026` (lowercase)
 
 ### Issues with mobile app
 - Ensure you're on the latest version of Modern Theme 2026

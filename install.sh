@@ -43,6 +43,33 @@ print_step() {
     echo -e "${BLUE}→ $1${NC}"
 }
 
+# Detect the actual module directory name (case-insensitive for flexibility)
+detect_module_dir() {
+    local base_dir="$1"
+    
+    # Try exact match first
+    if [ -d "$base_dir/modern-theme-2026" ]; then
+        echo "modern-theme-2026"
+        return 0
+    fi
+    
+    # Try case-insensitive matches (common when extracting from zip on case-insensitive FS)
+    if [ -d "$base_dir/Modern-Theme-2026" ]; then
+        print_warning "Found 'Modern-Theme-2026' (with capital M) - will be renamed to 'modern-theme-2026'"
+        echo "Modern-Theme-2026"
+        return 0
+    fi
+    
+    if [ -d "$base_dir/MODERN-THEME-2026" ]; then
+        print_warning "Found 'MODERN-THEME-2026' (uppercase) - will be renamed to 'modern-theme-2026'"
+        echo "MODERN-THEME-2026"
+        return 0
+    fi
+    
+    # Directory not found in any casing
+    return 1
+}
+
 # Validate arguments
 if [ $# -eq 0 ]; then
     print_header
@@ -61,9 +88,35 @@ HUMHUB_PROTECTED="$HUMHUB_PATH/protected"
 MODULES_DIR="$HUMHUB_PROTECTED/modules"
 MODULE_NAME="modern-theme-2026"
 MODULE_SOURCE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Validate source directory exists and contains module.json
+if [ ! -f "$MODULE_SOURCE/module.json" ]; then
+    print_header
+    print_error "module.json not found at: $MODULE_SOURCE/module.json"
+    echo ""
+    echo "This script must be run from the Modern Theme 2026 module directory."
+    echo "It cannot be executed from a different location."
+    exit 1
+fi
+
 MODULE_DEST="$MODULES_DIR/$MODULE_NAME"
 
 print_header
+
+# Verify this script is being run from the module directory
+print_step "Verifying module source..."
+if [ ! -f "$MODULE_SOURCE/module.json" ]; then
+    print_error "module.json not found at: $MODULE_SOURCE/module.json"
+    echo ""
+    echo "This script must be run from the Modern Theme 2026 module directory."
+    echo "Try extracting the zip file and running: cd modern-theme-2026 && ./install.sh /path/to/humhub"
+    exit 1
+fi
+
+# Get module version for informational purposes
+MODULE_VERSION=$(grep -o '"version"[^,]*' "$MODULE_SOURCE/module.json" | cut -d'"' -f4)
+print_info "Module version: $MODULE_VERSION"
+echo ""
 
 # Validate HumHub installation
 print_step "Validating HumHub installation..."
@@ -81,8 +134,20 @@ fi
 print_success "Modules directory found at: $MODULES_DIR"
 
 # Check if module already exists
-if [ -d "$MODULE_DEST" ]; then
-    print_warning "Module already exists at: $MODULE_DEST"
+print_step "Checking for existing installation..."
+
+# Detect any existing module installation (case-insensitive)
+FOUND_EXISTING=$(find "$MODULES_DIR" -maxdepth 1 -type d -iname "*modern*theme*2026*" 2>/dev/null | head -1)
+
+if [ -n "$FOUND_EXISTING" ]; then
+    FOUND_NAME=$(basename "$FOUND_EXISTING")
+    print_warning "Found existing module: $FOUND_NAME"
+    
+    # If it's not the correct casing, offer to fix it
+    if [ "$FOUND_NAME" != "$MODULE_NAME" ]; then
+        print_info "Will be renamed from '$FOUND_NAME' to '$MODULE_NAME' (correct casing)"
+    fi
+    
     read -p "Do you want to replace it? (y/N) " -n 1 -r
     echo ""
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -90,7 +155,7 @@ if [ -d "$MODULE_DEST" ]; then
         exit 0
     fi
     print_step "Removing existing module..."
-    rm -rf "$MODULE_DEST"
+    rm -rf "$FOUND_EXISTING"
 fi
 
 # Copy module

@@ -368,17 +368,14 @@
   // ── Hide compose box by default; show only when needed via show-on-mobile ──
   // On mobile, the comment section opens showing existing comments.
   // The compose box is hidden by default; it appears via JS adding show-on-mobile.
+  // iOS can blur contenteditable on tap before button click dispatch;
+  // keep controls visible so Send/attachment taps remain actionable.
   .comment-container > .comment_create {
     display: none !important;
     
-    // When shown, collapse editor to single line until tapped
     &.show-on-mobile {
       display: block !important;
-    }
-
-    &.show-on-mobile {
-      // iOS can blur contenteditable on tap before button click dispatch;
-      // keep controls visible so Send/attachment taps remain actionable.
+      
       .richtext-create-buttons {
         display: flex !important;
       }

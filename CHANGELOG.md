@@ -4,6 +4,16 @@ All notable changes to this project are documented in this file.
 
 The format follows Keep a Changelog and this project uses Semantic Versioning.
 
+## [1.0.6] - 2026-05-16
+
+### Fixed
+- iOS stream comment composer parsing issue caused by duplicate `&.show-on-mobile` SCSS blocks.
+
+### Changed
+- `install.sh` now supports CSS compile modes: auto (default), force (`--compile-css`), and skip (`--skip-compile-css`).
+- Installer auto-compiles CSS only when SCSS files are newer than `themes/ModernTheme2026/dist/theme.css`.
+- Updated installation and update documentation to use explicit compile + cache/assets refresh workflow.
+
 ## [1.0.5] - 2026-05-15
 
 ### Fixed

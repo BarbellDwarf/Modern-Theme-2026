@@ -377,26 +377,16 @@
     }
 
     &.show-on-mobile {
+      // iOS can blur contenteditable on tap before button click dispatch;
+      // keep controls visible so Send/attachment taps remain actionable.
       .richtext-create-buttons {
-        display: none !important;
+        display: flex !important;
       }
 
       .ProseMirror {
-        min-height: 36px !important;
-        max-height: 36px !important;
-        overflow: hidden;
-      }
-
-      &:focus-within {
-        .ProseMirror {
-          min-height: 72px !important;
-          max-height: 300px !important;
-          overflow: auto;
-        }
-
-        .richtext-create-buttons {
-          display: flex !important;
-        }
+        min-height: 72px !important;
+        max-height: 300px !important;
+        overflow: auto;
       }
     }
   }

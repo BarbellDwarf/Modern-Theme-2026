@@ -796,3 +796,58 @@ body.mt2026-keyboard-open {
         display: none !important;
     }
 }
+
+// ── Fix #7: "Read more" truncation for long stream entries on mobile ──────────
+@media (max-width: 991px) {
+    .wall-entry-content.content {
+        max-height: 50vh;
+        overflow: hidden;
+        position: relative;
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(to bottom, transparent, var(--color-bg-primary));
+            pointer-events: none;
+        }
+
+        &.expanded {
+            max-height: none;
+            overflow: visible;
+
+            &::after {
+                display: none;
+            }
+        }
+    }
+
+    [data-bs-theme="dark"] .wall-entry-content.content::after {
+        background: linear-gradient(to bottom, transparent, var(--color-bg-secondary));
+    }
+}
+
+// ── Fix #8: Mobile touch targets for stream action links ─────────────────────
+@media (max-width: 991px) {
+    .wall-entry-links a,
+    .stream-entry-controls a,
+    .like.toggleLike,
+    .comment.toggleComment {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+    }
+}
+
+// ── Fix #9: Hide ProseMirror formatting toolbar on mobile post form ──────────
+// The comment editor already hides its toolbar on mobile; do the same for
+// the main post creation form so the toolbar doesn't hog vertical space.
+@media (max-width: 991px) {
+    #contentFormBody .ProseMirror-menubar,
+    .content-form-body .ProseMirror-menubar {
+        display: none;
+    }
+}

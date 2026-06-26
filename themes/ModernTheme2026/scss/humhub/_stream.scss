@@ -91,6 +91,32 @@
     padding-top: var(--space-3);
     border-top: 1px solid var(--color-border);
   }
+
+  // Desktop ProseMirror toolbar styling
+  .ProseMirror-menubar {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    gap: var(--space-1);
+  }
+
+  .ProseMirror-menuitem {
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+
+    &:hover {
+      background: var(--color-bg-tertiary);
+      color: var(--color-text-primary);
+    }
+
+    &.active {
+      color: var(--color-primary);
+      background: var(--color-primary-lightest);
+    }
+  }
 }
 
 // ── Unconditional stream footer/addons rules ─────────────────────────────────
@@ -408,5 +434,38 @@
   .wall-stream,
   .stream-container {
     padding-bottom: calc(56px + var(--space-4) + env(safe-area-inset-bottom, 0));
+  }
+}
+
+// ── Calendar event styling in stream ──────────────────────────────────────────
+.event.calendar-wall-entry {
+  .event-info-section {
+    padding: var(--space-2) 0;
+
+    &:first-child {
+      padding-top: 0;
+    }
+  }
+
+  .event-info-section-content {
+    h1 {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin: 0 0 var(--space-1);
+    }
+
+    > div {
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-sm);
+    }
+  }
+
+  .event-participation-buttons {
+    display: flex;
+    gap: var(--space-2);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border);
+    margin-top: var(--space-3);
   }
 }

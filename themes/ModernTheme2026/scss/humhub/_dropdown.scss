@@ -12,7 +12,7 @@
   z-index: $z-dropdown;
   position: absolute;
   @include fade-in(var(--transition-fast));
-  @include scale-in(var(--transition-base));
+  @include scale-in(var(--transition-fast));
   
   // .hh-list inside a dropdown is a list container (e.g. notifications) — must not be flex
   .dropdown-item.hh-list {

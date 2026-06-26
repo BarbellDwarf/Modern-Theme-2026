@@ -80,13 +80,7 @@ All three feed entry points (Home, Space, Profile) render identically with the s
    - Profile feed (`.profile-layout-container .layout-content-container .s2_streamContent` or similar)
    - If selectors don't match, add the correct ancestors
 
-2. **Poll stream entry styling** — add SCSS to `_stream.scss` targeting poll-specific selectors:
-   - `.content-topic-poll` wrapper
-   - `.poll-option` rows with hover/focus
-   - `.poll-option-bar` vote progress
-   - `.poll-voters` / `.poll-info` footer
-   - Vote button styling
-   - Verify DOM by inspecting a poll post in-stream
+2. **Poll stream entry styling** — (SKIPPED: polls module not installed in this instance)
 
 3. **Calendar stream entry styling** — add SCSS to `_stream.scss` targeting:
    - `.calendar-entry` or `.content-topic-calendar` in stream

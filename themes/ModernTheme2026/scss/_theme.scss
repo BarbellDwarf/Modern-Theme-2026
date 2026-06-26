@@ -264,6 +264,27 @@ html {
   h2, h3 {
     page-break-after: avoid;
   }
+  
+  // Hide navigation and chrome when printing
+  #topbar,
+  #topbar-first,
+  #topbar-second,
+  .mobile-bottom-nav,
+  .nav-tabs,
+  .dropdown-menu,
+  .wall-entry-controls {
+    display: none !important;
+  }
+  
+  // Ensure content is visible
+  .wall-entry-content.content {
+    max-height: none !important;
+    overflow: visible !important;
+    
+    &::after {
+      display: none !important;
+    }
+  }
 }
 
 // ============================================

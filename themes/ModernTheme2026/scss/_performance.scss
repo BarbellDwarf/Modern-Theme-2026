@@ -86,11 +86,10 @@ body {
 // Optimize shadows (use single shadow instead of multiple when possible)
 .panel,
 .card {
-    // Simpler shadow for better performance
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-sm);
     
     &:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        box-shadow: var(--shadow-md);
     }
 }
 

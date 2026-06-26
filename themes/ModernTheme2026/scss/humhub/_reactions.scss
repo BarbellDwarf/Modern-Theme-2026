@@ -268,20 +268,19 @@
   }
 }
 
-// Active emoji shown on trigger button when user has reacted
-.mt2026-reaction-trigger .mt2026-active-emoji {
-  font-size: 18px;
-  line-height: 1;
-}
-
-// When the trigger shows the user's active emoji, hide the ::before smiley
+// When the user has reacted, indicate it on the trigger button by coloring the
+// smiley and adding a subtle background ring — but keep the ::before icon visible.
+// The summary bar in the post footer shows the actual reaction emoji counts;
+// the trigger stays as the action button to open the picker.
 .mt2026-reaction-trigger.reacted {
   opacity: 1;
   color: var(--color-primary, #1e6ad6);
   background: var(--color-primary-lightest, #e3eef9);
 
+  // Keep the smiley ::before visible — we no longer replace it with the reaction emoji
+  // because the summary link handles the reaction display.
   &::before {
-    display: none;
+    display: block;
   }
 }
 

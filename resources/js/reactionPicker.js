@@ -127,11 +127,11 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
     function setTrigger($container, reactionType) {
         var $btn = $container.find('.mt2026-reaction-trigger');
         if (!reactionType) {
-            $btn.removeClass('reacted').removeAttr('data-active').html('<i class="fa fa-smile-o" aria-hidden="true"></i>');
+            $btn.removeClass('reacted').removeAttr('data-active');
             $btn.attr('aria-label', 'React');
         } else {
             var r = getReactionByType(reactionType);
-            $btn.addClass('reacted').attr('data-active', reactionType).html('<span class="mt2026-active-emoji">' + r.emoji + '</span>');
+            $btn.addClass('reacted').attr('data-active', reactionType);
             $btn.attr('aria-label', 'Reacted with ' + r.label);
         }
     }

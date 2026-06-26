@@ -201,7 +201,7 @@ body.mt2026-keyboard-open {
 
         .modal-content {
             border-radius: var(--radius-xl, 16px) var(--radius-xl, 16px) 0 0;
-            max-height: calc(100dvh - 72px); // leave room for bottom nav
+            max-height: calc(100dvh - 72px - env(safe-area-inset-bottom, 0px));
             overflow-y: auto;
         }
     }
@@ -218,6 +218,7 @@ body.mt2026-keyboard-open {
             min-height: 100dvh;
             max-height: none;
             border-radius: 0;
+            padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
         }
     }
     
@@ -518,7 +519,7 @@ body.mt2026-keyboard-open {
   .mt2026-search-fab {
     display: flex !important;
     position: fixed;
-    bottom: 70px; // 56px nav + 14px gap
+    bottom: calc(70px + env(safe-area-inset-bottom, 0px)); // 56px nav + 14px gap
     right: 16px;
     width: 52px;
     height: 52px;

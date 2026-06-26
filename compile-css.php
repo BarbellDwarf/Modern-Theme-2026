@@ -30,23 +30,16 @@ $themeBasePath = __DIR__ . '/themes/ModernTheme2026';
 $parentThemeBasePath = dirname(__DIR__, 3) . '/themes/HumHub';
 $webroot = dirname(__DIR__, 3);
 
-// Find the published asset directory for this theme
-$possibleHashes = array_filter(glob($webroot . '/assets/*/README.md'), function ($f) use ($themeBasePath) {
-    return file_exists(dirname($f) . '/resources/css') || is_dir(dirname($f) . '/scss');
-});
-
-// Find by theme README
+// Find the published asset directory for this theme by looking for our theme's
+// compiled CSS (theme.css) inside any assets hash directory.
 $assetDir = null;
-foreach (glob($webroot . '/assets/*/QUICK-START.md') as $f) {
-    $assetDir = dirname($f);
-    break;
-}
-if (!$assetDir) {
-    foreach (glob($webroot . '/assets/*/resources/css') as $d) {
-        if (file_exists(dirname($d, 2) . '/README.md')) {
-            $assetDir = dirname($d, 2);
-            break;
-        }
+foreach (glob($webroot . '/assets/*/resources/css/theme.css') as $f) {
+    // theme.css → css/ → resources/ → {hash} (3 levels up)
+    $hashDir = dirname($f, 3);
+    // Confirm this belongs to our theme by checking the dist/ directory also
+    if (file_exists($hashDir . '/dist/theme.css')) {
+        $assetDir = $hashDir;
+        break;
     }
 }
 
@@ -138,6 +131,14 @@ if ($hasScssPhp) {
         $css = $result->getCss();
         file_put_contents($outputDir . '/theme.css', $css);
         echo "SUCCESS: CSS compiled (" . number_format(strlen($css)) . " bytes → {$outputDir}/theme.css)\n";
+        // Also write to resources/css/theme.css so HumHub's theme manager picks it up
+        // even when the published asset directory is not available.
+        $resourcesDir = $themeBasePath . '/resources/css';
+        if (!is_dir($resourcesDir)) {
+            mkdir($resourcesDir, 0755, true);
+        }
+        file_put_contents($resourcesDir . '/theme.css', $css);
+        echo "  Also wrote to: {$resourcesDir}/theme.css\n";
     } catch (Exception $e) {
         echo "ERROR: " . $e->getMessage() . "\n";
         exit(1);

@@ -8,6 +8,12 @@
   justify-content: center;
   width: 28px;
   height: 28px;
+
+  // Mobile: bump to minimum touch target
+  @media (max-width: 991px) {
+    width: 44px;
+    height: 44px;
+  }
   padding: 0;
   margin-left: 4px;
   border: none;

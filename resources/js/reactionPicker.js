@@ -128,9 +128,11 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         var $btn = $container.find('.mt2026-reaction-trigger');
         if (!reactionType) {
             $btn.removeClass('reacted').removeAttr('data-active').html('<i class="fa fa-smile-o" aria-hidden="true"></i>');
+            $btn.attr('aria-label', 'React');
         } else {
             var r = getReactionByType(reactionType);
             $btn.addClass('reacted').attr('data-active', reactionType).html('<span class="mt2026-active-emoji">' + r.emoji + '</span>');
+            $btn.attr('aria-label', 'Reacted with ' + r.label);
         }
     }
 
@@ -171,7 +173,7 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
             $c.data('mt2026-cid', cid);
 
             // 1. Prepend trigger button
-            $c.prepend('<button type="button" class="mt2026-reaction-trigger" title="React" aria-haspopup="true">'
+            $c.prepend('<button type="button" class="mt2026-reaction-trigger" title="React" aria-label="React" aria-haspopup="true">'
                 + '<i class="fa fa-smile-o" aria-hidden="true"></i>'
                 + '</button>');
 

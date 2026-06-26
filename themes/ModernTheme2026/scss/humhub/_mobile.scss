@@ -185,6 +185,12 @@ body.mt2026-keyboard-open {
         box-shadow: var(--shadow-sm) !important;
         margin-bottom: 0 !important;
     }
+
+    // Dark mode: use secondary bg so cards remain distinct from body
+    [data-bs-theme="dark"] .s2_streamContent > .wall-entry > .panel,
+    [data-bs-theme="dark"] .s2_streamContent > .stream-entry > .panel {
+        background: var(--color-bg-secondary) !important;
+    }
     
     // Mobile modal: use sheet-style bottom-anchored for small modals (#globalModal),
     // full-screen for large ones. Keep horizontal centering.

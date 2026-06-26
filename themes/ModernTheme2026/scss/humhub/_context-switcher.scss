@@ -14,14 +14,14 @@
   [data-bs-theme="dark"] &,
   html[data-bs-theme="dark"] &,
   body[data-bs-theme="dark"] & {
-    --cs-bg: #1e2a3a;
-    --cs-bg-item-hover: rgba(255, 255, 255, 0.08);
-    --cs-bg-item-active: rgba(30, 106, 214, 0.25);
-    --cs-border: rgba(255, 255, 255, 0.12);
-    --cs-text: #e2e8f0;
-    --cs-text-muted: rgba(255, 255, 255, 0.45);
-    --cs-icon-bg: rgba(255, 255, 255, 0.1);
-    --cs-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    --cs-bg: var(--color-bg-secondary);
+    --cs-bg-item-hover: var(--color-bg-tertiary);
+    --cs-bg-item-active: color-mix(in srgb, var(--color-primary) 25%, transparent);
+    --cs-border: var(--color-border);
+    --cs-text: var(--color-text-primary);
+    --cs-text-muted: var(--color-text-muted);
+    --cs-icon-bg: var(--color-bg-tertiary);
+    --cs-shadow: var(--shadow-xl);
   }
 
   position: relative;

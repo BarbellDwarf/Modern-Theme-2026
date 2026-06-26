@@ -211,7 +211,7 @@
 }
 
 [data-bs-theme="dark"] .mt2026-reaction-title-pill {
-  background: var(--color-bg-elevated, #1f2937);
+  background: var(--color-bg-tertiary);
 }
 
 // Row in the reactions user list
@@ -234,7 +234,7 @@
 }
 
 [data-bs-theme="dark"] .mt2026-reaction-user-row .mt2026-user-reaction-badge {
-  background: var(--color-bg-elevated, #1f2937);
+  background: var(--color-bg-tertiary);
 }
 
 // Inline reaction summary — rendered as a tappable link on the right side of the addons bar.

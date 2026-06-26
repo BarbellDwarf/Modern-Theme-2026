@@ -1406,40 +1406,40 @@ body.mail-list-open::before {
 // ── DARK MODE SUPPORT ────────────────────────────────────────────────────────
 [data-bs-theme="dark"] {
   #mail-conversation-overview {
-    background: var(--color-bg-dark, #1f2937);
+    background: var(--color-bg-primary);
   }
   
   #mail-conversation-overview .panel-heading {
-    background: var(--color-bg-darker, #111827);
-    border-bottom-color: rgba(255, 255, 255, 0.1);
+    background: var(--color-bg-secondary);
+    border-bottom-color: var(--color-border);
   }
   
   .mail-inbox-messages .messagePreviewEntry {
-    background: var(--color-bg-darker, #111827);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: var(--color-bg-secondary);
+    border-color: var(--color-border);
     
     &:hover {
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--color-bg-tertiary);
     }
   }
   
   .mail-conversation-entry .conversation-entry-content {
-    background: var(--color-bg-darker, #111827);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: var(--color-bg-secondary);
+    border-color: var(--color-border);
     
     &.own {
-      background: color-mix(in srgb, var(--color-primary) 20%, var(--color-bg-darker));
+      background: color-mix(in srgb, var(--color-primary) 20%, var(--color-bg-secondary));
     }
   }
   
   .mt2026-mail-composer-dock {
-    background: var(--color-bg-dark, #1f2937);
-    border-top-color: rgba(255, 255, 255, 0.1);
+    background: var(--color-bg-primary);
+    border-top-color: var(--color-border);
   }
   
   .mail-message-form .humhub-ui-richtext {
-    background: var(--color-bg-darker, #111827);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: var(--color-bg-secondary);
+    border-color: var(--color-border);
   }
 }
 
@@ -1733,21 +1733,21 @@ body:not([data-bs-theme="dark"]) #mail-conversation-root .mail-conversation-entr
 html[data-bs-theme="dark"],
 body[data-bs-theme="dark"] {
   .mt2026-mail-sidebar-search {
-    background: var(--color-bg-darker, #111827);
-    border-color: rgba(255, 255, 255, 0.06);
+    background: var(--color-bg-primary);
+    border-color: var(--color-border);
     
     input {
-      background: var(--color-bg-dark, #1f2937);
-      border-color: rgba(255, 255, 255, 0.1);
-      color: var(--color-text-primary-dark, #f3f4f6);
+      background: var(--color-bg-secondary);
+      border-color: var(--color-border);
+      color: var(--color-text-primary);
       
-      &::placeholder { color: var(--color-text-tertiary-dark, #6b7280); }
-      &:focus { border-color: var(--color-primary, #1e6ad6); }
+      &::placeholder { color: var(--color-text-muted); }
+      &:focus { border-color: var(--color-primary); }
     }
   }
   
   .mail-inbox-messages .messagePreviewEntry .user-status-dot {
-    border-color: var(--color-bg-dark, #1f2937);
+    border-color: var(--color-bg-secondary);
   }
 }
 

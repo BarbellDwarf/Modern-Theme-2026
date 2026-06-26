@@ -176,7 +176,7 @@
         
         // Current space indicator
         &.active {
-            background-color: rgba(30, 106, 214, 0.1);
+            background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
             
             .space-logo,
             .space-image,
@@ -243,9 +243,9 @@
         }
         
         &:hover {
-            border-color: var(--color-primary, #1e6ad6);
-            color: var(--color-primary, #1e6ad6);
-            background-color: rgba(30, 106, 214, 0.05);
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            background-color: color-mix(in srgb, var(--color-primary) 5%, transparent);
         }
     }
 }
@@ -335,9 +335,9 @@
 
 @keyframes pulse-hint {
     0%, 100% {
-        box-shadow: 0 0 0 0 rgba(30, 106, 214, 0.4);
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary) 40%, transparent);
     }
     50% {
-        box-shadow: 0 0 0 8px rgba(30, 106, 214, 0);
+        box-shadow: 0 0 0 8px color-mix(in srgb, var(--color-primary) 0%, transparent);
     }
 }

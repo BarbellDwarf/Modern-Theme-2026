@@ -72,7 +72,7 @@
   }
 
   body.mt2026-mail-page {
-    padding-bottom: 64px;
+    padding-bottom: 0;
   }
 
   .mt2026-mail-index > .row > .col-lg-4 {
@@ -886,7 +886,7 @@ body.mail-list-open::before {
   }
 
   body.mt2026-mail-fullscreen #mail-conversation-root .conversation-entry-list {
-    padding-bottom: 0;
+    padding-bottom: 60px;
   }
 
   // Page scroll lock
@@ -1166,6 +1166,14 @@ body.mail-list-open::before {
   .mt2026-drawer-settings-list .setting-item {
     border-bottom-color: var(--color-border);
   }
+
+  .mt2026-mail-empty-state {
+    color: var(--color-text-muted);
+
+    .mt2026-mail-empty-state__title {
+      color: var(--color-text-secondary);
+    }
+  }
 }
 
 // ── DESKTOP TWO-COLUMN POLISH ────────────────────────────────────────────────
@@ -1185,6 +1193,37 @@ body.mail-list-open::before {
   #mail-conversation-overview {
     width: 360px;
     max-width: 360px;
+  }
+}
+
+// ── EMPTY STATES ────────────────────────────────────────────────────────────────
+.mt2026-mail-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 120px;
+
+  .mt2026-mail-empty-state__icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+
+  .mt2026-mail-empty-state__title {
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-bottom: 4px;
+  }
+
+  .mt2026-mail-empty-state__text {
+    color: var(--color-text-muted);
+    font-size: 13px;
   }
 }
 

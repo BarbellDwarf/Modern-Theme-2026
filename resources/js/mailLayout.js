@@ -196,6 +196,35 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
         heading.insertAdjacentHTML('afterend', searchHTML);
     }
 
+    function updateSearchEmptyState(query, entries) {
+        var existing = document.querySelector('.mt2026-mail-search-empty-state');
+        if (!query) {
+            if (existing) existing.remove();
+            return;
+        }
+        var visible = Array.from(entries).some(function(e) { return e.style.display !== 'none'; });
+        if (!visible) {
+            if (!existing) {
+                var empty = document.createElement('div');
+                empty.className = 'mt2026-mail-empty-state mt2026-mail-search-empty-state';
+                empty.innerHTML = '<div class="mt2026-mail-empty-state__icon" aria-hidden="true">&#128269;</div>'
+                    + '<div class="mt2026-mail-empty-state__title">No conversations found</div>'
+                    + '<div class="mt2026-mail-empty-state__text">Try a different search term</div>';
+                var sidebar = document.getElementById('mail-conversation-overview');
+                if (sidebar) {
+                    var list = sidebar.querySelector('.inbox-wrapper, .mail-inbox-messages > div:last-child');
+                    if (list) {
+                        list.appendChild(empty);
+                    } else {
+                        sidebar.appendChild(empty);
+                    }
+                }
+            }
+        } else {
+            if (existing) existing.remove();
+        }
+    }
+
     function initConversationSearch() {
         injectSearchHTML();
         var searchInput = document.querySelector('.mt2026-mail-sidebar-search input[type="search"], .mt2026-mail-sidebar-search input[type="text"]');
@@ -213,6 +242,7 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
                     var matches = !query || text.indexOf(query) !== -1;
                     entry.style.display = matches ? '' : 'none';
                 });
+                updateSearchEmptyState(query, entries);
             }, 150);
         });
     }

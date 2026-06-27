@@ -119,11 +119,50 @@
   }
 }
 
-// ── Unconditional stream footer/addons rules ─────────────────────────────────
+// ── Unconditional stream rules (not nested under .stream-container) ──────────
 // HumHub's real stream DOM is .s2_streamContent > .panel.wall_XXX (no
 // .stream-container or .wall-entry wrapper), so rules nested under those
-// ancestors never matched.  These global rules ensure the footer always renders.
+// ancestors never matched.  These global rules ensure styling applies.
 
+// Post card header — avatar + name row
+.wall-entry-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 !important;
+  margin-bottom: var(--space-3) !important;
+
+  .media-object {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    object-fit: cover;
+  }
+
+  .media-heading {
+    font-weight: $font-weight-semibold;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
+    margin-bottom: 2px;
+  }
+
+  .timestamp {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+  }
+}
+
+// Post content body — text area
+.wall-entry .wall-entry-body,
+.wall-entry .wall-entry-content {
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  padding-left: var(--space-4) !important;
+  padding-right: var(--space-4) !important;
+  color: var(--color-text-primary);
+}
+
+// Footer bar — clean separator, no tint
 .wall-entry-footer {
   display: flex;
   align-items: center;
@@ -131,7 +170,7 @@
   gap: var(--space-3);
   padding: var(--space-2) var(--space-4);
   border-top: 1px solid var(--color-border);
-  background: transparent; // blend with post panel — no inner box
+  background: transparent;
 }
 
 // ── Single-box stream posts (all screen sizes) ───────────────────────────────
@@ -141,96 +180,65 @@
 // Solution: keep .wall-entry as the sole visible card; make the inner .panel
 // completely transparent so there is only ONE box per post.
 
-.s2_streamContent .wall-entry,
-.s2_streamContent .stream-entry {
-  // The wall-entry IS the card — give it proper card styling
-  background: color-mix(in srgb, var(--color-bg-primary) 94%, var(--color-primary) 6%);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 24%, var(--color-border));
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  margin-bottom: var(--space-4);
-  overflow: hidden;
+// The Clean Theme styles the inner .panel as the card and keeps the outer
+// .wall-entry transparent.  We work with that structure — the .panel gets
+// the card background, border, and shadow; the .wall-entry is just a wrapper.
+// We add the accent line to the .panel-heading and clean up spacing.
 
-  &:hover {
-    box-shadow: var(--shadow-md);
-    border-color: color-mix(in srgb, var(--color-primary) 32%, var(--color-border));
-  }
+.s2_streamContent > .wall-entry,
+.s2_streamContent > .stream-entry {
+  margin-bottom: var(--space-4) !important;
 
-  // Inner .panel: transparent — no box of its own
-  > .panel,
-  > div > .panel {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    margin-bottom: 0 !important;
+  // Accent line on the panel heading (top of the card)
+  > .panel > .panel-heading {
+    position: relative;
 
-    > .panel-body {
-      background: transparent;
-      padding-top: var(--space-4);
-      padding-bottom: var(--space-5);
-    }
-
-    > .panel-heading {
-      background: transparent;
-      border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border));
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-      box-shadow: none;
-      margin: 0;
-      position: relative;
-      padding-bottom: var(--space-3);
-
-      // Subtle top accent to make text-only posts feel more "defined"
-      &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
-        opacity: 0.68;
-      }
-    }
-
-    > .panel-footer {
-      background: transparent;
-      border-top-color: var(--color-border);
-      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-      box-shadow: none;
-      margin: 0;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+      opacity: 0.68;
+      z-index: 1;
     }
   }
 
-  // Footer/addons bar inside the post — no extra bg
+  // Clean footer — no tint
   .wall-entry-footer {
-    background: color-mix(in srgb, var(--color-primary) 9%, transparent);
-    border-top: 1px solid color-mix(in srgb, var(--color-primary) 24%, var(--color-border));
-    margin-bottom: var(--space-2);
+    background: transparent !important;
+    border-top: 1px solid var(--color-border-light);
+    margin: 0;
   }
 
-  // Comment container — no inner card
+  // Comment container — seamless with card
+  .comment-container.bg-light,
   .comment-container,
   .comment-entry-footer {
-    background: transparent;
+    background: transparent !important;
+    background-color: transparent !important;
   }
 
   .comment-container {
-    padding-top: var(--space-2);
+    padding: var(--space-3) var(--space-4) !important;
+    border-top: 1px solid var(--color-border-light);
+    margin-top: 0 !important;
   }
 
-  // Improve readability/density for text-only content blocks
+  // Improve readability for text content
   .wall-entry-body,
   .stream-entry-content,
   .wall-entry-content {
-    line-height: 1.62;
-    letter-spacing: 0.01em;
+    line-height: 1.6;
+    font-size: var(--font-size-base);
   }
 
   .wall-entry-body > p:first-child,
   .stream-entry-content > p:first-child,
   .wall-entry-content > p:first-child {
-    margin-top: var(--space-1);
+    margin-top: 0;
   }
 }
 
@@ -240,8 +248,10 @@
 
 
 
-// Make .wall-entry-controls links always visible with readable color
+// Make .wall-entry-controls links always visible with readable color.
+// Override Clean Theme's margin-top:10px which breaks flex centering.
 .wall-entry-controls a {
+  margin-top: 0 !important;
   color: var(--color-text-secondary, #4b5563) !important;
   transition: color 0.2s;
 
@@ -337,54 +347,224 @@
 // Reaction summary pushed to the right end of the addons bar (styled in _reactions.scss)
 // .mt2026-summary-link uses margin-left:auto to right-align
 
+// ── Individual comment entries ──────────────────────────────────────────────
+// Clean, readable comment styling with proper spacing and hover states.
+//
+// DOM structure:
+//   .comment
+//     .showMore          — "Show X more replies" toggle
+//     .comment-separator — hr
+//     .single-comment    — the actual comment (parent or reply)
+//       .comment-header-image  — avatar
+//       .flex-grow-1
+//         .comment-heading    — name + timestamp
+//         .content            — comment text
+//         .wall-entry-controls — action links
+//         .nested-comments-root — reply form (hidden by default)
+//     .comment-separator — hr
+//     .single-comment    — reply (same level as parent!)
+//       ... same structure ...
+//
+// Replies are flat siblings inside .comment, not visually nested.
+// We visually indent them and reduce their weight to show hierarchy.
+
+.comment {
+  padding: 0;
+
+  // ── Top-level comment ────────────────────────────────────────────────────
+  > .single-comment:first-of-type {
+    padding: var(--space-3) 0;
+  }
+
+  // ── Hide separators between parent and replies ────────────────────────────
+  > .comment-separator {
+    display: none;
+  }
+
+  // ── Show more toggle ─────────────────────────────────────────────────────
+  > .showMore {
+    padding: var(--space-1) 0 var(--space-2);
+    font-size: var(--font-size-sm);
+
+    a {
+      color: var(--color-text-muted);
+      font-size: var(--font-size-sm);
+
+      &:hover {
+        color: var(--color-primary);
+        text-decoration: none;
+      }
+    }
+  }
+
+  // ── Shared single-comment styles ────────────────────────────────────────
+  .single-comment {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+
+    .comment-header-image {
+      flex-shrink: 0;
+
+      img, .media-object {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-full);
+        object-fit: cover;
+      }
+    }
+
+    .flex-grow-1 {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .comment-heading {
+      font-size: var(--font-size-sm);
+      font-weight: $font-weight-semibold;
+      color: var(--color-text-primary);
+      margin-bottom: 2px;
+
+      .timestamp {
+        font-size: var(--font-size-xs);
+        color: var(--color-text-muted);
+        font-weight: normal;
+        margin-left: var(--space-2);
+      }
+    }
+
+    .content {
+      font-size: var(--font-size-sm);
+      line-height: 1.5;
+      color: var(--color-text-primary);
+      margin: var(--space-1) 0;
+    }
+
+    .wall-entry-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: var(--space-1);
+      font-size: 0;
+      color: var(--color-text-muted);
+
+      > * {
+        font-size: var(--font-size-xs);
+      }
+
+      a {
+        color: var(--color-text-muted);
+
+        &:hover {
+          color: var(--color-primary);
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}
+
+// ── All replies are flat — same visual weight as top-level comments ─────────
+// Reply link hidden on all screen sizes
+.comment-container .wall-entry-controls a[data-action-click="comment.toggleComment"]:not(.d-none) {
+  display: none !important;
+}
+
+// Reply comments — identical padding, avatar, heading to top-level
+.comment > .single-comment.p-2 ~ .single-comment.p-2 {
+  padding: 0.5rem !important;
+  padding-left: 0.5rem !important;
+
+  &::before {
+    display: none;
+  }
+
+  .comment-header-image img,
+  .comment-header-image .media-object {
+    width: 25px !important;
+    height: 25px !important;
+  }
+
+  .content {
+    font-size: 13px;
+  }
+}
+
+// Reply heading same size as top-level (must match Clean Theme specificity)
+.comment-container .comment .single-comment ~ .single-comment h4.comment-heading {
+  font-size: 13px !important;
+}
+
+// Comment create form — prominent input
+.comment_create {
+  padding-top: var(--space-3);
+
+  .ProseMirror {
+    min-height: 44px;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-primary);
+    font-size: var(--font-size-sm);
+    line-height: 1.5;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    &:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.12);
+      outline: none;
+    }
+  }
+
+  .richtext-create-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding-top: var(--space-2);
+
+    .btn {
+      font-size: var(--font-size-sm);
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-md);
+    }
+  }
+}
+
 // ─── MOBILE OPTIMIZATIONS FOR COMMENTS ───────────────────────────────────────
 @media (max-width: 991px) {
 
-  // ── Widen comment area ─────────────────────────────────────────────────────
-  // Root cause: the inner .panel has 21px horizontal padding (Bootstrap default)
-  // which stacks with panel-body/footer/addons padding and squeezes the comment
-  // form to only ~300px on a 390px phone.
-  //
-  // Fix: reduce .panel side padding to 8px; zero out everything below it so
-  // the comment container reaches near-full card width (~350px).
+  // ── Widen comment area on mobile ──────────────────────────────────────────
+  // Reduce inner panel side padding so the comment form reaches near-full width.
 
-  // 1. Inner panel: 21px → 8px each side
   .s2_streamContent .wall-entry > .panel,
   .s2_streamContent .wall-entry > div > .panel,
   .s2_streamContent .stream-entry > .panel,
   .s2_streamContent .stream-entry > div > .panel {
-    padding-left: var(--space-2) !important;   // 8px
+    padding-left: var(--space-2) !important;
     padding-right: var(--space-2) !important;
   }
 
-  // 2. panel-body: all horizontal → 0 (panel already provides the 8px margin)
   .s2_streamContent .wall-entry .panel-body,
   .s2_streamContent .stream-entry .panel-body {
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
 
-  // 3. Footer bar: zero horizontal
   .wall-entry-footer,
   .stream-entry-footer {
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
 
-  // 4. Addons bar: shorthand override to zero horizontal (individual property
-  //    overrides didn't beat the global shorthand rule in the cascade)
   .stream-entry-addons {
     padding: var(--space-2) 0 !important;
   }
 
-  // 5. Comment container: Bootstrap .p-2 adds 8px with !important — zero sides
   .comment-container {
-    padding: var(--space-2) 0 !important;
+    padding: var(--space-2) var(--space-2) !important;
   }
 
   // ── Hide formatting toolbar inside comment forms on mobile ─────────────────
-  // The ProseMirror menubar (Aa/B/I/S/<>/link/list buttons) adds no value on
-  // touch keyboards. Hide it so the input area is clean.
   .comment-container .ProseMirror-menubar,
   .comment_create .ProseMirror-menubar,
   .comment-entry-form .ProseMirror-menubar {
@@ -392,10 +572,6 @@
   }
 
   // ── Hide compose box by default; show only when needed via show-on-mobile ──
-  // On mobile, the comment section opens showing existing comments.
-  // The compose box is hidden by default; it appears via JS adding show-on-mobile.
-  // iOS can blur contenteditable on tap before button click dispatch;
-  // keep controls visible so Send/attachment taps remain actionable.
   .comment-container > .comment_create {
     display: none !important;
     

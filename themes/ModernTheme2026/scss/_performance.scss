@@ -18,23 +18,10 @@
     contain: style;
 }
 
-// Optimize animations with will-change
-.btn,
-.dropdown-toggle,
-.nav-link,
-.list-group-item {
-    &:hover {
-        will-change: transform, box-shadow;
-    }
-}
-
-// Remove will-change after animation completes
-.btn:not(:hover),
-.dropdown-toggle:not(:hover),
-.nav-link:not(:hover),
-.list-group-item:not(:hover) {
-    will-change: auto;
-}
+// will-change is intentionally omitted here — applying it on :hover is an
+// anti-pattern because the browser needs time to prepare the layer before the
+// animation starts. The hover transitions are lightweight (color/shadow changes)
+// and do not benefit from GPU layer promotion.
 
 // Use transform for animations (GPU-accelerated)
 .modal {
@@ -96,13 +83,9 @@ body {
 // Optimize scroll performance
 .modal-body,
 .list-group {
-    -webkit-overflow-scrolling: touch;
     overflow-y: auto;
 }
 // dropdown-menu must NOT have overflow-y:auto — it would re-introduce clipping
-.dropdown-menu {
-    -webkit-overflow-scrolling: touch;
-}
 
 // Reduce repaints with transform instead of top/left
 .dropdown-menu {

@@ -8,7 +8,7 @@ This document provides comprehensive guidelines for AI agents working on the Mod
 - Contemporary glassmorphism design with depth effects  
 - Self-contained theme (no Clean Theme dependency)
 - Custom mobile bottom navigation for thumb-friendly UX
-- Emoji reaction picker (👍 ❤️ 😂 😢 🙏)
+- Emoji reaction picker (👍 ❤️ 😂 😮 😢 🙏)
 - Adaptive color palettes (4 presets)
 - Full WCAG 2.1 AA accessibility compliance
 - Real-time animations and microinteractions
@@ -419,6 +419,88 @@ tail -f /var/www/humhub/protected/runtime/logs/app.log
 **Cache Flush**:
 - Admin Panel → Settings → Advanced → Caching → "Flush Caches"
 - Or: `Yii::$app->cache->flush();` in code
+- Or CLI: `rm -rf /var/www/humhub/runtime/cache/*`
+
+**CSS Compilation**:
+```bash
+php /var/www/humhub/protected/modules/modern-theme-2026/compile-css.php
+```
+This writes to both `themes/ModernTheme2026/resources/css/theme.css` and the published assets directory. After compilation, clear the runtime cache and the published assets directory to force regeneration:
+```bash
+rm -rf /var/www/humhub/runtime/cache/*
+rm -rf /var/www/humhub/assets/decca576
+```
+
+## ⚠️ CSS Specificity: Working with the Clean Theme
+
+The Clean Theme's CSS is loaded FIRST (stylesheet index 0), and our module's CSS is loaded SECOND (stylesheet index 1). However, the Clean Theme uses `!important` extensively, which means our rules need `!important` to override them in many cases.
+
+### Known DOM Structure & Override Patterns
+
+**Stream Entry DOM:**
+```
+.s2_streamContent > .wall-entry (transparent wrapper)
+  > .panel.panel-default (the actual card — has bg, border, shadow)
+    > .panel-body
+      > .wall-entry-header (flex, align-items: center)
+      > .wall-entry-body (content text)
+      > .wall-entry-footer (action bar)
+      > .stream-entry-addons.clearfix
+        > .wall-entry-controls.wall-entry-links
+        > .comment-container.bg-light.p-2.mt-3
+```
+
+**Key Override Rules:**
+- `.s2_streamContent > .wall-entry` — Clean Theme sets `background: transparent !important`. To override, use `background-color: ... !important` (NOT `background` shorthand, which gets overridden by Clean Theme's `background` shorthand).
+- `.comment-container.bg-light` — Bootstrap's `.bg-light` class has `background-color: ... !important`. Override with `background-color: transparent !important` on `.comment-container.bg-light`.
+- `.wall-entry .wall-entry-body` — Clean Theme sets `padding-left: 50px; padding-right: 50px`. Override with `padding-left: ... !important; padding-right: ... !important`.
+- `.wall-entry .wall-entry-header` — Clean Theme sets `padding-bottom: 10px; margin-bottom: 10px`. Override with `!important`.
+
+**General Rule:** When the Clean Theme uses `!important`, our module must also use `!important` with equal or higher specificity to win. When the Clean Theme does NOT use `!important`, our module's later position in the stylesheet (index 1 vs index 0) is sufficient.
+
+### CSS Compilation Note
+
+The `compile-css.php` script reads custom colors from the database using environment variables (`HUMHUB_DB_*`). When running outside the HumHub context (e.g., standalone theme development), it falls back to default colors. The compiled CSS is written to two locations:
+1. `themes/ModernTheme2026/resources/css/theme.css` — for theme manager compatibility
+2. Published assets directory (e.g., `assets/decca576/resources/css/theme.css`) — for web serving
+
+## Recent Improvements (June 2026)
+
+### Post & Comment Visual Overhaul
+- Header: `align-items: center` — avatar and name vertically centered
+- Content padding: 50px → 16px (`var(--space-4)`)
+- Font size: 13px → 14px (`var(--font-size-base)`), line-height 1.6
+- Accent line: gradient line at top of each post card
+- Footer: removed blue-tinted background, clean border separator
+- Comment container: transparent background (overrides `.bg-light`), proper padding
+- Comment entries: proper spacing, 32px avatars, hover states
+- Comment form: 44px min-height input, focus ring with box-shadow
+- Comment controls: inline-flex, muted color, hover → primary
+
+### Performance & Security Fixes
+- `forceCopy` on asset publishing gated to `YII_DEBUG` only
+- XSS fix in `notifications.js` — switched from string concat to `.attr()`
+- Scroll handler debounced in `reactionPicker.js`
+- `-webkit-overflow-scrolling: touch` removed from all SCSS (deprecated)
+- `will-change` anti-pattern removed from `_performance.scss`
+- Duplicate SCSS blocks consolidated (`_theme.scss` → `_accessibility.scss`)
+- Wrong CSS variable names fixed (`var(--secondary)` → `var(--color-secondary)`)
+- `--color-primary-rgb` defined in `_root.scss`
+
+### Cache & Session Optimizations
+- Full cache flush → targeted key deletion in `ConfigController.php`
+- Session write only when data changes in `ContextSwitcher.php`
+- TopMenu built once per request via static cache in `MobileBottomNav.php`
+- Error handling: `@mkdir` and `file_put_contents` now check return values
+- PDO error mode set to `ERRMODE_EXCEPTION` in `compile-css.php`
+- Hardcoded table name → `HUMHUB_DB_TABLE_PREFIX` env var
+
+### JavaScript Improvements
+- `mobileCommentCompose.js` converted to `humhub.module()` pattern
+- Event listener cleanup/teardown added to all JS modules
+- Silent AJAX failures now logged with `module.log.error()`
+- `'wow'` reaction type added to `ReactionPicker.php` (was missing from widget)
+- Duplicate view files removed (kept `views/` copies, removed theme copies)
 
 ## Maintenance & Versioning
 

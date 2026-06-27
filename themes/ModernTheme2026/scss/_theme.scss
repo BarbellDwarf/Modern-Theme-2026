@@ -128,35 +128,6 @@ a {
 }
 
 // ============================================
-// ACCESSIBILITY
-// ============================================
-
-.sr-only, .visually-hidden {
-  @include visually-hidden;
-}
-
-// Focus visible (keyboard navigation)
-:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
-// Skip to content link
-.skip-to-content {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  padding: var(--space-2) var(--space-4);
-  background: var(--color-primary);
-  color: white;
-  z-index: 9999;
-  
-  &:focus {
-    top: 0;
-  }
-}
-
-// ============================================
 // LOADING STATES
 // ============================================
 
@@ -233,59 +204,7 @@ html {
   }
 }
 
-// ============================================
-// PRINT STYLES
-// ============================================
-
-@media print {
-  *,
-  *::before,
-  *::after {
-    background: transparent !important;
-    color: #000 !important;
-    box-shadow: none !important;
-    text-shadow: none !important;
-  }
-  
-  a,
-  a:visited {
-    text-decoration: underline;
-  }
-  
-  img {
-    page-break-inside: avoid;
-  }
-  
-  h2, h3, p {
-    orphans: 3;
-    widows: 3;
-  }
-  
-  h2, h3 {
-    page-break-after: avoid;
-  }
-  
-  // Hide navigation and chrome when printing
-  #topbar,
-  #topbar-first,
-  #topbar-second,
-  .mobile-bottom-nav,
-  .nav-tabs,
-  .dropdown-menu,
-  .wall-entry-controls {
-    display: none !important;
-  }
-  
-  // Ensure content is visible
-  .wall-entry-content.content {
-    max-height: none !important;
-    overflow: visible !important;
-    
-    &::after {
-      display: none !important;
-    }
-  }
-}
+// Print styles are in _accessibility.scss (imported after this file).
 
 // ============================================
 // PROFILE FIELD LINKS (phone/email)

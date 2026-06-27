@@ -250,21 +250,29 @@ class MobileBottomNav extends Widget
     /**
      * Create a TopMenu instance and collect the final, visible links after module events.
      *
+     * Results are cached in a static property so ContextSwitcher and MobileBottomNav
+     * only build the TopMenu once per request.
+     *
      * @return array<int, array{id:string,label:string,url:string,icon:string}>
      */
     private function captureTopMenuEntries(): array
     {
+        static $entries = null;
+        if ($entries !== null) {
+            return $entries;
+        }
+
         $menu = new TopMenu();
         // run() triggers TopMenu::EVENT_RUN and module menu mutations.
         $menu->run();
-        $entries = $menu->getEntries(MenuLink::class, true);
-        $result = [];
+        $menuEntries = $menu->getEntries(MenuLink::class, true);
+        $entries = [];
 
-        foreach ($entries as $entry) {
+        foreach ($menuEntries as $entry) {
             if (!$entry instanceof MenuLink) {
                 continue;
             }
-            $result[] = [
+            $entries[] = [
                 'id' => (string)$entry->getId(),
                 'label' => (string)$entry->getLabel(),
                 'url' => (string)$entry->getUrl(),
@@ -273,7 +281,7 @@ class MobileBottomNav extends Widget
             ];
         }
 
-        return $result;
+        return $entries;
     }
 
     /**

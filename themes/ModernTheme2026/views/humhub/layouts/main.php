@@ -21,7 +21,7 @@ AppAsset::register($this);
 $distCssFile = $this->theme->getBasePath() . DIRECTORY_SEPARATOR . 'dist' . DIRECTORY_SEPARATOR . 'theme.css';
 if (is_file($distCssFile)) {
     $distDir = $this->theme->getBasePath() . DIRECTORY_SEPARATOR . 'dist';
-    [$distPublishedPath, $distPublishedUrl] = Yii::$app->assetManager->publish($distDir, ['forceCopy' => true]);
+    [$distPublishedPath, $distPublishedUrl] = Yii::$app->assetManager->publish($distDir, ['forceCopy' => defined('YII_DEBUG') && YII_DEBUG]);
     $this->registerCssFile($distPublishedUrl . '/theme.css');
 }
 

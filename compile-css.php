@@ -46,14 +46,16 @@ foreach (glob($webroot . '/assets/*/resources/css/theme.css') as $f) {
 if (!$assetDir) {
     // Fall back to writing into the theme folder for standalone development.
     $outputDir = $themeBasePath . '/dist';
-    if (!is_dir($outputDir)) {
-        mkdir($outputDir, 0755, true);
+    if (!is_dir($outputDir) && !mkdir($outputDir, 0755, true) && !is_dir($outputDir)) {
+        echo "ERROR: Could not create output directory: {$outputDir}\n";
+        exit(1);
     }
     echo "NOTICE: Published asset directory not found. Falling back to: {$outputDir}\n\n";
 } else {
     $outputDir = $assetDir . '/resources/css';
-    if (!is_dir($outputDir)) {
-        mkdir($outputDir, 0755, true);
+    if (!is_dir($outputDir) && !mkdir($outputDir, 0755, true) && !is_dir($outputDir)) {
+        echo "ERROR: Could not create output directory: {$outputDir}\n";
+        exit(1);
     }
     echo "Theme: {$themeBasePath}\n";
     echo "Output: {$outputDir}\n\n";
@@ -91,13 +93,15 @@ if (!$dbDsn && $dbHost && $dbName) {
 if ($dbDsn && is_string($dbUser) && is_string($dbPassword)) {
     try {
         $pdo = new PDO($dbDsn, $dbUser, $dbPassword);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $colorMap = [
             'themePrimaryColor' => 'primary', 'themeAccentColor' => 'accent',
             'themeSecondaryColor' => 'secondary', 'themeSuccessColor' => 'success',
             'themeDangerColor' => 'danger', 'themeWarningColor' => 'warning',
             'themeInfoColor' => 'info', 'themeLightColor' => 'light', 'themeDarkColor' => 'dark',
         ];
-        $stmt = $pdo->query("SELECT name, value FROM setting WHERE module_id='core' AND name LIKE 'theme%Color'");
+        $tablePrefix = getenv('HUMHUB_DB_TABLE_PREFIX') ?: '';
+        $stmt = $pdo->query("SELECT name, value FROM {$tablePrefix}setting WHERE module_id='core' AND name LIKE 'theme%Color'");
         $colors = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $colors[$row['name']] = $row['value'];
@@ -129,15 +133,22 @@ if ($hasScssPhp) {
     try {
         $result = $compiler->compileString($scssContent);
         $css = $result->getCss();
-        file_put_contents($outputDir . '/theme.css', $css);
+        if (file_put_contents($outputDir . '/theme.css', $css) === false) {
+            echo "ERROR: Could not write to {$outputDir}/theme.css\n";
+            exit(1);
+        }
         echo "SUCCESS: CSS compiled (" . number_format(strlen($css)) . " bytes → {$outputDir}/theme.css)\n";
         // Also write to resources/css/theme.css so HumHub's theme manager picks it up
         // even when the published asset directory is not available.
         $resourcesDir = $themeBasePath . '/resources/css';
-        if (!is_dir($resourcesDir)) {
-            mkdir($resourcesDir, 0755, true);
+        if (!is_dir($resourcesDir) && !mkdir($resourcesDir, 0755, true) && !is_dir($resourcesDir)) {
+            echo "ERROR: Could not create resources directory: {$resourcesDir}\n";
+            exit(1);
         }
-        file_put_contents($resourcesDir . '/theme.css', $css);
+        if (file_put_contents($resourcesDir . '/theme.css', $css) === false) {
+            echo "ERROR: Could not write to {$resourcesDir}/theme.css\n";
+            exit(1);
+        }
         echo "  Also wrote to: {$resourcesDir}/theme.css\n";
     } catch (Exception $e) {
         echo "ERROR: " . $e->getMessage() . "\n";
@@ -145,7 +156,10 @@ if ($hasScssPhp) {
     }
 } else {
     // Write aggregated SCSS for manual compilation using `sass`/`dart-sass` or `npx sass`.
-    file_put_contents($outputDir . '/theme.scss', $scssContent);
+    if (file_put_contents($outputDir . '/theme.scss', $scssContent) === false) {
+        echo "ERROR: Could not write to {$outputDir}/theme.scss\n";
+        exit(1);
+    }
     echo "WROTE: Aggregated SCSS to {$outputDir}/theme.scss\n\n";
     echo "To compile locally:\n";
     echo "  # Install dart-sass (preferred):\n";

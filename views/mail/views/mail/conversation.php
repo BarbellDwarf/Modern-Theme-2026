@@ -84,11 +84,11 @@ use humhub\widgets\form\ActiveForm;
                             </div>
                         </div>
 
-                        <div id="mail-create-upload-progress-<?= $message->id ?>" style="display:none;margin:10px 0;"></div>
+                        <div id="mail-create-upload-progress-<?= $message->id ?>" class="mt2026-mail-upload-progress"></div>
 
                         <?= FilePreview::widget([
                             'id' => 'mail-create-upload-preview-' . $message->id,
-                            'options' => ['style' => 'margin-top:10px;'],
+                            'options' => ['class' => 'mt2026-mail-upload-preview'],
                             'edit' => true,
                         ]) ?>
 

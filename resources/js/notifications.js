@@ -43,13 +43,13 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
         var $bar = $(
             '<div id="mt2026-notification-mobile-bar" class="mt2026-notification-mobile-bar">' +
                 '<button class="btn btn-sm btn-default mt2026-mark-all-seen-btn"' +
-                    ' data-action-click="notification.markAsSeen"' +
-                    ' data-action-url="' + actionUrl + '">' +
+                    ' data-action-click="notification.markAsSeen">' +
                     '<i class="fa fa-check-circle"></i> Mark All Seen' +
                 '</button>' +
             '</div>'
         );
 
+        $bar.find('button').attr('data-action-url', actionUrl);
         $panelHeading.after($bar);
     };
 

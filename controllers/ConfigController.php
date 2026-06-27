@@ -48,7 +48,8 @@ class ConfigController extends Controller
                 $settings->set('mobileMoreAutoModules', Yii::$app->request->post('mobileMoreAutoModules') ? 1 : 0);
                 $settings->set('mobileMoreHiddenModuleIds', trim((string)Yii::$app->request->post('mobileMoreHiddenModuleIds', '')));
 
-                Yii::$app->cache->flush();
+                Yii::$app->cache->delete('mbn_notif_*');
+                Yii::$app->cache->delete('mbn_spaces_ids_*');
                 $this->view->saved();
                 return $this->redirect(['/modern-theme-2026/config']);
             }
@@ -57,7 +58,20 @@ class ConfigController extends Controller
             $peopleLabel = Yii::$app->request->post('peopleNavLabel');
             if ($peopleLabel !== null) {
                 $settings->set('peopleNavLabel', trim($peopleLabel));
-                Yii::$app->cache->flush();
+                Yii::$app->cache->delete('mbn_notif_*');
+                Yii::$app->cache->delete('mbn_spaces_ids_*');
+                $this->view->saved();
+                return $this->redirect(['/modern-theme-2026/config']);
+            }
+
+            // Save Mail Settings
+            if (Yii::$app->request->post('mailSettingsSubmit') !== null) {
+                $settings->set('mailEnterToSend', Yii::$app->request->post('mailEnterToSend') ? '1' : '0');
+                $fontScale = (int)Yii::$app->request->post('mailFontScale', 100);
+                $settings->set('mailFontScale', in_array($fontScale, [100, 115, 130, 150], true) ? $fontScale : 100);
+                $settings->set('mailFormattingBar', Yii::$app->request->post('mailFormattingBar') ? '1' : '0');
+                Yii::$app->cache->delete('mbn_notif_*');
+                Yii::$app->cache->delete('mbn_spaces_ids_*');
                 $this->view->saved();
                 return $this->redirect(['/modern-theme-2026/config']);
             }
@@ -90,7 +104,8 @@ class ConfigController extends Controller
 
                 Module::rebuildThemeCss();
 
-                Yii::$app->cache->flush();
+                Yii::$app->cache->delete('mbn_notif_*');
+                Yii::$app->cache->delete('mbn_spaces_ids_*');
 
                 $this->view->saved();
                 return $this->redirect(['/modern-theme-2026/config']);
@@ -110,8 +125,8 @@ class ConfigController extends Controller
     public function actionRebuildCss()
     {
         $ok = Module::rebuildThemeCss();
-        Yii::$app->cache->flush();
-        return $ok ? 'ok' : 'error: css rebuild failed';
+        Yii::$app->response->format = 'json';
+        return ['success' => $ok];
     }
 
     public static function getPalettes(): array
@@ -186,5 +201,25 @@ class ConfigController extends Controller
 
         $parts = preg_split('/[\s,]+/', strtolower($raw), -1, PREG_SPLIT_NO_EMPTY);
         return array_values(array_unique($parts ?: []));
+    }
+
+    // ── Mail Settings ───────────────────────────────────────────────────────
+
+    public static function isMailEnterToSendEnabled(): bool
+    {
+        $value = Yii::$app->settings->get('mailEnterToSend');
+        return $value !== '0' && $value !== false && $value !== null;
+    }
+
+    public static function getMailFontScale(): int
+    {
+        $value = Yii::$app->settings->get('mailFontScale');
+        $int = (int)$value;
+        return in_array($int, [100, 115, 130, 150], true) ? $int : 100;
+    }
+
+    public static function isMailFormattingBarEnabled(): bool
+    {
+        return (bool)Yii::$app->settings->get('mailFormattingBar', false);
     }
 }

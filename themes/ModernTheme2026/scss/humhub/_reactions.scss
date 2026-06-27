@@ -288,10 +288,12 @@
   background: rgba(var(--color-primary-rgb, 30, 106, 214), 0.2);
 }
 
-// Reaction summary link — right-aligned in the addons bar
-.mt2026-summary-link {
+// Reaction summary link — right-aligned in the addons bar.
+// Qualify with .wall-entry-controls to beat Clean Theme's .wall-entry-controls a
+// (otherwise the anchor tag selector overrides our display:inline-flex with block).
+.wall-entry-controls .mt2026-summary-link {
   margin-left: auto !important;
-  display: inline-flex;
+  display: inline-flex !important;
   align-items: center;
   gap: 4px;
   flex: 0 0 auto;

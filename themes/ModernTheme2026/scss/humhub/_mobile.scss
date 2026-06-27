@@ -19,13 +19,11 @@ body.mt2026-keyboard-open {
         .modal-content {
             max-height: calc(var(--vvh, 100dvh) - 60px) !important;
             overflow-y: auto !important;
-            -webkit-overflow-scrolling: touch;
         }
 
         // Allow modal body to scroll independently so the focused input stays visible
         .modal-body {
             overflow-y: auto !important;
-            -webkit-overflow-scrolling: touch;
             flex: 1 1 auto;
             min-height: 0;
         }
@@ -70,7 +68,6 @@ body.mt2026-keyboard-open {
             justify-content: center !important; // center pills when they fit; scroll handles overflow
             overflow-x: auto !important;
             overflow-y: visible !important; // Allow rounded borders to show
-            -webkit-overflow-scrolling: touch;
             gap: 6px;
             padding: 4px 0 8px !important; // bottom padding for scroll shadow
             margin: 0 !important;
@@ -693,7 +690,6 @@ body.mt2026-keyboard-open {
         overflow-x: auto;
         overflow-y: hidden;
         max-width: 100%;
-        -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
         &::-webkit-scrollbar { display: none; }
     }
@@ -767,7 +763,6 @@ body.mt2026-keyboard-open {
     .mail-message-form .humhub-ui-richtext-editor-insertFiles-preview {
         max-height: 200px;
         overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
     }
 
     // Comment dropdown menus

@@ -194,6 +194,59 @@ $previewKeys = ['primary', 'accent', 'secondary', 'success', 'danger'];
     </div>
 </div>
 
+<!-- Mail Settings -->
+<div class="panel panel-default" style="margin-top:20px;">
+    <div class="panel-heading">
+        <strong><i class="fa fa-envelope"></i> Mail Settings</strong>
+        <div class="text-muted" style="margin-top:4px;font-size:13px;">
+            Configure the messaging experience in the mail module.
+        </div>
+    </div>
+    <div class="panel-body">
+        <form method="post" action="<?= Url::to(['/modern-theme-2026/config']) ?>">
+            <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->csrfToken ?>">
+            <input type="hidden" name="mailSettingsSubmit" value="1">
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="mailEnterToSend" value="1" <?= ConfigController::isMailEnterToSendEnabled() ? 'checked' : '' ?>>
+                    <strong>Enter to send</strong>
+                    <p class="help-block" style="margin:2px 0 0 20px;font-size:12px;">
+                        Press Enter to send a message (Ctrl+Enter for new line). Disable to use Enter for new lines.
+                    </p>
+                </label>
+            </div>
+
+            <div class="form-group" style="margin-top:16px;">
+                <label for="mailFontScale"><strong>Font size</strong></label>
+                <select id="mailFontScale" name="mailFontScale" class="form-control" style="max-width:200px;">
+                    <option value="100" <?= ConfigController::getMailFontScale() === 100 ? 'selected' : '' ?>>100%</option>
+                    <option value="115" <?= ConfigController::getMailFontScale() === 115 ? 'selected' : '' ?>>115%</option>
+                    <option value="130" <?= ConfigController::getMailFontScale() === 130 ? 'selected' : '' ?>>130%</option>
+                    <option value="150" <?= ConfigController::getMailFontScale() === 150 ? 'selected' : '' ?>>150%</option>
+                </select>
+                <p class="help-block" style="font-size:12px;">
+                    Scale the message text size for better readability.
+                </p>
+            </div>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="mailFormattingBar" value="1" <?= ConfigController::isMailFormattingBarEnabled() ? 'checked' : '' ?>>
+                    <strong>Formatting toolbar</strong>
+                    <p class="help-block" style="margin:2px 0 0 20px;font-size:12px;">
+                        Show the bold/italic/link formatting toolbar in the message composer.
+                    </p>
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-sm" style="margin-top:8px;">
+                <i class="fa fa-save"></i> Save Mail Settings
+            </button>
+        </form>
+    </div>
+</div>
+
 <!-- Navigation Labels Settings -->
 <div class="panel panel-default" style="margin-top:20px;">
     <div class="panel-heading">

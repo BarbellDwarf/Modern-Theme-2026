@@ -108,8 +108,9 @@ class Module extends \humhub\components\Module
             $theme->publishResources(true);
 
             $cssDir = $theme->publishedResourcesPath . DIRECTORY_SEPARATOR . 'css';
-            if (!is_dir($cssDir)) {
-                @mkdir($cssDir, 0775, true);
+            if (!is_dir($cssDir) && !mkdir($cssDir, 0775, true) && !is_dir($cssDir)) {
+                Yii::error('Could not create CSS directory: ' . $cssDir, 'modern-theme-2026');
+                return false;
             }
 
             // ThemeHelper requires both files to be writable. On some systems old files

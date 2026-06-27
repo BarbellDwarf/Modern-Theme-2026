@@ -71,7 +71,6 @@
   .grid-view,
   .gridview {
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
     width: 100%;
 
     table {
@@ -116,7 +115,6 @@
       .list-group {
         overflow-x: auto;
         flex-wrap: nowrap;
-        -webkit-overflow-scrolling: touch;
         padding-bottom: var(--space-2); // Space for scrollbar
       }
     }

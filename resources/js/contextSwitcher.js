@@ -3,7 +3,6 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
     var isOpen = false;
 
     var init = function(pjax) {
-        console.log('[MT2026] ContextSwitcher init called, pjax=' + pjax + ', width=' + window.innerWidth);
         bindToggleButton();
         bindOutsideClick();
         bindKeyboard();
@@ -274,12 +273,19 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
         $row.find('.form-search-filter-keyword input').blur();
     };
 
-    var initMobileInputScroll = function() {};
+    var unload = function() {
+        $(document).off('.contextSwitcher');
+        $(document).off('.contextNav');
+        $(document).off('.contextSearch');
+        $(document).off('.contextExpand');
+        document.removeEventListener('keydown', handleKeydown);
+    };
 
     module.initOnPjaxLoad = true;
 
     module.export({
         init: init,
+        unload: unload,
         open: openSwitcher,
         close: closeSwitcher,
         toggle: toggleSwitcher

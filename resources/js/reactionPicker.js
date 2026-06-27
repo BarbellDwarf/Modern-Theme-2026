@@ -203,12 +203,16 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
                 $.get(BASE_URL + '/my-reaction', params, function(resp) {
                     if (resp && resp.reactionType) setTrigger($c, resp.reactionType);
                     if (resp && resp.reactionCounts) setSummary($c, resp.reactionCounts);
-                }).fail(function() {});
+                }).fail(function(jqXHR) {
+                    module.log.error('Failed to fetch reaction state', jqXHR.status);
+                });
             } else {
                 // Still fetch summary counts even when user hasn't reacted
                 $.get(BASE_URL + '/my-reaction', params, function(resp) {
                     if (resp && resp.reactionCounts) setSummary($c, resp.reactionCounts);
-                }).fail(function() {});
+                }).fail(function(jqXHR) {
+                    module.log.error('Failed to fetch reaction counts', jqXHR.status);
+                });
             }
         });
     }
@@ -352,15 +356,32 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
 
         $(document).on('pjax:end', function() { setTimeout(attach, 200); });
 
-        // Keep the floating picker aligned if the page scrolls or resizes
+        // Keep the floating picker aligned if the page scrolls or resizes.
+        // Debounced to avoid layout thrashing on rapid scroll events.
+        var repositionTimer;
         $(window).on('scroll.mt2026picker resize.mt2026picker', function() {
-            if ($activeContainer && $activeTrigger && $bodyPicker && $bodyPicker.is(':visible')) {
-                positionBodyPicker($activeTrigger);
-            }
+            clearTimeout(repositionTimer);
+            repositionTimer = setTimeout(function() {
+                if ($activeContainer && $activeTrigger && $bodyPicker && $bodyPicker.is(':visible')) {
+                    positionBodyPicker($activeTrigger);
+                }
+            }, 100);
         });
+    };
+
+    var unload = function() {
+        $(document).off('.mt2026picker');
+        $(window).off('.mt2026picker');
+        clearTimeout(repositionTimer);
+        if ($bodyPicker) {
+            $bodyPicker.remove();
+            $bodyPicker = null;
+        }
+        $activeContainer = null;
+        $activeTrigger = null;
     };
 
     module.initOnPjaxLoad = true;
 
-    module.export({ init: init });
+    module.export({ init: init, unload: unload });
 });

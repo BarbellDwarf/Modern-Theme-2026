@@ -5,6 +5,8 @@
 #mail-conversation-root {
   position: relative;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 // ── DESKTOP FULLSCREEN (≥992px) ─────────────────────────────────────────────
@@ -114,6 +116,16 @@ body.mt2026-mail-page {
   background: var(--color-bg-primary);
   margin: 0;
   padding: 0;
+}
+
+// The outer .panel.panel-default from conversation.php is loaded via AJAX into
+// #mail-conversation-root, so .col-lg-8.messages > .panel doesn't match.
+// Kill generic .panel margin that leaks in from the CSS cascade.
+#mail-conversation-root > .panel.panel-default {
+  margin: 0 !important;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 #mail-conversation-root .messages {

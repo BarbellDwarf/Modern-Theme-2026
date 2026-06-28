@@ -37,12 +37,15 @@ modern-theme-2026/
 ├── resources/
 │   └── js/                 # JavaScript modules for frontend
 │       ├── contextSwitcher.js
-│       ├── reactionPicker.js
+│       ├── mailLayout.js   # Mail/messenger UI (Telegram-style, search, settings drawer)
+│       ├── mobileCommentCompose.js
 │       ├── mobileKeyboardFix.js
-│       ├── paletteSwitcher.js
+│       ├── mobileSwipeFix.js
+│       ├── modalFocusFix.js
 │       ├── notifications.js
+│       ├── paletteSwitcher.js
 │       ├── peopleFocusGuard.js
-│       └── modalFocusFix.js
+│       └── reactionPicker.js
 ├── themes/
 │   └── ModernTheme2026/    # The actual theme files
 │       ├── scss/           # SCSS stylesheets
@@ -54,8 +57,16 @@ modern-theme-2026/
 │   ├── ContextSwitcher.php # Context switcher widget
 │   └── views/              # Widget view templates
 └── views/
+    ├── admin/              # Admin layout overrides
     ├── config/             # Admin config views
-    └── reactions/          # Reaction-related views
+    ├── mail/               # Mail/messenger view overrides
+    │   └── views/mail/
+    │       ├── index.php
+    │       └── conversation.php
+    ├── reactions/          # Reaction-related views
+    └── user/               # User profile & people directory overrides
+        ├── people/index.php
+        └── profile/_layout.php, about.php, home.php
 ```
 
 ### Lifecycle Overview
@@ -501,6 +512,34 @@ The `compile-css.php` script reads custom colors from the database using environ
 - Silent AJAX failures now logged with `module.log.error()`
 - `'wow'` reaction type added to `ReactionPicker.php` (was missing from widget)
 - Duplicate view files removed (kept `views/` copies, removed theme copies)
+
+### Mail/Messenger UI Overhaul (June 2026)
+- Telegram-style message bubbles: own messages use `var(--color-primary)` background with white text, others use `var(--color-bg-secondary)` background
+- 40px avatars in conversation list
+- Conversation list search with 150ms debounce filtering
+- Settings drawer with Enter-to-send toggle, font scaling (100-150%), formatting bar toggle
+- Back button on mobile to return from conversation to list
+- Rewrote `mailLayout.js` with `unload`/teardown, `MutationObserver`, debounce, Escape key, focus management, ARIA
+- Mail settings added to admin config page (`ConfigController.php`, `views/config/index.php`)
+- Removed inline styles from `conversation.php`, added CSS classes
+- Fixed composer gap: removed 92px padding-bottom on entry list, reduced composer sizing (dock padding 4px, input min-height 36px, buttons 36px, border-radius 10px with focus ring)
+- Fixed mobile composer gap: `padding-bottom: 60px` on `.conversation-entry-list` when composer is `position: fixed`
+- Fixed desktop padding: `body.mt2026-mail-page { padding-bottom: 0 }` on desktop
+- Fixed AJAX-loaded conversation gap: `#mail-conversation-root > .panel.panel-default { margin: 0 !important; height: 100%; display: flex; flex-direction: column; }` — conversation content is loaded via AJAX into `#mail-conversation-root`, so `.col-lg-8.messages > .panel` never matches; generic `.panel` rules from Clean Theme (like `margin-top: 50px`, `margin-bottom: 15px`) leak in without this override
+- `#mail-conversation-root { display: flex; flex-direction: column; }` ensures flex chain propagates
+- Empty states: `.mt2026-mail-empty-state` with icon, title, text sub-elements, centered with muted colors
+- Search "no results" empty state: `updateSearchEmptyState()` in `mailLayout.js` injects styled message when search filters out all entries
+- Dark mode for empty states: proper color tokens in `[data-bs-theme="dark"]`
+- Mail SCSS reduced from 1842→1316 lines, eliminated 462 `!important`
+- Mail composer uses `position: relative` in flex flow on mobile (not fixed), except on fullscreen mobile where it's `position: fixed` at `bottom: calc(56px + env(safe-area-inset-bottom, 0))`
+
+### Reply Comments Flattened (June 2026)
+- Reply comments flattened on all screen sizes (same padding, heading, avatar as top-level)
+- Reply links hidden on all screen sizes (`display: none !important`)
+- Removed desktop nesting block with thread lines and smaller avatars
+- Fixed `·` text node separator in comment-level controls (`font-size: 0`)
+- Toned down dark mode hover effect on posts (reduced shadow opacity, subtle bg mix)
+- Made dark mode `.stream-entry-addons` and `.wall-entry-footer` transparent
 
 ## Maintenance & Versioning
 

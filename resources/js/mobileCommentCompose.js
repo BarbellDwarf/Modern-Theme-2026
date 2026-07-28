@@ -175,9 +175,6 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
     };
 
     var unload = function() {
-        document.removeEventListener('click.mt2026CommentCompose', null);
-        document.removeEventListener('shown.bs.modal.mt2026CommentCompose', null);
-        document.removeEventListener('submit.mt2026CommentCompose', null);
         $(document).off('.mt2026CommentCompose');
         submitTimers.forEach(function(timer) { clearTimeout(timer); });
         transitionTimers.forEach(function(timer) { clearTimeout(timer); });

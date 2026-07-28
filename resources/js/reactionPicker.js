@@ -57,7 +57,7 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
     function buildPickerHtml() {
         var html = '<div class="mt2026-reaction-picker" role="listbox" aria-label="Choose reaction">';
         REACTIONS.forEach(function(r) {
-            html += '<button class="mt2026-reaction-btn" type="button" data-reaction="' + r.type + '" title="' + r.label + '">'
+            html += '<button class="mt2026-reaction-btn" type="button" data-reaction="' + r.type + '" title="' + r.label + '" aria-pressed="false">'
                 + '<span class="mt2026-reaction-emoji">' + r.emoji + '</span>'
                 + '<span class="mt2026-reaction-label">' + r.label + '</span>'
                 + '</button>';
@@ -230,8 +230,10 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         // Ensure reaction buttons reflect active state of THIS container
         var currentReaction = $trigger.attr('data-active');
         $picker.find('.mt2026-reaction-btn').removeClass('selected');
+        $picker.find('.mt2026-reaction-btn').attr('aria-pressed', 'false');
         if (currentReaction) {
             $picker.find('.mt2026-reaction-btn[data-reaction="' + currentReaction + '"]').addClass('selected');
+            $picker.find('.mt2026-reaction-btn[data-reaction="' + currentReaction + '"]').attr('aria-pressed', 'true');
         }
         $picker.addClass('visible').show();
     }

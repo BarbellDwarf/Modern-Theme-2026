@@ -9,37 +9,26 @@ humhub.module('modernTheme.peopleFocusGuard', function(module, require, $) {
         return p.indexOf('/user/people') !== -1 || p === '/people';
     }
 
-    // ─── Autofocus suppression ────────────────────
+    // ─── Autofocus suppression (MutationObserver) ─
 
-    var suppressUntil = 0;
-    var captureInstalled = false;
-
-    function onFocusCapture(e) {
-        if (Date.now() > suppressUntil) { return; }
-        var $t = $(e.target);
-        if ($t.closest('form.form-search').length) {
-            e.stopImmediatePropagation();
-            setTimeout(function() {
-                if (document.activeElement === e.target) { e.target.blur(); }
-            }, 0);
+    var suppressAutofocus = function(container) {
+        if (!container) return;
+        var input = container.querySelector('input[type="text"], input[type="search"], input:not([type])');
+        if (input) {
+            input.blur();
+            return;
         }
-    }
-
-    function installCaptureGuard() {
-        if (!captureInstalled) {
-            document.addEventListener('focus', onFocusCapture, true);
-            captureInstalled = true;
-        }
-        suppressUntil = Date.now() + 1200;
-    }
-
-    function removeCaptureGuard() {
-        if (captureInstalled) {
-            document.removeEventListener('focus', onFocusCapture, true);
-            captureInstalled = false;
-        }
-        suppressUntil = 0;
-    }
+        var observer = new MutationObserver(function() {
+            var found = container.querySelector('input[type="text"], input[type="search"], input:not([type])');
+            if (found) {
+                found.blur();
+                observer.disconnect();
+            }
+        });
+        observer.observe(container, { childList: true, subtree: true });
+        // Safety timeout
+        setTimeout(function() { observer.disconnect(); }, 3000);
+    };
 
     // ─── FAB Search UI ──────────────────────────────────────────────────────────
 
@@ -103,7 +92,6 @@ humhub.module('modernTheme.peopleFocusGuard', function(module, require, $) {
         $('.mt2026-people-invite-btn').removeClass('mt2026-people-invite-hidden');
         $(document).off('click.mt2026Fab keydown.mt2026Search');
         fabInjected = false;
-        removeCaptureGuard();
     }
 
     // ─── Module init ────────────────────────────────────────────────────────────
@@ -114,7 +102,9 @@ humhub.module('modernTheme.peopleFocusGuard', function(module, require, $) {
             return;
         }
 
-        installCaptureGuard();
+        var searchPanel = document.querySelector('.mt2026-people-search-panel')
+            || (function() { var f = document.querySelector('form.form-search'); return f ? f.closest('.panel-body') : null; })();
+        suppressAutofocus(searchPanel);
         setupPeopleMobile();
 
         // Belt-and-suspenders: blur any search input that cards.js may have focused.
@@ -126,12 +116,6 @@ humhub.module('modernTheme.peopleFocusGuard', function(module, require, $) {
             if (a && $(a).closest('form.form-search').length) { a.blur(); }
             $('body').removeClass('mt2026-keyboard-open');
         }, 200);
-        setTimeout(function() {
-            var a = document.activeElement;
-            if (a && $(a).closest('form.form-search').length) { a.blur(); }
-            $('body').removeClass('mt2026-keyboard-open');
-            setTimeout(removeCaptureGuard, 100);
-        }, 1200);
     };
 
     module.initOnPjaxLoad = true;

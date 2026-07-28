@@ -8,6 +8,7 @@
 }
 
 .modal {
+  z-index: $z-mt2026-modal;
   @include fade-in();
 }
 

@@ -274,7 +274,7 @@
 .mt2026-mail-composer-dock .btn-group > .dropdown-menu,
 .mail-message-form .dropdown-menu,
 .mail-message-form .btn-group > .dropdown-menu {
-  z-index: $z-mt2026-dropdown !important;
+  z-index: 1051 !important;
   position: absolute !important;
 }
 

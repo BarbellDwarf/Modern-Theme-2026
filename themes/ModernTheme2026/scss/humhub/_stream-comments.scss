@@ -144,6 +144,10 @@
   margin-left: var(--space-3);
   padding-left: var(--space-3);
   border-left: 2px solid var(--color-border);
+
+  .comment-header-image {
+    margin: 0 !important;
+  }
 }
 
 // The ' · ' text node separator inside comment-level controls

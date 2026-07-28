@@ -31,15 +31,28 @@
 @import "humhub/richtext";      // Rich text editor
 
 // ── Content ───────────────────────────────────────────────────────────────────
-@import "humhub/stream";        // Activity stream / feed
+@import "humhub/stream-posts";       // Stream post cards & entries
+@import "humhub/stream-comments";    // Stream comments & replies
 @import "humhub/palette-switcher"; // Color palette switcher UI
 @import "humhub/reactions";     // Emoji reaction picker
 @import "humhub/calendar";      // Calendar module styles
 @import "humhub/mail";          // Messenger/mail module UI revamp
-@import "humhub/admin";         // Admin area overrides
+
+// ── Admin ──────────────────────────────────────────────────────────────────────
+@import "humhub/admin-layout";      // Admin layout, columns, sidebar
+@import "humhub/admin-gridview";    // Admin GridView tables
+@import "humhub/admin-settings";    // Admin color pickers, collapsible groups
+@import "humhub/admin-codemirror";  // Admin CodeMirror editor
+@import "humhub/admin-dark";        // Admin dark mode overrides
 
 // ── Dark Mode ─────────────────────────────────────────────────────────────────
-@import "humhub/dark-mode";     // Comprehensive dark mode support
+@import "humhub/dark-mode/dark-mode-base";        // Base tokens, body, links
+@import "humhub/dark-mode/dark-mode-panels";       // Panels, cards, sidebar
+@import "humhub/dark-mode/dark-mode-forms";        // Forms, buttons, select2
+@import "humhub/dark-mode/dark-mode-components";    // Modals, dropdowns, alerts, etc.
+@import "humhub/dark-mode/dark-mode-stream";        // Stream entries & reactions
+@import "humhub/dark-mode/dark-mode-mail";          // Mail-specific overrides
+@import "humhub/dark-mode/dark-mode-mobile";        // Mobile nav overrides
 @import "humhub/mobile";        // Mobile-specific overrides
 
 // ── Polish ────────────────────────────────────────────────────────────────────

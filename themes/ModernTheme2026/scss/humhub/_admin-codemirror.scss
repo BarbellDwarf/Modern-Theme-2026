@@ -1,0 +1,40 @@
+// Modern Theme 2026 - Admin Section: CodeMirror editor
+// Extracted from _admin.scss
+
+// CodeMirror — Custom SCSS textarea
+// CodeMirror injects its own stylesheet with hardcoded white backgrounds;
+// these overrides make it respect the current dark/light theme.
+.CodeMirror {
+  border-radius: 6px;
+  border: 1px solid var(--color-border, #e5e7eb);
+  background: var(--color-bg-primary, #fff);
+  color: var(--color-text-primary, #111827);
+  font-size: 13px;
+  line-height: 1.6;
+
+  .CodeMirror-gutters {
+    background: var(--color-bg-secondary, #f7f7f7);
+    border-right-color: var(--color-border, #ddd);
+  }
+
+  .CodeMirror-linenumber {
+    color: var(--color-text-muted, #999);
+  }
+
+  .CodeMirror-cursor {
+    border-left-color: var(--color-text-primary, #333);
+  }
+
+  .CodeMirror-selected {
+    background: rgba(var(--bs-primary-rgb, 30, 106, 214), 0.15);
+  }
+
+  .CodeMirror-scroll {
+    background: var(--color-bg-primary, #fff);
+  }
+
+  .CodeMirror-scrollbar-filler,
+  .CodeMirror-gutter-filler {
+    background: var(--color-bg-secondary, #fff);
+  }
+}

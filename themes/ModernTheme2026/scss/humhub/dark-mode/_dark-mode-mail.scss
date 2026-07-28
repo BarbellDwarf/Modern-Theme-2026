@@ -1,0 +1,13 @@
+// Modern Theme 2026 - Dark Mode: Mail/Messenger overrides
+// Extracted from _dark-mode.scss
+//
+// Note: Mail-specific dark mode overrides are co-located with the mail module
+// styles in _mail.scss to keep related rules together. This partial is reserved
+// for any additional mail dark mode overrides that need separation.
+
+[data-bs-theme="dark"] {
+    // Mail dark mode overrides belong here.
+    // Currently, mail dark mode rules are kept in _mail.scss alongside
+    // light-mode mail styles for maintainability. If they grow large
+    // enough, migrate mail-specific [data-bs-theme="dark"] rules here.
+}

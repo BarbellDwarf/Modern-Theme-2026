@@ -1,5 +1,5 @@
-// Modern Theme 2026 - Activity Stream
-// Modern stream/feed design
+// Modern Theme 2026 - Activity Stream: Post cards, layout, header/body/footer
+// Extracted from _stream.scss
 
 // Chrome converts float:right on a flex item to flex:0 0 100%, so the empty
 // .stream-entry-loader placeholder div consumes the full container width and
@@ -18,11 +18,11 @@
     @include card-hover;
     margin-bottom: var(--space-4);
     position: relative;
-    
+
     .stream-entry-content, .wall-entry-content {
       padding: var(--space-4);
     }
-    
+
     .stream-entry-header, .wall-entry-header {
       display: flex;
       align-items: center;
@@ -36,19 +36,19 @@
         object-fit: cover;
         @include shadow('sm');
       }
-      
+
       .media-heading {
         font-weight: $font-weight-semibold;
         color: var(--color-text-primary);
         margin-bottom: var(--space-1);
       }
-      
+
       .timestamp {
         font-size: var(--font-size-sm);
         color: var(--color-text-muted);
       }
     }
-    
+
     .stream-entry-footer, .wall-entry-footer {
       display: flex;
       align-items: center;
@@ -56,7 +56,7 @@
       padding: var(--space-3) var(--space-4);
       border-top: 1px solid var(--color-border);
       background: var(--color-bg-secondary);
-      
+
       .like-link-container, .comment-link {
         display: flex;
         align-items: center;
@@ -64,7 +64,7 @@
         color: var(--color-text-secondary);
         font-size: var(--font-size-sm);
         @include transition(color, var(--transition-fast));
-        
+
         &:hover {
           color: var(--color-primary);
         }
@@ -77,12 +77,12 @@
 .post-form, .wall-entry-form {
   @include card;
   margin-bottom: var(--space-4);
-  
+
   textarea {
     min-height: 100px;
     resize: vertical;
   }
-  
+
   .post-actions {
     display: flex;
     justify-content: space-between;
@@ -222,20 +222,6 @@
     margin: 0;
   }
 
-  // Comment container — seamless with card
-  .comment-container.bg-light,
-  .comment-container,
-  .comment-entry-footer {
-    background: transparent !important;
-    background-color: transparent !important;
-  }
-
-  .comment-container {
-    padding: var(--space-3) var(--space-4) !important;
-    border-top: 1px solid var(--color-border-light);
-    margin-top: 0 !important;
-  }
-
   // Improve readability for text content
   .wall-entry-body,
   .stream-entry-content,
@@ -250,12 +236,6 @@
     margin-top: 0;
   }
 }
-
-// ── Old desktop-only flat rule (superseded above, kept for safety) ─────────────
-// Previously only applied at 992px+; now the single-box rule covers all sizes.
-// These selectors are kept as reinforcement.
-
-
 
 // Make .wall-entry-controls links always visible with readable color.
 // Override Clean Theme's margin-top:10px which breaks flex centering.
@@ -313,25 +293,6 @@
   font-size: 14px;
 }
 
-// The same ' · ' text node separator appears inside comment-level controls
-// (between Reply and the emoji button). Apply the same font-size:0 trick.
-.comment-container .wall-entry-controls {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: 0;
-
-  > * {
-    font-size: 14px;
-  }
-
-  // Explicit override: .mt2026-reaction-trigger uses font-size:0 to hide
-  // fallback text while showing its icon via ::before with font-size:18px.
-  .mt2026-reaction-trigger {
-    font-size: 0;
-  }
-}
-
 // The like/unlike anchor links are REPLACED by our emoji trigger visually.
 // Before JS runs: show them via the Clean Theme FA icon (fallback).
 // After JS runs: [data-mt2026-reactions] is set, clip rule in _reactions.scss hides them.
@@ -357,281 +318,6 @@
 // Once picker is attached, hide native like/unlike links in both stream and comment addons.
 .wall-entry-controls .likeLinkContainer[data-mt2026-reactions] a.likeAnchor {
   display: none !important;
-}
-
-// Reaction summary pushed to the right end of the addons bar (styled in _reactions.scss)
-// .mt2026-summary-link uses margin-left:auto to right-align
-
-// ── Individual comment entries ──────────────────────────────────────────────
-// Clean, readable comment styling with proper spacing and hover states.
-//
-// DOM structure:
-//   .comment
-//     .showMore          — "Show X more replies" toggle
-//     .comment-separator — hr
-//     .single-comment    — the actual comment (parent or reply)
-//       .comment-header-image  — avatar
-//       .flex-grow-1
-//         .comment-heading    — name + timestamp
-//         .content            — comment text
-//         .wall-entry-controls — action links
-//         .nested-comments-root — reply form (hidden by default)
-//     .comment-separator — hr
-//     .single-comment    — reply (same level as parent!)
-//       ... same structure ...
-//
-// Replies are flat siblings inside .comment, not visually nested.
-// We visually indent them and reduce their weight to show hierarchy.
-
-.comment {
-  padding: 0;
-
-  // ── Top-level comment ────────────────────────────────────────────────────
-  > .single-comment:first-of-type {
-    padding: var(--space-3) 0;
-  }
-
-  // ── Hide separators between parent and replies ────────────────────────────
-  > .comment-separator {
-    display: none;
-  }
-
-  // ── Show more toggle ─────────────────────────────────────────────────────
-  > .showMore {
-    padding: var(--space-1) 0 var(--space-2);
-    font-size: var(--font-size-sm);
-
-    a {
-      color: var(--color-text-muted);
-      font-size: var(--font-size-sm);
-
-      &:hover {
-        color: var(--color-primary);
-        text-decoration: none;
-      }
-    }
-  }
-
-  // ── Shared single-comment styles ────────────────────────────────────────
-  .single-comment {
-    display: flex;
-    gap: var(--space-3);
-    align-items: flex-start;
-
-    .comment-header-image {
-      flex-shrink: 0;
-
-      img, .media-object {
-        width: 32px;
-        height: 32px;
-        border-radius: var(--radius-full);
-        object-fit: cover;
-      }
-    }
-
-    .flex-grow-1 {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .comment-heading {
-      font-size: var(--font-size-sm);
-      font-weight: $font-weight-semibold;
-      color: var(--color-text-primary);
-      margin-bottom: 2px;
-
-      .timestamp {
-        font-size: var(--font-size-xs);
-        color: var(--color-text-muted);
-        font-weight: normal;
-        margin-left: var(--space-2);
-      }
-    }
-
-    .content {
-      font-size: var(--font-size-sm);
-      line-height: 1.5;
-      color: var(--color-text-primary);
-      margin: var(--space-1) 0;
-    }
-
-    .wall-entry-controls {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-2);
-      margin-top: var(--space-1);
-      font-size: 0;
-      color: var(--color-text-muted);
-
-      > * {
-        font-size: var(--font-size-xs);
-      }
-
-      a {
-        color: var(--color-text-muted);
-
-        &:hover {
-          color: var(--color-primary);
-          text-decoration: none;
-        }
-      }
-    }
-  }
-}
-
-// ── All replies are flat — same visual weight as top-level comments ─────────
-// Reply link visible on all screen sizes (flat reply, same level)
-
-// Reply comments — identical padding, avatar, heading to top-level
-.comment > .single-comment.p-2 ~ .single-comment.p-2 {
-  padding: 0.5rem !important;
-  padding-left: 0.5rem !important;
-
-  &::before {
-    display: none;
-  }
-
-  .comment-header-image img,
-  .comment-header-image .media-object {
-    width: 28px !important;
-    height: 28px !important;
-  }
-
-  .content {
-    font-size: 13px;
-  }
-}
-
-// Reply heading same size as top-level (must match Clean Theme specificity)
-.comment-container .comment .single-comment ~ .single-comment h4.comment-heading {
-  font-size: 13px !important;
-}
-
-// Comment create form — prominent input
-.comment_create {
-  padding-top: var(--space-3);
-
-  .ProseMirror {
-    min-height: 44px;
-    padding: var(--space-2) var(--space-3);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    background: var(--color-bg-primary);
-    font-size: var(--font-size-sm);
-    line-height: 1.5;
-    transition: border-color 0.15s, box-shadow 0.15s;
-
-    &:focus {
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.12);
-      outline: none;
-    }
-  }
-
-  .richtext-create-buttons {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding-top: var(--space-2);
-
-    .btn {
-      font-size: var(--font-size-sm);
-      padding: var(--space-1) var(--space-3);
-      border-radius: var(--radius-md);
-    }
-  }
-}
-
-// ─── MOBILE OPTIMIZATIONS FOR COMMENTS ───────────────────────────────────────
-@media (max-width: 991px) {
-
-  // ── Widen comment area on mobile ──────────────────────────────────────────
-  // Reduce inner panel side padding so the comment form reaches near-full width.
-
-  .s2_streamContent .wall-entry > .panel,
-  .s2_streamContent .wall-entry > div > .panel,
-  .s2_streamContent .stream-entry > .panel,
-  .s2_streamContent .stream-entry > div > .panel {
-    padding-left: var(--space-2) !important;
-    padding-right: var(--space-2) !important;
-  }
-
-  .s2_streamContent .wall-entry .panel-body,
-  .s2_streamContent .stream-entry .panel-body {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-
-  .wall-entry-footer,
-  .stream-entry-footer {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-
-  .stream-entry-addons {
-    padding: var(--space-2) 0 !important;
-  }
-
-  .comment-container {
-    padding: var(--space-2) var(--space-2) !important;
-  }
-
-  // ── Hide formatting toolbar inside comment forms on mobile ─────────────────
-  .comment-container .ProseMirror-menubar,
-  .comment_create .ProseMirror-menubar,
-  .comment-entry-form .ProseMirror-menubar {
-    display: none !important;
-  }
-
-  // ── Hide compose box by default; show only when needed via show-on-mobile ──
-  .comment-container > .comment_create {
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    transition: max-height 0.3s, opacity 0.3s;
-    
-    &.show-on-mobile {
-      max-height: 500px;
-      opacity: 1;
-      
-      .richtext-create-buttons {
-        display: flex !important;
-      }
-
-      .ProseMirror {
-        min-height: 72px !important;
-        max-height: 300px !important;
-        overflow: auto;
-      }
-    }
-  }
-
-  // ── Wall entry controls spacing ────────────────────────────────────────────
-  .wall-entry-controls {
-    display: flex !important;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    padding: var(--space-2) 0;
-    margin-top: var(--space-2);
-    clear: both;
-  }
-
-  // ── Post separation ────────────────────────────────────────────────────────
-  .wall-entry,
-  .stream-entry {
-    margin-bottom: var(--space-4);
-  }
-
-  // ── Bottom padding so last post isn't hidden under the nav bar ─────────────
-  .wall-stream,
-  .stream-container {
-    padding-bottom: calc(var(--mobile-nav-height, 56px) + var(--space-4) + env(safe-area-inset-bottom, 0));
-  }
-
-  // ── Tap separation between posts ────────────────────────────────────────────
-  .s2_streamContent > .wall-entry {
-    padding: 2px 0;
-  }
 }
 
 // ── Calendar event styling in stream ──────────────────────────────────────────

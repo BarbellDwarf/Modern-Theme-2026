@@ -1,0 +1,112 @@
+// Modern Theme 2026 - Admin Section: Layout, columns, spacing, sidebar
+// Extracted from _admin.scss
+
+// ============================================================
+// Admin Layout — outer container & column structure
+// ============================================================
+
+// Add comfortable top margin so the fixed topbars don't overlap
+.mt2026-admin-layout {
+  margin-top: var(--space-6);
+  padding-bottom: var(--space-10);
+}
+
+// Admin sidebar column — remove default Bootstrap column padding on desktop
+@media (min-width: 992px) {
+  .mt2026-admin-sidebar {
+    padding-right: var(--space-4);
+  }
+
+  .mt2026-admin-content {
+    padding-left: var(--space-4);
+  }
+}
+
+// ============================================================
+// Admin panels — fix double-padding
+// ============================================================
+// The global .panel gets padding: var(--space-6) from _cards.scss @include card.
+// Admin sub-layouts wrap content in .panel.panel-default THEN views add .panel-body.
+// That creates 24px (panel) + 24px (panel-body) = 48px each side — too much.
+// Fix: admin panels get 0 body-padding; panel-heading/body/footer handle their own.
+
+.mt2026-admin-content {
+
+  // Top-level admin panel (the outer card wrapping each sub-section)
+  > .panel {
+    padding: 0;                    // No body padding — let children handle it
+    overflow: hidden;              // Keep border-radius clipping
+
+    // Reset negative margins from _cards.scss (which compensate for card padding)
+    .panel-heading {
+      padding: var(--space-4) var(--space-5);
+      margin: 0;                   // No negative margin needed (panel has no padding)
+      border-bottom: 1px solid var(--color-border);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      font-weight: $font-weight-semibold;
+      background: var(--color-bg-secondary);
+    }
+
+    // Sub-menu tab bars (UserMenu, SettingsMenu, SpaceMenu, InformationMenu)
+    // These sit between panel-heading and panel-body — give them proper spacing
+    .nav-tabs {
+      padding: 0 var(--space-4);
+      background: var(--color-bg-secondary);
+      border-bottom: 2px solid var(--color-border);
+      flex-wrap: wrap;             // Allow tabs to wrap on small screens
+      gap: 0;
+    }
+
+    // Panel body — moderate padding (no doubling)
+    .panel-body {
+      padding: var(--space-5) var(--space-6);
+
+      @media (max-width: 767px) {
+        padding: var(--space-4);
+      }
+    }
+  }
+}
+
+// ============================================================
+// Admin sidebar — fix list-group-vertical-lg
+// ============================================================
+
+// On mobile, add spacing between stacked admin sidebar and content
+@media (max-width: 991px) {
+  .mt2026-admin-sidebar {
+    margin-bottom: var(--space-4);
+
+    // On mobile, the AdminMenu renders as a horizontal scrollable row
+    #admin-menu,
+    .left-navigation {
+      .list-group {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: var(--space-2); // Space for scrollbar
+      }
+    }
+  }
+}
+
+// Define list-group-vertical-lg used in HumHub's left-navigation template:
+// The template renders: class="list-group list-group-horizontal list-group-vertical-lg"
+// Intended: horizontal on small screens, vertical (column) sidebar on lg+ screens.
+// Without this definition, list-group-horizontal's flex-direction:row wins on all
+// breakpoints, squishing items sideways inside the narrow col-lg-3 admin sidebar.
+@media (min-width: 768px) {
+  .list-group-vertical-lg {
+    flex-direction: column !important;
+    flex-wrap: nowrap;
+  }
+}
+
+// Ensure the admin panel sidebar list items display correctly as a vertical nav
+#admin-menu,
+.left-navigation {
+  @media (min-width: 768px) {
+    .list-group {
+      flex-direction: column;
+    }
+  }
+}

@@ -1,0 +1,388 @@
+// Modern Theme 2026 - Dark Mode: UI Components (dropdowns, modals, alerts, badges, tooltips, popovers, code, list groups, tables, pagination, etc.)
+// Extracted from _dark-mode.scss
+
+[data-bs-theme="dark"] {
+
+    // --- Dropdowns ------------------------------------------------------
+
+    .dropdown-menu {
+        background-color: var(--color-bg-secondary);
+        border-color: var(--color-border);
+        box-shadow: var(--shadow-lg);
+
+        .dropdown-item {
+            color: var(--color-text-primary);
+
+            &:hover,
+            &:focus {
+                background-color: var(--color-bg-tertiary);
+                color: var(--color-text-primary);
+            }
+
+            &:active {
+                background-color: var(--color-primary);
+                color: #fff;
+            }
+
+            &.disabled,
+            &:disabled {
+                color: var(--color-text-muted);
+            }
+        }
+
+        .dropdown-divider {
+            border-color: var(--color-border);
+        }
+
+        .dropdown-header {
+            color: var(--color-text-muted);
+        }
+    }
+
+    // --- List groups ----------------------------------------------------
+
+    .list-group-item {
+        background-color: var(--color-bg-secondary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+
+        &:hover,
+        &:focus {
+            background-color: var(--color-bg-tertiary);
+            color: var(--color-text-primary);
+        }
+
+        &.active {
+            background-color: var(--color-primary);
+            border-color: var(--color-primary);
+            color: #fff;
+        }
+
+        &.disabled {
+            color: var(--color-text-muted);
+            background-color: var(--color-bg-secondary);
+        }
+    }
+
+    // --- Tables ---------------------------------------------------------
+
+    .table {
+        color: var(--color-text-primary);
+        border-color: var(--color-border);
+
+        > :not(caption) > * > * {
+            background-color: transparent;
+            border-bottom-color: var(--color-border);
+            color: var(--color-text-primary);
+        }
+
+        th,
+        td {
+            border-color: var(--color-border);
+            color: var(--color-text-primary);
+        }
+
+        thead th {
+            background-color: var(--color-bg-tertiary);
+            color: var(--color-text-secondary);
+        }
+
+        &.table-striped tbody tr:nth-of-type(odd) > * {
+            background-color: rgba(51, 65, 85, 0.4);
+        }
+
+        &.table-hover tbody tr:hover > * {
+            background-color: var(--color-bg-tertiary);
+        }
+
+        &.table-bordered {
+            border-color: var(--color-border);
+        }
+    }
+
+    // --- Nav tabs -------------------------------------------------------
+
+    .nav-tabs {
+        border-color: var(--color-border);
+
+        .nav-link {
+            color: var(--color-text-secondary);
+            border-color: transparent;
+
+            &:hover {
+                color: var(--color-text-primary);
+                border-color: var(--color-border);
+            }
+
+            &.active {
+                background-color: var(--color-bg-secondary);
+                border-color: var(--color-border) var(--color-border) var(--color-bg-secondary);
+                color: var(--color-text-primary);
+            }
+        }
+    }
+
+    // --- Modals ---------------------------------------------------------
+
+    .modal-content {
+        background-color: var(--color-bg-secondary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+        box-shadow: var(--shadow-xl);
+
+        .modal-header {
+            background-color: var(--color-bg-tertiary);
+            border-color: var(--color-border);
+
+            .modal-title {
+                color: var(--color-text-primary);
+            }
+
+            .close,
+            .btn-close {
+                color: var(--color-text-primary);
+                filter: invert(1) grayscale(1);
+                opacity: 0.7;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+
+        .modal-body {
+            color: var(--color-text-primary);
+        }
+
+        .modal-footer {
+            background-color: var(--color-bg-tertiary);
+            border-color: var(--color-border);
+        }
+    }
+
+    .modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    // --- Alerts ---------------------------------------------------------
+
+    .alert {
+        border-color: var(--color-border);
+
+        &.alert-info {
+            background-color: rgba(56, 189, 248, 0.12);
+            border-color: var(--color-info);
+            color: var(--color-info-light);
+        }
+
+        &.alert-success {
+            background-color: rgba(52, 211, 153, 0.12);
+            border-color: var(--color-success);
+            color: var(--color-success-light);
+        }
+
+        &.alert-warning {
+            background-color: rgba(251, 191, 36, 0.12);
+            border-color: var(--color-warning);
+            color: var(--color-warning-light);
+        }
+
+        &.alert-danger {
+            background-color: rgba(248, 113, 113, 0.12);
+            border-color: var(--color-danger);
+            color: var(--color-danger-light);
+        }
+    }
+
+    // --- Well / Wells ---------------------------------------------------
+
+    .well {
+        background-color: var(--color-bg-tertiary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+    }
+
+    // --- Badges / Labels ------------------------------------------------
+
+    .badge,
+    .label {
+        &.badge-default,
+        &.label-default {
+            background-color: var(--color-bg-tertiary);
+            color: var(--color-text-primary);
+        }
+    }
+
+    // --- Tooltips -------------------------------------------------------
+
+    .tooltip .tooltip-inner {
+        background-color: var(--color-bg-secondary);
+        color: var(--color-text-primary);
+        border: 1px solid var(--color-border);
+        box-shadow: var(--shadow-md);
+    }
+
+    // --- Popovers -------------------------------------------------------
+
+    .popover {
+        background-color: var(--color-bg-secondary);
+        border-color: var(--color-border);
+        box-shadow: var(--shadow-lg);
+
+        .popover-header {
+            background-color: var(--color-bg-tertiary);
+            border-color: var(--color-border);
+            color: var(--color-text-primary);
+        }
+
+        .popover-body {
+            color: var(--color-text-primary);
+        }
+    }
+
+    // --- Code -----------------------------------------------------------
+
+    code {
+        background-color: var(--color-bg-tertiary);
+        color: var(--color-primary-light);
+        border: 1px solid var(--color-border);
+    }
+
+    pre {
+        background-color: var(--color-bg-tertiary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+
+        code {
+            border: none;
+        }
+    }
+
+    // --- Notification badges / overlays ---------------------------------
+
+    .notification-count-overlay,
+    .badge-count,
+    .ui-badge {
+        background-color: var(--color-danger);
+        color: #fff;
+        border-color: var(--color-bg-primary);
+    }
+
+    // --- Activity / comment entries -------------------------------------
+
+    .comment-entry,
+    .comment-container {
+        background-color: var(--color-bg-secondary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+    }
+
+    .comment-entry-form {
+        background-color: var(--color-bg-tertiary);
+        border-color: var(--color-border);
+    }
+
+    // --- Richtext / content editor --------------------------------------
+
+    .humhub-ui-richtext,
+    .ProseMirror,
+    [contenteditable="true"] {
+        background-color: var(--color-bg-tertiary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+
+        &:focus {
+            border-color: var(--color-primary);
+            outline: none;
+        }
+    }
+
+    // --- Miscellaneous --------------------------------------------------
+
+    .text-muted {
+        color: var(--color-text-muted) !important;
+    }
+
+    .text-secondary {
+        color: var(--color-text-secondary) !important;
+    }
+
+    .bg-white,
+    .bg-light {
+        background-color: var(--color-bg-secondary) !important;
+        color: var(--color-text-primary) !important;
+    }
+
+    .border,
+    .border-top,
+    .border-bottom,
+    .border-start,
+    .border-end {
+        border-color: var(--color-border) !important;
+    }
+
+    // Pagination
+    .pagination {
+        .page-link {
+            background-color: var(--color-bg-secondary);
+            border-color: var(--color-border);
+            color: var(--color-text-primary);
+
+            &:hover {
+                background-color: var(--color-bg-tertiary);
+                color: var(--color-text-primary);
+            }
+        }
+
+        .page-item.active .page-link {
+            background-color: var(--color-primary);
+            border-color: var(--color-primary);
+            color: #fff;
+        }
+
+        .page-item.disabled .page-link {
+            background-color: var(--color-bg-secondary);
+            color: var(--color-text-muted);
+        }
+    }
+
+    // Breadcrumbs
+    .breadcrumb {
+        background-color: var(--color-bg-tertiary);
+
+        .breadcrumb-item {
+            color: var(--color-text-secondary);
+
+            + .breadcrumb-item::before {
+                color: var(--color-text-muted);
+            }
+
+            &.active {
+                color: var(--color-text-muted);
+            }
+
+            a {
+                color: var(--color-link);
+            }
+        }
+    }
+
+    // Progress bars
+    .progress {
+        background-color: var(--color-bg-tertiary);
+    }
+
+    // Scrollbars (Webkit)
+    ::-webkit-scrollbar-track {
+        background: var(--color-bg-primary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-border-dark);
+        border-radius: 4px;
+
+        &:hover {
+            background: var(--color-text-muted);
+        }
+    }
+}

@@ -1,0 +1,67 @@
+// Modern Theme 2026 - Dark Mode: Stream entries, wall entries, comments, reactions
+// Extracted from _dark-mode.scss
+
+[data-bs-theme="dark"] {
+
+    // --- Stream / Wall entries ------------------------------------------
+
+    .stream-entry,
+    .s-wall-entry,
+    .wall-entry,
+    .media {
+        background-color: var(--color-bg-secondary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+
+        &:hover {
+            background-color: color-mix(in srgb, var(--color-bg-secondary) 92%, var(--color-primary) 8%);
+        }
+
+        .media-body,
+        .stream-entry-header,
+        .stream-entry-footer {
+            color: var(--color-text-primary);
+        }
+
+        .stream-entry-addons {
+            border-color: var(--color-border);
+        }
+    }
+
+    // Force like/comment icons to be visible in dark mode regardless of
+    // which template or parent selector matched.
+    .wall-entry-controls {
+        a {
+            color: var(--color-text-secondary) !important;
+
+            &::before {
+                color: var(--color-text-secondary) !important;
+            }
+        }
+    }
+
+    .s2_streamContent .stream-entry-addons,
+    .s2_streamContent .wall-entry-footer {
+        background-color: transparent !important;
+    }
+
+    // --- Space chooser --------------------------------------------------
+
+    .space-chooser-container,
+    .space-chooser-panel {
+        background-color: var(--color-bg-secondary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+    }
+
+    // --- Glassmorphism elements (semi-transparent backgrounds) ----------
+
+    .glass,
+    [class*="glass-"],
+    .backdrop-blur {
+        background-color: rgba(30, 41, 59, 0.75);
+        border-color: rgba(148, 163, 184, 0.15);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+}

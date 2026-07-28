@@ -1,0 +1,37 @@
+// Modern Theme 2026 - Dark Mode: Mobile navigation & mobile-specific overrides
+// Extracted from _dark-mode.scss
+
+[data-bs-theme="dark"] {
+
+    // --- Mobile bottom navigation ---------------------------------------
+
+    .mobile-bottom-nav {
+        background: rgba(15, 23, 42, 0.95);
+        border-top-color: var(--color-border);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+
+        .nav-item,
+        .mobile-nav-item {
+            color: var(--color-text-muted);
+
+            &.active,
+            &:active {
+                color: var(--color-primary);
+                background: var(--color-primary-lightest);
+            }
+
+            &:hover {
+                color: var(--color-text-primary);
+            }
+        }
+
+        .nav-link {
+            color: var(--color-text-muted);
+
+            &.active {
+                color: var(--color-primary);
+            }
+        }
+    }
+}

@@ -26,6 +26,7 @@ class ModernThemeAsset extends AssetBundle
         'js/mailLayout.js',
         'js/mobileCommentCompose.js',
         'js/mobileContentToggle.js',
+        'js/dropdownManager.js',
     ];
 
     public $depends = [

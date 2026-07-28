@@ -55,7 +55,6 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
 
     var init = function (pjax) {
         injectMobileActionBar();
-        bindCommentDropdownStackFix();
         bindComposerDropdownStackFix();
 
         if (!pjax) {
@@ -72,30 +71,6 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
     module.export({
         init: init
     });
-
-    function bindCommentDropdownStackFix() {
-        // Prevent comment attachment/controls dropdowns from being painted under the
-        // next stream card.  We temporarily raise the parent stream entry while open.
-        // HumHub renders these as both .btn-group (FileHandlerButtonDropdown) and
-        // .nav-item.dropdown (commentControls.php), so we listen on both.
-        var commentSelector = '.comment_create .btn-group, .comment-controls .nav-item.dropdown';
-
-        $(document).off('shown.bs.dropdown.mt2026CommentMenu hidden.bs.dropdown.mt2026CommentMenu');
-
-        $(document).on('shown.bs.dropdown.mt2026CommentMenu', commentSelector, function () {
-            var $entry = $(this).closest('.wall-entry, .stream-entry');
-            if ($entry.length) {
-                $entry.addClass('mt2026-dropdown-open');
-            }
-        });
-
-        $(document).on('hidden.bs.dropdown.mt2026CommentMenu', commentSelector, function () {
-            var $entry = $(this).closest('.wall-entry, .stream-entry');
-            if ($entry.length) {
-                $entry.removeClass('mt2026-dropdown-open');
-            }
-        });
-    }
 
     function bindComposerDropdownStackFix() {
         // Cover both .btn-group (FileHandlerButtonDropdown / older Bootstrap) and

@@ -134,36 +134,40 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
         showCompose(form);
     };
 
+    var clickHandler = function(ev) {
+        var trigger = closestElement(ev.target,
+            '[data-action-click*="comment.toggleComment"], '
+            + '[data-action-click="ui.modal.load"][data-action-url*="/comment/comment/show"], '
+            + '.comment-link'
+        );
+        if (!trigger) return;
+        setTimeout(function() {
+            showForTrigger(trigger);
+            syncContainers();
+        }, 220);
+    };
+
+    var modalHandler = function(ev) {
+        if (!ev.target || ev.target.id !== 'globalModal') return;
+        setTimeout(syncContainers, 120);
+        setTimeout(syncContainers, 320);
+    };
+
+    var submitHandler = function(ev) {
+        var form = ev.target;
+        if (!form.classList.contains('comment_create')) return;
+        submittingForms.set(form, true);
+        var timer = setTimeout(function() {
+            submittingForms.delete(form);
+            submitTimers.delete(form);
+        }, 3000);
+        submitTimers.set(form, timer);
+    };
+
     var bindActions = function() {
-        document.addEventListener('click.mt2026CommentCompose', function(ev) {
-            var trigger = closestElement(ev.target,
-                '[data-action-click*="comment.toggleComment"], '
-                + '[data-action-click="ui.modal.load"][data-action-url*="/comment/comment/show"], '
-                + '.comment-link'
-            );
-            if (!trigger) return;
-            setTimeout(function() {
-                showForTrigger(trigger);
-                syncContainers();
-            }, 220);
-        }, true);
-
-        document.addEventListener('shown.bs.modal.mt2026CommentCompose', function(ev) {
-            if (!ev.target || ev.target.id !== 'globalModal') return;
-            setTimeout(syncContainers, 120);
-            setTimeout(syncContainers, 320);
-        });
-
-        document.addEventListener('submit.mt2026CommentCompose', function(ev) {
-            var form = ev.target;
-            if (!form.classList.contains('comment_create')) return;
-            submittingForms.set(form, true);
-            var timer = setTimeout(function() {
-                submittingForms.delete(form);
-                submitTimers.delete(form);
-            }, 3000);
-            submitTimers.set(form, timer);
-        }, true);
+        document.addEventListener('click', clickHandler, true);
+        document.addEventListener('shown.bs.modal', modalHandler);
+        document.addEventListener('submit', submitHandler, true);
     };
 
     var init = function() {
@@ -175,7 +179,9 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
     };
 
     var unload = function() {
-        $(document).off('.mt2026CommentCompose');
+        document.removeEventListener('click', clickHandler, true);
+        document.removeEventListener('shown.bs.modal', modalHandler);
+        document.removeEventListener('submit', submitHandler, true);
         submitTimers.forEach(function(timer) { clearTimeout(timer); });
         transitionTimers.forEach(function(timer) { clearTimeout(timer); });
         submitTimers.clear();

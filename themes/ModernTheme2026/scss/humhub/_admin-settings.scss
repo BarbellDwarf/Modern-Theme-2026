@@ -177,50 +177,6 @@
   font-size: 12px;
 }
 
-// Responsive: stacked card layout for GridView < 576px
-@media (max-width: 575px) {
-  .mt2026-admin-content {
-    .grid-view table,
-    .gridview table {
-      min-width: 0;
-      width: 100%;
-    }
-
-    .grid-view td,
-    .gridview td {
-      display: block;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    // Stack rows as cards
-    .grid-view tr,
-    .gridview tr {
-      display: block;
-      border: 1px solid var(--color-border, #e5e7eb);
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 12px;
-      background: var(--color-bg-primary, #fff);
-    }
-
-    // Hide thead on mobile
-    .grid-view thead,
-    .gridview thead {
-      display: none;
-    }
-
-    // Label each cell with its column header
-    .grid-view td::before,
-    .gridview td::before {
-      content: attr(data-label);
-      display: block;
-      font-weight: 600;
-      font-size: 11px;
-      color: var(--color-text-secondary, #6b7280);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 2px;
-    }
-  }
-}
+// Admin grid responsive handled by _admin-gridview.scss (horizontal scroll, min-width: 480px at 575px).
+// Stacked-card layout removed — HumHub's GridView doesn't provide data-label attributes
+// on cells, so `content: attr(data-label)` produces empty labels and destroys the table.

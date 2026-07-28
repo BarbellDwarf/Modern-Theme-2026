@@ -429,7 +429,7 @@ body.mail-list-open::before {
   border: 1px solid transparent;
   transition: background-color 0.15s ease, border-color 0.15s ease;
   min-height: 64px;
-  padding: 10px 12px;
+  padding: 12px 14px;
   display: flex;
   align-items: center;
 
@@ -444,7 +444,7 @@ body.mail-list-open::before {
   }
 
   &.unread {
-    border-left: 3px solid var(--color-primary);
+    box-shadow: inset 3px 0 0 var(--color-primary);
   }
 
   .media-left img {
@@ -495,6 +495,7 @@ body.mail-list-open::before {
   // Others' message — secondary bubble
   &:not(.own) {
     background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border-light);
     color: var(--color-text-primary);
     border-top-left-radius: 4px;
   }
@@ -823,7 +824,7 @@ body.mail-list-open::before {
   }
 
   .mail-conversation-entry .conversation-entry-content {
-    max-width: 82%;
+    max-width: min(85%, 760px);
     font-size: 14px;
   }
 

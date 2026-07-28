@@ -92,7 +92,7 @@
       }
 
     .context-label {
-      max-width: 150px;
+      max-width: min(180px, 20vw);
       @include text-truncate;
     }
 
@@ -285,8 +285,8 @@
     }
 
     .context-switcher-menu {
-      left: 0;
-      right: auto;
+      left: 50%;
+      transform: translateX(-50%);
       width: min(320px, calc(100vw - 24px));
       max-width: calc(100vw - 24px);
       max-height: min(70vh, 520px);
@@ -333,6 +333,7 @@ body[data-bs-theme="light"] .context-switcher {
 // Mobile: full-screen overlay
 @media (max-width: 991px) {
   .context-switcher-menu {
+    z-index: $z-mt2026-modal;
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;

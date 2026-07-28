@@ -334,6 +334,22 @@ body.mt2026-keyboard-open {
             font-weight: $font-weight-medium;
         }
     }
+
+    @media (max-width: 767px) {
+        .field-title {
+            float: none;
+            display: block;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 4px;
+        }
+
+        .field-value {
+            float: none;
+            display: block;
+            width: 100%;
+        }
+    }
 }
 
 @media (min-width: 768px) and (max-width: 991px) {

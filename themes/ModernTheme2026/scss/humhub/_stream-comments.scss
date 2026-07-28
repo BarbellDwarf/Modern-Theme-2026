@@ -20,14 +20,14 @@
 //       ... same structure ...
 //
 // Replies are flat siblings inside .comment, not visually nested.
-// We visually indent them and reduce their weight to show hierarchy.
+// We indent them and use a thread line to show hierarchy.
 
 .comment {
   padding: 0;
 
   // ── Top-level comment ────────────────────────────────────────────────────
   > .single-comment:first-of-type {
-    padding: var(--space-3) 0;
+    padding: 0;  // Phase A: Remove external padding (card handles its own)
   }
 
   // ── Hide separators between parent and replies ────────────────────────────
@@ -52,10 +52,21 @@
   }
 
   // ── Shared single-comment styles ────────────────────────────────────────
+  // Phase A: Card-based layout (background, radius, padding, margin, hover)
+  // Phase C: Reduced padding
   .single-comment {
     display: flex;
     gap: var(--space-3);
     align-items: flex-start;
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-md);
+    padding: var(--space-2) var(--space-3);
+    margin-bottom: var(--space-2);
+    transition: background 0.15s;
+
+    &:hover {
+      background: var(--color-bg-tertiary);
+    }
 
     .comment-header-image {
       flex-shrink: 0;
@@ -71,13 +82,15 @@
     .flex-grow-1 {
       flex: 1;
       min-width: 0;
+      word-break: break-word;  // Phase B: prevent overflow
     }
 
+    // Phase D: Visual hierarchy — stronger name, content, action buttons
     .comment-heading {
-      font-size: var(--font-size-sm);
-      font-weight: $font-weight-semibold;
+      font-size: var(--font-size-base);
+      font-weight: $font-weight-bold;
+      margin-bottom: var(--space-1);
       color: var(--color-text-primary);
-      margin-bottom: 2px;
 
       .timestamp {
         font-size: var(--font-size-xs);
@@ -88,17 +101,16 @@
     }
 
     .content {
-      font-size: var(--font-size-sm);
-      line-height: 1.5;
+      font-size: var(--font-size-base);
+      line-height: 1.6;
       color: var(--color-text-primary);
-      margin: var(--space-1) 0;
+      margin: var(--space-2) 0;
     }
 
     .wall-entry-controls {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-2);
-      margin-top: var(--space-1);
+      display: flex;
+      gap: var(--space-3);
+      margin-top: var(--space-2);
       font-size: 0;
       color: var(--color-text-muted);
 
@@ -107,6 +119,9 @@
       }
 
       a {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-1);
         color: var(--color-text-muted);
 
         &:hover {
@@ -114,36 +129,20 @@
           text-decoration: none;
         }
       }
+
+      .mt2026-reaction-trigger {
+        font-size: 0;
+      }
     }
   }
 }
 
-// ── All replies are flat — same visual weight as top-level comments ─────────
-// Reply link visible on all screen sizes (flat reply, same level)
-
-// Reply comments — identical padding, avatar, heading to top-level
-.comment > .single-comment.p-2 ~ .single-comment.p-2 {
-  padding: 0.5rem !important;
-  padding-left: 0.5rem !important;
-
-  &::before {
-    display: none;
-  }
-
-  .comment-header-image img,
-  .comment-header-image .media-object {
-    width: 28px !important;
-    height: 28px !important;
-  }
-
-  .content {
-    font-size: 13px;
-  }
-}
-
-// Reply heading same size as top-level (must match Clean Theme specificity)
-.comment-container .comment .single-comment ~ .single-comment h4.comment-heading {
-  font-size: 13px !important;
+// ── Reply differentiation (Phase E) ─────────────────────────────────────────
+// Indented with thread line for nested replies
+.comment > .single-comment ~ .single-comment {
+  margin-left: 48px;
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--color-border);
 }
 
 // The ' · ' text node separator inside comment-level controls
@@ -158,14 +157,17 @@
     font-size: 14px;
   }
 
-  // Explicit override: .mt2026-reaction-trigger uses font-size:0 to hide
-  // fallback text while showing its icon via ::before with font-size:18px.
   .mt2026-reaction-trigger {
     font-size: 0;
   }
 }
 
-// Comment create form — prominent input
+// ── Comment container spacing (Phase C) ──────────────────────────────────────
+.comment-container {
+  padding: var(--space-2) var(--space-3) !important;
+}
+
+// ── Comment create form — prominent input ──────────────────────────────────
 .comment_create {
   padding-top: var(--space-3);
 
@@ -307,5 +309,25 @@
   // ── Tap separation between posts ────────────────────────────────────────────
   .s2_streamContent > .wall-entry {
     padding: 2px 0;
+  }
+}
+
+// ── Phase B: Mobile avatar and gap optimization ─────────────────────────────
+@media (max-width: 768px) {
+  .single-comment .comment-header-image img {
+    width: 28px;
+    height: 28px;
+  }
+  .single-comment {
+    gap: var(--space-2);
+  }
+}
+
+// ── Phase F: Extra-small mobile — column layout ────────────────────────────
+@media (max-width: 576px) {
+  .single-comment {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
   }
 }

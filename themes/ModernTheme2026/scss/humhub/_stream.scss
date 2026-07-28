@@ -157,8 +157,8 @@
 .wall-entry .wall-entry-content {
   font-size: var(--font-size-base);
   line-height: 1.6;
-  padding-left: var(--space-4) !important;
-  padding-right: var(--space-4) !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
   color: var(--color-text-primary);
 }
 
@@ -171,6 +171,11 @@
   padding: var(--space-2) var(--space-4);
   border-top: 1px solid var(--color-border);
   background: transparent;
+
+  @media (max-width: 375px) {
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+  }
 }
 
 // ── Single-box stream posts (all screen sizes) ───────────────────────────────
@@ -203,6 +208,10 @@
       background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
       opacity: 0.68;
       z-index: 1;
+
+      @media (max-width: 991px) {
+        opacity: 0.8;
+      }
     }
   }
 
@@ -484,8 +493,8 @@
 
   .comment-header-image img,
   .comment-header-image .media-object {
-    width: 25px !important;
-    height: 25px !important;
+    width: 28px !important;
+    height: 28px !important;
   }
 
   .content {
@@ -576,10 +585,14 @@
 
   // ── Hide compose box by default; show only when needed via show-on-mobile ──
   .comment-container > .comment_create {
-    display: none !important;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s, opacity 0.3s;
     
     &.show-on-mobile {
-      display: block !important;
+      max-height: 500px;
+      opacity: 1;
       
       .richtext-create-buttons {
         display: flex !important;
@@ -612,7 +625,12 @@
   // ── Bottom padding so last post isn't hidden under the nav bar ─────────────
   .wall-stream,
   .stream-container {
-    padding-bottom: calc(56px + var(--space-4) + env(safe-area-inset-bottom, 0));
+    padding-bottom: calc(var(--mobile-nav-height, 56px) + var(--space-4) + env(safe-area-inset-bottom, 0));
+  }
+
+  // ── Tap separation between posts ────────────────────────────────────────────
+  .s2_streamContent > .wall-entry {
+    padding: 2px 0;
   }
 }
 

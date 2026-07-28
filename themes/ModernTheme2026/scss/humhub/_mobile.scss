@@ -823,7 +823,8 @@ body.mt2026-keyboard-open {
             right: 0;
             height: 80px;
             background: linear-gradient(to bottom, transparent, var(--color-bg-primary));
-            pointer-events: none;
+            pointer-events: auto;
+            cursor: pointer;
         }
 
         &.expanded {

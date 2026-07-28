@@ -76,7 +76,7 @@ use humhub\modules\space\widgets\Image as SpaceImage;
          id="context-switcher-menu"
          role="listbox"
          aria-labelledby="context-switcher-btn"
-         style="display:none">
+          style="visibility:hidden;opacity:0;pointer-events:none" aria-hidden="true">
 
         <!-- Search -->
         <div class="context-search">

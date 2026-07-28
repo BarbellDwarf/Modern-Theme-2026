@@ -27,7 +27,7 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
 
         if (!$menu.length) return;
 
-        $menu.css('display', '');
+        $menu.css({visibility:'visible', opacity:'1', pointerEvents:'auto'}).attr('aria-hidden', 'false');
         $btn.attr('aria-expanded', 'true').addClass('active');
         isOpen = true;
 
@@ -45,7 +45,7 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
         var $menu = $('#context-switcher-menu');
         var $btn = $('.context-switcher-button');
 
-        $menu.css('display', 'none');
+        $menu.css({visibility:'hidden', opacity:'0', pointerEvents:'none'}).attr('aria-hidden', 'true');
         $btn.attr('aria-expanded', 'false').removeClass('active');
         isOpen = false;
 

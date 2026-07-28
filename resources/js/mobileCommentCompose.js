@@ -1,4 +1,5 @@
-humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
+(function() {
+    'use strict';
 
     if (window.innerWidth >= 992) {
         return;
@@ -106,6 +107,8 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
         transitionTimers.set(form, timer);
     };
 
+    var recentlyShownForms = new Set();
+
     var syncContainers = function() {
         document.querySelectorAll('.comment-container').forEach(function(container) {
             var form = getComposeForm(container);
@@ -118,8 +121,6 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
             }
         });
     };
-
-    var recentlyShownForms = new Set();
 
     var showForTrigger = function(triggerEl) {
         var actionClick = triggerEl && triggerEl.getAttribute && triggerEl.getAttribute('data-action-click');
@@ -164,18 +165,11 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
         submitTimers.set(form, timer);
     };
 
-    var bindActions = function() {
+    var init = function() {
         document.addEventListener('click', clickHandler, true);
         document.addEventListener('shown.bs.modal', modalHandler);
         document.addEventListener('submit', submitHandler, true);
-    };
-
-    var init = function() {
-        bindActions();
         syncContainers();
-        $(document).on('pjax:end.mt2026CommentCompose', function() {
-            setTimeout(syncContainers, 120);
-        });
     };
 
     var unload = function() {
@@ -190,6 +184,14 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
         recentlyShownForms.clear();
     };
 
-    module.initOnPjaxLoad = true;
-    module.export({ init: init, unload: unload });
-});
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+    // Expose for debugging
+    window.HumHubTheme = window.HumHubTheme || {};
+    window.HumHubTheme.mobileCommentCompose = { init: init, unload: unload };
+})();

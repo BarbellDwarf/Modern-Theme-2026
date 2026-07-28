@@ -56,7 +56,7 @@
   // Phase C: Reduced padding
   .single-comment {
     display: flex;
-    gap: var(--space-3);
+    gap: var(--space-2);
     align-items: flex-start;
     background: var(--color-bg-secondary);
     border-radius: var(--radius-md);
@@ -319,7 +319,7 @@
     height: 28px;
   }
   .single-comment {
-    gap: var(--space-2);
+    gap: var(--space-1);
   }
 }
 

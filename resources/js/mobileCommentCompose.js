@@ -6,6 +6,9 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
 
     var submittingForms = new Map();
     var submitTimers = new Map();
+    var transitionTimers = new Map();
+    var SHOW_TRANSITION_MS = 400;
+    var HIDE_TRANSITION_MS = 300;
 
     var isHidden = function(el) {
         return el.classList.contains('d-none') || window.getComputedStyle(el).display === 'none';
@@ -55,15 +58,52 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
 
     var showCompose = function(form) {
         if (!form) return;
+        if (transitionTimers.has(form)) {
+            clearTimeout(transitionTimers.get(form));
+            transitionTimers.delete(form);
+        }
+        var isAlreadyVisible = form.classList.contains('show-on-mobile')
+            && form.style.maxHeight !== '0px'
+            && form.style.maxHeight !== '0';
+        if (isAlreadyVisible) {
+            focusCompose(form);
+            return;
+        }
         form.classList.remove('d-none');
         form.classList.add('show-on-mobile');
-        setTimeout(function() { focusCompose(form); }, 60);
+        form.style.opacity = '0';
+        form.style.maxHeight = '0';
+        form.style.overflow = 'hidden';
+        form.style.transition = 'opacity 0.25s ease, max-height 0.35s ease';
+        void form.offsetHeight;
+        form.style.opacity = '1';
+        form.style.maxHeight = '300px';
+        setTimeout(function() {
+            form.style.transition = '';
+            focusCompose(form);
+        }, SHOW_TRANSITION_MS);
     };
 
     var hideCompose = function(form) {
         if (!form) return;
-        form.classList.remove('show-on-mobile');
-        form.classList.add('d-none');
+        if (transitionTimers.has(form)) {
+            clearTimeout(transitionTimers.get(form));
+            transitionTimers.delete(form);
+        }
+        form.style.transition = 'opacity 0.15s ease, max-height 0.25s ease';
+        form.style.opacity = '0';
+        form.style.maxHeight = '0';
+        form.style.overflow = 'hidden';
+        var timer = setTimeout(function() {
+            form.classList.remove('show-on-mobile');
+            form.classList.add('d-none');
+            form.style.transition = '';
+            form.style.opacity = '';
+            form.style.maxHeight = '';
+            form.style.overflow = '';
+            transitionTimers.delete(form);
+        }, HIDE_TRANSITION_MS);
+        transitionTimers.set(form, timer);
     };
 
     var syncContainers = function() {
@@ -137,8 +177,10 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
         document.removeEventListener('submit.mt2026CommentCompose', null);
         $(document).off('.mt2026CommentCompose');
         submitTimers.forEach(function(timer) { clearTimeout(timer); });
-        submittingForms.clear();
+        transitionTimers.forEach(function(timer) { clearTimeout(timer); });
         submitTimers.clear();
+        transitionTimers.clear();
+        submittingForms.clear();
     };
 
     module.initOnPjaxLoad = true;

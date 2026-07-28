@@ -1,0 +1,89 @@
+// Modern Theme 2026 - Dark Mode: Panels, Cards, Navigation, Sidebar
+// Extracted from _dark-mode.scss
+
+[data-bs-theme="dark"] {
+
+    // --- Panels / Cards -------------------------------------------------
+
+    .panel,
+    .card {
+        background-color: var(--color-bg-secondary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+        box-shadow: var(--shadow-sm);
+
+        .panel-heading,
+        .card-header {
+            background-color: var(--color-bg-tertiary);
+            border-color: var(--color-border);
+            color: var(--color-text-primary);
+        }
+
+        .panel-body,
+        .card-body {
+            background-color: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+        }
+
+        .panel-footer,
+        .card-footer {
+            background-color: var(--color-bg-tertiary);
+            border-color: var(--color-border);
+            color: var(--color-text-secondary);
+        }
+    }
+
+    // --- Navigation / Topbar -------------------------------------------
+
+    #topbar-first,
+    #topbar-second,
+    #topbar,
+    .navbar {
+        background-color: rgba(30, 41, 59, 0.92); // semi-transparent dark for glass
+        border-color: var(--color-border);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+
+        .nav-link,
+        .navbar-nav .nav-link {
+            color: var(--color-text-secondary);
+
+            &:hover,
+            &:focus {
+                color: var(--color-text-primary);
+                background-color: var(--color-bg-tertiary);
+            }
+
+            &.active {
+                color: var(--color-primary);
+            }
+        }
+
+        .navbar-brand {
+            color: var(--color-text-primary);
+        }
+    }
+
+    // --- Sidebar --------------------------------------------------------
+
+    #layout-sidebar-left,
+    #layout-sidebar-right,
+    .sidebar {
+        background-color: var(--color-bg-primary);
+
+        .nav-pills .nav-link,
+        .sidebar-nav .nav-link {
+            color: var(--color-text-secondary);
+
+            &:hover {
+                background-color: var(--color-bg-tertiary);
+                color: var(--color-text-primary);
+            }
+
+            &.active {
+                background-color: var(--color-primary);
+                color: #fff;
+            }
+        }
+    }
+}

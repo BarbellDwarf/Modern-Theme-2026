@@ -1,0 +1,96 @@
+// Modern Theme 2026 - Conversation Bubbles
+// Telegram-style message bubbles with own/other alignment
+
+.mail-conversation-entry {
+  margin: 4px 0;
+  padding: 0 12px;
+  flex: 0 0 auto;
+}
+
+.mail-conversation-entry > .d-flex {
+  width: 100%;
+  align-items: center;
+}
+
+.mail-conversation-entry .conversation-entry-content {
+  float: none;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin: 0;
+  position: relative;
+
+  // Own message — Telegram-style primary bubble
+  &.own {
+    background: var(--color-primary);
+    color: #fff;
+    border-top-right-radius: 4px;
+
+    .conversation-entry-time {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    a {
+      color: rgba(255, 255, 255, 0.9);
+    }
+  }
+
+  // Others' message — secondary bubble
+  &:not(.own) {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border-light);
+    color: var(--color-text-primary);
+    border-top-left-radius: 4px;
+  }
+}
+
+.mail-conversation-entry .conversation-entry-content .markdown-render {
+  float: none;
+  display: block;
+  width: auto;
+  min-width: 0;
+}
+
+.mail-conversation-entry .conversation-entry-time {
+  float: none;
+  display: block;
+  clear: both;
+  align-self: flex-end;
+  margin-top: 4px;
+  text-align: right;
+  white-space: nowrap;
+  line-height: 1.1;
+  font-size: 11px;
+}
+
+.mail-conversation-entry.own > .d-flex {
+  justify-content: flex-end;
+  width: auto;
+  margin-left: auto;
+}
+
+.mail-conversation-entry.own .conversation-entry-content {
+  margin-left: 0;
+}
+
+.conversation-entry-badge span {
+  box-shadow: var(--shadow-xs);
+  background: color-mix(in srgb, var(--color-bg-secondary) 88%, var(--color-primary) 12%);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, var(--color-border));
+}
+
+@media (min-width: 992px) {
+  .mail-conversation-entry .conversation-entry-content {
+    max-width: min(85%, 760px);
+  }
+
+  .conversation-entry-list {
+    padding: 8px 0;
+  }
+
+  .mail-conversation-entry {
+    margin: 6px 0;
+  }
+}

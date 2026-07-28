@@ -1,0 +1,93 @@
+// Modern Theme 2026 - Dark Mode Support
+// Fixes broken dark mode by overriding the correct --color-* custom properties
+// that the theme actually uses (defined in _root.scss / variables.scss).
+//
+// Root cause of previous breakage: old file defined --bg-base / --text-primary
+// (wrong names), so element rules fell through to their #ffffff / #111827
+// fallbacks — producing white-on-white output.
+
+// Extracted from _dark-mode.scss — base tokens, body, links, hr
+
+// ============================================
+// 1. TOKEN OVERRIDES — redefine every --color-*
+//    variable for dark mode so all downstream
+//    rules automatically pick up the right values.
+// ============================================
+
+[data-bs-theme="dark"] {
+    // Background scale: deep navy → elevated surface → hover/input surface
+    --color-bg-primary:    #0f172a;
+    --color-bg-secondary:  #1e293b;
+    --color-bg-tertiary:   #334155;
+
+    // Text scale: near-white → secondary → muted → disabled
+    --color-text-primary:   #f1f5f9;
+    --color-text-secondary: #cbd5e1;
+    --color-text-muted:     #94a3b8;
+    --color-text-light:     #64748b;
+    --color-text-inverse:   #0f172a;
+
+    // Links
+    --color-link:       #7cb4f8;
+    --color-link-hover: #a5c8fb;
+
+    // Borders
+    --color-border:       #334155;
+    --color-border-light: #1e293b;
+    --color-border-dark:  #475569;
+
+    // NOTE: --color-primary, --color-secondary, and semantic colors
+    // are intentionally NOT overridden here. They must come from the
+    // active palette so that palette switching affects dark mode too.
+    // Only background, text, border, and shadow tokens are dark-mode-specific.
+
+    // Neutral grays remapped to dark scale
+    --color-gray-50:  #1e293b;
+    --color-gray-100: #334155;
+    --color-gray-200: #475569;
+    --color-gray-300: #64748b;
+    --color-gray-400: #94a3b8;
+    --color-gray-500: #cbd5e1;
+    --color-gray-600: #e2e8f0;
+    --color-gray-700: #f1f5f9;
+    --color-gray-800: #f8fafc;
+    --color-gray-900: #ffffff;
+
+    // Shadows — subtle on dark backgrounds (hover shouldn't "light up" the card)
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.35), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.35), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.35);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.45), 0 8px 10px -6px rgba(0, 0, 0, 0.35);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+}
+
+// ============================================
+// 2. ELEMENT RULES — use the overridden tokens,
+//    no light-mode fallbacks.
+// ============================================
+
+[data-bs-theme="dark"] {
+
+    // --- Base -----------------------------------------------------------
+
+    body {
+        background-color: var(--color-bg-primary);
+        color: var(--color-text-primary);
+    }
+
+    a {
+        color: var(--color-link);
+
+        &:hover {
+            color: var(--color-link-hover);
+        }
+    }
+
+    hr,
+    .divider {
+        border-color: var(--color-border);
+        opacity: 0.5;
+    }
+}

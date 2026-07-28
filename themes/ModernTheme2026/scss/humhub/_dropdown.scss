@@ -106,7 +106,7 @@
 .controls.controls-header,
 .controls-header {
   position: relative;
-  z-index: $z-dropdown + 10;
+  z-index: $z-dropdown;
   overflow: visible;
 }
 
@@ -114,7 +114,7 @@
 #space-header-controls-menu,
 .profile-header-controls {
   position: relative;
-  z-index: $z-dropdown + 1;
+  z-index: $z-dropdown;
 }
 
 // -----------------------------------------------------------------------
@@ -145,16 +145,13 @@
 //     within it and cannot escape to paint over the header.
 // -----------------------------------------------------------------------
 
-.space-layout-container {
-  > .row:first-child {
-    position: relative;
-    z-index: 100;
-  }
+.space-layout-container > .row:first-child {
+  position: relative;
+  z-index: 100;
 }
 
 .space-content {
-  position: relative;
-  z-index: 1;
+  isolation: isolate;
 }
 
 // Prevent the profile panel's hover transform from creating a stacking
@@ -185,20 +182,20 @@
 }
 
 .comment-controls .dropdown-menu {
-  z-index: $z-dropdown + 20 !important;
+  z-index: $z-dropdown !important;
 }
 
 // While a comment attachment/controls dropdown is open, raise the whole stream
 // entry above sibling entries so the menu cannot be covered by the next card.
 .wall-entry.mt2026-dropdown-open,
 .stream-entry.mt2026-dropdown-open {
-  position: relative;
-  z-index: $z-dropdown + 30;
+  transform: translateZ(0);
+  z-index: $z-dropdown;
 }
 
 .comment_create .btn-group.show .dropdown-menu,
 .comment-controls .nav-item.dropdown.show .dropdown-menu {
-  z-index: $z-dropdown + 40 !important;
+  z-index: $z-dropdown !important;
 }
 
 // Wall/stream entry controls (the "…" three-dot menu on each post) must overflow
@@ -210,41 +207,23 @@
 
 .wall-entry-controls .nav-item.dropdown.show .dropdown-menu,
 .stream-entry-controls .nav-item.dropdown.show .dropdown-menu {
-  z-index: $z-dropdown + 35 !important;
+  z-index: $z-dropdown !important;
 }
 
 // Stream post composer settings dropdown ("gear") can be inside wrappers that clip.
-// Keep the full chain overflow-visible and lift the menu above stream cards.
-.wall-entry-form,
-.post-form,
-.content-form-body,
-.content-form-body .contentForm_options,
-.content-form-body .btn_container,
-.wall-entry-form .panel,
-.post-form .panel,
-.wall-entry-form .panel-body,
-.post-form .panel-body,
-.wall-entry-form .editor-toolbar,
-.post-form .editor-toolbar,
-.wall-entry-form .btn-group,
-.post-form .btn-group,
-.contentForm_options .nav-item.dropdown,
-.contentForm_options .nav.nav-pills {
-  overflow: visible !important;
-}
-
+// Overflow handled by JS (Task 3d). Keep menu lifted above stream cards.
 .wall-entry-form .btn-group > .dropdown-menu,
 .post-form .btn-group > .dropdown-menu,
 .content-form-body .btn-group > .dropdown-menu,
 .content-form-body .dropdown-menu,
 .contentForm_options .nav-item.dropdown .dropdown-menu {
-  z-index: $z-dropdown + 45 !important;
+  z-index: $z-dropdown !important;
 }
 
 // When composer settings menu is open, lift the whole composer above next stream card.
 .mt2026-composer-dropdown-open {
   position: relative;
-  z-index: $z-dropdown + 50 !important;
+  z-index: $z-dropdown !important;
 }
 
 .s-wall-entry.mt2026-composer-dropdown-open,
@@ -254,7 +233,7 @@
 #contentFormBody.mt2026-composer-dropdown-open,
 #contentFormBodyModal.mt2026-composer-dropdown-open,
 .content-form-body.mt2026-composer-dropdown-open {
-  z-index: $z-dropdown + 50 !important;
+  z-index: $z-dropdown !important;
 }
 
 // ── MAIL COMPOSER DROPDOWNS ──────────────────────────────────────────────────────
@@ -290,7 +269,7 @@
 .space-layout-container.mt2026-composer-layout-open,
 .space-content.mt2026-composer-layout-open {
   position: relative;
-  z-index: $z-dropdown + 55 !important;
+  z-index: $z-dropdown !important;
   overflow: visible !important;
 }
 
@@ -310,7 +289,7 @@
 .space-layout-container.mt2026-composer-layout-open .content-form-body,
 .space-content.mt2026-composer-layout-open .content-form-body {
   position: relative;
-  z-index: $z-dropdown + 56 !important;
+  z-index: $z-dropdown !important;
 }
 
 // Global guard: while composer settings dropdown is open, ensure stream cards never overlay it.
@@ -328,26 +307,13 @@ body.mt2026-composer-dropdown-open-global #contentFormBodyModal,
 body.mt2026-composer-dropdown-open-global .contentForm_options,
 body.mt2026-composer-dropdown-open-global .contentForm_options .dropdown-menu {
   position: relative;
-  z-index: $z-dropdown + 60 !important;
+  z-index: $z-dropdown !important;
 }
 
-// -----------------------------------------------------------------------
-// CSS-only permanent fix: post composer panel always above stream entries.
-//
-// When contain:layout was on .panel/.s-wall-entry, every panel created its
-// own stacking context, so stream entries (later in DOM) would paint over
-// the composer panel's dropdown no matter what z-index the dropdown had.
-// We removed contain:layout, but as a belt-and-suspenders guarantee we use
-// CSS :has() to permanently elevate the panel containing the post form above
-// any sibling stream entry panels — without any JavaScript.
-// -----------------------------------------------------------------------
-.panel:has(.contentForm_options),
-.panel:has(#contentFormBody),
-.panel:has(#contentFormBodyModal),
-.panel:has(.wall-entry-form),
-.panel:has(.post-form) {
+// Post composer panel lifted above stream entries. JS adds mt2026-contains-composer.
+.panel.mt2026-contains-composer {
   position: relative;
-  z-index: $z-dropdown + 55;
+  z-index: $z-dropdown;
   overflow: visible !important;
 }
 

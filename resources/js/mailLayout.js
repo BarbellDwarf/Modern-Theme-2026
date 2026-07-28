@@ -341,11 +341,6 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
             return;
         }
 
-        var drawer = document.createElement('div');
-        drawer.className = 'mt2026-drawer mt2026-drawer-settings';
-        drawer.setAttribute('role', 'dialog');
-        drawer.setAttribute('aria-label', 'Mail settings');
-
         var enterToSend = true;
         try {
             var saved = humhub && humhub.modules && humhub.modules.config
@@ -367,32 +362,94 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
             if (savedFmt) formattingBar = savedFmt === '1' || savedFmt === true;
         } catch (e) {}
 
-        drawer.innerHTML =
-            '<div class="mt2026-drawer-header">'
-            + '<h3>Mail Settings</h3>'
-            + '<button class="mt2026-drawer-close" aria-label="Close settings">&times;</button>'
-            + '</div>'
-            + '<div class="mt2026-drawer-content">'
-            + '<div class="mt2026-drawer-settings-list">'
-            + '<label class="setting-item">'
-            + '<input type="checkbox" class="mt2026-setting-enter-to-send"' + (enterToSend ? ' checked' : '') + '>'
-            + '<span class="setting-label">Enter to send</span>'
-            + '</label>'
-            + '<label class="setting-item">'
-            + '<span class="setting-label">Font size</span>'
-            + '<select class="mt2026-setting-font-scale">'
-            + '<option value="100"' + (fontScale === 100 ? ' selected' : '') + '>100%</option>'
-            + '<option value="115"' + (fontScale === 115 ? ' selected' : '') + '>115%</option>'
-            + '<option value="130"' + (fontScale === 130 ? ' selected' : '') + '>130%</option>'
-            + '<option value="150"' + (fontScale === 150 ? ' selected' : '') + '>150%</option>'
-            + '</select>'
-            + '</label>'
-            + '<label class="setting-item">'
-            + '<input type="checkbox" class="mt2026-setting-formatting-bar"' + (formattingBar ? ' checked' : '') + '>'
-            + '<span class="setting-label">Formatting toolbar</span>'
-            + '</label>'
-            + '</div>'
-            + '</div>';
+        var drawer = document.createElement('div');
+        drawer.className = 'mt2026-drawer mt2026-drawer-settings';
+        drawer.setAttribute('role', 'dialog');
+        drawer.setAttribute('aria-label', 'Mail settings');
+
+        // Header
+        var headerEl = document.createElement('div');
+        headerEl.className = 'mt2026-drawer-header';
+
+        var titleEl = document.createElement('h3');
+        titleEl.textContent = 'Mail Settings';
+        headerEl.appendChild(titleEl);
+
+        var closeBtn = document.createElement('button');
+        closeBtn.className = 'mt2026-drawer-close';
+        closeBtn.setAttribute('aria-label', 'Close settings');
+        closeBtn.textContent = '\u00D7';
+        headerEl.appendChild(closeBtn);
+
+        drawer.appendChild(headerEl);
+
+        // Content
+        var contentEl = document.createElement('div');
+        contentEl.className = 'mt2026-drawer-content';
+
+        var listEl = document.createElement('div');
+        listEl.className = 'mt2026-drawer-settings-list';
+
+        // Enter to send
+        var etsLabel = document.createElement('label');
+        etsLabel.className = 'setting-item';
+
+        var etsInput = document.createElement('input');
+        etsInput.type = 'checkbox';
+        etsInput.className = 'mt2026-setting-enter-to-send';
+        if (enterToSend) etsInput.checked = true;
+        etsLabel.appendChild(etsInput);
+
+        var etsText = document.createElement('span');
+        etsText.className = 'setting-label';
+        etsText.textContent = 'Enter to send';
+        etsLabel.appendChild(etsText);
+
+        listEl.appendChild(etsLabel);
+
+        // Font size
+        var fsLabel = document.createElement('label');
+        fsLabel.className = 'setting-item';
+
+        var fsText = document.createElement('span');
+        fsText.className = 'setting-label';
+        fsText.textContent = 'Font size';
+        fsLabel.appendChild(fsText);
+
+        var fsSelect = document.createElement('select');
+        fsSelect.className = 'mt2026-setting-font-scale';
+
+        var fontOpts = [100, 115, 130, 150];
+        fontOpts.forEach(function(val) {
+            var opt = document.createElement('option');
+            opt.value = val;
+            opt.textContent = val + '%';
+            if (fontScale === val) opt.selected = true;
+            fsSelect.appendChild(opt);
+        });
+
+        fsLabel.appendChild(fsSelect);
+        listEl.appendChild(fsLabel);
+
+        // Formatting bar
+        var fmtLabel = document.createElement('label');
+        fmtLabel.className = 'setting-item';
+
+        var fmtInput = document.createElement('input');
+        fmtInput.type = 'checkbox';
+        fmtInput.className = 'mt2026-setting-formatting-bar';
+        if (formattingBar) fmtInput.checked = true;
+        fmtLabel.appendChild(fmtInput);
+
+        var fmtText = document.createElement('span');
+        fmtText.className = 'setting-label';
+        fmtText.textContent = 'Formatting toolbar';
+        fmtLabel.appendChild(fmtText);
+
+        listEl.appendChild(fmtLabel);
+
+        contentEl.appendChild(listEl);
+        drawer.appendChild(contentEl);
 
         document.body.appendChild(drawer);
 
@@ -531,7 +588,7 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
     $(document).on('pjax:beforeSend.mt2026Mail', function(event, xhr, options) {
         var url = (options && options.url) || '';
         if (url && url.indexOf('/mail/') === -1) {
-            setConversationActive(false);
+            setFullscreenMode(false);
         }
     });
 
@@ -562,6 +619,7 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
 
     // ── UNLOAD / TEARDOWN ────────────────────────────────────────────────────
     function unload() {
+        setFullscreenMode(false);
         $(document).off('.mt2026Mail');
         $(window).off('.mt2026Mail');
         document.removeEventListener('keydown', handleEnterToSend, true);

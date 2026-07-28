@@ -22,6 +22,9 @@ use humhub\widgets\form\ActiveForm;
 /* @var $message Message|null */
 /* @var $fileHandlers BaseFileHandler[] */
 ?>
+<?php $this->registerCss('.mail-conversation-entry.own .conversation-entry-content.own {
+    background: color-mix(in srgb, var(--color-primary, #1e6ad6), #000 15%) !important;
+}') ?>
 <div class="panel panel-default mt2026-mail-shell">
     <?php if ($message === null) : ?>
         <div class="panel-body">

@@ -315,6 +315,12 @@
   > * {
     font-size: 14px;
   }
+
+  // Explicit override: .mt2026-reaction-trigger uses font-size:0 to hide
+  // fallback text while showing its icon via ::before with font-size:18px.
+  .mt2026-reaction-trigger {
+    font-size: 0;
+  }
 }
 
 // The like/unlike anchor links are REPLACED by our emoji trigger visually.

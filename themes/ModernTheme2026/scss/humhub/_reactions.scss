@@ -56,7 +56,7 @@
 // properties here — they conflict with the JS-applied inline styles.
 .mt2026-reaction-picker {
   display: none;
-  z-index: 9999;
+  z-index: 1060;
   flex-direction: row;
   align-items: center;
   gap: 4px;
@@ -152,18 +152,10 @@
   gap: 4px;
   flex: 0 0 auto;
 
-  // likeCount link: hide by default via font-size trick (cross-browser vs :has()).
-  // Only the .likeCount span itself has visible font-size so it appears
-  // when JS makes the span visible with text content.
   > a:not(.likeAnchor) {
-    font-size: 0; // outer link invisible when likeCount is empty/hidden
     color: var(--color-text-muted, #6b7280);
     text-decoration: none;
     margin-left: 2px;
-
-    .likeCount {
-      font-size: 12px; // only visible when the span has content and is not hidden
-    }
   }
 
   // Ensure trigger sits above the likeCount link for touch hit-testing

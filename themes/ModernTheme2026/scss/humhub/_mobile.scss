@@ -291,7 +291,7 @@ body.mt2026-keyboard-open {
 }
 
 // Extra small devices
-@media (max-width: 480px) {
+@media (max-width: 576px) {
     // Reduce spacing on very small screens
     .panel-body,
     .card-body {
@@ -335,7 +335,7 @@ body.mt2026-keyboard-open {
         }
     }
 
-    @media (max-width: 767px) {
+    @media (max-width: 768px) {
         .field-title {
             float: none;
             display: block;
@@ -490,7 +490,7 @@ body.mt2026-keyboard-open {
 }
 
 // Mobile layout: 2-column grid for people cards
-@media (max-width: 767px) {
+@media (max-width: 768px) {
     .row.cards {
         display: flex;
         flex-wrap: wrap;

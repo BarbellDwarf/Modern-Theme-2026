@@ -18,7 +18,7 @@
 // Apply margin-top to the dialog box so it clears the fixed topbar.
 // .modal-dialog-centered and fullscreen modals are excluded (they fill the viewport).
 .modal-dialog:not(.modal-dialog-centered):not(.modal-fullscreen) {
-  margin-top: calc(var(--mt2026-topbar-height, 60px) + 8px);
+  margin-top: calc(var(--mt2026-topbar-height, 60px) + var(--space-2));
 }
 
 .modal-content {
@@ -80,9 +80,17 @@
 
 .modal-sm {
   max-width: 400px;
+  max-width: calc(100vw - 32px);
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
+  .modal-lg,
+  .modal-xl {
+    max-width: 90vw;
+  }
+}
+
+@media (max-width: 1024px) {
   .modal-lg,
   .modal-xl {
     max-width: 90vw;

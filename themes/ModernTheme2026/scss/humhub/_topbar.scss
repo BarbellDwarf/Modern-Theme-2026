@@ -131,7 +131,8 @@
     position: fixed;
     top: 0;
     // Keep all topbar dropdowns above stream cards/panels on desktop+tablet.
-    z-index: 3000;
+    z-index: 1030;
+    isolation: isolate;
     overflow: visible;
     
     [data-bs-theme="dark"] & {
@@ -285,7 +286,7 @@
 #topbar .dropdown-menu,
 #topbar .popover,
 #topbar .tooltip {
-    z-index: 3200 !important;
+    z-index: 1040 !important;
 }
 
 // ── Notification dropdown: proper width and alignment ────────────────────────
@@ -344,10 +345,6 @@
             display: inline-flex;
             align-items: center;
             overflow: visible;
-        }
-
-        #top-menu-sub {
-            display: none !important;
         }
 
         #top-menu-nav > li > a {
@@ -417,10 +414,6 @@
             overflow: visible;
             display: inline-flex;
             align-items: center;
-        }
-
-        #top-menu-sub {
-            display: none !important;
         }
 
         // Keep nav-link padding consistent with base — don't override with 6px

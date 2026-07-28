@@ -112,11 +112,14 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
             if (!form) return;
             var isContainerHidden = isHidden(container);
             var isSubmitting = submittingForms.has(form);
-            if (isContainerHidden && !isSubmitting) {
+            var wasRecentlyShown = recentlyShownForms.has(form);
+            if (isContainerHidden && !isSubmitting && !wasRecentlyShown) {
                 hideCompose(form);
             }
         });
     };
+
+    var recentlyShownForms = new Set();
 
     var showForTrigger = function(triggerEl) {
         var actionClick = triggerEl && triggerEl.getAttribute && triggerEl.getAttribute('data-action-click');
@@ -126,9 +129,9 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
         if (!container) return;
         var form = getComposeForm(container);
         if (!form) return;
-        if (!isHidden(container)) {
-            showCompose(form);
-        }
+        recentlyShownForms.add(form);
+        setTimeout(function() { recentlyShownForms.delete(form); }, 2000);
+        showCompose(form);
     };
 
     var bindActions = function() {
@@ -181,6 +184,7 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
         submitTimers.clear();
         transitionTimers.clear();
         submittingForms.clear();
+        recentlyShownForms.clear();
     };
 
     module.initOnPjaxLoad = true;

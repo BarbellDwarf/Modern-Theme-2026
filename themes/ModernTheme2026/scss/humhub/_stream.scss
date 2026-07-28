@@ -465,10 +465,7 @@
 }
 
 // ── All replies are flat — same visual weight as top-level comments ─────────
-// Reply link hidden on all screen sizes
-.comment-container .wall-entry-controls a[data-action-click="comment.toggleComment"]:not(.d-none) {
-  display: none !important;
-}
+// Reply link visible on all screen sizes (flat reply, same level)
 
 // Reply comments — identical padding, avatar, heading to top-level
 .comment > .single-comment.p-2 ~ .single-comment.p-2 {

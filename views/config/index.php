@@ -21,7 +21,8 @@ $this->title = 'Modern Theme 2026 — Color Palettes';
 $swatch = function (string $color, string $title = '') {
     return Html::tag('span', '', [
         'title' => $title ?: $color,
-        'style' => "display:inline-block;width:22px;height:22px;border-radius:50%;background:{$color};border:2px solid rgba(0,0,0,.12);",
+        'class' => 'mt2026-config-swatch',
+        'style' => "background:{$color};",
     ]);
 };
 
@@ -31,7 +32,7 @@ $previewKeys = ['primary', 'accent', 'secondary', 'success', 'danger'];
 <div class="panel panel-default">
     <div class="panel-heading">
         <strong><i class="fa fa-paint-brush"></i> Modern Theme 2026 &mdash; Color Palettes</strong>
-        <div class="text-muted" style="margin-top:4px;font-size:13px;">
+        <div class="text-muted mt2026-config-meta-text">
             Select a predefined color palette to apply to the theme. Changes are applied immediately and rebuild the theme CSS.
         </div>
     </div>
@@ -39,18 +40,18 @@ $previewKeys = ['primary', 'accent', 'secondary', 'success', 'danger'];
     <div class="panel-body">
 
         <!-- Current colors indicator -->
-        <div class="well well-sm" style="margin-bottom:20px;">
+        <div class="well well-sm mt2026-config-current-well">
             <strong>Current active colors:</strong>
-            <span style="margin-left:8px;">
+            <span class="mt2026-config-current-colors">
                 <?php foreach ($currentColors as $key => $hex): ?>
                     <?= $swatch($hex, ucfirst($key) . ': ' . $hex) ?>
                 <?php endforeach; ?>
             </span>
-            <small class="text-muted" style="margin-left:8px;">Primary · Accent · Secondary · Success · Danger</small>
+            <small class="text-muted mt2026-config-current-colors">Primary · Accent · Secondary · Success · Danger</small>
         </div>
 
         <!-- Palette grid -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;">
+        <div class="mt2026-config-palette-grid">
             <?php foreach ($palettes as $key => $palette): ?>
                 <?php
                     $colors = $palette['colors'];
@@ -58,17 +59,17 @@ $previewKeys = ['primary', 'accent', 'secondary', 'success', 'danger'];
                         && $colors['accent'] === ($currentColors['accent'] ?? '')
                         && $colors['secondary'] === ($currentColors['secondary'] ?? ''));
                 ?>
-                <div class="panel panel-default" style="margin:0;<?= $isActive ? 'border:2px solid #1e6ad6;' : '' ?>">
-                    <div class="panel-body" style="padding:14px;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                            <strong style="font-size:14px;"><?= Html::encode($palette['label']) ?></strong>
+                <div class="panel panel-default mt2026-config-palette-card <?= $isActive ? 'active' : '' ?>">
+                    <div class="panel-body mt2026-config-palette-body">
+                        <div class="mt2026-config-palette-header">
+                            <strong class="mt2026-config-palette-header-title"><?= Html::encode($palette['label']) ?></strong>
                             <?php if ($isActive): ?>
                                 <span class="label label-primary" style="font-size:10px;">Active</span>
                             <?php endif; ?>
                         </div>
 
                         <!-- Color swatches row -->
-                        <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;">
+                        <div class="mt2026-config-swatches-row">
                             <?php foreach ($previewKeys as $colorKey): ?>
                                 <?php if (isset($colors[$colorKey])): ?>
                                     <?= $swatch($colors[$colorKey], ucfirst($colorKey) . ': ' . $colors[$colorKey]) ?>
@@ -76,15 +77,17 @@ $previewKeys = ['primary', 'accent', 'secondary', 'success', 'danger'];
                             <?php endforeach; ?>
                             <!-- light/dark preview strips -->
                             <span title="Light: <?= Html::encode($colors['light'] ?? '') ?>"
-                                  style="display:inline-block;width:22px;height:22px;border-radius:4px;background:<?= Html::encode($colors['light'] ?? '#fff') ?>;border:2px solid rgba(0,0,0,.12);"></span>
+                                  class="mt2026-config-swatch--square"
+                                  style="background:<?= Html::encode($colors['light'] ?? '#fff') ?>;"></span>
                             <span title="Dark: <?= Html::encode($colors['dark'] ?? '') ?>"
-                                  style="display:inline-block;width:22px;height:22px;border-radius:4px;background:<?= Html::encode($colors['dark'] ?? '#000') ?>;border:2px solid rgba(0,0,0,.12);"></span>
+                                  class="mt2026-config-swatch--square"
+                                  style="background:<?= Html::encode($colors['dark'] ?? '#000') ?>;"></span>
                         </div>
 
                         <!-- Color hex labels -->
-                        <div style="font-size:11px;color:#888;margin-bottom:12px;line-height:1.6;">
-                            <span title="Primary">P:</span> <code style="font-size:10px;"><?= Html::encode($colors['primary']) ?></code> &nbsp;
-                            <span title="Accent">A:</span> <code style="font-size:10px;"><?= Html::encode($colors['accent'] ?? '') ?></code>
+                        <div class="mt2026-config-hex-labels">
+                            <span title="Primary">P:</span> <code><?= Html::encode($colors['primary']) ?></code> &nbsp;
+                            <span title="Accent">A:</span> <code><?= Html::encode($colors['accent'] ?? '') ?></code>
                         </div>
 
                         <!-- Apply form -->
@@ -116,10 +119,10 @@ $previewKeys = ['primary', 'accent', 'secondary', 'success', 'danger'];
 </div>
 
 <!-- Mobile Navigation Settings -->
-<div class="panel panel-default" style="margin-top:20px;">
+<div class="panel panel-default mt2026-config-section">
     <div class="panel-heading">
         <strong><i class="fa fa-mobile"></i> Mobile Navigation Settings</strong>
-        <div class="text-muted" style="margin-top:4px;font-size:13px;">
+        <div class="text-muted mt2026-config-meta-text">
             Customize mobile nav labels and control which module links are auto-added under More.
         </div>
     </div>
@@ -195,10 +198,10 @@ $previewKeys = ['primary', 'accent', 'secondary', 'success', 'danger'];
 </div>
 
 <!-- Mail Settings -->
-<div class="panel panel-default" style="margin-top:20px;">
+<div class="panel panel-default mt2026-config-section">
     <div class="panel-heading">
         <strong><i class="fa fa-envelope"></i> Mail Settings</strong>
-        <div class="text-muted" style="margin-top:4px;font-size:13px;">
+        <div class="text-muted mt2026-config-meta-text">
             Configure the messaging experience in the mail module.
         </div>
     </div>
@@ -211,7 +214,7 @@ $previewKeys = ['primary', 'accent', 'secondary', 'success', 'danger'];
                 <label>
                     <input type="checkbox" name="mailEnterToSend" value="1" <?= ConfigController::isMailEnterToSendEnabled() ? 'checked' : '' ?>>
                     <strong>Enter to send</strong>
-                    <p class="help-block" style="margin:2px 0 0 20px;font-size:12px;">
+                    <p class="help-block mt2026-config-help-block">
                         Press Enter to send a message (Ctrl+Enter for new line). Disable to use Enter for new lines.
                     </p>
                 </label>
@@ -225,7 +228,7 @@ $previewKeys = ['primary', 'accent', 'secondary', 'success', 'danger'];
                     <option value="130" <?= ConfigController::getMailFontScale() === 130 ? 'selected' : '' ?>>130%</option>
                     <option value="150" <?= ConfigController::getMailFontScale() === 150 ? 'selected' : '' ?>>150%</option>
                 </select>
-                <p class="help-block" style="font-size:12px;">
+                <p class="help-block mt2026-config-sub-text">
                     Scale the message text size for better readability.
                 </p>
             </div>
@@ -234,7 +237,7 @@ $previewKeys = ['primary', 'accent', 'secondary', 'success', 'danger'];
                 <label>
                     <input type="checkbox" name="mailFormattingBar" value="1" <?= ConfigController::isMailFormattingBarEnabled() ? 'checked' : '' ?>>
                     <strong>Formatting toolbar</strong>
-                    <p class="help-block" style="margin:2px 0 0 20px;font-size:12px;">
+                    <p class="help-block mt2026-config-help-block">
                         Show the bold/italic/link formatting toolbar in the message composer.
                     </p>
                 </label>
@@ -248,10 +251,10 @@ $previewKeys = ['primary', 'accent', 'secondary', 'success', 'danger'];
 </div>
 
 <!-- Navigation Labels Settings -->
-<div class="panel panel-default" style="margin-top:20px;">
+<div class="panel panel-default mt2026-config-section">
     <div class="panel-heading">
         <strong><i class="fa fa-tag"></i> Navigation Labels</strong>
-        <div class="text-muted" style="margin-top:4px;font-size:13px;">
+        <div class="text-muted mt2026-config-meta-text">
             Customize the label for the People/Directory navigation item in the topbar and mobile nav.
         </div>
     </div>

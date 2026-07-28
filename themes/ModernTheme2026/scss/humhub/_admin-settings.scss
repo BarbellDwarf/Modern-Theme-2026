@@ -52,7 +52,7 @@
 
   .moderntheme-preset-btn {
     background: var(--color-bg-secondary, #fff) !important;
-    border: 2px solid var(--color-border, #dee2e6) !important;
+    border: 2px solid var(--color-border, #e5e7eb) !important;
     color: var(--color-text-primary, #111827) !important;
     transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
     border-radius: 20px;
@@ -60,6 +60,167 @@
 
     &:hover {
       background: var(--color-bg-tertiary, #f3f4f6) !important;
+    }
+  }
+}
+
+// ── Config Form (views/config/index.php) ─────────────────────────────────
+
+// Palette selection button (round color swatch)
+.mt2026-config-palette-btn {
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  position: relative;
+  border: 2px solid transparent;
+  transition: border-color 0.15s, transform 0.15s;
+  &:hover { transform: scale(1.1); }
+  &.active { border-color: var(--color-primary); }
+}
+
+// Config section panel (palette grid, mobile nav, mail, nav labels)
+.mt2026-config-section {
+  margin-top: var(--space-6);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-primary);
+}
+
+// Color swatch dot
+.mt2026-config-swatch {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(0,0,0,.12);
+  vertical-align: middle;
+}
+
+.mt2026-config-swatch--square {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: 2px solid rgba(0,0,0,.12);
+  vertical-align: middle;
+}
+
+// Palette card
+.mt2026-config-palette-card {
+  margin: 0;
+
+  &.active {
+    border: 2px solid var(--color-primary);
+  }
+}
+
+.mt2026-config-palette-body {
+  padding: 14px;
+}
+
+.mt2026-config-palette-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.mt2026-config-palette-header-title {
+  font-size: 14px;
+}
+
+.mt2026-config-swatches-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.mt2026-config-hex-labels {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 12px;
+  line-height: 1.6;
+
+  code {
+    font-size: 10px;
+  }
+}
+
+.mt2026-config-palette-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.mt2026-config-current-well {
+  margin-bottom: 20px;
+}
+
+.mt2026-config-current-colors {
+  margin-left: 8px;
+}
+
+.mt2026-config-meta-text {
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.mt2026-config-sub-text {
+  font-size: 12px;
+}
+
+.mt2026-config-help-block {
+  margin: 2px 0 0 20px;
+  font-size: 12px;
+}
+
+// Responsive: stacked card layout for GridView < 576px
+@media (max-width: 575px) {
+  .mt2026-admin-content {
+    .grid-view table,
+    .gridview table {
+      min-width: 0;
+      width: 100%;
+    }
+
+    .grid-view td,
+    .gridview td {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    // Stack rows as cards
+    .grid-view tr,
+    .gridview tr {
+      display: block;
+      border: 1px solid var(--color-border, #e5e7eb);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      background: var(--color-bg-primary, #fff);
+    }
+
+    // Hide thead on mobile
+    .grid-view thead,
+    .gridview thead {
+      display: none;
+    }
+
+    // Label each cell with its column header
+    .grid-view td::before,
+    .gridview td::before {
+      content: attr(data-label);
+      display: block;
+      font-weight: 600;
+      font-size: 11px;
+      color: var(--color-text-secondary, #6b7280);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 2px;
     }
   }
 }

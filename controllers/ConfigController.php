@@ -34,6 +34,7 @@ class ConfigController extends Controller
         $settings = Yii::$app->settings;
 
         if (Yii::$app->request->isPost) {
+            // ── Handler 1: Mobile Navigation Settings ─────────────────────
             if (Yii::$app->request->post('mobileNavSettingsSubmit') !== null) {
                 $labels = self::DEFAULT_MOBILE_NAV_LABELS;
                 foreach (array_keys($labels) as $key) {
@@ -54,7 +55,7 @@ class ConfigController extends Controller
                 return $this->redirect(['/modern-theme-2026/config']);
             }
 
-            // Save the People nav label if submitted
+            // ── Handler 2: People Nav Label ───────────────────────────────
             $peopleLabel = Yii::$app->request->post('peopleNavLabel');
             if ($peopleLabel !== null) {
                 $settings->set('peopleNavLabel', trim($peopleLabel));
@@ -64,7 +65,7 @@ class ConfigController extends Controller
                 return $this->redirect(['/modern-theme-2026/config']);
             }
 
-            // Save Mail Settings
+            // ── Handler 3: Mail Settings ──────────────────────────────────
             if (Yii::$app->request->post('mailSettingsSubmit') !== null) {
                 $settings->set('mailEnterToSend', Yii::$app->request->post('mailEnterToSend') ? '1' : '0');
                 $fontScale = (int)Yii::$app->request->post('mailFontScale', 100);
@@ -76,6 +77,7 @@ class ConfigController extends Controller
                 return $this->redirect(['/modern-theme-2026/config']);
             }
 
+            // ── Handler 4: Palette Application ────────────────────────────
             $palette = Yii::$app->request->post('palette');
             $palettes = self::getPalettes();
 

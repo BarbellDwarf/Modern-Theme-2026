@@ -504,22 +504,6 @@ body[data-bs-theme="light"] {
     }
 }
 
-// Dark mode adjustments
-[data-bs-theme="dark"] {
-    #topbar {
-        border-bottom-color: var(--color-border, #e5e7eb);
-        
-        .nav-link {
-            color: var(--color-text-secondary, #4b5563);
-            
-            &:hover {
-                color: var(--color-text-primary, #111827);
-                background-color: var(--color-bg-tertiary, #f1f5f9);
-            }
-        }
-    }
-}
-
 // ============================================================
 // Reset legacy HumHub account dropdown styles
 //

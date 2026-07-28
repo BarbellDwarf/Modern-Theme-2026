@@ -9,6 +9,10 @@
 .mt2026-admin-layout {
   margin-top: var(--space-6);
   padding-bottom: var(--space-10);
+
+  .row {
+    overflow-x: hidden;
+  }
 }
 
 // Admin sidebar column — remove default Bootstrap column padding on desktop

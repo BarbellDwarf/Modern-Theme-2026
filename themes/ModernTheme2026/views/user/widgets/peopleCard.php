@@ -26,7 +26,7 @@ use humhub\modules\user\widgets\PeopleActionButtons;
     </div>
     <div class="mt2026-pc-info">
         <strong class="mt2026-pc-name">
-            <?= Html::containerLink($user) ?>
+            <?= Html::containerLink($user, ['title' => Html::encode($user->displayName)]) ?>
         </strong>
         <?php if (!empty($user->displayNameSub)) : ?>
             <div class="mt2026-pc-title"><?= Html::encode($user->displayNameSub) ?></div>

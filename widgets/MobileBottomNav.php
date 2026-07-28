@@ -157,6 +157,19 @@ class MobileBottomNav extends Widget
         $items = [];
         $seen = [];
 
+        // Calendar always lives in the More sheet (NAV-014/017)
+        if (\Yii::$app->moduleManager->hasModule('calendar')) {
+            $calendarUrl = Url::to(['/calendar/global/index']);
+            $items[] = [
+                'id' => 'calendar',
+                'label' => 'Calendar',
+                'url' => $calendarUrl,
+                'icon' => 'fa-calendar',
+            ];
+            $seen[$calendarUrl] = true;
+            $seen['module:calendar'] = true;
+        }
+
         foreach ($this->capturedTopMenuEntries as $entry) {
             $id = strtolower((string)($entry['id'] ?? ''));
             $label = trim(strip_tags((string)($entry['label'] ?? '')));
@@ -302,9 +315,9 @@ class MobileBottomNav extends Widget
             return 'people';
         }
 
-        // Calendar routes
+        // Calendar routes (Calendar is in More sheet)
         if (strpos($route, 'calendar/') !== false) {
-            return 'calendar';
+            return 'more';
         }
 
         // Space routes

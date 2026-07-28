@@ -81,20 +81,6 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
         <span class="nav-label"><?= Html::encode($mobileNavLabels['notifications'] ?? 'Notifications') ?></span>
     </a>
 
-    <?php if (\Yii::$app->moduleManager->hasModule('calendar')): ?>
-    <!-- Calendar (visible on comfortable mobile widths; moved into More on narrow screens) -->
-    <a href="<?= Url::to(['/calendar/global/index']) ?>" 
-       class="nav-item nav-item-calendar<?= $activeItem === 'calendar' ? ' active' : '' ?>"
-       data-nav-key="calendar"
-       aria-label="Calendar"
-       aria-current="<?= $activeItem === 'calendar' ? 'page' : 'false' ?>">
-        <span class="nav-icon">
-            <i class="fa fa-calendar"></i>
-        </span>
-        <span class="nav-label">Calendar</span>
-    </a>
-    <?php endif; ?>
-
     <!-- More Menu -->
     <button type="button"
             class="nav-item<?= $activeItem === 'more' ? ' active' : '' ?>"
@@ -313,7 +299,15 @@ $this->registerJs("
             });
             btn.classList.add('active');
             btn.setAttribute('aria-pressed', 'true');
-            // POST to dark-mode modal endpoint
+            // Apply theme immediately via data-bs-theme attribute
+            if (mode === 'dark') {
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+            } else if (mode === 'light') {
+                document.documentElement.setAttribute('data-bs-theme', 'light');
+            } else {
+                document.documentElement.removeAttribute('data-bs-theme');
+            }
+            // POST to save preference (async, fire-and-forget, no reload)
             var csrfParam = document.querySelector('meta[name=\"csrf-param\"]');
             var csrfToken = document.querySelector('meta[name=\"csrf-token\"]');
             var formData = new FormData();
@@ -325,11 +319,7 @@ $this->registerJs("
                 method: 'POST',
                 body: formData,
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            }).then(function() {
-                // Reload to apply theme assets (same as desktop toggle behaviour)
-                window.location.reload();
             }).catch(function() {
-                // If fetch fails, fall back to opening the modal
                 window.location.href = " . json_encode($darkModeSettingsUrl) . ";
             });
         });
@@ -356,19 +346,22 @@ $this->registerJs("
         if (base !== '' && base !== '/' && path.indexOf(base) === 0) {
             path = path.slice(base.length) || '/';
         }
+        var segments = path.split('/').filter(Boolean);
+        var first = segments[0] || '';
+        var second = segments[1] || '';
         var activeKey = '';
 
-        if (path === '/' || path === '/dashboard' || path.indexOf('/dashboard') !== -1 || path === '') {
+        if (path === '/' || path === '' || first === 'dashboard') {
             activeKey = 'home';
-        } else if (path === '/people' || path.indexOf('/people') !== -1 || path.indexOf('/user/people') !== -1) {
+        } else if (first === 'people' || (first === 'user' && second === 'people')) {
             activeKey = 'people';
-        } else if (path.indexOf('/notification') !== -1) {
+        } else if (first === 'notification') {
             activeKey = 'notifications';
-        } else if (path.indexOf('/calendar') !== -1) {
-            activeKey = 'calendar';
-        } else if (path.indexOf('/s/') !== -1 || path.indexOf('/space/') !== -1) {
+        } else if (first === 'calendar') {
+            activeKey = 'more';
+        } else if (first === 's' || first === 'space') {
             activeKey = 'spaces';
-        } else if (path.indexOf('/u/') !== -1 || path.indexOf('/user/account') !== -1 || path.indexOf('/admin') !== -1) {
+        } else if (first === 'u' || (first === 'user' && (second === 'account' || second === 'profile')) || first === 'admin') {
             activeKey = 'more';
         }
 

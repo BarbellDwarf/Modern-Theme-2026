@@ -1,5 +1,4 @@
-(function() {
-    'use strict';
+humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
 
     if (window.innerWidth >= 992) {
         return;
@@ -184,14 +183,6 @@
         recentlyShownForms.clear();
     };
 
-    // Initialize when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
-
-    // Expose for debugging
-    window.HumHubTheme = window.HumHubTheme || {};
-    window.HumHubTheme.mobileCommentCompose = { init: init, unload: unload };
-})();
+    module.initOnPjaxLoad = true;
+    module.export({ init: init, unload: unload });
+});

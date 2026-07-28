@@ -269,6 +269,7 @@
     transition: max-height 0.3s, opacity 0.3s;
 
     &.show-on-mobile {
+      display: block !important;
       max-height: 500px;
       opacity: 1;
 

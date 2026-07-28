@@ -76,6 +76,7 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
     var $bodyPicker = null;
     var $activeTrigger = null;
     var $activeContainer = null;
+    var repositionTimer;
 
     function getOrCreateBodyPicker() {
         if (!$bodyPicker || !$bodyPicker.length) {
@@ -358,7 +359,6 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
 
         // Keep the floating picker aligned if the page scrolls or resizes.
         // Debounced to avoid layout thrashing on rapid scroll events.
-        var repositionTimer;
         $(window).on('scroll.mt2026picker resize.mt2026picker', function() {
             clearTimeout(repositionTimer);
             repositionTimer = setTimeout(function() {

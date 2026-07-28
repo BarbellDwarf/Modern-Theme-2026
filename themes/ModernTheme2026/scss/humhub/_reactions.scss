@@ -31,7 +31,7 @@
   &::before {
     font-family: FontAwesome, sans-serif;
     font-size: 18px;
-    content: "\f118"; // fa-smile-o
+    content: attr(data-icon, '\f118'); // fa-smile-o default
     display: block;
     line-height: 1;
   }
@@ -183,7 +183,7 @@
     padding: 0;
     margin: -1px;
     overflow: hidden;
-    clip: rect(0,0,0,0);
+    clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
   }

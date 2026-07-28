@@ -257,6 +257,10 @@
   color: var(--color-text-secondary, #9ca3af) !important;
 }
 
+[data-bs-theme="dark"] .wall-entry-footer {
+  border-top-color: var(--color-border) !important;
+}
+
 // Ensure the comment icon (::before from Clean Theme) is visible.
 // Only apply display:inline-flex when the link is NOT hidden by .d-none.
 .wall-entry-controls a[data-action-click="comment.toggleComment"]:not(.d-none) {

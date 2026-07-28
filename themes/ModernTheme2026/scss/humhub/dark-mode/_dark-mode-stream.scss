@@ -14,7 +14,7 @@
         color: var(--color-text-primary);
 
         &:hover {
-            background-color: color-mix(in srgb, var(--color-bg-secondary) 92%, var(--color-primary) 8%);
+            background-color: color-mix(in srgb, var(--color-bg-secondary) 85%, var(--color-primary) 15%);
         }
 
         .media-body,

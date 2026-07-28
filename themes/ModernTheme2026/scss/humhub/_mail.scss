@@ -545,7 +545,7 @@ body.mail-list-open::before {
 
 @media (min-width: 992px) {
   .mail-conversation-entry .conversation-entry-content {
-    max-width: min(72%, 760px);
+    max-width: min(85%, 760px);
   }
 
   .conversation-entry-list {
@@ -1297,7 +1297,7 @@ body.mail-list-open::before {
 
 @media (prefers-contrast: more) {
   .messagePreviewEntry.unread {
-    border-left-width: 4px;
+    box-shadow: inset 4px 0 0 var(--color-primary);
   }
 
   .messagePreviewEntry {

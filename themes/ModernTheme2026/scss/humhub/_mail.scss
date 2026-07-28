@@ -87,7 +87,7 @@
 }
 
 // ── LAYOUT HEIGHT PROPAGATION ───────────────────────────────────────────────
-body.mt2026-mail-page {
+.mt2026-mail-scroll-lock {
   overflow: hidden;
   height: 100dvh;
 }
@@ -194,6 +194,13 @@ body.mt2026-mail-page {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+}
+
+// Sized via JS for mobile — uses CSS custom property
+.mt2026-mail-conversation-sized {
+  height: var(--mt2026-conversation-list-height);
+  max-height: var(--mt2026-conversation-list-max-height);
+  min-height: var(--mt2026-conversation-list-min-height);
 }
 
 // ── CONVERSATION SIDEBAR ─────────────────────────────────────────────────────
@@ -627,7 +634,7 @@ body.mail-list-open::before {
   border: 1px solid var(--color-border);
   border-radius: 10px;
   background: var(--color-bg-primary);
-  min-height: 36px;
+  min-height: 44px;
   width: 100%;
   max-width: 100%;
   overflow: visible;
@@ -881,12 +888,10 @@ body.mail-list-open::before {
     display: none;
   }
 
-  // Sticky composer on mobile
+  // Sticky composer on mobile — flex layout keeps it at bottom
   body.mt2026-mail-fullscreen #mail-conversation-root .mt2026-mail-composer-dock {
-    position: fixed;
-    bottom: calc(56px + env(safe-area-inset-bottom, 0));
-    left: 0;
-    right: 0;
+    position: sticky;
+    bottom: 0;
     z-index: 1010;
   }
 
@@ -899,13 +904,10 @@ body.mail-list-open::before {
   }
 
   body.mt2026-mail-fullscreen #mail-conversation-root .conversation-entry-list {
-    padding-bottom: 60px;
+    padding-bottom: var(--mobile-nav-height, 56px);
   }
 
-  // Page scroll lock
-  body.mt2026-mail-page.mt2026-mail-has-conversation {
-    overflow: hidden;
-  }
+  // Page scroll lock — handled by .mt2026-mail-scroll-lock in JS
 
   body.mt2026-mail-fullscreen #mail-conversation-root {
     height: 100%;

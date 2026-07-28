@@ -41,9 +41,11 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
         if (active) {
             document.body.classList.add('mt2026-mail-fullscreen');
             document.body.classList.add('mt2026-mail-page');
+            document.body.classList.add('mt2026-mail-scroll-lock');
         } else {
             document.body.classList.remove('mt2026-mail-fullscreen');
             document.body.classList.remove('mt2026-mail-page');
+            document.body.classList.remove('mt2026-mail-scroll-lock');
             document.body.classList.remove('mt2026-mail-has-conversation');
             closeMailList();
         }
@@ -120,9 +122,10 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
             }
             var available = window.innerHeight - headerBottom - reservedBottom;
             if (available > 120) {
-                list.style.setProperty('height', available + 'px', 'important');
-                list.style.setProperty('max-height', available + 'px', 'important');
-                list.style.setProperty('min-height', '120px', 'important');
+                list.classList.add('mt2026-mail-conversation-sized');
+                list.style.setProperty('--mt2026-conversation-list-height', available + 'px');
+                list.style.setProperty('--mt2026-conversation-list-max-height', available + 'px');
+                list.style.setProperty('--mt2026-conversation-list-min-height', '120px');
             }
         } catch (e) {
             module.log.error('sizeMobileConversationList failed', e);

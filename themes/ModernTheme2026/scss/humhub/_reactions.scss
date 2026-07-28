@@ -116,6 +116,10 @@
   &:hover {
     transform: scale(1.25) translateY(-3px);
     background: var(--color-bg-secondary, #f3f4f6);
+
+    @media (max-width: 991px) {
+      transform: scale(1.15) translateY(-2px);
+    }
   }
 }
 

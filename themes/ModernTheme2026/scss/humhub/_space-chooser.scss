@@ -111,8 +111,11 @@
     padding: 8px;
     border-radius: $border-radius-lg;
     box-shadow: $shadow-xl;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: var(--color-bg-primary);
+    @media (min-width: 992px) {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
     
     // Search input at top
     .space-search {

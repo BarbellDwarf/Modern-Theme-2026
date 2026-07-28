@@ -14,7 +14,6 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
         initSpaceSidebarMobile();
 
         if (!pjax) {
-            initMobileInputScroll();
             $(document).on('pjax:end', function() {
                 init(true);
             });

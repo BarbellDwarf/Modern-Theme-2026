@@ -331,7 +331,7 @@ body[data-bs-theme="light"] .context-switcher {
 }
 
 // Mobile: full-screen overlay
-@include mobile-only {
+@media (max-width: 991px) {
   .context-switcher-menu {
     position: fixed !important;
     top: 0 !important;

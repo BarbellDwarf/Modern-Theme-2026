@@ -1,0 +1,223 @@
+{
+  "$schema": "./repo-map-schema.json",
+  "generated": "2026-07-28",
+  "module": "modern-theme-2026",
+  "version": "1.0.6",
+  "components": {
+    "TOP_NAVIGATION_BAR": {
+      "name": "Top Navigation Bar",
+      "files": {
+        "scss": ["themes/ModernTheme2026/scss/humhub/_topbar.scss"],
+        "view": ["themes/ModernTheme2026/views/humhub/layouts/main.php"],
+        "js": ["resources/js/contextSwitcher.js"]
+      },
+      "affects": ["topbar", "navigation", "search", "notifications", "account dropdown", "context switcher"],
+      "subComponents": {
+        "CONTEXT_SWITCHER": {
+          "name": "Context Switcher",
+          "files": {
+            "scss": ["themes/ModernTheme2026/scss/humhub/_context-switcher.scss"],
+            "php": ["widgets/ContextSwitcher.php"],
+            "view": ["widgets/views/contextSwitcher.php"],
+            "js": ["resources/js/contextSwitcher.js"]
+          }
+        },
+        "SPACE_CHOOSER": {
+          "name": "Space Chooser",
+          "files": {
+            "scss": ["themes/ModernTheme2026/scss/humhub/_space-chooser.scss"]
+          }
+        }
+      }
+    },
+    "MOBILE_BOTTOM_NAV": {
+      "name": "Mobile Bottom Navigation",
+      "files": {
+        "scss": [
+          "themes/ModernTheme2026/scss/humhub/_mobile-bottom-nav.scss",
+          "themes/ModernTheme2026/scss/humhub/_mobile.scss"
+        ],
+        "php": ["widgets/MobileBottomNav.php"],
+        "view": ["widgets/views/mobileBottomNav.php"]
+      },
+      "affects": ["mobile navigation", "bottom sheet", "spaces sheet", "more sheet", "dark mode toggle"]
+    },
+    "ACTIVITY_STREAM": {
+      "name": "Activity Stream / Feed",
+      "files": {
+        "scss": [
+          "themes/ModernTheme2026/scss/humhub/_stream.scss",
+          "themes/ModernTheme2026/scss/humhub/_cards.scss"
+        ],
+        "js": ["resources/js/reactionPicker.js", "resources/js/mobileCommentCompose.js"],
+        "php": ["widgets/ReactionPicker.php"],
+        "view": ["widgets/views/reactionPicker.php"]
+      },
+      "subComponents": {
+        "REACTIONS": {
+          "name": "Emoji Reactions",
+          "files": {
+            "scss": ["themes/ModernTheme2026/scss/humhub/_reactions.scss"],
+            "php": ["widgets/ReactionPicker.php", "controllers/ReactionsController.php"],
+            "view": ["widgets/views/reactionPicker.php", "views/reactions/list.php"],
+            "js": ["resources/js/reactionPicker.js"]
+          }
+        },
+        "COMMENTS": {
+          "name": "Comments System",
+          "files": {
+            "scss": ["themes/ModernTheme2026/scss/humhub/_stream.scss"],
+            "js": ["resources/js/mobileCommentCompose.js"]
+          }
+        }
+      }
+    },
+    "MAIL_MESSENGER": {
+      "name": "Mail / Messenger",
+      "files": {
+        "scss": ["themes/ModernTheme2026/scss/humhub/_mail.scss"],
+        "js": ["resources/js/mailLayout.js"],
+        "view": [
+          "views/mail/views/mail/index.php",
+          "views/mail/views/mail/conversation.php"
+        ]
+      },
+      "affects": ["conversation list", "chat bubbles", "composer", "settings drawer", "search", "message actions"]
+    },
+    "USER_PROFILE": {
+      "name": "User Profile Pages",
+      "files": {
+        "scss": ["themes/ModernTheme2026/scss/_theme.scss"],
+        "view": [
+          "views/user/profile/_layout.php",
+          "views/user/profile/about.php",
+          "views/user/profile/home.php"
+        ]
+      },
+      "affects": ["profile layout", "about page", "profile tabs", "field display"]
+    },
+    "PEOPLE_DIRECTORY": {
+      "name": "People Directory",
+      "files": {
+        "scss": ["themes/ModernTheme2026/scss/humhub/_mobile.scss"],
+        "view": [
+          "views/user/people/index.php",
+          "themes/ModernTheme2026/views/user/widgets/peopleCard.php",
+          "themes/ModernTheme2026/views/user/widgets/userListBox.php"
+        ],
+        "js": ["resources/js/peopleFocusGuard.js"]
+      },
+      "affects": ["people cards", "search FAB", "overlay", "mobile grid"]
+    },
+    "SPACES": {
+      "name": "Spaces Pages",
+      "files": {
+        "scss": [
+          "themes/ModernTheme2026/scss/humhub/_spaces.scss",
+          "themes/ModernTheme2026/scss/humhub/_sidebar.scss",
+          "resources/css/spaces.css"
+        ]
+      },
+      "affects": ["space layout", "sidebar nav", "space content", "space header controls"]
+    },
+    "ADMIN_PANEL": {
+      "name": "Admin Panel",
+      "files": {
+        "scss": ["themes/ModernTheme2026/scss/humhub/_admin.scss"],
+        "view": [
+          "views/admin/views/layouts/main.php",
+          "views/admin/views/layouts/information.php",
+          "views/admin/views/layouts/module.php",
+          "views/admin/views/layouts/setting.php",
+          "views/admin/views/layouts/space.php",
+          "views/admin/views/layouts/user.php",
+          "views/config/index.php"
+        ],
+        "php": ["controllers/ConfigController.php"],
+        "js": ["resources/js/paletteSwitcher.js"]
+      },
+      "affects": ["admin layout", "config form", "gridview", "CodeMirror", "palette presets"]
+    },
+    "MODALS_AND_OVERLAYS": {
+      "name": "Modals and Overlays",
+      "files": {
+        "scss": [
+          "themes/ModernTheme2026/scss/humhub/_modal.scss",
+          "themes/ModernTheme2026/scss/humhub/_dropdown.scss"
+        ],
+        "js": [
+          "resources/js/modalFocusFix.js",
+          "resources/js/peopleFocusGuard.js"
+        ]
+      },
+      "affects": ["modal dialogs", "dropdown menus", "bottom sheets", "drawers", "backdrop overlays"]
+    },
+    "BUTTONS_AND_FORMS": {
+      "name": "Buttons and Forms",
+      "files": {
+        "scss": [
+          "themes/ModernTheme2026/scss/humhub/_button.scss",
+          "themes/ModernTheme2026/scss/humhub/_form.scss",
+          "themes/ModernTheme2026/scss/humhub/_richtext.scss"
+        ]
+      },
+      "affects": ["all buttons", "form inputs", "validation states", "switches", "file inputs", "rich text editor"]
+    },
+    "DARK_MODE": {
+      "name": "Dark Mode",
+      "files": {
+        "scss": ["themes/ModernTheme2026/scss/humhub/_dark-mode.scss"]
+      },
+      "affects": ["all components", "panels", "forms", "buttons", "dropdowns", "modals", "stream", "navigation"]
+    },
+    "ACCESSIBILITY": {
+      "name": "Accessibility",
+      "files": {
+        "scss": ["themes/ModernTheme2026/scss/_accessibility.scss"],
+        "js": [
+          "resources/js/peopleFocusGuard.js",
+          "resources/js/modalFocusFix.js",
+          "resources/js/mobileKeyboardFix.js",
+          "resources/js/mobileSwipeFix.js"
+        ]
+      },
+      "affects": ["focus management", "reduced motion", "contrast", "sr-only", "keyboard navigation"]
+    },
+    "PALETTE_SWITCHER": {
+      "name": "Color Palette Switcher",
+      "files": {
+        "scss": ["themes/ModernTheme2026/scss/humhub/_palette-switcher.scss"],
+        "js": ["resources/js/paletteSwitcher.js"]
+      },
+      "affects": ["theme color switching", "admin palette presets", "localStorage persistence"]
+    },
+    "NOTIFICATIONS": {
+      "name": "Notifications",
+      "files": {
+        "js": ["resources/js/notifications.js"],
+        "scss": ["themes/ModernTheme2026/scss/humhub/_mobile.scss"]
+      },
+      "affects": ["notification badge", "live updates", "mobile mark-all-seen bar"]
+    }
+  },
+  "events": {
+    "onBeforeAction": { "file": "Events.php", "purpose": "Registers Yii2 pathMap view overrides" },
+    "onViewBeginBody": { "file": "Events.php", "purpose": "Registers ModernThemeAsset JS bundle, checks CSS health" },
+    "onViewEndBody": { "file": "Events.php", "purpose": "Renders MobileBottomNav widget" },
+    "onTopMenuRun": { "file": "Events.php", "purpose": "Removes redundant Spaces menu item, renames People label" }
+  },
+  "config": {
+    "file": "config.php",
+    "events": [
+      "Application::EVENT_BEFORE_ACTION",
+      "View::EVENT_BEGIN_BODY",
+      "View::EVENT_END_BODY",
+      "TopMenu::EVENT_RUN"
+    ]
+  },
+  "adminConfig": {
+    "controller": "controllers/ConfigController.php",
+    "formView": "views/config/index.php",
+    "settings": ["palette selection", "mobile nav labels", "mail settings (enter-to-send, font scale, formatting bar)"]
+  }
+}

@@ -1,25 +1,16 @@
 {
-  "name": "modern-theme-2026",
-  "description": "HumHub Modern Theme 2026 module - theme, mail UI, reactions, mobile nav",
+  "$schema": "https://opencode.ai/config.json",
   "instructions": [
     ".github/AGENTS.md",
     ".github/INDEX.md",
     ".github/HUMHUB-POST-CHANGE-CHECKLIST.md",
-    ".github/BRANCH-VERSION-UPDATE-RULES.md"
+    ".github/BRANCH-VERSION-UPDATE-RULES.md",
+    ".github/instructions/theme-scss.instructions.md",
+    ".github/instructions/php-widgets-module.instructions.md",
+    ".github/instructions/javascript-module.instructions.md",
+    ".github/instructions/module-lifecycle-installation.instructions.md"
   ],
-  "autoLoadInstructions": {
-    "**/*.scss": ".github/instructions/theme-scss.instructions.md",
-    "**/*.php": ".github/instructions/php-widgets-module.instructions.md",
-    "**/*.js": ".github/instructions/javascript-modules.instructions.md",
-    "**/migrations/**": ".github/instructions/module-lifecycle-installation.instructions.md"
-  },
-  "ignore": [
-    "node_modules",
-    "vendor",
-    ".git",
-    "assets",
-    "dist",
-    "screenshots",
-    ".blackbox"
+  "plugin": [
+    "superpowers@git+https://github.com/obra/superpowers.git"
   ]
 }

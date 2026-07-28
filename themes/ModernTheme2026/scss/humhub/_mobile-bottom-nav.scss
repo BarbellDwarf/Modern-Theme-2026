@@ -145,7 +145,7 @@
 // Add bottom padding to body to prevent content from being hidden by bottom nav
 @media (max-width: 991px) {
     body {
-        padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
+        padding-bottom: calc(56px + env(safe-area-inset-bottom, 0));
         
         // Fill the safe-area space (behind OS nav buttons) with solid background.
         // z-index must be high enough to cover all page content (including modals)
@@ -158,7 +158,7 @@
             right: 0;
             height: env(safe-area-inset-bottom, 0);
             background-color: var(--color-bg-primary, #ffffff);
-            z-index: 10000;
+            z-index: 1001;
             pointer-events: none;
         }
     }
@@ -251,7 +251,7 @@
     body.mobile,
     body[data-mobile="true"],
     .mobile-app {
-        padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
+        padding-bottom: calc(56px + env(safe-area-inset-bottom, 0));
     }
 }
 

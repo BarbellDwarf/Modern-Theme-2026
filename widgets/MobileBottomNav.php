@@ -270,6 +270,7 @@ class MobileBottomNav extends Widget
      */
     private function captureTopMenuEntries(): array
     {
+        /** @var array|null $entries */
         static $entries = null;
         if ($entries !== null) {
             return $entries;
@@ -306,7 +307,7 @@ class MobileBottomNav extends Widget
     private function getActiveItem($route)
     {
         // Dashboard/Home routes
-        if (strpos($route, 'dashboard') !== false || $route === 'dashboard/dashboard') {
+        if (strpos($route, 'dashboard') !== false) {
             return 'home';
         }
 

@@ -58,7 +58,7 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
         bindComposerDropdownStackFix();
 
         if (!pjax) {
-            $(document).on('pjax:end', function () {
+            $(document).on('pjax:end.mt2026Notifications', function () {
                 // Remove stale bar then re-inject after pjax page transitions
                 $('#mt2026-notification-mobile-bar').remove();
                 injectMobileActionBar();
@@ -68,8 +68,15 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
 
     module.initOnPjaxLoad = true;
 
+    var unload = function() {
+        $(document).off('.mt2026Notifications');
+        $(document).off('.mt2026ComposerMenu');
+        $('#mt2026-notification-mobile-bar').remove();
+    };
+
     module.export({
-        init: init
+        init: init,
+        unload: unload
     });
 
     function bindComposerDropdownStackFix() {

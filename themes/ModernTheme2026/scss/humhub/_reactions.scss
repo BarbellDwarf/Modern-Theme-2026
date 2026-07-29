@@ -31,7 +31,8 @@
   &::before {
     font-family: FontAwesome, sans-serif;
     font-size: 18px;
-    content: attr(data-icon, '\f118'); // fa-smile-o default
+    content: '\f118'; // fa-smile-o default (fallback for older browsers)
+    content: attr(data-icon, '\f118'); // override with dynamic icon
     display: block;
     line-height: 1;
   }
@@ -56,7 +57,7 @@
 // properties here — they conflict with the JS-applied inline styles.
 .mt2026-reaction-picker {
   display: none;
-  z-index: 1060;
+  z-index: $z-mt2026-modal;
   flex-direction: row;
   align-items: center;
   gap: 4px;

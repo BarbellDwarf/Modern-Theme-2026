@@ -49,8 +49,9 @@ class ConfigController extends Controller
                 $settings->set('mobileMoreAutoModules', Yii::$app->request->post('mobileMoreAutoModules') ? 1 : 0);
                 $settings->set('mobileMoreHiddenModuleIds', trim((string)Yii::$app->request->post('mobileMoreHiddenModuleIds', '')));
 
-                Yii::$app->cache->delete('mbn_notif_*');
-                Yii::$app->cache->delete('mbn_spaces_ids_*');
+                // Flush entire cache — Yii2 Cache::delete() doesn't support wildcard patterns.
+                // Short TTLs (60s/300s) mean minimal impact on config-save (rare operation).
+                Yii::$app->cache->flush();
                 $this->view->saved();
                 return $this->redirect(['/modern-theme-2026/config']);
             }
@@ -59,8 +60,7 @@ class ConfigController extends Controller
             $peopleLabel = Yii::$app->request->post('peopleNavLabel');
             if ($peopleLabel !== null) {
                 $settings->set('peopleNavLabel', trim($peopleLabel));
-                Yii::$app->cache->delete('mbn_notif_*');
-                Yii::$app->cache->delete('mbn_spaces_ids_*');
+                Yii::$app->cache->flush();
                 $this->view->saved();
                 return $this->redirect(['/modern-theme-2026/config']);
             }
@@ -71,8 +71,7 @@ class ConfigController extends Controller
                 $fontScale = (int)Yii::$app->request->post('mailFontScale', 100);
                 $settings->set('mailFontScale', in_array($fontScale, [100, 115, 130, 150], true) ? $fontScale : 100);
                 $settings->set('mailFormattingBar', Yii::$app->request->post('mailFormattingBar') ? '1' : '0');
-                Yii::$app->cache->delete('mbn_notif_*');
-                Yii::$app->cache->delete('mbn_spaces_ids_*');
+                Yii::$app->cache->flush();
                 $this->view->saved();
                 return $this->redirect(['/modern-theme-2026/config']);
             }
@@ -106,8 +105,7 @@ class ConfigController extends Controller
 
                 Module::rebuildThemeCss();
 
-                Yii::$app->cache->delete('mbn_notif_*');
-                Yii::$app->cache->delete('mbn_spaces_ids_*');
+                Yii::$app->cache->flush();
 
                 $this->view->saved();
                 return $this->redirect(['/modern-theme-2026/config']);

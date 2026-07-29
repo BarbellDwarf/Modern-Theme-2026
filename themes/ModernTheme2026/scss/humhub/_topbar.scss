@@ -487,13 +487,13 @@ body[data-bs-theme="light"] {
     #topbar .nav-link,
     #topbar .navbar-nav .nav-link,
     #topbar #top-menu-nav > li > a {
-        color: var(--color-text-primary, #111827);
+        color: var(--color-text-primary, #111827) !important;
     }
 
     #topbar .nav-link i,
     #topbar .navbar-nav .nav-link i,
     #topbar #top-menu-nav > li > a i {
-        color: var(--color-text-primary, #111827);
+        color: var(--color-text-primary, #111827) !important;
     }
 }
 

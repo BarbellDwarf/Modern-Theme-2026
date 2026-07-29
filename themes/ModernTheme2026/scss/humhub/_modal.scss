@@ -79,8 +79,7 @@
 }
 
 .modal-sm {
-  max-width: 400px;
-  max-width: calc(100vw - 32px);
+  max-width: min(400px, calc(100vw - 32px));
 }
 
 @media (min-width: 768px) and (max-width: 991px) {

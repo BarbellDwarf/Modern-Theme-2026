@@ -83,7 +83,7 @@
     .flex-grow-1 {
       flex: 1;
       min-width: 0;
-      word-break: break-word;  // Phase B: prevent overflow
+      overflow-wrap: anywhere;  // Phase B: prevent overflow
     }
 
     // Phase D: Visual hierarchy — stronger name, content, action buttons

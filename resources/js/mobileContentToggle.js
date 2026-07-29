@@ -7,7 +7,7 @@
         this.bindToggle();
       }
       var self = this;
-      window.matchMedia('(max-width: 991px)').addListener(function (mql) {
+      window.matchMedia('(max-width: 991px)').addEventListener('change', function (mql) {
         if (mql.matches) {
           self.bindToggle();
         }
@@ -16,11 +16,12 @@
 
     bindToggle: function () {
       var self = this;
-      document.querySelectorAll('.wall-entry-content.content').forEach(function (el) {
-        el.addEventListener('click', function () {
-          self.toggleExpanded(el);
-        });
+      if (self._delegationBound) return;
+      document.addEventListener('click', function (e) {
+        var el = e.target.closest('.wall-entry-content.content');
+        if (el) self.toggleExpanded(el);
       });
+      self._delegationBound = true;
     },
 
     toggleExpanded: function (el) {

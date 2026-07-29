@@ -5,9 +5,11 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
     var searchTimer = null;
     var scrollObserver = null;
     var headerObserver = null;
+    var onMailEscapeKey = null;
+    var onMailOverlayClick = null;
 
     function isMailPage() {
-        return window.location.pathname.indexOf('/mail/') !== -1
+        return /^\/mail\//.test(window.location.pathname)
             || document.getElementById('mail-conversation-root') !== null;
     }
 
@@ -489,7 +491,8 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
         drawer.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeSettingsDrawer();
         });
-        drawer.querySelector('select, input').focus();
+        var firstInput = drawer.querySelector('select, input');
+        if (firstInput) firstInput.focus();
     }
 
     function closeSettingsDrawer() {
@@ -567,7 +570,7 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
 
         if (!document.body.hasAttribute('data-mt2026-mail-overlay')) {
             document.body.setAttribute('data-mt2026-mail-overlay', '1');
-            document.body.addEventListener('click', function(e) {
+            onMailOverlayClick = function(e) {
                 if (!document.body.classList.contains('mail-list-open')) return;
                 try {
                     var withinSidebar = !!e.target.closest('#mail-conversation-overview');
@@ -575,18 +578,20 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
                         closeMailList();
                     }
                 } catch (err) {}
-            });
+            };
+            document.body.addEventListener('click', onMailOverlayClick);
         }
     }
 
     // ── EVENT LISTENERS ──────────────────────────────────────────────────────
     document.addEventListener('keydown', handleEnterToSend, true);
 
-    document.addEventListener('keydown', function(e) {
+    onMailEscapeKey = function(e) {
         if (e.key === 'Escape' && document.body.classList.contains('mail-list-open')) {
             closeMailList();
         }
-    });
+    };
+    document.addEventListener('keydown', onMailEscapeKey);
 
     $(document).on('pjax:beforeSend.mt2026Mail', function(event, xhr, options) {
         var url = (options && options.url) || '';
@@ -618,7 +623,7 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
         }, 100);
     });
 
-    $(document).on('humhub:ready pjax:end humhub:navigate', initMailDrawer);
+    $(document).on('humhub:ready.mt2026Mail pjax:end.mt2026Mail humhub:navigate.mt2026Mail', initMailDrawer);
 
     // ── UNLOAD / TEARDOWN ────────────────────────────────────────────────────
     function unload() {
@@ -626,6 +631,11 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
         $(document).off('.mt2026Mail');
         $(window).off('.mt2026Mail');
         document.removeEventListener('keydown', handleEnterToSend, true);
+        document.removeEventListener('keydown', onMailEscapeKey);
+        if (onMailOverlayClick) {
+            document.body.removeEventListener('click', onMailOverlayClick);
+            document.body.removeAttribute('data-mt2026-mail-overlay');
+        }
         clearTimeout(resizeTimer);
         clearTimeout(searchTimer);
         if (scrollObserver) { scrollObserver.disconnect(); scrollObserver = null; }

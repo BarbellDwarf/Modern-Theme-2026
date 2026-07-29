@@ -1,9 +1,5 @@
 humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
 
-    if (window.innerWidth >= 992) {
-        return;
-    }
-
     var submittingForms = new Map();
     var submitTimers = new Map();
     var transitionTimers = new Map();
@@ -165,6 +161,7 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
     };
 
     var init = function() {
+        if (window.innerWidth >= 992) { return; }
         document.addEventListener('click', clickHandler, true);
         document.addEventListener('shown.bs.modal', modalHandler);
         document.addEventListener('submit', submitHandler, true);

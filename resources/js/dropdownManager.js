@@ -13,7 +13,7 @@ humhub.module('modernTheme.dropdownManager', function(module, require, $) {
     };
 
     var init = function() {
-        $(document).on('shown.bs.dropdown', function(e) {
+        $(document).on('shown.bs.dropdown.mt2026-dropdown-manager', function(e) {
             var $target = $(e.target);
             var $menu = $target.find('.dropdown-menu').first();
             if (!$menu.length) return;
@@ -28,7 +28,7 @@ humhub.module('modernTheme.dropdownManager', function(module, require, $) {
             $menu.css('z-index', 1000);
         });
 
-        $(document).on('hidden.bs.dropdown', function(e) {
+        $(document).on('hidden.bs.dropdown.mt2026-dropdown-manager', function(e) {
             var $entry = $(findEntryAncestor(e.target));
             if ($entry.length) {
                 $entry.removeClass('mt2026-dropdown-open');

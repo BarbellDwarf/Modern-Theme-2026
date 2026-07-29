@@ -25,7 +25,7 @@ humhub.module('modernTheme.dropdownManager', function(module, require, $) {
             }
 
             // Ensure the menu is visible above content
-            $menu.css('z-index', 1000);
+            $menu.addClass('mt2026-dropdown-menu-front');
         });
 
         $(document).on('hidden.bs.dropdown.mt2026-dropdown-manager', function(e) {

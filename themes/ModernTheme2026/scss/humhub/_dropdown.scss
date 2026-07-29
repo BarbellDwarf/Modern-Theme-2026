@@ -309,11 +309,9 @@ body.mt2026-composer-dropdown-open-global .contentForm_options .dropdown-menu {
   z-index: $z-dropdown !important;
 }
 
-// Post composer panel lifted above stream entries. JS adds mt2026-contains-composer.
-.panel.mt2026-contains-composer {
-  position: relative;
-  z-index: $z-dropdown;
-  overflow: visible !important;
+// Applied by dropdownManager.js to ensure dropdown menus layer above content
+.mt2026-dropdown-menu-front {
+  z-index: 1000;
 }
 
 // Ensure the layout container itself doesn't clip the overflowed dropdown.

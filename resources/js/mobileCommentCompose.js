@@ -1,18 +1,3 @@
-(function() {
-    function hideReplyButtons() {
-        document.querySelectorAll('.single-comment a[data-action-click="comment.toggleComment"]').forEach(function(btn) {
-            btn.classList.add('d-none');
-        });
-    }
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', hideReplyButtons);
-    } else {
-        hideReplyButtons();
-    }
-    setTimeout(hideReplyButtons, 500);
-    setTimeout(hideReplyButtons, 1500);
-})();
-
 humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
 
     var submittingForms = new Map();
@@ -121,6 +106,7 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
 
     var _mq;
     var _mqHandler;
+    var _initialized = false;
 
     var hideReplyButtons = function() {
         document.querySelectorAll('.single-comment a[data-action-click="comment.toggleComment"]').forEach(function(btn) {
@@ -188,6 +174,8 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
     var init = function() {
         hideReplyButtons();
         if (window.innerWidth >= 992) { return; }
+        if (_initialized) { return; }
+        _initialized = true;
         document.addEventListener('click', clickHandler, true);
         document.addEventListener('shown.bs.modal', modalHandler);
         document.addEventListener('submit', submitHandler, true);
@@ -195,12 +183,17 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
 
         _mq = window.matchMedia('(min-width: 992px)');
         _mqHandler = function(e) {
-            if (e.matches) { unload(); }
+            if (e.matches) {
+                unload();
+            } else if (!_initialized) {
+                init();
+            }
         };
         _mq.addEventListener('change', _mqHandler);
     };
 
     var unload = function() {
+        _initialized = false;
         document.removeEventListener('click', clickHandler, true);
         document.removeEventListener('shown.bs.modal', modalHandler);
         document.removeEventListener('submit', submitHandler, true);

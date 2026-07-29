@@ -13,6 +13,7 @@ humhub.module('mobileContentToggle', function(module, require, $) {
     };
 
     var bindToggle = function() {
+        $(document).off('.mt2026ContentToggle');
         $(document).on('click.mt2026ContentToggle', '.wall-entry-content.content', function() {
             this.classList.toggle('expanded');
         });

@@ -1,3 +1,18 @@
+(function() {
+    function hideReplyButtons() {
+        document.querySelectorAll('.single-comment a[data-action-click="comment.toggleComment"]').forEach(function(btn) {
+            btn.classList.add('d-none');
+        });
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', hideReplyButtons);
+    } else {
+        hideReplyButtons();
+    }
+    setTimeout(hideReplyButtons, 500);
+    setTimeout(hideReplyButtons, 1500);
+})();
+
 humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
 
     var submittingForms = new Map();
@@ -107,7 +122,14 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
     var _mq;
     var _mqHandler;
 
+    var hideReplyButtons = function() {
+        document.querySelectorAll('.single-comment a[data-action-click="comment.toggleComment"]').forEach(function(btn) {
+            btn.classList.add('d-none');
+        });
+    };
+
     var syncContainers = function() {
+        hideReplyButtons();
         document.querySelectorAll('.comment-container').forEach(function(container) {
             var form = getComposeForm(container);
             if (!form) return;
@@ -164,6 +186,7 @@ humhub.module('modernTheme.mobileCommentCompose', function(module, require, $) {
     };
 
     var init = function() {
+        hideReplyButtons();
         if (window.innerWidth >= 992) { return; }
         document.addEventListener('click', clickHandler, true);
         document.addEventListener('shown.bs.modal', modalHandler);

@@ -1,40 +1,30 @@
-(function () {
-  'use strict';
+humhub.module('mobileContentToggle', function(module, require, $) {
+    'use strict';
 
-  var MobileContentToggle = {
-    init: function () {
-      if (window.matchMedia('(max-width: 991px)').matches) {
-        this.bindToggle();
-      }
-      var self = this;
-      window.matchMedia('(max-width: 991px)').addEventListener('change', function (mql) {
-        if (mql.matches) {
-          self.bindToggle();
+    var init = function() {
+        if (window.matchMedia('(max-width: 991px)').matches) {
+            bindToggle();
         }
-      });
-    },
+        window.matchMedia('(max-width: 991px)').addEventListener('change', function(mql) {
+            if (mql.matches) {
+                bindToggle();
+            }
+        });
+    };
 
-    bindToggle: function () {
-      var self = this;
-      if (self._delegationBound) return;
-      document.addEventListener('click', function (e) {
-        var el = e.target.closest('.wall-entry-content.content');
-        if (el) self.toggleExpanded(el);
-      });
-      self._delegationBound = true;
-    },
+    var bindToggle = function() {
+        $(document).on('click.mt2026ContentToggle', '.wall-entry-content.content', function() {
+            this.classList.toggle('expanded');
+        });
+    };
 
-    toggleExpanded: function (el) {
-      el.classList.toggle('expanded');
-    }
-  };
+    var unload = function() {
+        $(document).off('.mt2026ContentToggle');
+    };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () { MobileContentToggle.init(); });
-  } else {
-    MobileContentToggle.init();
-  }
-
-  window.HumHubTheme = window.HumHubTheme || {};
-  window.HumHubTheme.MobileContentToggle = MobileContentToggle;
-})();
+    module.initOnPjaxLoad = true;
+    module.export({
+        init: init,
+        unload: unload
+    });
+});

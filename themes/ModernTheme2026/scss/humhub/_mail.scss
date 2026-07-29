@@ -214,14 +214,14 @@ body.mail-list-open::before {
       box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
     }
 
-    &::placeholder { color: var(--color-text-tertiary); }
+    &::placeholder { color: var(--color-text-tertiary, #6b7280); }
   }
 
   .mt2026-mail-sidebar-search__icon {
     position: absolute;
     left: 10px;
     pointer-events: none;
-    color: var(--color-text-tertiary);
+    color: var(--color-text-tertiary, #6b7280);
     font-size: 13px;
     z-index: 1;
   }
@@ -230,7 +230,7 @@ body.mail-list-open::before {
 // ── INBOX MESSAGE LIST ───────────────────────────────────────────────────────
 [data-mt2026-messages-inbox] .messagePreviewEntry,
 .mail-inbox-messages .messagePreviewEntry {
-  border-radius: var(--border-radius-md, 8px);
+  border-radius: var(--radius-md, 8px);
   margin: 4px 8px;
   border: 1px solid transparent;
   transition: background-color 0.15s ease, border-color 0.15s ease;

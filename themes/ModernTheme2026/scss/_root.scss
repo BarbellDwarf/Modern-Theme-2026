@@ -14,6 +14,9 @@
   --color-primary-lighter: #{$primary-lighter};
   --color-primary-lightest: #{$primary-lightest};
   
+  // Accent Color
+  --color-accent: #5a8eeb;
+  
   // Secondary Colors
   --color-secondary: #{$secondary};
   --color-secondary-dark: #{$secondary-dark};
@@ -51,6 +54,7 @@
   --color-text-secondary: #{$text-color-secondary};
   --color-text-muted: #{$text-color-muted};
   --color-text-light: #{$text-color-light};
+  --color-text-tertiary: #{$text-color-muted};
   --color-text-inverse: #{$text-color-inverse};
   
   // Links
@@ -140,14 +144,17 @@
 [data-theme="purple"] {
   --color-primary: #{$palette-purple-primary};
   --color-secondary: #{$palette-purple-secondary};
+  --color-accent: #06b6d4;
 }
 
 [data-theme="green"] {
   --color-primary: #{$palette-green-primary};
   --color-secondary: #{$palette-green-secondary};
+  --color-accent: #f59e0b;
 }
 
 [data-theme="neutral"] {
   --color-primary: #{$palette-neutral-primary};
   --color-secondary: #{$palette-neutral-secondary};
+  --color-accent: #8b5cf6;
 }

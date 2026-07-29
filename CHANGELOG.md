@@ -4,6 +4,16 @@ All notable changes to this project are documented in this file.
 
 The format follows Keep a Changelog and this project uses Semantic Versioning.
 
+## [1.1.0] - 2026-07-29
+
+### Added
+- Stronger comment card backgrounds for better visual separation in light and dark modes.
+- Reply functionality removed to simplify UI and fix reply/post-as-comment bug.
+
+### Fixed
+- Emoji chooser picker position in comment controls (left-aligned).
+- Comment reply button hiding now works across all themes via JS + high-specificity CSS.
+
 ## [1.0.6] - 2026-05-16
 
 ### Fixed

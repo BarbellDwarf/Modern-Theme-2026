@@ -81,20 +81,6 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
         <span class="nav-label"><?= Html::encode($mobileNavLabels['notifications'] ?? 'Notifications') ?></span>
     </a>
 
-    <?php if (\Yii::$app->moduleManager->hasModule('calendar')): ?>
-    <!-- Calendar (visible on comfortable mobile widths; moved into More on narrow screens) -->
-    <a href="<?= Url::to(['/calendar/global/index']) ?>" 
-       class="nav-item nav-item-calendar<?= $activeItem === 'calendar' ? ' active' : '' ?>"
-       data-nav-key="calendar"
-       aria-label="Calendar"
-       aria-current="<?= $activeItem === 'calendar' ? 'page' : 'false' ?>">
-        <span class="nav-icon">
-            <i class="fa fa-calendar"></i>
-        </span>
-        <span class="nav-label">Calendar</span>
-    </a>
-    <?php endif; ?>
-
     <!-- More Menu -->
     <button type="button"
             class="nav-item<?= $activeItem === 'more' ? ' active' : '' ?>"
@@ -111,12 +97,12 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
 </nav>
 
 <!-- Spaces Bottom Sheet -->
-<div id="mobile-spaces-sheet" class="mobile-sheet" role="dialog" aria-label="Your Spaces" aria-hidden="true">
+<div id="mobile-spaces-sheet" class="mobile-sheet" role="dialog" aria-label="<?= Yii::t('ModernTheme2026.base', 'Your Spaces') ?>" aria-hidden="true">
     <div class="mobile-sheet-backdrop"></div>
     <div class="mobile-sheet-content">
         <div class="mobile-sheet-handle"></div>
         <div class="mobile-sheet-header">
-            <h3 class="mobile-sheet-title">Your Spaces</h3>
+            <h3 class="mobile-sheet-title"><?= Yii::t('ModernTheme2026.base', 'Your Spaces') ?></h3>
             <button type="button" class="mobile-sheet-close" aria-label="Close">&times;</button>
         </div>
         <div class="mobile-sheet-body">
@@ -138,12 +124,12 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
                     <?php endforeach; ?>
                 </ul>
             <?php else: ?>
-                <p class="mobile-spaces-empty">You haven't joined any spaces yet.</p>
+                <p class="mobile-spaces-empty"><?= Yii::t('ModernTheme2026.base', "You haven't joined any spaces yet.") ?></p>
             <?php endif; ?>
         </div>
         <div class="mobile-sheet-footer">
             <a href="<?= Url::to(['/space/spaces']) ?>" class="btn btn-primary btn-block">
-                <i class="fa fa-th-large"></i> View All Spaces
+                <i class="fa fa-th-large"></i> <?= Yii::t('ModernTheme2026.base', 'View All Spaces') ?>
             </a>
         </div>
     </div>
@@ -174,7 +160,7 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
                                 <i class="fa fa-user"></i>
                             <?php endif; ?>
                         </span>
-                        <span class="mobile-more-label">Profile</span>
+                        <span class="mobile-more-label"><?= Yii::t('ModernTheme2026.base', 'Profile') ?></span>
                         <i class="fa fa-chevron-right mobile-more-arrow"></i>
                     </a>
                 </li>
@@ -191,7 +177,7 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
                 <li>
                     <a href="<?= Url::to(['/admin/index']) ?>" class="mobile-more-item">
                         <span class="mobile-more-icon"><i class="fa fa-cog"></i></span>
-                        <span class="mobile-more-label">Administration</span>
+                        <span class="mobile-more-label"><?= Yii::t('ModernTheme2026.base', 'Administration') ?></span>
                         <i class="fa fa-chevron-right mobile-more-arrow"></i>
                     </a>
                 </li>
@@ -212,26 +198,26 @@ if (window.innerWidth < 992 || /Mobi|Android/i.test(navigator.userAgent)) {
                 ?>
                 <li class="mobile-more-item mobile-more-darkmode-row" style="cursor:default;">
                     <span class="mobile-more-icon"><i class="fa fa-adjust"></i></span>
-                    <span class="mobile-more-label">Appearance</span>
+                    <span class="mobile-more-label"><?= Yii::t('ModernTheme2026.base', 'Appearance') ?></span>
                     <span class="mobile-darkmode-toggle" role="group" aria-label="Color scheme">
                         <button type="button"
                                 class="mobile-darkmode-btn<?= $currentDarkMode === 'light' ? ' active' : '' ?>"
                                 data-dark-mode="light"
-                                title="Light"
+                                title="<?= Yii::t('ModernTheme2026.base', 'Light') ?>"
                                 aria-pressed="<?= $currentDarkMode === 'light' ? 'true' : 'false' ?>">
                             <i class="fa fa-sun-o"></i>
                         </button>
                         <button type="button"
                                 class="mobile-darkmode-btn<?= $currentDarkMode === 'default' ? ' active' : '' ?>"
                                 data-dark-mode="default"
-                                title="System"
+                                title="<?= Yii::t('ModernTheme2026.base', 'System') ?>"
                                 aria-pressed="<?= $currentDarkMode === 'default' ? 'true' : 'false' ?>">
                             <i class="fa fa-adjust"></i>
                         </button>
                         <button type="button"
                                 class="mobile-darkmode-btn<?= $currentDarkMode === 'dark' ? ' active' : '' ?>"
                                 data-dark-mode="dark"
-                                title="Dark"
+                                title="<?= Yii::t('ModernTheme2026.base', 'Dark') ?>"
                                 aria-pressed="<?= $currentDarkMode === 'dark' ? 'true' : 'false' ?>">
                             <i class="fa fa-moon-o"></i>
                         </button>
@@ -313,7 +299,15 @@ $this->registerJs("
             });
             btn.classList.add('active');
             btn.setAttribute('aria-pressed', 'true');
-            // POST to dark-mode modal endpoint
+            // Apply theme immediately via data-bs-theme attribute
+            if (mode === 'dark') {
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+            } else if (mode === 'light') {
+                document.documentElement.setAttribute('data-bs-theme', 'light');
+            } else {
+                document.documentElement.removeAttribute('data-bs-theme');
+            }
+            // POST to save preference (async, fire-and-forget, no reload)
             var csrfParam = document.querySelector('meta[name=\"csrf-param\"]');
             var csrfToken = document.querySelector('meta[name=\"csrf-token\"]');
             var formData = new FormData();
@@ -325,11 +319,7 @@ $this->registerJs("
                 method: 'POST',
                 body: formData,
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            }).then(function() {
-                // Reload to apply theme assets (same as desktop toggle behaviour)
-                window.location.reload();
             }).catch(function() {
-                // If fetch fails, fall back to opening the modal
                 window.location.href = " . json_encode($darkModeSettingsUrl) . ";
             });
         });
@@ -356,19 +346,22 @@ $this->registerJs("
         if (base !== '' && base !== '/' && path.indexOf(base) === 0) {
             path = path.slice(base.length) || '/';
         }
+        var segments = path.split('/').filter(Boolean);
+        var first = segments[0] || '';
+        var second = segments[1] || '';
         var activeKey = '';
 
-        if (path === '/' || path === '/dashboard' || path.indexOf('/dashboard') !== -1 || path === '') {
+        if (path === '/' || path === '' || first === 'dashboard') {
             activeKey = 'home';
-        } else if (path === '/people' || path.indexOf('/people') !== -1 || path.indexOf('/user/people') !== -1) {
+        } else if (first === 'people' || (first === 'user' && second === 'people')) {
             activeKey = 'people';
-        } else if (path.indexOf('/notification') !== -1) {
+        } else if (first === 'notification') {
             activeKey = 'notifications';
-        } else if (path.indexOf('/calendar') !== -1) {
-            activeKey = 'calendar';
-        } else if (path.indexOf('/s/') !== -1 || path.indexOf('/space/') !== -1) {
+        } else if (first === 'calendar') {
+            activeKey = 'more';
+        } else if (first === 's' || first === 'space') {
             activeKey = 'spaces';
-        } else if (path.indexOf('/u/') !== -1 || path.indexOf('/user/account') !== -1 || path.indexOf('/admin') !== -1) {
+        } else if (first === 'u' || (first === 'user' && (second === 'account' || second === 'profile')) || first === 'admin') {
             activeKey = 'more';
         }
 

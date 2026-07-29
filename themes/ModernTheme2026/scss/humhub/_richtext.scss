@@ -38,7 +38,6 @@
         overflow-x: auto !important;
         overflow-y: hidden !important;
         overscroll-behavior-x: contain; // stop rubber-band / white flash at scroll end
-        -webkit-overflow-scrolling: touch;
         scrollbar-width: none; // Firefox: hide scrollbar
         gap: 2px;
         padding: 4px 6px !important;
@@ -118,14 +117,12 @@
         z-index: 9999 !important;
         max-height: 40vh;
         overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
     }
 
     .ProseMirror {
         min-height: 80px !important;
         font-size: max(1rem, 16px) !important; // prevent iOS zoom on focus
         overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
         word-break: break-word;
     }
 

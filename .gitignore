@@ -36,4 +36,5 @@ ehthumbs.db
 config-generated-*.scss
 screenshots/*
 tests/*
+docs/
 node_modules/*

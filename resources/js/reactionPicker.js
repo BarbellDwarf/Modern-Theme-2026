@@ -49,7 +49,9 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
     function getSummaryLink($container) {
         var cid = $container.data('mt2026-cid');
         var $controls = $container.closest('.wall-entry-controls');
-        return $controls.find('.mt2026-summary-link[data-mt2026-cid="' + cid + '"]');
+        return $controls.find('.mt2026-summary-link').filter(function() {
+            return $(this).data('mt2026-cid') === cid;
+        });
     }
 
     // ── Build picker HTML ─────────────────────────────────────────────────────
@@ -57,7 +59,7 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
     function buildPickerHtml() {
         var html = '<div class="mt2026-reaction-picker" role="listbox" aria-label="Choose reaction">';
         REACTIONS.forEach(function(r) {
-            html += '<button class="mt2026-reaction-btn" type="button" data-reaction="' + r.type + '" title="' + r.label + '">'
+            html += '<button class="mt2026-reaction-btn" type="button" data-reaction="' + r.type + '" title="' + r.label + '" aria-pressed="false">'
                 + '<span class="mt2026-reaction-emoji">' + r.emoji + '</span>'
                 + '<span class="mt2026-reaction-label">' + r.label + '</span>'
                 + '</button>';
@@ -76,6 +78,7 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
     var $bodyPicker = null;
     var $activeTrigger = null;
     var $activeContainer = null;
+    var repositionTimer;
 
     function getOrCreateBodyPicker() {
         if (!$bodyPicker || !$bodyPicker.length) {
@@ -127,10 +130,12 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
     function setTrigger($container, reactionType) {
         var $btn = $container.find('.mt2026-reaction-trigger');
         if (!reactionType) {
-            $btn.removeClass('reacted').removeAttr('data-active').html('<i class="fa fa-smile-o" aria-hidden="true"></i>');
+            $btn.removeClass('reacted').removeAttr('data-active');
+            $btn.attr('aria-label', 'React');
         } else {
             var r = getReactionByType(reactionType);
-            $btn.addClass('reacted').attr('data-active', reactionType).html('<span class="mt2026-active-emoji">' + r.emoji + '</span>');
+            $btn.addClass('reacted').attr('data-active', reactionType);
+            $btn.attr('aria-label', 'Reacted with ' + r.label);
         }
     }
 
@@ -171,7 +176,7 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
             $c.data('mt2026-cid', cid);
 
             // 1. Prepend trigger button
-            $c.prepend('<button type="button" class="mt2026-reaction-trigger" title="React" aria-haspopup="true">'
+            $c.prepend('<button type="button" class="mt2026-reaction-trigger" title="React" aria-label="React" aria-haspopup="true">'
                 + '<i class="fa fa-smile-o" aria-hidden="true"></i>'
                 + '</button>');
 
@@ -184,8 +189,8 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
 
             // 3. Build reaction summary link and place it in wall-entry-links (right-aligned)
             var $controls = $c.closest('.wall-entry-controls.wall-entry-links');
-            if ($controls.length && params.contentModel && params.contentId && !$controls.find('.mt2026-summary-link[data-mt2026-cid="' + cid + '"]').length) {
-                var listUrl = BASE_URL + '/list?contentModel=' + encodeURIComponent(params.contentModel) + '&contentId=' + params.contentId;
+            if ($controls.length && params.contentModel && params.contentId && !$controls.find('.mt2026-summary-link').filter(function() { return $(this).data('mt2026-cid') === cid; }).length) {
+                var listUrl = BASE_URL + '/list?contentModel=' + encodeURIComponent(params.contentModel) + '&contentId=' + encodeURIComponent(params.contentId);
                 $controls.append('<a class="mt2026-summary-link" href="' + listUrl
                     + '" data-bs-target="#globalModal" data-mt2026-cid="' + cid + '" style="display:none">'
                     + '<span class="mt2026-summary-inner"></span>'
@@ -201,12 +206,16 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
                 $.get(BASE_URL + '/my-reaction', params, function(resp) {
                     if (resp && resp.reactionType) setTrigger($c, resp.reactionType);
                     if (resp && resp.reactionCounts) setSummary($c, resp.reactionCounts);
-                }).fail(function() {});
+                }).fail(function(jqXHR) {
+                    module.log.error('Failed to fetch reaction state', jqXHR.status);
+                });
             } else {
                 // Still fetch summary counts even when user hasn't reacted
                 $.get(BASE_URL + '/my-reaction', params, function(resp) {
                     if (resp && resp.reactionCounts) setSummary($c, resp.reactionCounts);
-                }).fail(function() {});
+                }).fail(function(jqXHR) {
+                    module.log.error('Failed to fetch reaction counts', jqXHR.status);
+                });
             }
         });
     }
@@ -223,13 +232,16 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         // Ensure reaction buttons reflect active state of THIS container
         var currentReaction = $trigger.attr('data-active');
         $picker.find('.mt2026-reaction-btn').removeClass('selected');
+        $picker.find('.mt2026-reaction-btn').attr('aria-pressed', 'false');
         if (currentReaction) {
-            $picker.find('.mt2026-reaction-btn[data-reaction="' + currentReaction + '"]').addClass('selected');
+            $picker.find('.mt2026-reaction-btn').filter(function() {
+                return $(this).data('reaction') === currentReaction;
+            }).addClass('selected').attr('aria-pressed', 'true');
         }
         $picker.addClass('visible').show();
     }
 
-    function hidePicker($c) {
+    function hidePicker() {
         if ($bodyPicker) {
             $bodyPicker.removeClass('visible').hide();
         }
@@ -244,11 +256,11 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         attach();
         if (!bootstrapped) {
             bootstrapped = true;
-            $(document).on('humhub:ready humhub:stream:afterAppend humhub:content:afterMove pjax:end', function() {
+            $(document).on('humhub:ready.mt2026picker humhub:stream:afterAppend.mt2026picker humhub:content:afterMove.mt2026picker pjax:end.mt2026picker', function() {
                 setTimeout(attach, 200);
             });
 
-            $(document).ajaxComplete(function() {
+            $(document).on('ajaxComplete.mt2026picker', function() {
                 setTimeout(attach, 100);
             });
         }
@@ -256,12 +268,12 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         // Toggle picker on trigger click/tap
         // NOTE: the picker is teleported to <body> so we check $bodyPicker directly,
         // not $c.find(...), to detect whether it is currently open for this container.
-        $(document).on('click', CONTAINER_SELECTOR + ' .mt2026-reaction-trigger', function(e) {
+        $(document).on('click.mt2026picker', CONTAINER_SELECTOR + ' .mt2026-reaction-trigger', function(e) {
             e.preventDefault();
             e.stopPropagation();
             var $c = $(this).closest('.likeLinkContainer');
             if ($activeContainer && $activeContainer[0] === $c[0] && $bodyPicker && $bodyPicker.hasClass('visible')) {
-                hidePicker($c);
+                hidePicker();
             } else {
                 showPicker($c);
             }
@@ -269,31 +281,31 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
 
         // Desktop hover: open picker after delay
         var hoverTimer;
-        $(document).on('mouseenter', CONTAINER_SELECTOR, function() {
+        $(document).on('mouseenter.mt2026picker', CONTAINER_SELECTOR, function() {
             var $c = $(this);
             hoverTimer = setTimeout(function() { showPicker($c); }, 400);
-        }).on('mouseleave', CONTAINER_SELECTOR, function() {
+        }).on('mouseleave.mt2026picker', CONTAINER_SELECTOR, function() {
             clearTimeout(hoverTimer);
             var $c = $(this);
             setTimeout(function() {
                 // Only hide if mouse isn't over the body picker
                 if ($bodyPicker && $bodyPicker.is(':hover')) { return; }
-                if ($activeContainer && $activeContainer[0] === $c[0]) { hidePicker($c); }
+                if ($activeContainer && $activeContainer[0] === $c[0]) { hidePicker(); }
             }, 300);
         });
-        $(document).on('mouseleave', '.mt2026-reaction-picker', function() {
-            if ($activeContainer) { hidePicker($activeContainer); }
+        $(document).on('mouseleave.mt2026picker', '.mt2026-reaction-picker', function() {
+            if ($activeContainer) { hidePicker(); }
         });
 
         // Pick a reaction (from body-teleported picker)
-        $(document).on('click', '.mt2026-reaction-btn', function(e) {
+        $(document).on('click.mt2026picker', '.mt2026-reaction-btn', function(e) {
             e.preventDefault();
             e.stopPropagation();
             var $btn = $(this);
             var type = $btn.data('reaction');
             var $c   = $activeContainer;
             if (!$c || !$c.length) { return; }
-            hidePicker($c);
+            hidePicker();
 
             $btn.addClass('mt2026-pop');
             setTimeout(function() { $btn.removeClass('mt2026-pop'); }, 300);
@@ -334,31 +346,47 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         });
 
         // Close on outside click
-        $(document).on('click', function(e) {
+        $(document).on('click.mt2026picker', function(e) {
             if (!$(e.target).closest('.likeLinkContainer').length
                 && !$(e.target).closest('.mt2026-reaction-picker').length) {
-                if ($activeContainer) hidePicker($activeContainer);
+                if ($activeContainer) hidePicker();
             }
         });
 
         // Close on Escape
-        $(document).on('keydown', function(e) {
+        $(document).on('keydown.mt2026picker', function(e) {
             if (e.key === 'Escape' && $activeContainer) {
-                hidePicker($activeContainer);
+                hidePicker();
             }
         });
 
-        $(document).on('pjax:end', function() { setTimeout(attach, 200); });
+        $(document).on('pjax:end.mt2026picker', function() { setTimeout(attach, 200); });
 
-        // Keep the floating picker aligned if the page scrolls or resizes
+        // Keep the floating picker aligned if the page scrolls or resizes.
+        // Debounced to avoid layout thrashing on rapid scroll events.
         $(window).on('scroll.mt2026picker resize.mt2026picker', function() {
-            if ($activeContainer && $activeTrigger && $bodyPicker && $bodyPicker.is(':visible')) {
-                positionBodyPicker($activeTrigger);
-            }
+            clearTimeout(repositionTimer);
+            repositionTimer = setTimeout(function() {
+                if ($activeContainer && $activeTrigger && $bodyPicker && $bodyPicker.is(':visible')) {
+                    positionBodyPicker($activeTrigger);
+                }
+            }, 100);
         });
+    };
+
+    var unload = function() {
+        $(document).off('.mt2026picker');
+        $(window).off('.mt2026picker');
+        clearTimeout(repositionTimer);
+        if ($bodyPicker) {
+            $bodyPicker.remove();
+            $bodyPicker = null;
+        }
+        $activeContainer = null;
+        $activeTrigger = null;
     };
 
     module.initOnPjaxLoad = true;
 
-    module.export({ init: init });
+    module.export({ init: init, unload: unload });
 });

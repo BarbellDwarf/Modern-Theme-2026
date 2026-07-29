@@ -1,0 +1,182 @@
+// Modern Theme 2026 - Admin Section: Color pickers, collapsible groups, palette presets
+// Extracted from _admin.scss
+
+// ============================================================
+// Admin > Settings > Appearance — Theme Customization section
+// ============================================================
+
+// Color picker group containers (bg-light wrappers around each color swatch)
+.input-color-group {
+  border-radius: 8px;
+  transition: background-color 0.2s;
+
+  // Keep the native <input type=color> swatch at a reasonable size
+  input[type="color"] {
+    height: 48px;
+    min-width: 64px;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+}
+
+// Collapsible field group (the "Theme customization" disclosure section)
+.collapsible-fields-group {
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 10px;
+  overflow: hidden;
+
+  .collapsible-fields-header {
+    background-color: var(--color-bg-secondary, #f3f4f6);
+    padding: 12px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+    transition: background 0.2s;
+
+    &:hover {
+      background-color: var(--color-bg-tertiary, #e5e7eb);
+    }
+  }
+
+  .collapsible-fields-body {
+    padding: 20px;
+    background-color: var(--color-bg-primary, #fff);
+  }
+}
+
+// Palette preset buttons injected by paletteSwitcher.js
+#moderntheme-palette-presets {
+  .d-flex.flex-wrap {
+    gap: 8px;
+  }
+
+  .moderntheme-preset-btn {
+    background: var(--color-bg-secondary, #fff) !important;
+    border: 2px solid var(--color-border, #e5e7eb) !important;
+    color: var(--color-text-primary, #111827) !important;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    border-radius: 20px;
+    font-size: 13px;
+
+    &:hover {
+      background: var(--color-bg-tertiary, #f3f4f6) !important;
+    }
+  }
+}
+
+// ── Config Form (views/config/index.php) ─────────────────────────────────
+
+// Palette selection button (round color swatch)
+.mt2026-config-palette-btn {
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  position: relative;
+  border: 2px solid transparent;
+  transition: border-color 0.15s, transform 0.15s;
+  &:hover { transform: scale(1.1); }
+  &.active { border-color: var(--color-primary); }
+}
+
+// Config section panel (palette grid, mobile nav, mail, nav labels)
+.mt2026-config-section {
+  margin-top: var(--space-6);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-primary);
+}
+
+// Color swatch dot
+.mt2026-config-swatch {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(0,0,0,.12);
+  vertical-align: middle;
+}
+
+.mt2026-config-swatch--square {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: 2px solid rgba(0,0,0,.12);
+  vertical-align: middle;
+}
+
+// Palette card
+.mt2026-config-palette-card {
+  margin: 0;
+
+  &.active {
+    border: 2px solid var(--color-primary);
+  }
+}
+
+.mt2026-config-palette-body {
+  padding: 14px;
+}
+
+.mt2026-config-palette-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.mt2026-config-palette-header-title {
+  font-size: 14px;
+}
+
+.mt2026-config-swatches-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.mt2026-config-hex-labels {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-bottom: 12px;
+  line-height: 1.6;
+
+  code {
+    font-size: 10px;
+  }
+}
+
+.mt2026-config-palette-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.mt2026-config-current-well {
+  margin-bottom: 20px;
+}
+
+.mt2026-config-current-colors {
+  margin-left: 8px;
+}
+
+.mt2026-config-meta-text {
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.mt2026-config-sub-text {
+  font-size: 12px;
+}
+
+.mt2026-config-help-block {
+  margin: 2px 0 0 20px;
+  font-size: 12px;
+}
+
+// Admin grid responsive handled by _admin-gridview.scss (horizontal scroll, min-width: 480px at 575px).
+// Stacked-card layout removed — HumHub's GridView doesn't provide data-label attributes
+// on cells, so `content: attr(data-label)` produces empty labels and destroys the table.

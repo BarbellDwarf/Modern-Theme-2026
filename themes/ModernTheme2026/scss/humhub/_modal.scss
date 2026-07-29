@@ -3,11 +3,14 @@
 
 .modal-backdrop {
   background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
+  @media (min-width: 992px) {
+    backdrop-filter: blur(4px);
+  }
   @include fade-in();
 }
 
 .modal {
+  z-index: $z-mt2026-modal;
   @include fade-in();
 }
 
@@ -15,7 +18,7 @@
 // Apply margin-top to the dialog box so it clears the fixed topbar.
 // .modal-dialog-centered and fullscreen modals are excluded (they fill the viewport).
 .modal-dialog:not(.modal-dialog-centered):not(.modal-fullscreen) {
-  margin-top: calc(var(--mt2026-topbar-height, 60px) + 8px);
+  margin-top: calc(var(--mt2026-topbar-height, 60px) + var(--space-2));
 }
 
 .modal-content {
@@ -76,12 +79,30 @@
 }
 
 .modal-sm {
-  max-width: 400px;
+  max-width: min(400px, calc(100vw - 32px));
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
   .modal-lg,
   .modal-xl {
     max-width: 90vw;
+  }
+}
+
+@media (max-width: 1024px) {
+  .modal-lg,
+  .modal-xl {
+    max-width: 90vw;
+  }
+}
+
+// Safe-area-inset for mobile bottom-sheet modals
+@media (max-width: 991px) {
+  .modal-content {
+    padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  }
+
+  .mobile-bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }

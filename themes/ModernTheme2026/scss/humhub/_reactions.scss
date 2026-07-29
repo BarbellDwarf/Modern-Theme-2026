@@ -8,6 +8,12 @@
   justify-content: center;
   width: 28px;
   height: 28px;
+
+  // Mobile: bump to minimum touch target
+  @media (max-width: 991px) {
+    width: 44px;
+    height: 44px;
+  }
   padding: 0;
   margin-left: 4px;
   border: none;
@@ -25,7 +31,8 @@
   &::before {
     font-family: FontAwesome, sans-serif;
     font-size: 18px;
-    content: "\f118"; // fa-smile-o
+    content: '\f118'; // fa-smile-o default (fallback for older browsers)
+    content: attr(data-icon, '\f118'); // override with dynamic icon
     display: block;
     line-height: 1;
   }
@@ -50,7 +57,7 @@
 // properties here — they conflict with the JS-applied inline styles.
 .mt2026-reaction-picker {
   display: none;
-  z-index: 9999;
+  z-index: $z-mt2026-modal;
   flex-direction: row;
   align-items: center;
   gap: 4px;
@@ -110,6 +117,10 @@
   &:hover {
     transform: scale(1.25) translateY(-3px);
     background: var(--color-bg-secondary, #f3f4f6);
+
+    @media (max-width: 991px) {
+      transform: scale(1.15) translateY(-2px);
+    }
   }
 }
 
@@ -146,18 +157,10 @@
   gap: 4px;
   flex: 0 0 auto;
 
-  // likeCount link: hide by default via font-size trick (cross-browser vs :has()).
-  // Only the .likeCount span itself has visible font-size so it appears
-  // when JS makes the span visible with text content.
   > a:not(.likeAnchor) {
-    font-size: 0; // outer link invisible when likeCount is empty/hidden
     color: var(--color-text-muted, #6b7280);
     text-decoration: none;
     margin-left: 2px;
-
-    .likeCount {
-      font-size: 12px; // only visible when the span has content and is not hidden
-    }
   }
 
   // Ensure trigger sits above the likeCount link for touch hit-testing
@@ -181,7 +184,7 @@
     padding: 0;
     margin: -1px;
     overflow: hidden;
-    clip: rect(0,0,0,0);
+    clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
   }
@@ -211,7 +214,7 @@
 }
 
 [data-bs-theme="dark"] .mt2026-reaction-title-pill {
-  background: var(--color-bg-elevated, #1f2937);
+  background: var(--color-bg-tertiary);
 }
 
 // Row in the reactions user list
@@ -234,7 +237,7 @@
 }
 
 [data-bs-theme="dark"] .mt2026-reaction-user-row .mt2026-user-reaction-badge {
-  background: var(--color-bg-elevated, #1f2937);
+  background: var(--color-bg-tertiary);
 }
 
 // Inline reaction summary — rendered as a tappable link on the right side of the addons bar.
@@ -262,20 +265,19 @@
   }
 }
 
-// Active emoji shown on trigger button when user has reacted
-.mt2026-reaction-trigger .mt2026-active-emoji {
-  font-size: 18px;
-  line-height: 1;
-}
-
-// When the trigger shows the user's active emoji, hide the ::before smiley
+// When the user has reacted, indicate it on the trigger button by coloring the
+// smiley and adding a subtle background ring — but keep the ::before icon visible.
+// The summary bar in the post footer shows the actual reaction emoji counts;
+// the trigger stays as the action button to open the picker.
 .mt2026-reaction-trigger.reacted {
   opacity: 1;
   color: var(--color-primary, #1e6ad6);
   background: var(--color-primary-lightest, #e3eef9);
 
+  // Keep the smiley ::before visible — we no longer replace it with the reaction emoji
+  // because the summary link handles the reaction display.
   &::before {
-    display: none;
+    display: block;
   }
 }
 
@@ -283,10 +285,12 @@
   background: rgba(var(--color-primary-rgb, 30, 106, 214), 0.2);
 }
 
-// Reaction summary link — right-aligned in the addons bar
-.mt2026-summary-link {
+// Reaction summary link — right-aligned in the addons bar.
+// Qualify with .wall-entry-controls to beat Clean Theme's .wall-entry-controls a
+// (otherwise the anchor tag selector overrides our display:inline-flex with block).
+.wall-entry-controls .mt2026-summary-link {
   margin-left: auto !important;
-  display: inline-flex;
+  display: inline-flex !important;
   align-items: center;
   gap: 4px;
   flex: 0 0 auto;

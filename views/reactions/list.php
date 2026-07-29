@@ -28,32 +28,33 @@ $title = '<strong>' . 'Reactions' . '</strong>&nbsp;' . $headerPills;
 <?php Modal::beginDialog([
     'title'       => $title,
     'footer'      => ModalButton::cancel(Yii::t('base', 'Close')),
-    'bodyOptions' => ['style' => 'margin: 0 calc(var(--hh-modal-content-padding) * -1); padding: var(--bs-modal-padding) 0;'],
 ]) ?>
 
     <?php if (empty($reactions)): ?>
         <p class="px-3"><?= Yii::t('LikeModule.base', 'No users found.') ?></p>
     <?php endif; ?>
 
-    <div id="userlist-content" class="hh-list">
+    <div id="userlist-content" class="mt2026-reaction-list">
         <?php foreach ($reactions as $row):
             $user         = $row['user'];
             $reactionType = $row['reaction_type'] ?? 'like';
             $emoji        = $emojiMap[$reactionType] ?? '👍';
         ?>
-            <a href="<?= $user->getUrl() ?>" data-modal-close="1" class="d-flex align-items-center">
-                <div class="flex-shrink-0 me-2">
+            <a href="<?= $user->getUrl() ?>" data-modal-close="1" class="mt2026-reaction-row">
+                <div class="mt2026-reaction-avatar">
                     <?= Image::widget([
                         'user'    => $user,
                         'link'    => false,
                         'htmlOptions' => ['class' => 'm-0'],
                     ]) ?>
                 </div>
-                <div class="flex-grow-1">
-                    <h4 class="mt-0"><?= Html::encode($user->displayName) ?></h4>
-                    <h5><?= Html::encode($user->displayNameSub) ?></h5>
+                <div class="mt2026-reaction-name">
+                    <strong><?= Html::encode($user->displayName) ?></strong>
+                    <?php if ($user->displayNameSub): ?>
+                        <span class="mt2026-reaction-subname"><?= Html::encode($user->displayNameSub) ?></span>
+                    <?php endif; ?>
                 </div>
-                <div class="flex-shrink-0 ms-2" style="font-size:22px;" title="<?= Html::encode($reactionType) ?>">
+                <div class="mt2026-reaction-emoji" title="<?= Html::encode($reactionType) ?>">
                     <?= $emoji ?>
                 </div>
             </a>
@@ -70,6 +71,57 @@ $title = '<strong>' . 'Reactions' . '</strong>&nbsp;' . $headerPills;
             font-size: 14px;
             margin-left: 4px;
             gap: 2px;
+        }
+        .mt2026-reaction-list {
+            display: flex;
+            flex-direction: column;
+        }
+        .mt2026-reaction-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            text-decoration: none;
+            color: var(--color-text-primary, #111827);
+            transition: background 0.15s;
+        }
+        .mt2026-reaction-row:hover {
+            background: var(--color-bg-secondary, #f3f4f6);
+        }
+        .mt2026-reaction-row + .mt2026-reaction-row {
+            border-top: 1px solid var(--color-border, #e5e7eb);
+        }
+        .mt2026-reaction-avatar {
+            flex-shrink: 0;
+        }
+        .mt2026-reaction-avatar img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .mt2026-reaction-name {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .mt2026-reaction-name strong {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--color-text-primary, #111827);
+        }
+        .mt2026-reaction-subname {
+            font-size: 12px;
+            color: var(--color-text-muted, #6b7280);
+            line-height: 1.3;
+        }
+        .mt2026-reaction-emoji {
+            flex-shrink: 0;
+            font-size: 22px;
+            line-height: 1;
         }
     </style>
 

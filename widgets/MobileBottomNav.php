@@ -157,6 +157,19 @@ class MobileBottomNav extends Widget
         $items = [];
         $seen = [];
 
+        // Calendar always lives in the More sheet (NAV-014/017)
+        if (\Yii::$app->moduleManager->hasModule('calendar')) {
+            $calendarUrl = Url::to(['/calendar/global/index']);
+            $items[] = [
+                'id' => 'calendar',
+                'label' => 'Calendar',
+                'url' => $calendarUrl,
+                'icon' => 'fa-calendar',
+            ];
+            $seen[$calendarUrl] = true;
+            $seen['module:calendar'] = true;
+        }
+
         foreach ($this->capturedTopMenuEntries as $entry) {
             $id = strtolower((string)($entry['id'] ?? ''));
             $label = trim(strip_tags((string)($entry['label'] ?? '')));
@@ -250,21 +263,30 @@ class MobileBottomNav extends Widget
     /**
      * Create a TopMenu instance and collect the final, visible links after module events.
      *
+     * Results are cached in a static property so ContextSwitcher and MobileBottomNav
+     * only build the TopMenu once per request.
+     *
      * @return array<int, array{id:string,label:string,url:string,icon:string}>
      */
     private function captureTopMenuEntries(): array
     {
+        /** @var array|null $entries */
+        static $entries = null;
+        if ($entries !== null) {
+            return $entries;
+        }
+
         $menu = new TopMenu();
         // run() triggers TopMenu::EVENT_RUN and module menu mutations.
         $menu->run();
-        $entries = $menu->getEntries(MenuLink::class, true);
-        $result = [];
+        $menuEntries = $menu->getEntries(MenuLink::class, true);
+        $entries = [];
 
-        foreach ($entries as $entry) {
+        foreach ($menuEntries as $entry) {
             if (!$entry instanceof MenuLink) {
                 continue;
             }
-            $result[] = [
+            $entries[] = [
                 'id' => (string)$entry->getId(),
                 'label' => (string)$entry->getLabel(),
                 'url' => (string)$entry->getUrl(),
@@ -273,7 +295,7 @@ class MobileBottomNav extends Widget
             ];
         }
 
-        return $result;
+        return $entries;
     }
 
     /**
@@ -285,7 +307,7 @@ class MobileBottomNav extends Widget
     private function getActiveItem($route)
     {
         // Dashboard/Home routes
-        if (strpos($route, 'dashboard') !== false || $route === 'dashboard/dashboard') {
+        if (strpos($route, 'dashboard') !== false) {
             return 'home';
         }
 
@@ -294,9 +316,9 @@ class MobileBottomNav extends Widget
             return 'people';
         }
 
-        // Calendar routes
+        // Calendar routes (Calendar is in More sheet)
         if (strpos($route, 'calendar/') !== false) {
-            return 'calendar';
+            return 'more';
         }
 
         // Space routes

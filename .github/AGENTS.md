@@ -8,7 +8,7 @@ This document provides comprehensive guidelines for AI agents working on the Mod
 - Contemporary glassmorphism design with depth effects  
 - Self-contained theme (no Clean Theme dependency)
 - Custom mobile bottom navigation for thumb-friendly UX
-- Emoji reaction picker (👍 ❤️ 😂 😢 🙏)
+- Emoji reaction picker (👍 ❤️ 😂 😮 😢 🙏)
 - Adaptive color palettes (4 presets)
 - Full WCAG 2.1 AA accessibility compliance
 - Real-time animations and microinteractions
@@ -37,12 +37,15 @@ modern-theme-2026/
 ├── resources/
 │   └── js/                 # JavaScript modules for frontend
 │       ├── contextSwitcher.js
-│       ├── reactionPicker.js
+│       ├── mailLayout.js   # Mail/messenger UI (Telegram-style, search, settings drawer)
+│       ├── mobileCommentCompose.js
 │       ├── mobileKeyboardFix.js
-│       ├── paletteSwitcher.js
+│       ├── mobileSwipeFix.js
+│       ├── modalFocusFix.js
 │       ├── notifications.js
+│       ├── paletteSwitcher.js
 │       ├── peopleFocusGuard.js
-│       └── modalFocusFix.js
+│       └── reactionPicker.js
 ├── themes/
 │   └── ModernTheme2026/    # The actual theme files
 │       ├── scss/           # SCSS stylesheets
@@ -54,8 +57,16 @@ modern-theme-2026/
 │   ├── ContextSwitcher.php # Context switcher widget
 │   └── views/              # Widget view templates
 └── views/
+    ├── admin/              # Admin layout overrides
     ├── config/             # Admin config views
-    └── reactions/          # Reaction-related views
+    ├── mail/               # Mail/messenger view overrides
+    │   └── views/mail/
+    │       ├── index.php
+    │       └── conversation.php
+    ├── reactions/          # Reaction-related views
+    └── user/               # User profile & people directory overrides
+        ├── people/index.php
+        └── profile/_layout.php, about.php, home.php
 ```
 
 ### Lifecycle Overview
@@ -419,6 +430,116 @@ tail -f /var/www/humhub/protected/runtime/logs/app.log
 **Cache Flush**:
 - Admin Panel → Settings → Advanced → Caching → "Flush Caches"
 - Or: `Yii::$app->cache->flush();` in code
+- Or CLI: `rm -rf /var/www/humhub/runtime/cache/*`
+
+**CSS Compilation**:
+```bash
+php /var/www/humhub/protected/modules/modern-theme-2026/compile-css.php
+```
+This writes to both `themes/ModernTheme2026/resources/css/theme.css` and the published assets directory. After compilation, clear the runtime cache and the published assets directory to force regeneration:
+```bash
+rm -rf /var/www/humhub/runtime/cache/*
+rm -rf /var/www/humhub/assets/decca576
+```
+
+## ⚠️ CSS Specificity: Working with the Clean Theme
+
+The Clean Theme's CSS is loaded FIRST (stylesheet index 0), and our module's CSS is loaded SECOND (stylesheet index 1). However, the Clean Theme uses `!important` extensively, which means our rules need `!important` to override them in many cases.
+
+### Known DOM Structure & Override Patterns
+
+**Stream Entry DOM:**
+```
+.s2_streamContent > .wall-entry (transparent wrapper)
+  > .panel.panel-default (the actual card — has bg, border, shadow)
+    > .panel-body
+      > .wall-entry-header (flex, align-items: center)
+      > .wall-entry-body (content text)
+      > .wall-entry-footer (action bar)
+      > .stream-entry-addons.clearfix
+        > .wall-entry-controls.wall-entry-links
+        > .comment-container.bg-light.p-2.mt-3
+```
+
+**Key Override Rules:**
+- `.s2_streamContent > .wall-entry` — Clean Theme sets `background: transparent !important`. To override, use `background-color: ... !important` (NOT `background` shorthand, which gets overridden by Clean Theme's `background` shorthand).
+- `.comment-container.bg-light` — Bootstrap's `.bg-light` class has `background-color: ... !important`. Override with `background-color: transparent !important` on `.comment-container.bg-light`.
+- `.wall-entry .wall-entry-body` — Clean Theme sets `padding-left: 50px; padding-right: 50px`. Override with `padding-left: ... !important; padding-right: ... !important`.
+- `.wall-entry .wall-entry-header` — Clean Theme sets `padding-bottom: 10px; margin-bottom: 10px`. Override with `!important`.
+
+**General Rule:** When the Clean Theme uses `!important`, our module must also use `!important` with equal or higher specificity to win. When the Clean Theme does NOT use `!important`, our module's later position in the stylesheet (index 1 vs index 0) is sufficient.
+
+### CSS Compilation Note
+
+The `compile-css.php` script reads custom colors from the database using environment variables (`HUMHUB_DB_*`). When running outside the HumHub context (e.g., standalone theme development), it falls back to default colors. The compiled CSS is written to two locations:
+1. `themes/ModernTheme2026/resources/css/theme.css` — for theme manager compatibility
+2. Published assets directory (e.g., `assets/decca576/resources/css/theme.css`) — for web serving
+
+## Recent Improvements (June 2026)
+
+### Post & Comment Visual Overhaul
+- Header: `align-items: center` — avatar and name vertically centered
+- Content padding: 50px → 16px (`var(--space-4)`)
+- Font size: 13px → 14px (`var(--font-size-base)`), line-height 1.6
+- Accent line: gradient line at top of each post card
+- Footer: removed blue-tinted background, clean border separator
+- Comment container: transparent background (overrides `.bg-light`), proper padding
+- Comment entries: proper spacing, 32px avatars, hover states
+- Comment form: 44px min-height input, focus ring with box-shadow
+- Comment controls: inline-flex, muted color, hover → primary
+
+### Performance & Security Fixes
+- `forceCopy` on asset publishing gated to `YII_DEBUG` only
+- XSS fix in `notifications.js` — switched from string concat to `.attr()`
+- Scroll handler debounced in `reactionPicker.js`
+- `-webkit-overflow-scrolling: touch` removed from all SCSS (deprecated)
+- `will-change` anti-pattern removed from `_performance.scss`
+- Duplicate SCSS blocks consolidated (`_theme.scss` → `_accessibility.scss`)
+- Wrong CSS variable names fixed (`var(--secondary)` → `var(--color-secondary)`)
+- `--color-primary-rgb` defined in `_root.scss`
+
+### Cache & Session Optimizations
+- Full cache flush → targeted key deletion in `ConfigController.php`
+- Session write only when data changes in `ContextSwitcher.php`
+- TopMenu built once per request via static cache in `MobileBottomNav.php`
+- Error handling: `@mkdir` and `file_put_contents` now check return values
+- PDO error mode set to `ERRMODE_EXCEPTION` in `compile-css.php`
+- Hardcoded table name → `HUMHUB_DB_TABLE_PREFIX` env var
+
+### JavaScript Improvements
+- `mobileCommentCompose.js` converted to `humhub.module()` pattern
+- Event listener cleanup/teardown added to all JS modules
+- Silent AJAX failures now logged with `module.log.error()`
+- `'wow'` reaction type added to `ReactionPicker.php` (was missing from widget)
+- Duplicate view files removed (kept `views/` copies, removed theme copies)
+
+### Mail/Messenger UI Overhaul (June 2026)
+- Telegram-style message bubbles: own messages use `var(--color-primary)` background with white text, others use `var(--color-bg-secondary)` background
+- 40px avatars in conversation list
+- Conversation list search with 150ms debounce filtering
+- Settings drawer with Enter-to-send toggle, font scaling (100-150%), formatting bar toggle
+- Back button on mobile to return from conversation to list
+- Rewrote `mailLayout.js` with `unload`/teardown, `MutationObserver`, debounce, Escape key, focus management, ARIA
+- Mail settings added to admin config page (`ConfigController.php`, `views/config/index.php`)
+- Removed inline styles from `conversation.php`, added CSS classes
+- Fixed composer gap: removed 92px padding-bottom on entry list, reduced composer sizing (dock padding 4px, input min-height 36px, buttons 36px, border-radius 10px with focus ring)
+- Fixed mobile composer gap: `padding-bottom: 60px` on `.conversation-entry-list` when composer is `position: fixed`
+- Fixed desktop padding: `body.mt2026-mail-page { padding-bottom: 0 }` on desktop
+- Fixed AJAX-loaded conversation gap: `#mail-conversation-root > .panel.panel-default { margin: 0 !important; height: 100%; display: flex; flex-direction: column; }` — conversation content is loaded via AJAX into `#mail-conversation-root`, so `.col-lg-8.messages > .panel` never matches; generic `.panel` rules from Clean Theme (like `margin-top: 50px`, `margin-bottom: 15px`) leak in without this override
+- `#mail-conversation-root { display: flex; flex-direction: column; }` ensures flex chain propagates
+- Empty states: `.mt2026-mail-empty-state` with icon, title, text sub-elements, centered with muted colors
+- Search "no results" empty state: `updateSearchEmptyState()` in `mailLayout.js` injects styled message when search filters out all entries
+- Dark mode for empty states: proper color tokens in `[data-bs-theme="dark"]`
+- Mail SCSS reduced from 1842→1316 lines, eliminated 462 `!important`
+- Mail composer uses `position: relative` in flex flow on mobile (not fixed), except on fullscreen mobile where it's `position: fixed` at `bottom: calc(56px + env(safe-area-inset-bottom, 0))`
+
+### Reply Comments Flattened (June 2026)
+- Reply comments flattened on all screen sizes (same padding, heading, avatar as top-level)
+- Reply links hidden on all screen sizes (`display: none !important`)
+- Removed desktop nesting block with thread lines and smaller avatars
+- Fixed `·` text node separator in comment-level controls (`font-size: 0`)
+- Toned down dark mode hover effect on posts (reduced shadow opacity, subtle bg mix)
+- Made dark mode `.stream-entry-addons` and `.wall-entry-footer` transparent
 
 ## Maintenance & Versioning
 

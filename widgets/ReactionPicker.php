@@ -17,6 +17,7 @@ class ReactionPicker extends \yii\base\Widget
         'like'  => ['emoji' => '👍', 'label' => 'Like'],
         'love'  => ['emoji' => '❤️', 'label' => 'Love'],
         'laugh' => ['emoji' => '😂', 'label' => 'Laugh'],
+        'wow'   => ['emoji' => '😮', 'label' => 'Wow'],
         'sad'   => ['emoji' => '😢', 'label' => 'Sad'],
         'pray'  => ['emoji' => '🙏', 'label' => 'Pray'],
     ];

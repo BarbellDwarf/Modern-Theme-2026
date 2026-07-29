@@ -59,9 +59,9 @@
             }
 
             .nav-label {
-                font-size: 10px;
+                font-size: clamp(10px, 2.5vw, 12px);
                 font-weight: 500;
-                line-height: 1;
+                line-height: 1.15;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -71,9 +71,8 @@
 
             .nav-badge {
                 position: absolute;
-                top: 2px;
-                right: 50%;
-                transform: translateX(14px);
+                top: -4px;
+                right: -4px;
                 min-width: 18px;
                 min-height: 16px;
                 height: auto;
@@ -121,33 +120,25 @@
             &:active {
                 opacity: 0.7;
             }
+
+            &:focus-visible {
+                outline: 2px solid var(--color-primary);
+                outline-offset: -2px;
+                border-radius: 4px;
+            }
         }
 
-        // Calendar is shown in bar on comfortable widths, moved into "More" on narrow screens.
-        .nav-item-calendar {
-            display: flex;
-        }
-    }
-}
-
-@media (max-width: 380px) {
-    .mobile-bottom-nav .nav-item-calendar {
-        display: none !important;
-    }
-}
-
-@media (min-width: 381px) and (max-width: 991px) {
-    .mobile-more-calendar-fallback {
-        display: none !important;
     }
 }
 
 // Add bottom padding to body to prevent content from being hidden by bottom nav
 @media (max-width: 991px) {
     body {
-        padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
+        padding-bottom: calc(56px + env(safe-area-inset-bottom, 0));
         
-        // Fill the safe-area space (behind OS nav buttons) with solid background
+        // Fill the safe-area space (behind OS nav buttons) with solid background.
+        // z-index must be high enough to cover all page content (including modals)
+        // so no UI elements bleed under the gesture bar.
         &::after {
             content: '';
             position: fixed;
@@ -156,7 +147,7 @@
             right: 0;
             height: env(safe-area-inset-bottom, 0);
             background-color: var(--color-bg-primary, #ffffff);
-            z-index: -1;
+            z-index: 1001;
             pointer-events: none;
         }
     }
@@ -194,6 +185,9 @@
     
     // Fill safe-area with dark mode background
     @media (max-width: 991px) {
+        html {
+            background: var(--color-bg-primary, #1a202c);
+        }
         body::after {
             background-color: var(--color-bg-primary, #1a202c);
         }
@@ -202,7 +196,7 @@
 
 // Animation when bottom nav appears
 .mobile-bottom-nav {
-    animation: slideUpNav 0.3s ease-out;
+    animation: slideUpNav 0.2s ease-out;
 }
 
 @keyframes slideUpNav {
@@ -246,7 +240,7 @@
     body.mobile,
     body[data-mobile="true"],
     .mobile-app {
-        padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)) !important;
+        padding-bottom: calc(56px + env(safe-area-inset-bottom, 0));
     }
 }
 
@@ -260,6 +254,12 @@
 // regardless of page type, content won't be hidden behind the bottom nav.
 
 @media (max-width: 991px) {
+    // Prevent body content from bleeding behind the system gesture bar
+    html {
+        background: var(--color-bg-primary, #ffffff);
+        padding-bottom: max(0px, env(safe-area-inset-bottom, 0px));
+    }
+
     // Ensure main content containers have appropriate bottom margin
     #layout-content,
     .layout-content-container,
@@ -307,7 +307,7 @@
         display: flex;
         flex-direction: column;
         animation: slideUpSheet 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        padding-bottom: calc(70px + env(safe-area-inset-bottom));
+        padding-bottom: calc(var(--mobile-nav-height, 56px) + 14px + env(safe-area-inset-bottom, 0px));
     }
 
     .mobile-sheet-handle {
@@ -351,7 +351,6 @@
         overflow-y: auto;
         flex: 1;
         padding: 8px 0;
-        -webkit-overflow-scrolling: touch;
     }
 
     .mobile-sheet-footer {
@@ -433,6 +432,15 @@
     to   { opacity: 1; }
 }
 
+// Disable animations for users who prefer reduced motion
+@media (prefers-reduced-motion: reduce) {
+    .mobile-sheet-content,
+    .mobile-sheet-backdrop,
+    .mobile-bottom-nav {
+        animation: none;
+    }
+}
+
 // ── More menu items sheet ───────────
 .mobile-more-list {
   list-style: none;
@@ -443,8 +451,8 @@
 .mobile-more-item {
   display: flex;
   align-items: center;
-  gap: space(3);
-  padding: space(4) space(2);
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-2);
   text-decoration: none;
   color: var(--color-text-primary);
   border-bottom: 1px solid var(--color-border-light);

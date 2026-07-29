@@ -1,0 +1,204 @@
+// Modern Theme 2026 - Mail/Messenger Module Integration
+// Telegram-style messaging UI with responsive mobile/desktop layout.
+// Mobile (320px+) → Tablet (768px+) → Desktop (992px+)
+
+#mail-conversation-root {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+// ── DESKTOP FULLSCREEN (≥992px) ─────────────────────────────────────────────
+@media (min-width: 992px) {
+  .mt2026-mail-fullscreen #layout-content,
+  .mt2026-mail-fullscreen #layout-content .container,
+  .mt2026-mail-fullscreen #layout-content .container-fluid,
+  .mt2026-mail-fullscreen #layout-content .layout-content-container {
+    height: calc(100dvh - var(--mt2026-topbar-height, 60px) - 8px);
+    max-height: calc(100dvh - var(--mt2026-topbar-height, 60px) - 8px);
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .mt2026-mail-fullscreen #mail-conversation-root,
+  .mt2026-mail-fullscreen #mail-conversation-root .messages {
+    height: 100%;
+    max-height: 100%;
+  }
+
+  .mt2026-mail-index {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .mt2026-mail-index .row {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .mt2026-mail-index .col-lg-8.messages {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    flex: 1 1 auto;
+  }
+
+  .mt2026-mail-index .col-lg-8.messages > div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #mail-conversation-overview {
+    position: relative;
+    top: auto;
+    left: auto;
+    bottom: auto;
+    width: auto;
+    max-width: 100%;
+    z-index: auto;
+    transform: none;
+    transition: none;
+    box-shadow: var(--shadow-sm);
+  }
+
+  body.mail-list-open {
+    overflow: auto;
+  }
+
+  body.mt2026-mail-page {
+    padding-bottom: 0;
+  }
+
+  .mt2026-mail-index > .row > .col-lg-4 {
+    width: 33.33%;
+  }
+
+  .mt2026-mail-index > .row > .col-lg-8 {
+    width: 66.67%;
+  }
+}
+
+// ── LAYOUT HEIGHT PROPAGATION ───────────────────────────────────────────────
+.mt2026-mail-scroll-lock {
+  overflow: hidden;
+  height: 100dvh;
+}
+
+.mt2026-mail-index {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.mt2026-mail-index .row {
+  flex: 1;
+  min-height: 0;
+}
+
+// ── MAIL SHELL ───────────────────────────────────────────────────────────────
+#mail-conversation-root > .mt2026-mail-shell,
+#mail-conversation-root .messages > .mt2026-mail-shell {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  border-radius: 0;
+  border: 0;
+  box-shadow: none;
+  background: var(--color-bg-primary);
+  margin: 0;
+  padding: 0;
+}
+
+// The outer .panel.panel-default from conversation.php is loaded via AJAX into
+// #mail-conversation-root, so .col-lg-8.messages > .panel doesn't match.
+// Kill generic .panel margin that leaks in from the CSS cascade.
+#mail-conversation-root > .panel.panel-default {
+  margin: 0 !important;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#mail-conversation-root .messages {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.mt2026-mail-shell .panel-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.mt2026-mail-shell .panel-heading {
+  flex: 0 0 auto;
+}
+
+.col-lg-8.messages {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+  flex: 1 1 auto;
+}
+
+.col-lg-8.messages > .panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  margin: 0;
+  border: 0;
+  background: var(--color-bg-primary);
+  box-shadow: none;
+}
+
+.col-lg-8.messages .panel-heading {
+  flex: 0 0 auto;
+  padding: 6px 12px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.col-lg-8.messages .panel-body.conversation-entry-container {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.col-lg-8.messages .conversation-entry-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+// Sized via JS for mobile — uses CSS custom property
+.mt2026-mail-conversation-sized {
+  height: var(--mt2026-conversation-list-height);
+  max-height: var(--mt2026-conversation-list-max-height);
+  min-height: var(--mt2026-conversation-list-min-height);
+}

@@ -91,10 +91,20 @@ Fix: flush cache and reload.
 ## 7) Practical Workflow for This Repository
 
 After editing this module:
-1. If SCSS changed, compile module CSS as this repo expects.
-2. Run HumHub cache/flush-all.
-3. If behavior still stale, clear HumHub assets contents.
+1. If SCSS changed, compile module CSS:
+   ```bash
+   php /var/www/humhub/protected/modules/modern-theme-2026/compile-css.php
+   ```
+2. Clear runtime cache:
+   ```bash
+   rm -rf /var/www/humhub/runtime/cache/*
+   ```
+3. Clear published assets (forces republish on next page load):
+   ```bash
+   rm -rf /var/www/humhub/assets/decca576
+   ```
 4. Hard refresh browser and retest.
+5. If behavior still stale, verify the CSS file was updated (check `?v=` query param in browser dev tools).
 
 ## 8) Authoritative References
 

@@ -22,6 +22,9 @@ use humhub\widgets\form\ActiveForm;
 /* @var $message Message|null */
 /* @var $fileHandlers BaseFileHandler[] */
 ?>
+<?php $this->registerCss('.mail-conversation-entry.own .conversation-entry-content.own {
+    background: color-mix(in srgb, var(--color-primary, #1e6ad6), #000 15%) !important;
+}') ?>
 <div class="panel panel-default mt2026-mail-shell">
     <?php if ($message === null) : ?>
         <div class="panel-body">
@@ -84,11 +87,11 @@ use humhub\widgets\form\ActiveForm;
                             </div>
                         </div>
 
-                        <div id="mail-create-upload-progress-<?= $message->id ?>" style="display:none;margin:10px 0;"></div>
+                        <div id="mail-create-upload-progress-<?= $message->id ?>" class="mt2026-mail-upload-progress"></div>
 
                         <?= FilePreview::widget([
                             'id' => 'mail-create-upload-preview-' . $message->id,
-                            'options' => ['style' => 'margin-top:10px;'],
+                            'options' => ['class' => 'mt2026-mail-upload-preview'],
                             'edit' => true,
                         ]) ?>
 

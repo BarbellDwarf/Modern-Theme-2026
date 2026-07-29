@@ -84,25 +84,9 @@
   @include card-hover;
   margin-bottom: var(--space-4);
 
-  // On pointer (mouse) devices only: fade controls in on hover
-  @media (hover: hover) and (pointer: fine) {
-    .wall-entry-controls, .stream-entry-controls {
-      opacity: 0;
-      @include transition(opacity, var(--transition-fast));
-    }
-
-    &:hover {
-      .wall-entry-controls, .stream-entry-controls {
-        opacity: 1;
-      }
-    }
-  }
-
-  // Touch / mobile: always show controls
-  @media (hover: none), (pointer: coarse) {
-    .wall-entry-controls, .stream-entry-controls {
-      opacity: 1 !important;
-    }
+  // Always show controls at all breakpoints (removed hover-to-reveal pattern)
+  .wall-entry-controls, .stream-entry-controls {
+    opacity: 1;
   }
 }
 

@@ -21,7 +21,7 @@
         align-items: center;
         flex: 0 0 auto;
         min-width: 48px;
-        max-width: 180px;
+        max-width: clamp(120px, 20vw, 200px);
         overflow: hidden;
 
         img,
@@ -74,6 +74,11 @@
         justify-content: center;
         border-radius: 10px;
         font-size: 20px;
+
+        &:focus-visible {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
     }
 
     #top-menu-nav > li,
@@ -113,7 +118,7 @@
     }
 
     .topbar-actions .dropdown.account .user-title {
-        margin-right: 4px;
+        margin-right: var(--space-1);
         line-height: 1.05;
     }
 
@@ -131,8 +136,11 @@
     position: fixed;
     top: 0;
     // Keep all topbar dropdowns above stream cards/panels on desktop+tablet.
-    z-index: 3000;
+    z-index: 1030;
+    isolation: isolate;
     overflow: visible;
+
+    transition: opacity 0.2s ease, transform 0.2s ease;
     
     [data-bs-theme="dark"] & {
         background-color: var(--color-bg-secondary, #f8fafc);
@@ -148,7 +156,7 @@
             background-color: rgba(255, 255, 255, 0.98);
             
             [data-bs-theme="dark"] & {
-                background-color: rgba(30, 41, 59, 0.98);
+                background-color: color-mix(in srgb, var(--color-bg-secondary) 98%, transparent);
             }
         }
     }
@@ -261,8 +269,8 @@
 
     .badge-notifications {
         position: absolute;
-        top: 4px;
-        right: 4px;
+        top: 6px;
+        right: 6px;
         min-width: 18px;
         height: 18px;
         padding: 0 5px;
@@ -285,7 +293,7 @@
 #topbar .dropdown-menu,
 #topbar .popover,
 #topbar .tooltip {
-    z-index: 3200 !important;
+    z-index: 1040 !important;
 }
 
 // ── Notification dropdown: proper width and alignment ────────────────────────
@@ -309,7 +317,6 @@
         max-height: 420px;
         overflow-y: auto;
         overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
     }
 }
 
@@ -347,10 +354,6 @@
             overflow: visible;
         }
 
-        #top-menu-sub {
-            display: none !important;
-        }
-
         #top-menu-nav > li > a {
             padding: 4px 6px;
             white-space: nowrap;
@@ -381,6 +384,11 @@
             min-height: 46px;
             padding: 0;
             font-size: 20px;
+
+            &:focus-visible {
+                outline: 2px solid var(--color-primary);
+                outline-offset: 2px;
+            }
         }
 
         .topbar-actions .dropdown.account .dropdown-toggle {
@@ -391,7 +399,11 @@
         }
 
         .topbar-actions .dropdown.account .user-title {
-            display: none !important;
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: inline-block;
         }
     }
 }
@@ -418,10 +430,6 @@
             overflow: visible;
             display: inline-flex;
             align-items: center;
-        }
-
-        #top-menu-sub {
-            display: none !important;
         }
 
         // Keep nav-link padding consistent with base — don't override with 6px
@@ -455,6 +463,11 @@
             min-height: 46px;
             padding: 0;
             font-size: 20px;
+
+            &:focus-visible {
+                outline: 2px solid var(--color-primary);
+                outline-offset: 2px;
+            }
         }
 
         .topbar-actions .dropdown.account .dropdown-toggle {
@@ -512,22 +525,6 @@ body[data-bs-theme="light"] {
     }
 }
 
-// Dark mode adjustments
-[data-bs-theme="dark"] {
-    #topbar {
-        border-bottom-color: var(--color-border, #e5e7eb);
-        
-        .nav-link {
-            color: var(--color-text-secondary, #4b5563);
-            
-            &:hover {
-                color: var(--color-text-primary, #111827);
-                background-color: var(--color-bg-tertiary, #f1f5f9);
-            }
-        }
-    }
-}
-
 // ============================================================
 // Reset legacy HumHub account dropdown styles
 //
@@ -543,7 +540,7 @@ body[data-bs-theme="light"] {
 .dropdown.account {
     .dropdown-menu {
         // Undo the primary-color background the core sets.
-        background: rgba(255, 255, 255, 0.98) !important;
+        background: var(--color-bg-primary) !important;
         border: 1px solid var(--color-border-light) !important;
 
         // Remove the decorative left border on every li.

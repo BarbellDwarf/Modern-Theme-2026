@@ -1,0 +1,121 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-07-28",
+  "theme": "modern-theme-2026",
+  "components": {
+    "adminPages": {
+      "description": "Admin panel pages with mt2026-admin-layout override",
+      "files": [
+        "themes/ModernTheme2026/scss/humhub/_admin-layout.scss",
+        "themes/ModernTheme2026/scss/humhub/_admin-settings.scss",
+        "themes/ModernTheme2026/scss/humhub/_admin-gridview.scss",
+        "views/admin/views/layouts/main.php"
+      ],
+      "keyClasses": [
+        ".mt2026-admin-layout",
+        ".mt2026-admin-sidebar",
+        ".mt2026-admin-content",
+        ".grid-view",
+        ".panel.panel-default"
+      ],
+      "breakpoints": {
+        "mobile": "max-width: 768px",
+        "tablet": "max-width: 991px",
+        "desktop": "min-width: 992px"
+      }
+    },
+    "peopleDirectory": {
+      "description": "People directory with card grid layout",
+      "files": [
+        "themes/ModernTheme2026/scss/humhub/_mobile.scss",
+        "themes/ModernTheme2026/views/user/widgets/peopleCard.php",
+        "views/user/people/index.php"
+      ],
+      "keyClasses": [
+        ".row.cards",
+        ".card-people",
+        ".mt2026-people-card",
+        ".mt2026-pc-avatar",
+        ".mt2026-pc-info"
+      ],
+      "breakpoints": {
+        "mobile2col": "max-width: 768px (2-column grid)",
+        "mobile1col": "max-width: 576px (1-column stack)"
+      },
+      "recentChanges": {
+        "commit": "889f34c",
+        "change": "Changed breakpoint 767px→768px, removed negative margins",
+        "potentialIssue": "May affect tablet layout at exactly 768px"
+      }
+    },
+    "mobileNavigation": {
+      "description": "Bottom navigation bar and sheets",
+      "files": [
+        "themes/ModernTheme2026/scss/humhub/_mobile-bottom-nav.scss",
+        "themes/ModernTheme2026/scss/humhub/_mobile.scss",
+        "widgets/MobileBottomNav.php",
+        "widgets/views/mobileBottomNav.php"
+      ],
+      "keyClasses": [
+        ".mt2026-mobile-nav",
+        ".mt2026-nav-item",
+        ".mt2026-bottom-sheet",
+        ".mt2026-sheet-backdrop"
+      ]
+    },
+    "adminResponsiveGrid": {
+      "description": "Responsive stacked-card layout for admin GridViews",
+      "files": [
+        "themes/ModernTheme2026/scss/humhub/_admin-settings.scss"
+      ],
+      "breakpoints": {
+        "stackedCards": "max-width: 575px"
+      },
+      "potentialIssue": "May be too aggressive, stacking all admin tables at 575px",
+      "recentChanges": {
+        "commit": "3eedd94",
+        "change": "Added 575px media query with stacked-card rules"
+      }
+    }
+  },
+  "viewOverrides": {
+    "admin": {
+      "original": "@humhub/modules/admin/views/layouts",
+      "override": "views/admin/views/layouts/main.php",
+      "registeredIn": "Events.php (pathMap)"
+    },
+    "people": {
+      "original": "@humhub/modules/user/views/people",
+      "override": "views/user/people/index.php",
+      "registeredIn": "Events.php (pathMap)"
+    },
+    "peopleCard": {
+      "original": "@humhub/modules/user/views/widgets/peopleCard",
+      "override": "themes/ModernTheme2026/views/user/widgets/peopleCard.php",
+      "registeredIn": "Theme pathMap"
+    }
+  },
+  "cssArchitecture": {
+    "entryPoint": "themes/ModernTheme2026/scss/build.scss",
+    "partials": {
+      "admin": [
+        "_admin-layout.scss",
+        "_admin-settings.scss",
+        "_admin-gridview.scss",
+        "_admin-dark.scss",
+        "_admin-codemirror.scss"
+      ],
+      "mobile": [
+        "_mobile.scss",
+        "_mobile-bottom-nav.scss"
+      ],
+      "components": [
+        "_cards.scss",
+        "_gridview.scss",
+        "_modal.scss",
+        "_topbar.scss",
+        "_context-switcher.scss"
+      ]
+    }
+  }
+}

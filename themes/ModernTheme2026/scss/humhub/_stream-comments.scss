@@ -299,7 +299,8 @@ html body .single-comment .wall-entry-controls a[data-action-click="comment.togg
   }
 
   // ── Wall entry controls spacing ────────────────────────────────────────────
-  .wall-entry-controls {
+  .comment-container .wall-entry-controls,
+  .single-comment .wall-entry-controls {
     display: block !important;
     text-align: left;
     gap: var(--space-2);

@@ -43,6 +43,24 @@ print_step() {
     echo -e "${BLUE}→ $1${NC}"
 }
 
+print_usage() {
+    echo "Usage: $0 [--compile-css|--skip-compile-css] /path/to/humhub"
+    echo ""
+    echo "Options:"
+    echo "  --compile-css      Force CSS compilation after copy"
+    echo "  --skip-compile-css Skip CSS compilation"
+    echo ""
+    echo "Default behavior: auto-compile only when SCSS is newer than dist/theme.css"
+}
+
+run_as_humhub_user() {
+    if [ "$WWW_USER" = "www-data" ]; then
+        sudo -u www-data "$@"
+    else
+        "$@"
+    fi
+}
+
 # Detect the actual module directory name (case-insensitive for flexibility)
 detect_module_dir() {
     local base_dir="$1"
@@ -70,12 +88,50 @@ detect_module_dir() {
     return 1
 }
 
-# Validate arguments
-if [ $# -eq 0 ]; then
+# Parse arguments
+COMPILE_MODE="auto"
+HUMHUB_PATH=""
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --compile-css)
+            COMPILE_MODE="force"
+            ;;
+        --skip-compile-css)
+            COMPILE_MODE="skip"
+            ;;
+        -h|--help)
+            print_header
+            print_usage
+            exit 0
+            ;;
+        -* )
+            print_header
+            print_error "Unknown option: $1"
+            echo ""
+            print_usage
+            exit 1
+            ;;
+        *)
+            if [ -n "$HUMHUB_PATH" ]; then
+                print_header
+                print_error "Too many arguments"
+                echo ""
+                print_usage
+                exit 1
+            fi
+            HUMHUB_PATH="$1"
+            ;;
+    esac
+    shift
+done
+
+# Validate required path argument
+if [ -z "$HUMHUB_PATH" ]; then
     print_header
     print_error "Missing HumHub installation directory"
     echo ""
-    echo "Usage: $0 /path/to/humhub"
+    print_usage
     echo ""
     echo "Example:"
     echo "  $0 /var/www/humhub"
@@ -83,7 +139,6 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-HUMHUB_PATH="$1"
 HUMHUB_PROTECTED="$HUMHUB_PATH/protected"
 MODULES_DIR="$HUMHUB_PROTECTED/modules"
 MODULE_NAME="modern-theme-2026"
@@ -177,22 +232,46 @@ chown -R "$WWW_USER:$WWW_USER" "$MODULE_DEST" 2>/dev/null || print_warning "Coul
 chmod -R 755 "$MODULE_DEST"
 print_success "Permissions set"
 
+# Optional CSS compilation (auto by default when SCSS changed)
+DIST_CSS="$MODULE_DEST/themes/ModernTheme2026/dist/theme.css"
+SCSS_ROOT="$MODULE_DEST/themes/ModernTheme2026/scss"
+NEEDS_COMPILE="false"
+
+if [ "$COMPILE_MODE" = "force" ]; then
+    NEEDS_COMPILE="true"
+elif [ "$COMPILE_MODE" = "auto" ]; then
+    if [ ! -f "$DIST_CSS" ]; then
+        NEEDS_COMPILE="true"
+    elif [ -d "$SCSS_ROOT" ] && find "$SCSS_ROOT" -type f -name "*.scss" -newer "$DIST_CSS" -print -quit | grep -q .; then
+        NEEDS_COMPILE="true"
+    fi
+fi
+
+if [ "$COMPILE_MODE" = "skip" ]; then
+    print_info "Skipping CSS compile (--skip-compile-css provided)"
+elif [ "$NEEDS_COMPILE" = "true" ]; then
+    print_step "Compiling theme CSS..."
+    cd "$MODULE_DEST"
+    if run_as_humhub_user php compile-css.php >/dev/null 2>&1; then
+        print_success "Theme CSS compiled"
+    else
+        print_warning "CSS compile failed; continuing with existing dist/theme.css"
+    fi
+else
+    print_info "Skipping CSS compile (dist/theme.css is up to date)"
+fi
+
 # Clear caches
 print_step "Clearing HumHub cache..."
 cd "$HUMHUB_PROTECTED"
-
-if [ "$WWW_USER" = "www-data" ]; then
-    sudo -u www-data php yii cache/flush-all >/dev/null 2>&1 || print_warning "Could not run cache flush as www-data"
-else
-    php yii cache/flush-all >/dev/null 2>&1 || print_warning "Could not run cache flush"
-fi
+run_as_humhub_user php yii cache/flush-all >/dev/null 2>&1 || print_warning "Could not run cache flush"
 print_success "Cache flushed"
 
 # Remove old published assets
 print_step "Clearing published assets..."
 ASSETS_DIR="$HUMHUB_PATH/assets"
 if [ -d "$ASSETS_DIR" ]; then
-    find "$ASSETS_DIR" -type d -name "*modern*theme*" -o -type d -name "*mt2026*" 2>/dev/null | xargs rm -rf 2>/dev/null || true
+    find "$ASSETS_DIR" -maxdepth 1 -type d \( -name "*modern*theme*" -o -name "*mt2026*" \) -print0 2>/dev/null | xargs -0 rm -rf 2>/dev/null || true
     print_success "Old assets cleared"
 else
     print_warning "Assets directory not found"
@@ -202,11 +281,7 @@ fi
 print_step "Checking theme status..."
 echo ""
 cd "$HUMHUB_PROTECTED"
-if [ "$WWW_USER" = "www-data" ]; then
-    THEME_INFO=$(sudo -u www-data php yii theme/info 2>/dev/null || echo "Could not retrieve theme info")
-else
-    THEME_INFO=$(php yii theme/info 2>/dev/null || echo "Could not retrieve theme info")
-fi
+THEME_INFO=$(run_as_humhub_user php yii theme/info 2>/dev/null || echo "Could not retrieve theme info")
 echo "$THEME_INFO"
 echo ""
 

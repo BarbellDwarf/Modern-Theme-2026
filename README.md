@@ -49,12 +49,22 @@ The `install.sh` script handles all the heavy lifting - it copies the module, cl
    sudo ./install.sh /var/www/humhub
    ```
 
+   Optional flags:
+   ```bash
+   # Force CSS compilation after copy
+   ./install.sh --compile-css /var/www/humhub
+
+   # Skip CSS compilation
+   ./install.sh --skip-compile-css /var/www/humhub
+   ```
+
 3. The script will:
    - Verify you're running it from the correct module directory
    - Check that HumHub is installed correctly
    - Copy the module to HumHub's modules directory with correct casing (`modern-theme-2026`)
    - Detect and replace any existing installations (fixes casing if needed)
    - Set proper permissions for the www-data user
+   - Auto-compile CSS when SCSS is newer than `dist/theme.css`
    - Clear all caches
    - Remove old published assets
    - Display the current theme status
@@ -114,7 +124,14 @@ To update the theme to a newer version:
    - Administration > Settings > Advanced > Caching > "Flush caches"
    - Or from command line: `php /var/www/humhub/protected/yii cache/flush-all`
 
-3. The theme will rebuild automatically on next page load
+3. Rebuild CSS if needed:
+   ```bash
+   php compile-css.php
+   ```
+
+4. Clear HumHub cache and published assets:
+   - `php /var/www/humhub/protected/yii cache/flush-all`
+   - `rm -rf /var/www/humhub/assets/*`
 
 Note: Database migrations (if any) are applied automatically when you reload HumHub.
 
@@ -167,8 +184,9 @@ To customize colors and design tokens:
    - Spacing grid
 
 3. After making changes:
-   - Clear HumHub cache for changes to take effect
-   - SCSS will recompile automatically
+   - Rebuild CSS: `php compile-css.php`
+   - Clear HumHub cache: `php /var/www/humhub/protected/yii cache/flush-all`
+   - Remove published assets: `rm -rf /var/www/humhub/assets/*`
 
 ## Theme Customization Panel
 
@@ -231,7 +249,7 @@ The theme includes a dedicated admin panel for customization:
 
 ### Performance
 - Optimized compiled CSS and lightweight JavaScript modules for interactive behavior
-- Theme compiles on first page load if needed
+- CSS is served from precompiled `dist/theme.css` for predictable runtime performance
 - Cached assets for optimal performance
 
 ### Browser Support

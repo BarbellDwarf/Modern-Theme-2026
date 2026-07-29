@@ -54,7 +54,6 @@
   --color-text-secondary: #{$text-color-secondary};
   --color-text-muted: #{$text-color-muted};
   --color-text-light: #{$text-color-light};
-  --color-text-tertiary: #{$text-color-muted};
   --color-text-inverse: #{$text-color-inverse};
   
   // Links
@@ -138,23 +137,137 @@
 }
 
 // ============================================
-// THEME VARIANTS (for future color switching)
+// THEME VARIANTS — instant preview when user picks a palette
 // ============================================
 
-[data-theme="purple"] {
-  --color-primary: #{$palette-purple-primary};
-  --color-secondary: #{$palette-purple-secondary};
-  --color-accent: #06b6d4;
+[data-theme="ocean-blue"] {
+  --color-primary: #1e6ad6;
+  --color-primary-rgb: 30, 106, 214;
+  --color-accent: #5a8eeb;
+  --color-secondary: #7c3aed;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
 }
 
-[data-theme="green"] {
-  --color-primary: #{$palette-green-primary};
-  --color-secondary: #{$palette-green-secondary};
-  --color-accent: #f59e0b;
+[data-theme="royal-purple"] {
+  --color-primary: #7c3aed;
+  --color-primary-rgb: 124, 58, 237;
+  --color-accent: #a78bfa;
+  --color-secondary: #ec4899;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --color-info: #8b5cf6;
 }
 
-[data-theme="neutral"] {
-  --color-primary: #{$palette-neutral-primary};
-  --color-secondary: #{$palette-neutral-secondary};
-  --color-accent: #8b5cf6;
+[data-theme="forest-green"] {
+  --color-primary: #059669;
+  --color-primary-rgb: 5, 150, 105;
+  --color-accent: #34d399;
+  --color-secondary: #10b981;
+  --color-success: #16a34a;
+  --color-danger: #dc2626;
+  --color-warning: #d97706;
+  --color-info: #0891b2;
+}
+
+[data-theme="slate-gray"] {
+  --color-primary: #475569;
+  --color-primary-rgb: 71, 85, 105;
+  --color-accent: #94a3b8;
+  --color-secondary: #334155;
+  --color-success: #16a34a;
+  --color-danger: #dc2626;
+  --color-warning: #d97706;
+  --color-info: #0284c7;
+}
+
+[data-theme="sunset-orange"] {
+  --color-primary: #ea580c;
+  --color-primary-rgb: 234, 88, 12;
+  --color-accent: #fb923c;
+  --color-secondary: #dc2626;
+  --color-success: #16a34a;
+  --color-danger: #b91c1c;
+  --color-warning: #d97706;
+  --color-info: #0284c7;
+}
+
+[data-theme="rose-pink"] {
+  --color-primary: #db2777;
+  --color-primary-rgb: 219, 39, 119;
+  --color-accent: #f472b6;
+  --color-secondary: #ec4899;
+  --color-success: #16a34a;
+  --color-danger: #dc2626;
+  --color-warning: #d97706;
+  --color-info: #0284c7;
+}
+
+[data-theme="teal-cyan"] {
+  --color-primary: #0891b2;
+  --color-primary-rgb: 8, 145, 178;
+  --color-accent: #22d3ee;
+  --color-secondary: #0e7490;
+  --color-success: #059669;
+  --color-danger: #dc2626;
+  --color-warning: #d97706;
+  --color-info: #06b6d4;
+}
+
+[data-theme="midnight-dark"] {
+  --color-primary: #6366f1;
+  --color-primary-rgb: 99, 102, 241;
+  --color-accent: #818cf8;
+  --color-secondary: #4f46e5;
+  --color-success: #10b981;
+  --color-danger: #f43f5e;
+  --color-warning: #fbbf24;
+  --color-info: #38bdf8;
+}
+
+[data-theme="warm-amber"] {
+  --color-primary: #d97706;
+  --color-primary-rgb: 217, 119, 6;
+  --color-accent: #fbbf24;
+  --color-secondary: #b45309;
+  --color-success: #16a34a;
+  --color-danger: #dc2626;
+  --color-warning: #ca8a04;
+  --color-info: #0284c7;
+}
+
+[data-theme="cobalt-navy"] {
+  --color-primary: #1d4ed8;
+  --color-primary-rgb: 29, 78, 216;
+  --color-accent: #3b82f6;
+  --color-secondary: #1e40af;
+  --color-success: #16a34a;
+  --color-danger: #dc2626;
+  --color-warning: #d97706;
+  --color-info: #2563eb;
+}
+
+[data-theme="ruby-red"] {
+  --color-primary: #b91c1c;
+  --color-primary-rgb: 185, 28, 28;
+  --color-accent: #ef4444;
+  --color-secondary: #991b1b;
+  --color-success: #16a34a;
+  --color-danger: #7f1d1d;
+  --color-warning: #d97706;
+  --color-info: #0284c7;
+}
+
+[data-theme="lavender"] {
+  --color-primary: #8b5cf6;
+  --color-primary-rgb: 139, 92, 246;
+  --color-accent: #c4b5fd;
+  --color-secondary: #a78bfa;
+  --color-success: #16a34a;
+  --color-danger: #dc2626;
+  --color-warning: #d97706;
+  --color-info: #6d28d9;
 }

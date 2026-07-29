@@ -214,14 +214,14 @@ body.mail-list-open::before {
       box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
     }
 
-    &::placeholder { color: var(--color-text-tertiary, #6b7280); }
+    &::placeholder { color: var(--color-text-muted, #6b7280); }
   }
 
   .mt2026-mail-sidebar-search__icon {
     position: absolute;
     left: 10px;
     pointer-events: none;
-    color: var(--color-text-tertiary, #6b7280);
+    color: var(--color-text-muted, #6b7280);
     font-size: 13px;
     z-index: 1;
   }

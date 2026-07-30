@@ -502,8 +502,7 @@ tail -f /var/www/humhub/protected/runtime/logs/app.log
 ## Never Edit
 
 ❌ Don't modify:
-- HumHub's Clean Theme SCSS
-- Core theme in `/var/www/humhub/themes/`
+- HumHub core SCSS
 - Third-party component styles outside this module
 
 ✅ Only modify:

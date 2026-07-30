@@ -2,7 +2,7 @@
 /**
  * ModernTheme2026 - Theme view override for People directory card.
  *
- * Replaces the default card-panel structure that Clean Theme's CSS
+ * Replaces the default card-panel structure with mt2026-people-card for
  * interferes with on mobile. Uses mt2026-specific classes so our
  * SCSS has full, unambiguous control over the card layout.
  */

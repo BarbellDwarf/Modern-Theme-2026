@@ -8,7 +8,7 @@
 }
 
 body {
-    // Self-contained top offset; no Clean Theme dependency.
+    // Self-contained top offset using CSS variable.
     padding-top: var(--mt2026-topbar-height) !important;
 }
 

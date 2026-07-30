@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 
 The format follows Keep a Changelog and this project uses Semantic Versioning.
 
+## [1.1.1] - 2026-07-30
+
+### Fixed
+- Reaction summary link visibility: removed `!important` on `display` so JS `.show()`/`.hide()` can control visibility.
+- Removed all references to the removed Clean Theme module from comments and documentation.
+
 ## [1.1.0] - 2026-07-29
 
 ### Added

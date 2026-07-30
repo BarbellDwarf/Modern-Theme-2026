@@ -20,4 +20,4 @@ This is a HumHub theme module. All AI agent context is in `.github/AGENTS.md`.
 - SCSS compiles via `php compile-css.php` — writes to `resources/css/theme.css` and published assets
 - After SCSS changes: recompile, delete assets dir, flush cache
 - Mail conversation content is loaded via AJAX into `#mail-conversation-root` — `.col-lg-8.messages > .panel` does NOT match
-- Clean Theme uses `!important` extensively — our module must match specificity
+- Overriding base styles uses `!important` extensively when specificity alone isn't enough

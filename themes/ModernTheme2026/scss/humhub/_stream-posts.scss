@@ -185,9 +185,8 @@
 // Solution: keep .wall-entry as the sole visible card; make the inner .panel
 // completely transparent so there is only ONE box per post.
 
-// The Clean Theme styles the inner .panel as the card and keeps the outer
-// .wall-entry transparent.  We work with that structure — the .panel gets
-// the card background, border, and shadow; the .wall-entry is just a wrapper.
+// The inner .panel is the card; the outer .wall-entry is a transparent wrapper.
+// The .panel gets the card background, border, and shadow.
 // We add the accent line to the .panel-heading and clean up spacing.
 
 .s2_streamContent > .wall-entry,
@@ -238,7 +237,7 @@
 }
 
 // Make .wall-entry-controls links always visible with readable color.
-// Override Clean Theme's margin-top:10px which breaks flex centering.
+// Override margin-top:10px which breaks flex centering.
 .wall-entry-controls a {
   margin-top: 0 !important;
   color: var(--color-text-secondary, #4b5563) !important;
@@ -261,7 +260,7 @@
   border-top-color: var(--color-border) !important;
 }
 
-// Ensure the comment icon (::before from Clean Theme) is visible.
+// Ensure the comment icon (::before pseudo-element) is visible.
 // Only apply display:inline-flex when the link is NOT hidden by .d-none.
 .wall-entry-controls a[data-action-click="comment.toggleComment"]:not(.d-none) {
   display: inline-flex !important;
@@ -298,7 +297,7 @@
 }
 
 // The like/unlike anchor links are REPLACED by our emoji trigger visually.
-// Before JS runs: show them via the Clean Theme FA icon (fallback).
+// Before JS runs: show them via the FA icon (fallback).
 // After JS runs: [data-mt2026-reactions] is set, clip rule in _reactions.scss hides them.
 // DO NOT force display here — that would break .d-none toggling.
 .wall-entry-controls a[data-action-click="like.toggleLike"]:not(.d-none) {

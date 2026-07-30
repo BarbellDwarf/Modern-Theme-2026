@@ -367,7 +367,7 @@ body.mt2026-keyboard-open {
 
 // ── People directory cards ─────────────────────
 // Root-level card styles (all screen sizes).
-// Using mt2026-specific classes avoids interference from Clean Theme's
+// Using mt2026-specific classes avoids interference from
 // heavily-overridden .card-panel / .card-body selectors.
 .mt2026-people-card {
     display: flex;
@@ -475,12 +475,12 @@ body.mt2026-keyboard-open {
     }
 }
 
-// Neutralise Clean Theme's .card-panel rules when our override is active
+// Neutralise .card-panel rules when our override is active
 .card-people .card-panel.mt2026-people-card {
     background: var(--color-bg-primary, #fff) !important;
     overflow: visible !important;
 
-    // Clean Theme injects these elements — hide them so they don't shift layout
+    // Hide injected elements that would shift layout
     .card-bg-image,
     .card-header,
     .card-body,

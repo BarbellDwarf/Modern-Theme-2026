@@ -6,7 +6,7 @@ This document provides comprehensive guidelines for AI agents working on the Mod
 
 **Modern Theme 2026** is a HumHub theme module featuring:
 - Contemporary glassmorphism design with depth effects  
-- Self-contained theme (no Clean Theme dependency)
+- Self-contained theme (no external theme dependency)
 - Custom mobile bottom navigation for thumb-friendly UX
 - Emoji reaction picker (👍 ❤️ 😂 😮 😢 🙏)
 - Adaptive color palettes (4 presets)
@@ -95,7 +95,6 @@ modern-theme-2026/
 This module depends on:
 - HumHub core (1.18.0+)
 - Yii2 framework (bundled with HumHub)
-- Clean Theme (parent for some component initialization)
 
 **Do NOT add external dependencies** unless absolutely necessary and documented.
 
@@ -442,9 +441,9 @@ rm -rf /var/www/humhub/runtime/cache/*
 rm -rf /var/www/humhub/assets/decca576
 ```
 
-## ⚠️ CSS Specificity: Working with the Clean Theme
+## ⚠️ CSS Specificity
 
-The Clean Theme's CSS is loaded FIRST (stylesheet index 0), and our module's CSS is loaded SECOND (stylesheet index 1). However, the Clean Theme uses `!important` extensively, which means our rules need `!important` to override them in many cases.
+HumHub's base theme CSS is loaded FIRST (stylesheet index 0), and our module's CSS is loaded SECOND (stylesheet index 1). The base theme uses `!important` extensively, which means our rules need `!important` to override them in many cases.
 
 ### Known DOM Structure & Override Patterns
 
@@ -462,12 +461,12 @@ The Clean Theme's CSS is loaded FIRST (stylesheet index 0), and our module's CSS
 ```
 
 **Key Override Rules:**
-- `.s2_streamContent > .wall-entry` — Clean Theme sets `background: transparent !important`. To override, use `background-color: ... !important` (NOT `background` shorthand, which gets overridden by Clean Theme's `background` shorthand).
+- `.s2_streamContent > .wall-entry` — HumHub base sets `background: transparent !important`. To override, use `background-color: ... !important` (NOT `background` shorthand, which gets overridden by the base `background` shorthand).
 - `.comment-container.bg-light` — Bootstrap's `.bg-light` class has `background-color: ... !important`. Override with `background-color: transparent !important` on `.comment-container.bg-light`.
-- `.wall-entry .wall-entry-body` — Clean Theme sets `padding-left: 50px; padding-right: 50px`. Override with `padding-left: ... !important; padding-right: ... !important`.
-- `.wall-entry .wall-entry-header` — Clean Theme sets `padding-bottom: 10px; margin-bottom: 10px`. Override with `!important`.
+- `.wall-entry .wall-entry-body` — HumHub base sets `padding-left: 50px; padding-right: 50px`. Override with `padding-left: ... !important; padding-right: ... !important`.
+- `.wall-entry .wall-entry-header` — HumHub base sets `padding-bottom: 10px; margin-bottom: 10px`. Override with `!important`.
 
-**General Rule:** When the Clean Theme uses `!important`, our module must also use `!important` with equal or higher specificity to win. When the Clean Theme does NOT use `!important`, our module's later position in the stylesheet (index 1 vs index 0) is sufficient.
+**General Rule:** When the base theme uses `!important`, our module must also use `!important` with equal or higher specificity to win. When the base theme does NOT use `!important`, our module's later position in the stylesheet (index 1 vs index 0) is sufficient.
 
 ### CSS Compilation Note
 
@@ -525,7 +524,7 @@ The `compile-css.php` script reads custom colors from the database using environ
 - Fixed composer gap: removed 92px padding-bottom on entry list, reduced composer sizing (dock padding 4px, input min-height 36px, buttons 36px, border-radius 10px with focus ring)
 - Fixed mobile composer gap: `padding-bottom: 60px` on `.conversation-entry-list` when composer is `position: fixed`
 - Fixed desktop padding: `body.mt2026-mail-page { padding-bottom: 0 }` on desktop
-- Fixed AJAX-loaded conversation gap: `#mail-conversation-root > .panel.panel-default { margin: 0 !important; height: 100%; display: flex; flex-direction: column; }` — conversation content is loaded via AJAX into `#mail-conversation-root`, so `.col-lg-8.messages > .panel` never matches; generic `.panel` rules from Clean Theme (like `margin-top: 50px`, `margin-bottom: 15px`) leak in without this override
+- Fixed AJAX-loaded conversation gap: `#mail-conversation-root > .panel.panel-default { margin: 0 !important; height: 100%; display: flex; flex-direction: column; }` — conversation content is loaded via AJAX into `#mail-conversation-root`, so `.col-lg-8.messages > .panel` never matches; generic `.panel` rules (like `margin-top: 50px`, `margin-bottom: 15px`) leak in without this override
 - `#mail-conversation-root { display: flex; flex-direction: column; }` ensures flex chain propagates
 - Empty states: `.mt2026-mail-empty-state` with icon, title, text sub-elements, centered with muted colors
 - Search "no results" empty state: `updateSearchEmptyState()` in `mailLayout.js` injects styled message when search filters out all entries

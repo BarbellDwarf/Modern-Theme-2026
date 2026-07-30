@@ -1,7 +1,7 @@
 {
   "name": "modern-theme-2026",
-  "version": "1.1.0",
-  "description": "Do you enjoy using HumHub but find the UI a little clunky? Tried the Clean Theme and it just doesn't seem to scratch that itch? Well that was me. And I decided to do something about it. I built this theme from the ground up to fix all the issues I saw with the base theme and the Clean Theme. Try it out and let me know what you think!",
+  "version": "1.1.1",
+  "description": "Contemporary HumHub theme with glassmorphism, subtle depth, smooth animations, and 2026 design trends. Features adaptive color palettes, enhanced mobile experience, and improved accessibility.",
   "main": "index.js",
   "directories": {
     "test": "tests"

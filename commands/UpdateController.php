@@ -28,14 +28,15 @@ class UpdateController extends Controller
             $this->stdout("   CSS rebuild failed: " . $cssOutput . "\n", Console::FG_RED);
         }
 
-        // Step 2: Run compile-css.php for all output locations
+        // Step 2: Compile to all output locations via the standalone compiler.
+        // Uses shell_exec so compile-css.php's exit(1) calls don't kill the Yii process.
         $this->stdout("2/4 Compiling to dist/ and resources/css/...\n");
         $script = __DIR__ . '/../compile-css.php';
-        if (file_exists($script)) {
-            $output = shell_exec('php ' . escapeshellarg($script) . ' 2>&1');
-            $this->stdout("   " . trim(str_replace("\n", "\n   ", $output)) . "\n");
-        } else {
+        if (!file_exists($script)) {
             $this->stdout("   compile-css.php not found, skipping.\n", Console::FG_YELLOW);
+        } else {
+            $output = shell_exec(PHP_BINARY . ' ' . escapeshellarg($script) . ' 2>&1');
+            $this->stdout("   " . trim(str_replace("\n", "\n   ", $output)) . "\n");
         }
 
         // Step 3: Flush cache

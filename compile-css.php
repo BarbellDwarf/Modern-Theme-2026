@@ -9,20 +9,20 @@
 
 // Attempt to locate Composer autoload in several common locations so this script
 // can be run inside a full HumHub project or as a standalone theme repository.
+// Try each candidate; if one exists but lacks scssphp, continue to the next.
 $autoloadCandidates = [
     __DIR__ . '/../../../vendor/autoload.php', // HumHub project layout
     __DIR__ . '/vendor/autoload.php',         // theme root composer
     __DIR__ . '/../vendor/autoload.php',      // alternate layouts
 ];
-$autoload = null;
-foreach ($autoloadCandidates as $p) {
-    if (file_exists($p)) { $autoload = $p; break; }
-}
 $hasScssPhp = false;
-if ($autoload) {
-    require $autoload;
-    if (class_exists('\\ScssPhp\\ScssPhp\\Compiler')) {
-        $hasScssPhp = true;
+foreach ($autoloadCandidates as $p) {
+    if (file_exists($p)) {
+        require $p;
+        if (class_exists('\\ScssPhp\\ScssPhp\\Compiler')) {
+            $hasScssPhp = true;
+            break;
+        }
     }
 }
 

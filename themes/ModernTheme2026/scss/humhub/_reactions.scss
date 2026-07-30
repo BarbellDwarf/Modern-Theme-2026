@@ -286,11 +286,12 @@
 }
 
 // Reaction summary link — right-aligned in the addons bar.
-// JS manages visibility via .show()/.hide(); do NOT use !important on display
-// or JS cannot hide the element when there are no reactions.
+// Uses !important to beat the base theme's old compiled CSS that also has !important.
+// JS visibility is controlled via [style*="display: none"] selector below, which
+// matches jQuery .hide() and wins over the default rule via specificity.
 .wall-entry-controls .mt2026-summary-link {
   margin-left: auto !important;
-  display: inline-flex;
+  display: inline-flex !important;
   align-items: center;
   gap: 4px;
   flex: 0 0 auto;
@@ -302,6 +303,13 @@
   white-space: nowrap;
   color: var(--color-text-secondary, #6b7280);
   transition: background 0.15s;
+
+  // When JS hides via .hide() → inline style="display: none", this attribute
+  // selector beats the default !important rule above (higher specificity).
+  &[style*="display: none"],
+  &[style*="display:none"] {
+    display: none !important;
+  }
 
   &:hover {
     background: var(--color-bg-secondary, #f3f4f6);

@@ -68,7 +68,7 @@ a {
     
     // Ensure visited links are distinguishable
     &:visited {
-        color: var(--secondary);
+        color: var(--color-secondary);
     }
 }
 
@@ -104,7 +104,7 @@ label {
 // Success messages
 .success,
 .valid-feedback {
-    color: var(--success);
+    color: var(--color-success);
     font-weight: 500;
     margin-top: space(1);
     font-size: $font-size-sm;
@@ -254,7 +254,7 @@ table {
 // Image alt text styling
 img:not([alt]) {
     // Warn about missing alt text in development
-    outline: 3px solid var(--warning);
+    outline: 3px solid var(--color-warning);
     outline-offset: 2px;
 }
 
@@ -322,30 +322,59 @@ img:not([alt]) {
 
 // Print styles
 @media print {
-    // Ensure content is readable when printed
-    * {
-        background: white !important;
-        color: black !important;
+    *,
+    *::before,
+    *::after {
+        background: transparent !important;
+        color: #000 !important;
         box-shadow: none !important;
         text-shadow: none !important;
     }
-    
+
     a,
     a:visited {
         text-decoration: underline;
     }
-    
-    // Show URLs for links
+
     a[href]::after {
         content: " (" attr(href) ")";
     }
-    
-    // Hide unnecessary elements
+
+    img {
+        page-break-inside: avoid;
+    }
+
+    h2, h3, p {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2, h3 {
+        page-break-after: avoid;
+    }
+
+    // Hide navigation and chrome when printing
+    #topbar,
+    #topbar-first,
+    #topbar-second,
+    .mobile-bottom-nav,
+    .nav-tabs,
+    .dropdown-menu,
+    .wall-entry-controls,
     nav,
     .navbar,
     .dropdown,
     .modal,
     .tooltip {
         display: none !important;
+    }
+
+    .wall-entry-content.content {
+        max-height: none !important;
+        overflow: visible !important;
+
+        &::after {
+            display: none !important;
+        }
     }
 }

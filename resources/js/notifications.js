@@ -43,23 +43,22 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
         var $bar = $(
             '<div id="mt2026-notification-mobile-bar" class="mt2026-notification-mobile-bar">' +
                 '<button class="btn btn-sm btn-default mt2026-mark-all-seen-btn"' +
-                    ' data-action-click="notification.markAsSeen"' +
-                    ' data-action-url="' + actionUrl + '">' +
+                    ' data-action-click="notification.markAsSeen">' +
                     '<i class="fa fa-check-circle"></i> Mark All Seen' +
                 '</button>' +
             '</div>'
         );
 
+        $bar.find('button').attr('data-action-url', actionUrl);
         $panelHeading.after($bar);
     };
 
     var init = function (pjax) {
         injectMobileActionBar();
-        bindCommentDropdownStackFix();
         bindComposerDropdownStackFix();
 
         if (!pjax) {
-            $(document).on('pjax:end', function () {
+            $(document).on('pjax:end.mt2026Notifications', function () {
                 // Remove stale bar then re-inject after pjax page transitions
                 $('#mt2026-notification-mobile-bar').remove();
                 injectMobileActionBar();
@@ -69,33 +68,16 @@ humhub.module('modernTheme.notifications', function (module, require, $) {
 
     module.initOnPjaxLoad = true;
 
+    var unload = function() {
+        $(document).off('.mt2026Notifications');
+        $(document).off('.mt2026ComposerMenu');
+        $('#mt2026-notification-mobile-bar').remove();
+    };
+
     module.export({
-        init: init
+        init: init,
+        unload: unload
     });
-
-    function bindCommentDropdownStackFix() {
-        // Prevent comment attachment/controls dropdowns from being painted under the
-        // next stream card.  We temporarily raise the parent stream entry while open.
-        // HumHub renders these as both .btn-group (FileHandlerButtonDropdown) and
-        // .nav-item.dropdown (commentControls.php), so we listen on both.
-        var commentSelector = '.comment_create .btn-group, .comment-controls .nav-item.dropdown';
-
-        $(document).off('shown.bs.dropdown.mt2026CommentMenu hidden.bs.dropdown.mt2026CommentMenu');
-
-        $(document).on('shown.bs.dropdown.mt2026CommentMenu', commentSelector, function () {
-            var $entry = $(this).closest('.wall-entry, .stream-entry');
-            if ($entry.length) {
-                $entry.addClass('mt2026-dropdown-open');
-            }
-        });
-
-        $(document).on('hidden.bs.dropdown.mt2026CommentMenu', commentSelector, function () {
-            var $entry = $(this).closest('.wall-entry, .stream-entry');
-            if ($entry.length) {
-                $entry.removeClass('mt2026-dropdown-open');
-            }
-        });
-    }
 
     function bindComposerDropdownStackFix() {
         // Cover both .btn-group (FileHandlerButtonDropdown / older Bootstrap) and

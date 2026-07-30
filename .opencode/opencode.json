@@ -1,0 +1,16 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    ".github/AGENTS.md",
+    ".github/INDEX.md",
+    ".github/HUMHUB-POST-CHANGE-CHECKLIST.md",
+    ".github/BRANCH-VERSION-UPDATE-RULES.md",
+    ".github/instructions/theme-scss.instructions.md",
+    ".github/instructions/php-widgets-module.instructions.md",
+    ".github/instructions/javascript-module.instructions.md",
+    ".github/instructions/module-lifecycle-installation.instructions.md"
+  ],
+  "plugin": [
+    "superpowers@git+https://github.com/obra/superpowers.git"
+  ]
+}

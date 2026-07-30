@@ -1,0 +1,347 @@
+// Modern Theme 2026 - Activity Stream: Comments, comment forms, replies
+// Extracted from _stream.scss
+
+// ── Individual comment entries ──────────────────────────────────────────────
+// Clean, readable comment styling with proper spacing and hover states.
+//
+// DOM structure:
+//   .comment
+//     .showMore          — "Show X more replies" toggle
+//     .comment-separator — hr
+//     .single-comment    — the actual comment (parent or reply)
+//       .comment-header-image  — avatar
+//       .flex-grow-1
+//         .comment-heading    — name + timestamp
+//         .content            — comment text
+//         .wall-entry-controls — action links
+//         .nested-comments-root — reply form (hidden by default)
+//     .comment-separator — hr
+//     .single-comment    — reply (same level as parent!)
+//       ... same structure ...
+//
+// Replies are flat siblings inside .comment, not visually nested.
+// We indent them and use a thread line to show hierarchy.
+
+.comment {
+  padding: 0;
+
+  // ── Top-level comment ────────────────────────────────────────────────────
+  > .single-comment:first-of-type {
+    padding: 0;  // Phase A: Remove external padding (card handles its own)
+  }
+
+  // ── Hide separators between parent and replies ────────────────────────────
+  > .comment-separator {
+    display: none;
+  }
+
+  // ── Show more toggle ─────────────────────────────────────────────────────
+  > .showMore {
+    padding: var(--space-1) 0 var(--space-2);
+    font-size: var(--font-size-sm);
+
+    a {
+      color: var(--color-text-muted);
+      font-size: var(--font-size-sm);
+
+      &:hover {
+        color: var(--color-primary);
+        text-decoration: none;
+      }
+    }
+  }
+
+  // ── Shared single-comment styles ────────────────────────────────────────
+  // Phase A: Card-based layout (background, radius, padding, margin, hover)
+  // Phase C: Reduced padding
+  .single-comment {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: var(--color-bg-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-2) var(--space-3);
+    margin-bottom: var(--space-3);
+    transition: background 0.15s;
+    border: 1px solid var(--color-border-light);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+
+    &:hover {
+      background: var(--color-bg-tertiary);
+      border-color: var(--color-border);
+    }
+
+    .comment-header-image {
+      flex-shrink: 0;
+      margin: 0 !important;
+
+      img, .media-object {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-full);
+        object-fit: cover;
+      }
+    }
+
+    .flex-grow-1 {
+      flex: 1;
+      min-width: 0;
+      overflow-wrap: anywhere;  // Phase B: prevent overflow
+    }
+
+    // Phase D: Visual hierarchy — stronger name, content, action buttons
+    .comment-heading {
+      font-size: var(--font-size-base);
+      font-weight: $font-weight-bold;
+      margin-bottom: var(--space-1);
+      color: var(--color-text-primary);
+
+      .timestamp {
+        font-size: var(--font-size-xs);
+        color: var(--color-text-muted);
+        font-weight: normal;
+        margin-left: var(--space-2);
+      }
+    }
+
+    .content {
+      font-size: var(--font-size-base);
+      line-height: 1.6;
+      color: var(--color-text-primary);
+      margin: var(--space-2) 0;
+    }
+
+    .wall-entry-controls {
+      display: block;
+      text-align: left;
+      gap: var(--space-3);
+      margin-top: var(--space-2);
+      font-size: 0;
+      color: var(--color-text-muted);
+
+      > * {
+        font-size: var(--font-size-xs);
+      }
+
+      a {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-1);
+        color: var(--color-text-muted);
+
+        &:hover {
+          color: var(--color-primary);
+          text-decoration: none;
+        }
+      }
+
+      .mt2026-reaction-trigger {
+        font-size: 0;
+        margin-left: -14px;
+      }
+    }
+  }
+}
+
+// ── Hide reply buttons under each comment ────────────────────────────────────
+// Reply functionality is removed to keep UI clean. All comments are top-level.
+// Use maximum specificity to override any theme CSS
+html body .single-comment .wall-entry-controls a[data-action-click="comment.toggleComment"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+// The ' · ' text node separator inside comment-level controls
+// (between Reply and the emoji button). Apply font-size:0 trick.
+.comment-container .wall-entry-controls {
+  display: block;
+  text-align: left;
+  font-size: 0;
+  line-height: 0;
+  margin: 0;
+  padding: 0;
+
+  > * {
+    font-size: 14px;
+    line-height: normal;
+  }
+
+  .mt2026-reaction-trigger {
+    font-size: 0;
+    line-height: 1;
+    margin-left: -14px;
+  }
+}
+
+// ── Comment container spacing (Phase C) ──────────────────────────────────────
+.comment-container {
+  padding: var(--space-2) var(--space-3) !important;
+}
+
+// ── Comment create form — prominent input ──────────────────────────────────
+.comment_create {
+  padding-top: var(--space-3);
+
+  .ProseMirror {
+    min-height: 44px;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-primary);
+    font-size: var(--font-size-sm);
+    line-height: 1.5;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    &:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.12);
+      outline: none;
+    }
+  }
+
+  .richtext-create-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding-top: var(--space-2);
+
+    .btn {
+      font-size: var(--font-size-sm);
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-md);
+    }
+  }
+}
+
+// ── Single-box stream — comment container inside post card ──────────────────
+.s2_streamContent > .wall-entry,
+.s2_streamContent > .stream-entry {
+  // Comment container — seamless with card
+  .comment-container.bg-light,
+  .comment-container,
+  .comment-entry-footer {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+
+  .comment-container {
+    padding: var(--space-3) var(--space-4) !important;
+    border-top: 1px solid var(--color-border-light);
+    margin-top: 0 !important;
+  }
+}
+
+// ─── MOBILE OPTIMIZATIONS FOR COMMENTS ───────────────────────────────────────
+@media (max-width: 991px) {
+
+  // ── Widen comment area on mobile ──────────────────────────────────────────
+  // Reduce inner panel side padding so the comment form reaches near-full width.
+
+  .s2_streamContent .wall-entry > .panel,
+  .s2_streamContent .wall-entry > div > .panel,
+  .s2_streamContent .stream-entry > .panel,
+  .s2_streamContent .stream-entry > div > .panel {
+    padding-left: var(--space-2) !important;
+    padding-right: var(--space-2) !important;
+  }
+
+  .s2_streamContent .wall-entry .panel-body,
+  .s2_streamContent .stream-entry .panel-body {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .wall-entry-footer,
+  .stream-entry-footer {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .stream-entry-addons {
+    padding: var(--space-2) 0 !important;
+  }
+
+  .comment-container {
+    padding: var(--space-2) var(--space-2) !important;
+  }
+
+  // ── Hide formatting toolbar inside comment forms on mobile ─────────────────
+  .comment-container .ProseMirror-menubar,
+  .comment_create .ProseMirror-menubar,
+  .comment-entry-form .ProseMirror-menubar {
+    display: none !important;
+  }
+
+  // ── Hide compose box by default; show only when needed via show-on-mobile ──
+  .comment-container > .comment_create {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s, opacity 0.3s;
+
+    &.show-on-mobile {
+      display: block !important;
+      max-height: 500px;
+      opacity: 1;
+
+      .richtext-create-buttons {
+        display: flex !important;
+      }
+
+      .ProseMirror {
+        min-height: 72px !important;
+        max-height: 300px !important;
+        overflow: auto;
+      }
+    }
+  }
+
+  // ── Wall entry controls spacing ────────────────────────────────────────────
+  .comment-container .wall-entry-controls,
+  .single-comment .wall-entry-controls {
+    display: block !important;
+    text-align: left;
+    gap: var(--space-2);
+    padding: var(--space-2) 0;
+    margin-top: var(--space-2);
+    clear: both;
+  }
+
+  // ── Post separation ────────────────────────────────────────────────────────
+  .wall-entry,
+  .stream-entry {
+    margin-bottom: var(--space-4);
+  }
+
+  // ── Bottom padding so last post isn't hidden under the nav bar ─────────────
+  .wall-stream,
+  .stream-container {
+    padding-bottom: calc(var(--mobile-nav-height, 56px) + var(--space-4) + env(safe-area-inset-bottom, 0));
+  }
+
+  // ── Tap separation between posts ────────────────────────────────────────────
+  .s2_streamContent > .wall-entry {
+    padding: 2px 0;
+  }
+}
+
+// ── Phase B: Mobile avatar and gap optimization ─────────────────────────────
+@media (max-width: 768px) {
+  .single-comment .comment-header-image img {
+    width: 28px;
+    height: 28px;
+  }
+  .single-comment {
+    gap: 6px !important;
+  }
+}
+
+// ── Phase F: Extra-small mobile — tighter padding, avatar stays beside name ──
+@media (max-width: 576px) {
+  .single-comment {
+    padding: var(--space-2);
+    gap: var(--space-2);
+  }
+}

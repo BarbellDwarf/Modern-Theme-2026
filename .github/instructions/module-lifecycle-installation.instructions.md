@@ -9,6 +9,19 @@ name: "Module Lifecycle & Installation"
 
 Modern Theme 2026 is designed as a **self-contained, cleanly installable module** that requires no modifications to HumHub core files and leaves no remnants when uninstalled. All lifecycle operations live within `/var/www/humhub/protected/modules/modern-theme-2026/`.
 
+## Release Branch Version Policy (Mandatory)
+
+When working on a release branch named `VMAJOR.MINOR.PATCH` (example: `V1.0.4`), version metadata updates are required before opening or merging a PR.
+
+Required updates:
+1. `module.json` -> `version` must match branch version without `V`.
+2. `package.json` -> `version` must match the same value.
+3. `CHANGELOG.md` -> add top entry in format `## [x.y.z] - YYYY-MM-DD`.
+
+Reference: `.github/BRANCH-VERSION-UPDATE-RULES.md`
+
+Do not consider a release branch complete until these three files are aligned.
+
 ## Installation Process
 
 ### Step 1: Module Discovery

@@ -3,7 +3,6 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
     var isOpen = false;
 
     var init = function(pjax) {
-        console.log('[MT2026] ContextSwitcher init called, pjax=' + pjax + ', width=' + window.innerWidth);
         bindToggleButton();
         bindOutsideClick();
         bindKeyboard();
@@ -15,7 +14,6 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
         initSpaceSidebarMobile();
 
         if (!pjax) {
-            initMobileInputScroll();
             $(document).on('pjax:end', function() {
                 init(true);
             });
@@ -28,7 +26,7 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
 
         if (!$menu.length) return;
 
-        $menu.css('display', '');
+        $menu.css({visibility:'visible', opacity:'1', pointerEvents:'auto'}).attr('aria-hidden', 'false');
         $btn.attr('aria-expanded', 'true').addClass('active');
         isOpen = true;
 
@@ -46,7 +44,7 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
         var $menu = $('#context-switcher-menu');
         var $btn = $('.context-switcher-button');
 
-        $menu.css('display', 'none');
+        $menu.css({visibility:'hidden', opacity:'0', pointerEvents:'none'}).attr('aria-hidden', 'true');
         $btn.attr('aria-expanded', 'false').removeClass('active');
         isOpen = false;
 
@@ -274,12 +272,19 @@ humhub.module('modernTheme.contextSwitcher', function(module, require, $) {
         $row.find('.form-search-filter-keyword input').blur();
     };
 
-    var initMobileInputScroll = function() {};
+    var unload = function() {
+        $(document).off('.contextSwitcher');
+        $(document).off('.contextNav');
+        $(document).off('.contextSearch');
+        $(document).off('.contextExpand');
+        document.removeEventListener('keydown', handleKeydown);
+    };
 
     module.initOnPjaxLoad = true;
 
     module.export({
         init: init,
+        unload: unload,
         open: openSwitcher,
         close: closeSwitcher,
         toggle: toggleSwitcher

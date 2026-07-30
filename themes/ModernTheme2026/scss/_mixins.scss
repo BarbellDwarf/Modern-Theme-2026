@@ -146,7 +146,7 @@
   @include transition(all, var(--transition-base));
   
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 }
 
@@ -223,7 +223,7 @@
   
   &:hover {
     @include shadow('md');
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 }
 

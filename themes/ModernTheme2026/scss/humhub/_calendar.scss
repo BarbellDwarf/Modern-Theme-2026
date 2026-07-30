@@ -244,25 +244,25 @@
 
         &:hover,
         &:focus {
-          background: rgba(255, 255, 255, 0.04);
+          background: var(--color-bg-tertiary);
           color: var(--color-text-primary);
         }
 
         &.active,
         &[aria-selected="true"] {
-          background: rgba(255, 255, 255, 0.05);
+          background: var(--color-bg-tertiary);
           border-color: color-mix(in srgb, var(--color-border) 76%, var(--color-primary) 24%);
         }
       }
     }
 
     .ProseMirror-menubar-wrapper {
-      background: rgba(255, 255, 255, 0.015);
+      background: transparent;
       border-color: color-mix(in srgb, var(--color-border) 78%, var(--color-primary) 22%);
     }
 
     .ProseMirror-menubar {
-      background: rgba(255, 255, 255, 0.025);
+      background: var(--color-bg-tertiary);
       border-bottom-color: color-mix(in srgb, var(--color-border) 78%, var(--color-primary) 22%);
     }
 

@@ -1,26 +1,53 @@
 humhub.module('modernTheme.mailLayout', function(module, require, $) {
     'use strict';
 
+    var resizeTimer = null;
+    var searchTimer = null;
+    var scrollObserver = null;
+    var headerObserver = null;
+    var onMailEscapeKey = null;
+    var onMailOverlayClick = null;
+
     function isMailPage() {
-        return window.location.pathname.indexOf('/mail/') !== -1
+        return /^\/mail\//.test(window.location.pathname)
             || document.getElementById('mail-conversation-root') !== null;
     }
 
     function closeMailList() {
         document.body.classList.remove('mail-list-open');
+        updateToggleAria(false);
     }
 
     function openMailList() {
         document.body.classList.add('mail-list-open');
+        updateToggleAria(true);
+        focusFirstEntry();
+    }
+
+    function updateToggleAria(isOpen) {
+        var toggle = document.querySelector('.mt2026-mail-topbar-toggle');
+        if (toggle) {
+            toggle.setAttribute('aria-expanded', String(isOpen));
+            toggle.setAttribute('aria-label', isOpen ? 'Close conversations list' : 'Open conversations list');
+        }
+    }
+
+    function focusFirstEntry() {
+        var first = document.querySelector('.messagePreviewEntry');
+        if (first) {
+            try { first.focus(); } catch (e) {}
+        }
     }
 
     function setFullscreenMode(active) {
         if (active) {
             document.body.classList.add('mt2026-mail-fullscreen');
             document.body.classList.add('mt2026-mail-page');
+            document.body.classList.add('mt2026-mail-scroll-lock');
         } else {
             document.body.classList.remove('mt2026-mail-fullscreen');
             document.body.classList.remove('mt2026-mail-page');
+            document.body.classList.remove('mt2026-mail-scroll-lock');
             document.body.classList.remove('mt2026-mail-has-conversation');
             closeMailList();
         }
@@ -37,16 +64,8 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
     }
 
     function hasActiveConversation() {
-        // Conversation can be active before entries are mounted, especially on mobile.
-        if (hasConversationIdInUrl()) {
-            return true;
-        }
-
-        if (document.querySelectorAll('.conversation-entry-list .mail-conversation-entry').length > 0) {
-            return true;
-        }
-
-        // Fallback: if conversation header + composer/form exist, thread view is active.
+        if (hasConversationIdInUrl()) return true;
+        if (document.querySelectorAll('.conversation-entry-list .mail-conversation-entry').length > 0) return true;
         return !!(
             document.getElementById('mail-conversation-header')
             && document.querySelector('.mail-message-form, .conversation-entry-list, .panel-body.conversation-entry-container')
@@ -66,91 +85,65 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
         return window.innerWidth <= 991;
     }
 
-    function isComposingMessage() {
-        var active = document.activeElement;
-        if (!active || !active.closest) {
-            return false;
-        }
-
-        if (!active.closest('.mail-message-form, .mt2026-mail-composer-dock')) {
-            return false;
-        }
-
-        return true;
-    }
-
     function scrollConversationToLatest() {
         var list = document.querySelector('.conversation-entry-list');
-        if (!list) {
-            return;
-        }
+        if (!list) return;
 
         // Skip scroll-to-latest during mail fullscreen to prevent layout thrash during keyboard animation.
         if (document.body.classList.contains('mt2026-mail-fullscreen')) {
             return;
         }
 
-        // Wait for layout/async content updates before forcing latest-message view.
         window.requestAnimationFrame(function() {
             list.scrollTop = list.scrollHeight;
         });
 
-        // Some mail entries render asynchronously, so enforce bottom position a few times.
-        [120, 300, 650, 1100].forEach(function(delay) {
-            window.setTimeout(function() {
-                if (list) {
-                    list.scrollTop = list.scrollHeight;
-                }
-            }, delay);
+        // Use MutationObserver instead of hardcoded timeouts
+        if (scrollObserver) scrollObserver.disconnect();
+        scrollObserver = new MutationObserver(function() {
+            list.scrollTop = list.scrollHeight;
         });
+        scrollObserver.observe(list, { childList: true, subtree: true, characterData: true });
+
+        // Fallback timeout in case observer doesn't fire
+        window.setTimeout(function() {
+            if (list) list.scrollTop = list.scrollHeight;
+            if (scrollObserver) { scrollObserver.disconnect(); scrollObserver = null; }
+        }, 2000);
     }
 
     function sizeMobileConversationList() {
-        if (!isMobileWidth()) {
-            return;
-        }
-
-        // The mobile browser fires resize events repeatedly while the keyboard
-        // opens/closes. Recomputing list height in that window causes visible
-        // composer/list jitter, so keep the list geometry stable during Mail fullscreen.
-        if (document.body.classList.contains('mt2026-mail-fullscreen')) {
-            return;
-        }
+        if (!isMobileWidth()) return;
 
         var list = document.querySelector('.conversation-entry-list');
         var header = document.getElementById('mail-conversation-header');
         var composer = document.querySelector('.mt2026-mail-composer-dock, .mail-message-form');
-        if (!list || !header || !composer) {
-            return;
-        }
+        if (!list || !header || !composer) return;
 
-        var headerBottom = Math.ceil(header.getBoundingClientRect().bottom);
-        var composerTop = Math.floor(composer.getBoundingClientRect().top);
-
-        // Reserve visible bottom area occupied by composer/nav on mobile.
-        var reservedBottom = Math.max(56, window.innerHeight - composerTop);
-        if (!isFinite(reservedBottom) || reservedBottom < 56 || reservedBottom > window.innerHeight) {
-            reservedBottom = 56;
-        }
-
-        var available = window.innerHeight - headerBottom - reservedBottom;
-
-        // Keep a stable, touch-scrollable region between header and composer.
-        if (available > 120) {
-            list.style.setProperty('height', available + 'px', 'important');
-            list.style.setProperty('max-height', available + 'px', 'important');
-            list.style.setProperty('min-height', '120px', 'important');
+        try {
+            var headerBottom = Math.ceil(header.getBoundingClientRect().bottom);
+            var composerTop = Math.floor(composer.getBoundingClientRect().top);
+            var reservedBottom = Math.max(56, window.innerHeight - composerTop);
+            if (!isFinite(reservedBottom) || reservedBottom < 56 || reservedBottom > window.innerHeight) {
+                reservedBottom = 56;
+            }
+            var available = window.innerHeight - headerBottom - reservedBottom;
+            if (available > 120) {
+                list.classList.add('mt2026-mail-conversation-sized');
+                list.style.setProperty('--mt2026-conversation-list-height', available + 'px');
+                list.style.setProperty('--mt2026-conversation-list-max-height', available + 'px');
+                list.style.setProperty('--mt2026-conversation-list-min-height', '120px');
+            }
+        } catch (e) {
+            module.log.error('sizeMobileConversationList failed', e);
         }
     }
 
     function ensureHeaderToggle(retries) {
         var header = document.getElementById('mail-conversation-header');
-
         if (!header) {
             if (retries > 0) {
-                window.setTimeout(function() {
-                    ensureHeaderToggle(retries - 1);
-                }, 120);
+                window.setTimeout(function() { ensureHeaderToggle(retries - 1); }, 120);
             }
             return;
         }
@@ -160,12 +153,13 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
             mobileButton.href = '#';
             mobileButton.className = 'mt2026-mail-topbar-toggle';
             mobileButton.setAttribute('aria-label', 'Open conversations list');
-            // Use a guaranteed glyph instead of font-icon dependency so the toggle stays visible.
+            mobileButton.setAttribute('aria-expanded', 'false');
+            mobileButton.setAttribute('aria-controls', 'mail-conversation-overview');
+            mobileButton.setAttribute('role', 'button');
             mobileButton.innerHTML = '<span class="mt2026-mail-topbar-toggle-icon" aria-hidden="true">&#9776;</span>';
             header.insertBefore(mobileButton, header.firstChild);
         }
 
-        // Defensive: avoid duplicate header toggles after repeated PJAX/AJAX updates.
         var toggles = header.querySelectorAll('.mt2026-mail-topbar-toggle');
         if (toggles.length > 1) {
             for (var i = 1; i < toggles.length; i++) {
@@ -174,12 +168,108 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
         }
     }
 
+    function ensureBackButton() {
+        var header = document.getElementById('mail-conversation-header');
+        if (!header) return;
+        if (header.querySelector('.mt2026-mail-back-btn')) return;
+
+        var backBtn = document.createElement('a');
+        backBtn.href = '#';
+        backBtn.className = 'mt2026-mail-back-btn';
+        backBtn.setAttribute('aria-label', 'Back to conversations');
+        backBtn.setAttribute('role', 'button');
+        backBtn.innerHTML = '<span aria-hidden="true">&#8592;</span>';
+        backBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            setConversationActive(false);
+            if (isMobileWidth()) {
+                openMailList();
+            }
+        });
+        header.insertBefore(backBtn, header.firstChild);
+    }
+
+    function injectSearchHTML() {
+        var sidebar = document.getElementById('mail-conversation-overview');
+        if (!sidebar) return;
+        if (sidebar.querySelector('.mt2026-mail-sidebar-search')) return;
+
+        var heading = sidebar.querySelector('.panel-heading');
+        if (!heading) return;
+
+        var searchHTML = '<div class="mt2026-mail-sidebar-search">'
+            + '<div class="mt2026-mail-sidebar-search__field">'
+            + '<span class="mt2026-mail-sidebar-search__icon" aria-hidden="true">&#128269;</span>'
+            + '<input type="search" placeholder="Search conversations..." aria-label="Search conversations">'
+            + '</div>'
+            + '</div>';
+        heading.insertAdjacentHTML('afterend', searchHTML);
+    }
+
+    function updateSearchEmptyState(query, entries) {
+        var existing = document.querySelector('.mt2026-mail-search-empty-state');
+        if (!query) {
+            if (existing) existing.remove();
+            return;
+        }
+        var visible = Array.from(entries).some(function(e) { return e.style.display !== 'none'; });
+        if (!visible) {
+            if (!existing) {
+                var empty = document.createElement('div');
+                empty.className = 'mt2026-mail-empty-state mt2026-mail-search-empty-state';
+                empty.innerHTML = '<div class="mt2026-mail-empty-state__icon" aria-hidden="true">&#128269;</div>'
+                    + '<div class="mt2026-mail-empty-state__title">No conversations found</div>'
+                    + '<div class="mt2026-mail-empty-state__text">Try a different search term</div>';
+                var sidebar = document.getElementById('mail-conversation-overview');
+                if (sidebar) {
+                    var list = sidebar.querySelector('.inbox-wrapper, .mail-inbox-messages > div:last-child');
+                    if (list) {
+                        list.appendChild(empty);
+                    } else {
+                        sidebar.appendChild(empty);
+                    }
+                }
+            }
+        } else {
+            if (existing) existing.remove();
+        }
+    }
+
+    function initConversationSearch() {
+        injectSearchHTML();
+        var searchInput = document.querySelector('.mt2026-mail-sidebar-search input[type="search"], .mt2026-mail-sidebar-search input[type="text"]');
+        if (!searchInput) return;
+        if (searchInput.hasAttribute('data-mt2026-search-bound')) return;
+        searchInput.setAttribute('data-mt2026-search-bound', '1');
+
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(function() {
+                var query = searchInput.value.toLowerCase().trim();
+                var entries = document.querySelectorAll('.messagePreviewEntry');
+                entries.forEach(function(entry) {
+                    var text = (entry.textContent || '').toLowerCase();
+                    var matches = !query || text.indexOf(query) !== -1;
+                    entry.style.display = matches ? '' : 'none';
+                });
+                updateSearchEmptyState(query, entries);
+            }, 150);
+        });
+    }
+
     // ── DESKTOP ENTER-TO-SEND ─────────────────────────────────────────────────
-    // On desktop: Enter submits; Ctrl/Cmd+Enter inserts a newline (Shift+Enter in
-    // ProseMirror maps to a hard break). Mobile keeps default ProseMirror behaviour.
-    document.addEventListener('keydown', function(e) {
+    function handleEnterToSend(e) {
         if (e.key !== 'Enter') return;
         if (isMobileWidth()) return;
+
+        // Check if Enter-to-send is enabled
+        try {
+            var enabled = humhub && humhub.modules && humhub.modules.config
+                && humhub.modules.config.get('modernTheme.mailLayout', 'mailEnterToSend');
+            if (enabled === false || enabled === '0' || enabled === 0) return;
+        } catch (err) {
+            // Default to enabled
+        }
 
         var editor = e.target && e.target.closest
             ? e.target.closest('.mail-message-form .ProseMirror')
@@ -187,9 +277,6 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
         if (!editor) return;
 
         if (!e.ctrlKey && !e.metaKey && !e.shiftKey) {
-            // Plain Enter → submit the message.
-            // Must blur the ProseMirror editor first so its focusout handler serialises
-            // content into the hidden input before the form submits.
             e.preventDefault();
             e.stopImmediatePropagation();
             var editorEl = editor;
@@ -197,53 +284,51 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
             if (form) {
                 var submitBtn = form.querySelector('.reply-button');
                 if (submitBtn) {
-                    // Trigger the widget sync path used by HumHub richtext.
-                    editorEl.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+                    try {
+                        editorEl.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+                    } catch (err) {}
                     editorEl.blur();
 
-                    // Fallback: if sync has not populated the input yet, push plain text.
                     var messageInput = form.querySelector('[name$="[message]"]');
                     if (messageInput && !String(messageInput.value || '').trim()) {
                         var plainText = String(editorEl.textContent || '').replace(/\u200B/g, '').trim();
                         if (plainText.length > 0) {
                             messageInput.value = plainText;
-                            $(messageInput).trigger('change').trigger('blur');
+                            try { $(messageInput).trigger('change').trigger('blur'); } catch (err) {}
                         }
                     }
 
                     window.setTimeout(function() {
-                        submitBtn.click();
+                        try { submitBtn.click(); } catch (err) {}
                         scrollConversationToLatest();
                     }, 0);
                 }
             }
         } else if ((e.ctrlKey || e.metaKey) && !e.shiftKey) {
-            // Ctrl/Cmd+Enter → insert a newline via Shift+Enter (ProseMirror hard break)
             e.preventDefault();
             e.stopImmediatePropagation();
-            e.target.dispatchEvent(new KeyboardEvent('keydown', {
-                key: 'Enter', code: 'Enter', keyCode: 13, which: 13,
-                shiftKey: true, bubbles: true, cancelable: true
-            }));
+            try {
+                e.target.dispatchEvent(new KeyboardEvent('keydown', {
+                    key: 'Enter', code: 'Enter', keyCode: 13, which: 13,
+                    shiftKey: true, bubbles: true, cancelable: true
+                }));
+            } catch (err) {}
         }
-        // Shift+Enter: fall through unchanged to ProseMirror
-    }, true /* capture phase – fires before ProseMirror's own handlers */);
+    }
 
     // ── EVENT DELEGATION ─────────────────────────────────────────────────────
-    // Fires for any click on a message preview entry, even if added after init.
-    // Immediately transitions to conversation view before PJAX completes.
     $(document).on('click.mt2026Mail', '.messagePreviewEntry, .messagePreviewEntry *', function() {
         if (!isMailPage()) return;
         closeMailList();
         setConversationActive(true);
         ensureHeaderToggle(8);
+        ensureBackButton();
         if (isMobileWidth()) {
             sizeMobileConversationList();
             scrollConversationToLatest();
         }
     });
 
-    // Always handle toggle clicks through delegation so it works after PJAX/AJAX re-renders.
     $(document).on('click.mt2026Mail', '.mt2026-mail-topbar-toggle', function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -258,6 +343,192 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
         openMailList();
     });
 
+    $(document).on('click.mt2026Mail', '.mt2026-mail-settings-btn', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        openSettingsDrawer();
+    });
+
+    // ── SETTINGS DRAWER ──────────────────────────────────────────────────────
+    function openSettingsDrawer() {
+        var existing = document.querySelector('.mt2026-drawer-settings');
+        if (existing) {
+            existing.remove();
+            var backdrop = document.querySelector('.mt2026-drawer-backdrop');
+            if (backdrop) backdrop.remove();
+            return;
+        }
+
+        var enterToSend = true;
+        try {
+            var saved = humhub && humhub.modules && humhub.modules.config
+                && humhub.modules.config.get('modernTheme.mailLayout', 'mailEnterToSend');
+            if (saved !== null && saved !== undefined) enterToSend = saved !== '0' && saved !== false;
+        } catch (e) {}
+
+        var fontScale = 100;
+        try {
+            var savedFont = humhub && humhub.modules && humhub.modules.config
+                && humhub.modules.config.get('modernTheme.mailLayout', 'mailFontScale');
+            if (savedFont) fontScale = parseInt(savedFont, 10) || 100;
+        } catch (e) {}
+
+        var formattingBar = false;
+        try {
+            var savedFmt = humhub && humhub.modules && humhub.modules.config
+                && humhub.modules.config.get('modernTheme.mailLayout', 'mailFormattingBar');
+            if (savedFmt) formattingBar = savedFmt === '1' || savedFmt === true;
+        } catch (e) {}
+
+        var drawer = document.createElement('div');
+        drawer.className = 'mt2026-drawer mt2026-drawer-settings';
+        drawer.setAttribute('role', 'dialog');
+        drawer.setAttribute('aria-label', 'Mail settings');
+
+        // Header
+        var headerEl = document.createElement('div');
+        headerEl.className = 'mt2026-drawer-header';
+
+        var titleEl = document.createElement('h3');
+        titleEl.textContent = 'Mail Settings';
+        headerEl.appendChild(titleEl);
+
+        var closeBtn = document.createElement('button');
+        closeBtn.className = 'mt2026-drawer-close';
+        closeBtn.setAttribute('aria-label', 'Close settings');
+        closeBtn.textContent = '\u00D7';
+        headerEl.appendChild(closeBtn);
+
+        drawer.appendChild(headerEl);
+
+        // Content
+        var contentEl = document.createElement('div');
+        contentEl.className = 'mt2026-drawer-content';
+
+        var listEl = document.createElement('div');
+        listEl.className = 'mt2026-drawer-settings-list';
+
+        // Enter to send
+        var etsLabel = document.createElement('label');
+        etsLabel.className = 'setting-item';
+
+        var etsInput = document.createElement('input');
+        etsInput.type = 'checkbox';
+        etsInput.className = 'mt2026-setting-enter-to-send';
+        if (enterToSend) etsInput.checked = true;
+        etsLabel.appendChild(etsInput);
+
+        var etsText = document.createElement('span');
+        etsText.className = 'setting-label';
+        etsText.textContent = 'Enter to send';
+        etsLabel.appendChild(etsText);
+
+        listEl.appendChild(etsLabel);
+
+        // Font size
+        var fsLabel = document.createElement('label');
+        fsLabel.className = 'setting-item';
+
+        var fsText = document.createElement('span');
+        fsText.className = 'setting-label';
+        fsText.textContent = 'Font size';
+        fsLabel.appendChild(fsText);
+
+        var fsSelect = document.createElement('select');
+        fsSelect.className = 'mt2026-setting-font-scale';
+
+        var fontOpts = [100, 115, 130, 150];
+        fontOpts.forEach(function(val) {
+            var opt = document.createElement('option');
+            opt.value = val;
+            opt.textContent = val + '%';
+            if (fontScale === val) opt.selected = true;
+            fsSelect.appendChild(opt);
+        });
+
+        fsLabel.appendChild(fsSelect);
+        listEl.appendChild(fsLabel);
+
+        // Formatting bar
+        var fmtLabel = document.createElement('label');
+        fmtLabel.className = 'setting-item';
+
+        var fmtInput = document.createElement('input');
+        fmtInput.type = 'checkbox';
+        fmtInput.className = 'mt2026-setting-formatting-bar';
+        if (formattingBar) fmtInput.checked = true;
+        fmtLabel.appendChild(fmtInput);
+
+        var fmtText = document.createElement('span');
+        fmtText.className = 'setting-label';
+        fmtText.textContent = 'Formatting toolbar';
+        fmtLabel.appendChild(fmtText);
+
+        listEl.appendChild(fmtLabel);
+
+        contentEl.appendChild(listEl);
+        drawer.appendChild(contentEl);
+
+        document.body.appendChild(drawer);
+
+        var backdrop = document.createElement('div');
+        backdrop.className = 'mt2026-drawer-backdrop';
+        document.body.appendChild(backdrop);
+
+        // Bind close
+        drawer.querySelector('.mt2026-drawer-close').addEventListener('click', closeSettingsDrawer);
+        backdrop.addEventListener('click', closeSettingsDrawer);
+
+        // Bind settings changes
+        drawer.querySelector('.mt2026-setting-enter-to-send').addEventListener('change', function() {
+            try {
+                humhub.modules.config.set('modernTheme.mailLayout', 'mailEnterToSend', this.checked ? '1' : '0');
+            } catch (e) {}
+        });
+
+        drawer.querySelector('.mt2026-setting-font-scale').addEventListener('change', function() {
+            try {
+                humhub.modules.config.set('modernTheme.mailLayout', 'mailFontScale', this.value);
+            } catch (e) {}
+            applyFontScale(parseInt(this.value, 10) || 100);
+        });
+
+        drawer.querySelector('.mt2026-setting-formatting-bar').addEventListener('change', function() {
+            try {
+                humhub.modules.config.set('modernTheme.mailLayout', 'mailFormattingBar', this.checked ? '1' : '0');
+            } catch (e) {}
+            toggleFormattingBar(this.checked);
+        });
+
+        // Close on Escape
+        drawer.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeSettingsDrawer();
+        });
+        var firstInput = drawer.querySelector('select, input');
+        if (firstInput) firstInput.focus();
+    }
+
+    function closeSettingsDrawer() {
+        var drawer = document.querySelector('.mt2026-drawer-settings');
+        if (drawer) drawer.remove();
+        var backdrop = document.querySelector('.mt2026-drawer-backdrop');
+        if (backdrop) backdrop.remove();
+    }
+
+    function applyFontScale(scale) {
+        var root = document.querySelector('#mail-conversation-root');
+        if (root) {
+            root.style.setProperty('--mt2026-mail-font-scale', (scale / 100) + '');
+        }
+    }
+
+    function toggleFormattingBar(visible) {
+        var menubars = document.querySelectorAll('.ProseMirror-menubar');
+        menubars.forEach(function(bar) {
+            bar.classList.toggle('mt2026-formatting-bar-visible', visible);
+        });
+    }
+
     // ── INIT ─────────────────────────────────────────────────────────────────
     function initMailDrawer() {
         if (!isMailPage()) {
@@ -266,37 +537,42 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
         }
         setFullscreenMode(true);
 
-        // Confirm conversation-active state from URL/DOM (covers direct URL navigation
-        // and async cases where entries are not mounted yet).
         if (hasActiveConversation()) {
             setConversationActive(true);
-            if (isMobileWidth() && !document.body.classList.contains('mt2026-mail-fullscreen')) {
+            ensureBackButton();
+            if (isMobileWidth()) {
                 sizeMobileConversationList();
             }
             scrollConversationToLatest();
         } else {
             setConversationActive(false);
         }
-        // Do NOT clear the class here — the click delegation sets it eagerly
-        // and entries may not yet be loaded when pjax:end fires.
 
         var sidebar = document.getElementById('mail-conversation-overview');
         ensureHeaderToggle(8);
+        initConversationSearch();
+
+        // Apply saved font scale
+        try {
+            var savedFont = humhub && humhub.modules && humhub.modules.config
+                && humhub.modules.config.get('modernTheme.mailLayout', 'mailFontScale');
+            if (savedFont) applyFontScale(parseInt(savedFont, 10) || 100);
+        } catch (e) {}
+
+        // Apply saved formatting bar
+        try {
+            var savedFmt = humhub && humhub.modules && humhub.modules.config
+                && humhub.modules.config.get('modernTheme.mailLayout', 'mailFormattingBar');
+            if (savedFmt === '1' || savedFmt === true) toggleFormattingBar(true);
+        } catch (e) {}
 
         if (!sidebar) return;
 
-        // Bind click on the overview heading toggle (open/close drawer gesture)
         var headingToggle = sidebar.querySelector('.panel-heading > a');
         if (headingToggle && !headingToggle.hasAttribute('data-mt2026-mail-toggle')) {
             headingToggle.setAttribute('data-mt2026-mail-toggle', '1');
             headingToggle.addEventListener('click', function(e) {
                 e.preventDefault();
-
-                if (!document.body.classList.contains('mt2026-mail-has-conversation')) {
-                    closeMailList();
-                    return;
-                }
-
                 if (document.body.classList.contains('mail-list-open')) {
                     closeMailList();
                 } else {
@@ -305,36 +581,46 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
             });
         }
 
-        // Close the drawer backdrop on outside click
         if (!document.body.hasAttribute('data-mt2026-mail-overlay')) {
             document.body.setAttribute('data-mt2026-mail-overlay', '1');
-            document.body.addEventListener('click', function(e) {
+            onMailOverlayClick = function(e) {
                 if (!document.body.classList.contains('mail-list-open')) return;
-                var withinSidebar = !!e.target.closest('#mail-conversation-overview');
-                if (!withinSidebar) {
-                    closeMailList();
-                }
-            });
+                try {
+                    var withinSidebar = !!e.target.closest('#mail-conversation-overview');
+                    if (!withinSidebar) {
+                        closeMailList();
+                    }
+                } catch (err) {}
+            };
+            document.body.addEventListener('click', onMailOverlayClick);
         }
     }
 
-    // Clear conversation state when navigating away from mail entirely
+    // ── EVENT LISTENERS ──────────────────────────────────────────────────────
+    document.addEventListener('keydown', handleEnterToSend, true);
+
+    onMailEscapeKey = function(e) {
+        if (e.key === 'Escape' && document.body.classList.contains('mail-list-open')) {
+            closeMailList();
+        }
+    };
+    document.addEventListener('keydown', onMailEscapeKey);
+
     $(document).on('pjax:beforeSend.mt2026Mail', function(event, xhr, options) {
         var url = (options && options.url) || '';
         if (url && url.indexOf('/mail/') === -1) {
-            setConversationActive(false);
+            setFullscreenMode(false);
         }
     });
 
-    // Re-run mail drawer wiring after async updates that may re-render the chat header.
     $(document).on('ajaxComplete.mt2026Mail', function() {
         if (isMailPage()) {
             ensureHeaderToggle(4);
+            ensureBackButton();
             if (hasActiveConversation()) {
                 if (isMobileWidth() && !document.body.classList.contains('mt2026-mail-fullscreen')) {
                     sizeMobileConversationList();
                 }
-                // Skip scroll-to-latest in fullscreen to prevent keyboard animation jitter.
                 if (!document.body.classList.contains('mt2026-mail-fullscreen')) {
                     scrollConversationToLatest();
                 }
@@ -343,20 +629,41 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
     });
 
     $(window).on('resize.mt2026Mail orientationchange.mt2026Mail', function() {
-        // Mail fullscreen has CSS-driven fixed docking. Resize-driven recalculations during
-        // keyboard open/close can cause visible composer jitter. Skip all geometry work in fullscreen.
-        if (document.body.classList.contains('mt2026-mail-fullscreen')) {
-            return;
-        }
-
-        if (isMailPage() && hasActiveConversation() && isMobileWidth()) {
-            sizeMobileConversationList();
-            scrollConversationToLatest();
-        }
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+            if (document.body.classList.contains('mt2026-mail-fullscreen')) {
+                return;
+            }
+            if (isMailPage() && hasActiveConversation() && isMobileWidth()) {
+                sizeMobileConversationList();
+                scrollConversationToLatest();
+            }
+        }, 100);
     });
 
-    $(document).on('humhub:ready pjax:end humhub:navigate', initMailDrawer);
+    $(document).on('humhub:ready.mt2026Mail pjax:end.mt2026Mail humhub:navigate.mt2026Mail', initMailDrawer);
+
+    // ── UNLOAD / TEARDOWN ────────────────────────────────────────────────────
+    function unload() {
+        setFullscreenMode(false);
+        $(document).off('.mt2026Mail');
+        $(window).off('.mt2026Mail');
+        document.removeEventListener('keydown', handleEnterToSend, true);
+        document.removeEventListener('keydown', onMailEscapeKey);
+        if (onMailOverlayClick) {
+            document.body.removeEventListener('click', onMailOverlayClick);
+            document.body.removeAttribute('data-mt2026-mail-overlay');
+        }
+        clearTimeout(resizeTimer);
+        clearTimeout(searchTimer);
+        if (scrollObserver) { scrollObserver.disconnect(); scrollObserver = null; }
+        if (headerObserver) { headerObserver.disconnect(); headerObserver = null; }
+        closeSettingsDrawer();
+    }
+
+    module.initOnPjaxLoad = true;
     module.export({
-        init: initMailDrawer
+        init: initMailDrawer,
+        unload: unload
     });
 });

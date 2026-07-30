@@ -4,6 +4,41 @@ All notable changes to this project are documented in this file.
 
 The format follows Keep a Changelog and this project uses Semantic Versioning.
 
+## [1.1.0] - 2026-07-29
+
+### Added
+- Stronger comment card backgrounds for better visual separation in light and dark modes.
+- Reply functionality removed to simplify UI and fix reply/post-as-comment bug.
+
+### Fixed
+- Emoji chooser picker position in comment controls (left-aligned).
+- Comment reply button hiding now works across all themes via JS + high-specificity CSS.
+
+## [1.0.6] - 2026-05-16
+
+### Fixed
+- iOS stream comment composer parsing issue caused by duplicate `&.show-on-mobile` SCSS blocks.
+
+### Changed
+- `install.sh` now supports CSS compile modes: auto (default), force (`--compile-css`), and skip (`--skip-compile-css`).
+- Installer auto-compiles CSS only when SCSS files are newer than `themes/ModernTheme2026/dist/theme.css`.
+- Updated installation and update documentation to use explicit compile + cache/assets refresh workflow.
+
+## [1.0.5] - 2026-05-15
+
+### Fixed
+- Continued investigation and stabilization of mobile keyboard behavior on Android devices.
+- Mobile mail fullscreen composer positioning and viewport handling.
+
+## [1.0.4] - 2026-05-12
+
+### Fixed
+- Mobile stream comment reliability by scoping hidden mobile composer behavior to top-level stream composer forms only.
+- Reaction picker initialization order so native like/unlike links remain available as fallback if custom picker setup is interrupted.
+
+### Changed
+- AI lifecycle instructions now require release branch version alignment across `module.json`, `package.json`, and `CHANGELOG.md`.
+
 ## [1.0.3] - 2026-05-12
 
 ### Fixed

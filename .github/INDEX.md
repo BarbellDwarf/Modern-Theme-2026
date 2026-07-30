@@ -62,6 +62,11 @@ AGENTS.md
 │   ├── Verification workflow after module edits
 │   └── HumHub CLI commands for refresh/flush
 │
+├── BRANCH-VERSION-UPDATE-RULES.md
+│   ├── Mandatory version bump rules for Vx.y.z branches
+│   ├── Required metadata files (module.json, package.json, CHANGELOG.md)
+│   └── PR checklist and verification commands
+│
 └── DELIVERY-SUMMARY.md
     ├── What was delivered
     ├── File statistics
@@ -134,6 +139,7 @@ modern-theme-2026/
 | Quick lookup | `QUICK-REFERENCE.md` | 2 min |
 | How to use | `.github/INSTRUCTIONS.md` | 5 min |
 | Post-change deploy checks | `.github/HUMHUB-POST-CHANGE-CHECKLIST.md` | 5 min |
+| Release branch version rules | `.github/BRANCH-VERSION-UPDATE-RULES.md` | 3 min |
 | SCSS help | `.github/instructions/theme-scss.instructions.md` | 10 min |
 | PHP help | `.github/instructions/php-widgets-module.instructions.md` | 12 min |
 | JS help | `.github/instructions/javascript-modules.instructions.md` | 12 min |

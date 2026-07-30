@@ -1,0 +1,149 @@
+// Modern Theme 2026 - Mail Composer
+// Composer dock, message form, richtext, buttons, upload
+
+.mt2026-mail-composer-dock {
+  flex: 0 0 auto;
+  z-index: 1050;
+  position: relative;
+  background: var(--color-bg-primary);
+  border-top: 1px solid var(--color-border-light);
+  padding: 4px 0 calc(4px + env(safe-area-inset-bottom, 0));
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.mail-message-form {
+  flex: 0 0 auto;
+  margin: 0;
+  position: relative;
+  z-index: 1050;
+  padding: 0 8px;
+  background: transparent;
+  border-top: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
+}
+
+.mail-message-form .panel-body {
+  flex: 0 0 auto;
+  width: 100%;
+  display: block;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  overflow: visible;
+}
+
+.mail-message-form form {
+  width: 100%;
+  margin: 0;
+}
+
+.mail-message-form .richtext-create-input-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin: 0;
+}
+
+.mail-message-form .richtext-create-input-group > .field-replyform-message {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+}
+
+.mail-message-form .richtext-create-input-group > .field-replyform-message,
+.mail-message-form .richtext-create-input-group > .richtext-create-buttons {
+  position: relative;
+  left: auto;
+  right: auto;
+  bottom: auto;
+}
+
+.mail-message-form .richtext-create-input-group .field-replyform-message,
+.mail-message-form .richtext-create-input-group .mb-3 {
+  margin-bottom: 0;
+}
+
+.mail-message-form .humhub-ui-richtext {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg-primary);
+  min-height: 44px;
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
+  transition: border-color 0.15s;
+
+  &:focus-within {
+    border-color: var(--color-primary);
+  }
+}
+
+.mail-message-form .richtext-create-input-group > .field-replyform-message,
+.mail-message-form .richtext-create-input-group > .field-replyform-message > .ProsemirrorEditor,
+.mail-message-form .richtext-create-input-group > .field-replyform-message > .ProsemirrorEditor .ProseMirror-menubar-wrapper,
+.mail-message-form .richtext-create-input-group > .field-replyform-message > .ProsemirrorEditor .ProseMirror {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+}
+
+@media (min-width: 992px) {
+  .mail-message-form .richtext-create-input-group > .field-replyform-message > .ProsemirrorEditor .ProseMirror {
+    min-height: 36px;
+    max-height: 120px;
+    overflow-y: auto;
+    padding: 8px 10px;
+  }
+}
+
+.ProseMirror-menubar {
+  display: none;
+}
+
+.ProseMirror-menubar.mt2026-formatting-bar-visible {
+  display: flex;
+}
+
+// WCAG touch targets
+.mail-message-form input,
+.mail-message-form textarea,
+.mail-message-form .ProseMirror {
+  min-height: 36px;
+}
+
+.mail-message-form button,
+.mail-message-form .btn {
+  min-height: 36px;
+  min-width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mail-message-form .btn-sm {
+  min-height: 32px;
+  min-width: 32px;
+}
+
+.mail-message-form .richtext-create-buttons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.mail-message-form .richtext-create-buttons .btn-group {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 0;
+}

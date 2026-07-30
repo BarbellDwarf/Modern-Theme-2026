@@ -34,37 +34,32 @@ $canonicalOutputDirs = [
     $themeBasePath . '/resources/css',
 ];
 
-// Find the published asset directory for this theme
-$possibleHashes = array_filter(glob($webroot . '/assets/*/README.md'), function ($f) use ($themeBasePath) {
-    return file_exists(dirname($f) . '/resources/css') || is_dir(dirname($f) . '/scss');
-});
-
-// Find by theme README
+// Find the published asset directory for this theme by looking for our theme's
+// compiled CSS (theme.css) inside any assets hash directory.
 $assetDir = null;
-foreach (glob($webroot . '/assets/*/QUICK-START.md') as $f) {
-    $assetDir = dirname($f);
-    break;
-}
-if (!$assetDir) {
-    foreach (glob($webroot . '/assets/*/resources/css') as $d) {
-        if (file_exists(dirname($d, 2) . '/README.md')) {
-            $assetDir = dirname($d, 2);
-            break;
-        }
+foreach (glob($webroot . '/assets/*/resources/css/theme.css') as $f) {
+    // theme.css → css/ → resources/ → {hash} (3 levels up)
+    $hashDir = dirname($f, 3);
+    // Confirm this belongs to our theme by checking the dist/ directory also
+    if (file_exists($hashDir . '/dist/theme.css')) {
+        $assetDir = $hashDir;
+        break;
     }
 }
 
 if (!$assetDir) {
     // Fall back to writing into the theme folder for standalone development.
     $outputDir = $themeBasePath . '/dist';
-    if (!is_dir($outputDir)) {
-        mkdir($outputDir, 0755, true);
+    if (!is_dir($outputDir) && !mkdir($outputDir, 0755, true) && !is_dir($outputDir)) {
+        echo "ERROR: Could not create output directory: {$outputDir}\n";
+        exit(1);
     }
     echo "NOTICE: Published asset directory not found. Falling back to: {$outputDir}\n\n";
 } else {
     $outputDir = $assetDir . '/resources/css';
-    if (!is_dir($outputDir)) {
-        mkdir($outputDir, 0755, true);
+    if (!is_dir($outputDir) && !mkdir($outputDir, 0755, true) && !is_dir($outputDir)) {
+        echo "ERROR: Could not create output directory: {$outputDir}\n";
+        exit(1);
     }
     echo "Theme: {$themeBasePath}\n";
     echo "Output: {$outputDir}\n\n";
@@ -109,13 +104,15 @@ if (!$dbDsn && $dbHost && $dbName) {
 if ($dbDsn && is_string($dbUser) && is_string($dbPassword)) {
     try {
         $pdo = new PDO($dbDsn, $dbUser, $dbPassword);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $colorMap = [
             'themePrimaryColor' => 'primary', 'themeAccentColor' => 'accent',
             'themeSecondaryColor' => 'secondary', 'themeSuccessColor' => 'success',
             'themeDangerColor' => 'danger', 'themeWarningColor' => 'warning',
             'themeInfoColor' => 'info', 'themeLightColor' => 'light', 'themeDarkColor' => 'dark',
         ];
-        $stmt = $pdo->query("SELECT name, value FROM setting WHERE module_id='core' AND name LIKE 'theme%Color'");
+        $tablePrefix = getenv('HUMHUB_DB_TABLE_PREFIX') ?: '';
+        $stmt = $pdo->query("SELECT name, value FROM {$tablePrefix}setting WHERE module_id='core' AND name LIKE 'theme%Color'");
         $colors = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $colors[$row['name']] = $row['value'];
@@ -147,24 +144,32 @@ if ($hasScssPhp) {
     try {
         $result = $compiler->compileString($scssContent);
         $css = $result->getCss();
+        $written = [];
         foreach ($outputDirs as $dir) {
-            file_put_contents($dir . '/theme.css', $css);
+            $path = $dir . '/theme.css';
+            if (file_put_contents($path, $css) === false) {
+                echo "ERROR: Could not write to {$path}\n";
+                exit(1);
+            }
+            $written[] = $path;
         }
-        echo "SUCCESS: CSS compiled (" . number_format(strlen($css)) . " bytes → " . implode(', ', array_map(function ($dir) {
-            return $dir . '/theme.css';
-        }, $outputDirs)) . ")\n";
+        echo "SUCCESS: CSS compiled (" . number_format(strlen($css)) . " bytes → " . implode(', ', $written) . ")\n";
     } catch (Exception $e) {
         echo "ERROR: " . $e->getMessage() . "\n";
         exit(1);
     }
 } else {
     // Write aggregated SCSS for manual compilation using `sass`/`dart-sass` or `npx sass`.
+    $written = [];
     foreach ($outputDirs as $dir) {
-        file_put_contents($dir . '/theme.scss', $scssContent);
+        $path = $dir . '/theme.scss';
+        if (file_put_contents($path, $scssContent) === false) {
+            echo "ERROR: Could not write to {$path}\n";
+            exit(1);
+        }
+        $written[] = $path;
     }
-    echo "WROTE: Aggregated SCSS to " . implode(', ', array_map(function ($dir) {
-        return $dir . '/theme.scss';
-    }, $outputDirs)) . "\n\n";
+    echo "WROTE: Aggregated SCSS to " . implode(', ', $written) . "\n\n";
     echo "To compile locally:\n";
     echo "  # Install dart-sass (preferred):\n";
     echo "  npx sass {$themeBasePath}/dist/theme.scss {$themeBasePath}/dist/theme.css --style=compressed\n\n";

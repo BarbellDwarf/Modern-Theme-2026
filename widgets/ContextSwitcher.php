@@ -97,9 +97,7 @@ class ContextSwitcher extends Widget
         }
 
         $raw = Yii::$app->session->get('mt2026.context.recent', []);
-        $items = $this->normalizeRecentItems(is_array($raw) ? $raw : []);
-        Yii::$app->session->set('mt2026.context.recent', $items);
-        return $items;
+        return $this->normalizeRecentItems(is_array($raw) ? $raw : []);
     }
 
     private function trackRecentContext(string $context, string $route, ?Space $currentSpace): void
@@ -121,10 +119,12 @@ class ContextSwitcher extends Widget
             'visitedAt' => time(),
         ];
 
-        $items[] = $entry;
-        $items = $this->normalizeRecentItems($items);
+        $newItems = $this->normalizeRecentItems(array_merge($items, [$entry]));
 
-        Yii::$app->session->set('mt2026.context.recent', $items);
+        // Only write to session when the recent list actually changes
+        if ($newItems !== $items) {
+            Yii::$app->session->set('mt2026.context.recent', $newItems);
+        }
     }
 
     /**

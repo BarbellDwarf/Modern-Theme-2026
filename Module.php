@@ -28,6 +28,28 @@ class Module extends \humhub\components\Module
 
     public const THEME_NAME = 'ModernTheme2026';
 
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        $this->registerTranslations();
+    }
+
+    /**
+     * Register i18n message source for module categories.
+     * Strings are English-only but need a source configured so Yii::t() doesn't throw.
+     */
+    public function registerTranslations()
+    {
+        Yii::$app->i18n->translations['ModernTheme2026.*'] = [
+            'class' => 'yii\i18n\PhpMessageSource',
+            'sourceLanguage' => 'en-US',
+            'basePath' => __DIR__ . '/messages',
+        ];
+    }
+
     public function getConfigUrl()
     {
         return \yii\helpers\Url::to(['/modern-theme-2026/config']);
@@ -108,8 +130,9 @@ class Module extends \humhub\components\Module
             $theme->publishResources(true);
 
             $cssDir = $theme->publishedResourcesPath . DIRECTORY_SEPARATOR . 'css';
-            if (!is_dir($cssDir)) {
-                @mkdir($cssDir, 0775, true);
+            if (!is_dir($cssDir) && !mkdir($cssDir, 0775, true) && !is_dir($cssDir)) {
+                Yii::error('Could not create CSS directory: ' . $cssDir, 'modern-theme-2026');
+                return false;
             }
 
             // ThemeHelper requires both files to be writable. On some systems old files

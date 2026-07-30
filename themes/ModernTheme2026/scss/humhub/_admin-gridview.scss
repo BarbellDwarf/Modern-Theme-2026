@@ -1,0 +1,37 @@
+// Modern Theme 2026 - Admin Section: GridView tables & responsive
+// Extracted from _admin.scss
+
+.mt2026-admin-content {
+
+  // GridView tables inside admin panels — ensure horizontal scroll, not overflow
+  .grid-view,
+  .gridview {
+    overflow-x: auto;
+    width: 100%;
+
+    table {
+      min-width: 600px;
+    }
+
+    @media (max-width: 991px) {
+      table {
+        min-width: 520px;
+      }
+    }
+
+    @media (max-width: 575px) {
+      table {
+        min-width: 480px;
+      }
+    }
+  }
+
+  // Action buttons row (float-end buttons above GridView)
+  // Clear float so the summary/table starts on a new line below buttons
+  .grid-view::before,
+  .gridview::before {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}

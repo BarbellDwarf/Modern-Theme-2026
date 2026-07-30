@@ -1,26 +1,74 @@
-/**
- * Modal Accessibility Fix
- *
- * The browser warns when aria-hidden="true" is set on a modal that still
- * contains a focused element (e.g. the btn-close that was just clicked).
- *
- * HumHub sets aria-hidden="true" in the hidden.bs.modal handler (after the
- * modal closes), and Bootstrap's own _hideModal() also sets it during the
- * close animation — both fire while focus can still be on a descendant.
- *
- * Fix: on hide.bs.modal (fires before any aria-hidden change), move focus
- * away from any focused descendant so the modal is clean when hidden.
- */
-humhub.module('modernTheme.modalFocusFix', function(module, require, $) {
+(function() {
+    'use strict';
 
-    function init() {
-        $(document).on('hide.bs.modal.mt2026fix', '.modal', function() {
-            if (document.activeElement && $.contains(this, document.activeElement)) {
-                document.activeElement.blur();
+    const ModalFocusFix = {
+        previouslyFocused: null,
+        focusableSelector: 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+
+        init() {
+            this.bindModalEvents();
+        },
+
+        getFocusableElements(modal) {
+            return Array.from(modal.querySelectorAll(this.focusableSelector))
+                .filter(el => el.offsetParent !== null && !el.disabled);
+        },
+
+        trapFocus(e, modal) {
+            const focusable = this.getFocusableElements(modal);
+            if (focusable.length === 0) return;
+
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
             }
-        });
-    }
+        },
 
-    module.initOnPjaxLoad = false;
-    module.export({ init: init });
-});
+        bindModalEvents() {
+            document.addEventListener('show.bs.modal', (e) => {
+                this.previouslyFocused = document.activeElement;
+                const modal = e.target;
+                setTimeout(() => {
+                    const focusable = this.getFocusableElements(modal);
+                    if (focusable.length > 0) {
+                        focusable[0].focus();
+                    }
+                }, 100);
+            });
+
+            document.addEventListener('shown.bs.modal', (e) => {
+                const modal = e.target;
+                const handler = (ev) => this.trapFocus(ev, modal);
+                modal.addEventListener('keydown', handler);
+                modal._focusTrapHandler = handler;
+            });
+
+            document.addEventListener('hide.bs.modal', (e) => {
+                const modal = e.target;
+                if (modal._focusTrapHandler) {
+                    modal.removeEventListener('keydown', modal._focusTrapHandler);
+                    delete modal._focusTrapHandler;
+                }
+            });
+
+            document.addEventListener('hidden.bs.modal', () => {
+                if (this.previouslyFocused && this.previouslyFocused.focus) {
+                    this.previouslyFocused.focus();
+                    this.previouslyFocused = null;
+                }
+            });
+        }
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => ModalFocusFix.init());
+    } else {
+        ModalFocusFix.init();
+    }
+})();

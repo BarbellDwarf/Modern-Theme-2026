@@ -7,7 +7,6 @@ use humhub\components\View;
 use humhub\helpers\DeviceDetectorHelper;
 use humhub\libs\Html;
 use humhub\modules\modernTheme2026\widgets\ContextSwitcher;
-use humhub\modules\space\widgets\Chooser;
 use humhub\modules\user\widgets\AccountTopMenu;
 use humhub\widgets\NotificationArea;
 use humhub\widgets\SiteLogo;
@@ -21,14 +20,13 @@ AppAsset::register($this);
 $distCssFile = $this->theme->getBasePath() . DIRECTORY_SEPARATOR . 'dist' . DIRECTORY_SEPARATOR . 'theme.css';
 if (is_file($distCssFile)) {
     $distDir = $this->theme->getBasePath() . DIRECTORY_SEPARATOR . 'dist';
-    [$distPublishedPath, $distPublishedUrl] = Yii::$app->assetManager->publish($distDir, ['forceCopy' => true]);
+    [$distPublishedPath, $distPublishedUrl] = Yii::$app->assetManager->publish($distDir, ['forceCopy' => defined('YII_DEBUG') && YII_DEBUG]);
     $this->registerCssFile($distPublishedUrl . '/theme.css');
 }
 
 $bodyClasses = DeviceDetectorHelper::getBodyClasses();
 $bodyClasses[] = 'modern-theme-2026';
 
-$useContextSwitcher = !Yii::$app->user->isGuest;
 ?>
 
 <?php $this->beginPage() ?>
@@ -54,11 +52,9 @@ $useContextSwitcher = !Yii::$app->user->isGuest;
                 </div>
 
                 <ul id="top-menu-nav" class="flex-grow-1 nav">
-                    <?php if ($useContextSwitcher): ?>
+                    <?php if (!Yii::$app->user->isGuest): ?>
                         <!-- Modern Theme 2026: Context Switcher replaces Space Chooser -->
                         <?= ContextSwitcher::widget() ?>
-                    <?php else: ?>
-                        <?= Chooser::widget() ?>
                     <?php endif; ?>
 
                     <!-- load navigation from widget -->

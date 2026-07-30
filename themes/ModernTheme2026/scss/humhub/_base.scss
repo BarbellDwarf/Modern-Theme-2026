@@ -20,7 +20,7 @@ body > .container-fluid,
 body > #layout-content,
 body > .space-layout-container,
 body > .profile-layout-container {
-    margin-top: 8px;
+    margin-top: var(--space-2);
     // Keep all primary page content in a lower stacking context than topbar dropdowns.
     position: relative;
     z-index: 1;

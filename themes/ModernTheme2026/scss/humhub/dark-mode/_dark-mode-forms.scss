@@ -1,0 +1,285 @@
+// Modern Theme 2026 - Dark Mode: Forms, Buttons, Select2, Typeahead
+// Extracted from _dark-mode.scss
+
+[data-bs-theme="dark"] {
+
+    // --- Forms ----------------------------------------------------------
+
+    .form-control,
+    .form-select,
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="search"],
+    input[type="url"],
+    input[type="number"],
+    input[type="tel"],
+    textarea,
+    select {
+        background-color: var(--color-bg-tertiary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+
+        &:focus {
+            background-color: var(--color-bg-tertiary);
+            border-color: var(--color-primary);
+            color: var(--color-text-primary);
+            box-shadow: 0 0 0 3px var(--color-primary-lightest);
+        }
+
+        &::placeholder {
+            color: var(--color-text-muted);
+            opacity: 1;
+        }
+
+        &:disabled,
+        &[readonly] {
+            background-color: var(--color-bg-secondary);
+            color: var(--color-text-muted);
+            opacity: 0.7;
+        }
+    }
+
+    .form-label,
+    label {
+        color: var(--color-text-secondary);
+    }
+
+    .form-text,
+    .help-block {
+        color: var(--color-text-muted);
+    }
+
+    .input-group-text {
+        background-color: var(--color-bg-tertiary);
+        border-color: var(--color-border);
+        color: var(--color-text-secondary);
+    }
+
+    // --- Buttons --------------------------------------------------------
+
+    .btn-default,
+    .btn-light,
+    .btn-secondary {
+        background-color: var(--color-bg-tertiary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+
+        &:hover,
+        &:focus {
+            background-color: var(--color-border-dark);
+            border-color: var(--color-border-dark);
+            color: var(--color-text-primary);
+        }
+
+        &:active,
+        &.active {
+            background-color: var(--color-border-dark);
+            border-color: var(--color-border-dark);
+            color: var(--color-text-primary);
+        }
+
+        &:disabled,
+        &.disabled {
+            background-color: var(--color-bg-tertiary);
+            border-color: var(--color-border);
+            color: var(--color-text-muted);
+            opacity: 0.5;
+        }
+    }
+
+    .btn-primary {
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
+        color: #fff;
+
+        &:hover,
+        &:focus {
+            background-color: var(--color-primary-dark);
+            border-color: var(--color-primary-dark);
+        }
+    }
+
+    // Semantic colour buttons — keep colours, ensure legible text
+    .btn-success {
+        color: #fff;
+        &:hover, &:focus { filter: brightness(1.1); color: #fff; }
+    }
+
+    .btn-info {
+        color: #fff;
+        &:hover, &:focus { filter: brightness(1.1); color: #fff; }
+    }
+
+    .btn-warning {
+        color: #fff;
+        &:hover, &:focus { filter: brightness(1.05); color: #fff; }
+    }
+
+    .btn-danger {
+        color: #fff;
+        &:hover, &:focus { filter: brightness(1.1); color: #fff; }
+    }
+
+    // Link buttons — use dark-mode link tokens
+    .btn-link {
+        color: var(--color-link);
+        background-color: transparent;
+
+        &:hover,
+        &:focus {
+            color: var(--color-link-hover);
+            background-color: var(--color-bg-tertiary);
+        }
+    }
+
+    // Action buttons (HumHub toolbar/icon buttons)
+    .btn-action {
+        background-color: transparent;
+        border-color: var(--color-border);
+        color: var(--color-text-secondary);
+
+        &:hover,
+        &:focus {
+            background-color: var(--color-bg-tertiary);
+            border-color: var(--color-border-dark);
+            color: var(--color-text-primary);
+        }
+
+        &:active,
+        &.active {
+            background-color: var(--color-bg-tertiary);
+            color: var(--color-primary);
+        }
+    }
+
+    // Input-group buttons (Bootstrap 3 .input-group-btn pattern)
+    .input-group-btn .btn,
+    .input-group > .btn {
+        background-color: var(--color-bg-tertiary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+
+        &:hover,
+        &:focus {
+            background-color: var(--color-border-dark);
+            border-color: var(--color-border-dark);
+            color: var(--color-text-primary);
+        }
+    }
+
+    // Standalone dropdown toggles (outside .dropdown-menu)
+    // Exclude wall-entry-controls (the "..." post settings button) which should
+    // be transparent/icon-only and not get a visible background box.
+    .dropdown-toggle:not(.btn-primary):not(.btn-success):not(.btn-info):not(.btn-warning):not(.btn-danger):not(.nav-link) {
+        background-color: var(--color-bg-secondary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+
+        &:hover,
+        &:focus {
+            background-color: var(--color-bg-tertiary);
+            border-color: var(--color-border-dark);
+            color: var(--color-text-primary);
+        }
+    }
+
+    // Collapse / toggle buttons
+    .btn-collapse,
+    .toggle-btn {
+        background-color: var(--color-bg-secondary);
+        border-color: var(--color-border);
+        color: var(--color-text-primary);
+    }
+
+    // --- Select2 --------------------------------------------------------
+
+    .select2-container--default {
+        .select2-selection--single,
+        .select2-selection--multiple {
+            background-color: var(--color-bg-tertiary);
+            border-color: var(--color-border);
+            color: var(--color-text-primary);
+
+            .select2-selection__rendered {
+                color: var(--color-text-primary);
+            }
+
+            .select2-selection__placeholder {
+                color: var(--color-text-muted);
+            }
+
+            .select2-selection__arrow b {
+                border-color: var(--color-text-secondary) transparent transparent transparent;
+            }
+
+            .select2-selection__choice {
+                background-color: var(--color-bg-secondary);
+                border-color: var(--color-border);
+                color: var(--color-text-primary);
+            }
+
+            .select2-selection__choice__remove {
+                color: var(--color-text-muted);
+                &:hover { color: var(--color-text-primary); }
+            }
+        }
+
+        &.select2-container--focus .select2-selection--single,
+        &.select2-container--focus .select2-selection--multiple {
+            border-color: var(--color-primary);
+        }
+
+        .select2-dropdown {
+            background-color: var(--color-bg-secondary);
+            border-color: var(--color-border);
+            box-shadow: var(--shadow-lg);
+
+            .select2-search__field {
+                background-color: var(--color-bg-tertiary);
+                border-color: var(--color-border);
+                color: var(--color-text-primary);
+            }
+
+            .select2-results__option {
+                color: var(--color-text-primary);
+
+                &--highlighted[aria-selected] {
+                    background-color: var(--color-primary);
+                    color: #fff;
+                }
+
+                &[aria-selected="true"] {
+                    background-color: var(--color-bg-tertiary);
+                }
+
+                &[aria-disabled="true"] {
+                    color: var(--color-text-muted);
+                }
+            }
+
+            .select2-results__group {
+                color: var(--color-text-muted);
+            }
+        }
+    }
+
+    // Typeahead (tt-) dropdowns used in HumHub user/space search
+    .tt-menu,
+    .tt-dropdown-menu {
+        background-color: var(--color-bg-secondary);
+        border-color: var(--color-border);
+        box-shadow: var(--shadow-lg);
+        color: var(--color-text-primary);
+
+        .tt-suggestion {
+            color: var(--color-text-primary);
+
+            &:hover,
+            &.tt-cursor {
+                background-color: var(--color-bg-tertiary);
+                color: var(--color-text-primary);
+            }
+        }
+    }
+}

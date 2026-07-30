@@ -153,9 +153,9 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         });
         if (total > 0) {
             $link.find('.mt2026-summary-inner').html(html);
-            $link.show();
+            $link.css('display', 'inline-flex');
         } else {
-            $link.hide();
+            $link.css('display', 'none');
         }
     }
 

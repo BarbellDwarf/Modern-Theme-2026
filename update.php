@@ -34,5 +34,28 @@ foreach (glob($webroot . '/assets/*/resources/css/theme.css') as $f) {
     }
     echo "   Published assets cleared: " . basename($hashDir) . "\n";
 }
+// Also clear published JS from our module asset bundle (goes to assets/*/js/).
+// Yii2's AssetManager hash is based on resources/ dir mtime so this dir
+// persists across file edits; deleting the JS files forces republish from source.
+$moduleJsFiles = [
+    'reactionPicker.js', 'contextSwitcher.js', 'peopleFocusGuard.js',
+    'paletteSwitcher.js', 'notifications.js', 'modalFocusFix.js',
+    'mobileKeyboardFix.js', 'mobileSwipeFix.js', 'mailLayout.js',
+    'mobileCommentCompose.js', 'mobileContentToggle.js', 'dropdownManager.js',
+];
+foreach (glob($webroot . '/assets/*/js/*.js') as $jsFile) {
+    if (in_array(basename($jsFile), $moduleJsFiles, true)) {
+        unlink($jsFile);
+        echo "   Cleared: " . basename(dirname(dirname($jsFile))) . '/js/' . basename($jsFile) . "\n";
+    }
+}
+// If Redis is available, flush it too (HumHub commonly uses Redis for cache).
+$redis = @fsockopen('127.0.0.1', 6379, $errno, $errstr, 1);
+if ($redis) {
+    fwrite($redis, "*1\r\n\$8\r\nFLUSHALL\r\n");
+    fread($redis, 1024);
+    fclose($redis);
+    echo "   Redis cache flushed.\n";
+}
 
 echo "\nUpdate complete. Reload the page in your browser.\n";

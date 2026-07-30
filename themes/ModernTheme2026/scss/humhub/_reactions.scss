@@ -286,11 +286,11 @@
 }
 
 // Reaction summary link — right-aligned in the addons bar.
-// Qualify with .wall-entry-controls to beat Clean Theme's .wall-entry-controls a
-// (otherwise the anchor tag selector overrides our display:inline-flex with block).
+// JS manages visibility via .show()/.hide(); do NOT use !important on display
+// or JS cannot hide the element when there are no reactions.
 .wall-entry-controls .mt2026-summary-link {
   margin-left: auto !important;
-  display: inline-flex !important;
+  display: inline-flex;
   align-items: center;
   gap: 4px;
   flex: 0 0 auto;

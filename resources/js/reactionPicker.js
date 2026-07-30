@@ -50,7 +50,7 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
         var cid = $container.data('mt2026-cid');
         var $controls = $container.closest('.wall-entry-controls');
         return $controls.find('.mt2026-summary-link').filter(function() {
-            return $(this).data('mt2026-cid') === cid;
+            return String($(this).data('mt2026-cid')) === String(cid);
         });
     }
 
@@ -189,7 +189,7 @@ humhub.module('modernTheme.reactionPicker', function(module, require, $) {
 
             // 3. Build reaction summary link and place it in wall-entry-links (right-aligned)
             var $controls = $c.closest('.wall-entry-controls.wall-entry-links');
-            if ($controls.length && params.contentModel && params.contentId && !$controls.find('.mt2026-summary-link').filter(function() { return $(this).data('mt2026-cid') === cid; }).length) {
+            if ($controls.length && params.contentModel && params.contentId && !$controls.find('.mt2026-summary-link').filter(function() { return String($(this).data('mt2026-cid')) === String(cid); }).length) {
                 var listUrl = BASE_URL + '/list?contentModel=' + encodeURIComponent(params.contentModel) + '&contentId=' + encodeURIComponent(params.contentId);
                 $controls.append('<a class="mt2026-summary-link" href="' + listUrl
                     + '" data-bs-target="#globalModal" data-mt2026-cid="' + cid + '" style="display:none">'

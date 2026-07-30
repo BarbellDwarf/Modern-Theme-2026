@@ -89,6 +89,11 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
         var list = document.querySelector('.conversation-entry-list');
         if (!list) return;
 
+        // Skip scroll-to-latest during mail fullscreen to prevent layout thrash during keyboard animation.
+        if (document.body.classList.contains('mt2026-mail-fullscreen')) {
+            return;
+        }
+
         window.requestAnimationFrame(function() {
             list.scrollTop = list.scrollHeight;
         });
@@ -327,6 +332,14 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
     $(document).on('click.mt2026Mail', '.mt2026-mail-topbar-toggle', function(e) {
         e.preventDefault();
         e.stopPropagation();
+
+        // On the inbox-first mobile screen there is no active conversation yet.
+        // In that state the list is already visible, so drawer overlay should not open.
+        if (!document.body.classList.contains('mt2026-mail-has-conversation')) {
+            closeMailList();
+            return;
+        }
+
         openMailList();
     });
 
@@ -605,10 +618,12 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
             ensureHeaderToggle(4);
             ensureBackButton();
             if (hasActiveConversation()) {
-                if (isMobileWidth()) {
+                if (isMobileWidth() && !document.body.classList.contains('mt2026-mail-fullscreen')) {
                     sizeMobileConversationList();
                 }
-                scrollConversationToLatest();
+                if (!document.body.classList.contains('mt2026-mail-fullscreen')) {
+                    scrollConversationToLatest();
+                }
             }
         }
     });
@@ -616,6 +631,9 @@ humhub.module('modernTheme.mailLayout', function(module, require, $) {
     $(window).on('resize.mt2026Mail orientationchange.mt2026Mail', function() {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(function() {
+            if (document.body.classList.contains('mt2026-mail-fullscreen')) {
+                return;
+            }
             if (isMailPage() && hasActiveConversation() && isMobileWidth()) {
                 sizeMobileConversationList();
                 scrollConversationToLatest();

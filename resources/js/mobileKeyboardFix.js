@@ -37,6 +37,10 @@ humhub.module('modernTheme.mobileKeyboardFix', function(module, require, $) {
         return window.innerWidth <= 991;
     }
 
+    function isMailComposerElement(el) {
+        return !!(el && el.closest && el.closest('#mail-conversation-root .mail-message-form, #mail-conversation-root .mt2026-mail-composer-dock'));
+    }
+
     // Set --vvh CSS variable on :root so CSS can react to visual viewport height
     // (e.g. modal max-height when keyboard is open on iOS).
     function updateVvhVar() {
@@ -74,6 +78,13 @@ humhub.module('modernTheme.mobileKeyboardFix', function(module, require, $) {
         if (!el || !isMobile()) {
             return;
         }
+
+        // Mail fullscreen manages its own chat/composer layout. Extra smooth-scroll
+        // corrections here fight the OS keyboard animation and make the composer stutter.
+        if (isMailComposerElement(el)) {
+            return;
+        }
+
         // Only act when this element (or one of its children for contenteditable) is still active
         var active = document.activeElement;
         var stillActive = active === el || (el.contains && el.contains(active));
@@ -149,8 +160,18 @@ humhub.module('modernTheme.mobileKeyboardFix', function(module, require, $) {
         var setKeyboardState = function(forceOpen) {
             var active = document.activeElement;
             var hasEditableFocus = !!(active && active.matches && active.matches(SELECTORS));
+            var isMailComposerFocus = isMailComposerElement(active);
+            var isMailFullscreen = document.body.classList.contains('mt2026-mail-fullscreen');
             var viewportOpen = false;
             var keyboardByDelta = false;
+
+            // Mail fullscreen has its own fixed composer/nav layout. Toggling the
+            // global keyboard-open class during visualViewport animation causes
+            // bottom-edge jitter on some Android devices.
+            if (isMailFullscreen && isMailComposerFocus) {
+                $('body').removeClass('mt2026-keyboard-open');
+                return;
+            }
 
             if (window.visualViewport) {
                 var ratio = window.visualViewport.height / window.innerHeight;

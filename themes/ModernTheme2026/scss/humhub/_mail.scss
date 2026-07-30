@@ -2,6 +2,13 @@
 // ── LAYOUT & SHELL ─────────────────────────────────────────────────────────────
 @import "mail-layout";
 
+// Keep the bottom nav stable in mail fullscreen — no animation, flush to bottom.
+body.mt2026-mail-page .mobile-bottom-nav {
+  z-index: 1035;
+  animation: none !important;
+  bottom: 0 !important;
+}
+
 // ── CONVERSATION SIDEBAR ─────────────────────────────────────────────────────
 #mail-conversation-overview {
   position: fixed;

@@ -29,6 +29,10 @@ if ($autoload) {
 $themeBasePath = __DIR__ . '/themes/ModernTheme2026';
 $parentThemeBasePath = dirname(__DIR__, 3) . '/themes/HumHub';
 $webroot = dirname(__DIR__, 3);
+$canonicalOutputDirs = [
+    $themeBasePath . '/dist',
+    $themeBasePath . '/resources/css',
+];
 
 // Find the published asset directory for this theme by looking for our theme's
 // compiled CSS (theme.css) inside any assets hash directory.
@@ -59,6 +63,13 @@ if (!$assetDir) {
     }
     echo "Theme: {$themeBasePath}\n";
     echo "Output: {$outputDir}\n\n";
+}
+
+$outputDirs = array_values(array_unique(array_merge([$outputDir], $canonicalOutputDirs)));
+foreach ($outputDirs as $dir) {
+    if (!is_dir($dir)) {
+        mkdir($dir, 0755, true);
+    }
 }
 
 if ($hasScssPhp) {
@@ -133,37 +144,35 @@ if ($hasScssPhp) {
     try {
         $result = $compiler->compileString($scssContent);
         $css = $result->getCss();
-        if (file_put_contents($outputDir . '/theme.css', $css) === false) {
-            echo "ERROR: Could not write to {$outputDir}/theme.css\n";
-            exit(1);
+        $written = [];
+        foreach ($outputDirs as $dir) {
+            $path = $dir . '/theme.css';
+            if (file_put_contents($path, $css) === false) {
+                echo "ERROR: Could not write to {$path}\n";
+                exit(1);
+            }
+            $written[] = $path;
         }
-        echo "SUCCESS: CSS compiled (" . number_format(strlen($css)) . " bytes → {$outputDir}/theme.css)\n";
-        // Also write to resources/css/theme.css so HumHub's theme manager picks it up
-        // even when the published asset directory is not available.
-        $resourcesDir = $themeBasePath . '/resources/css';
-        if (!is_dir($resourcesDir) && !mkdir($resourcesDir, 0755, true) && !is_dir($resourcesDir)) {
-            echo "ERROR: Could not create resources directory: {$resourcesDir}\n";
-            exit(1);
-        }
-        if (file_put_contents($resourcesDir . '/theme.css', $css) === false) {
-            echo "ERROR: Could not write to {$resourcesDir}/theme.css\n";
-            exit(1);
-        }
-        echo "  Also wrote to: {$resourcesDir}/theme.css\n";
+        echo "SUCCESS: CSS compiled (" . number_format(strlen($css)) . " bytes → " . implode(', ', $written) . ")\n";
     } catch (Exception $e) {
         echo "ERROR: " . $e->getMessage() . "\n";
         exit(1);
     }
 } else {
     // Write aggregated SCSS for manual compilation using `sass`/`dart-sass` or `npx sass`.
-    if (file_put_contents($outputDir . '/theme.scss', $scssContent) === false) {
-        echo "ERROR: Could not write to {$outputDir}/theme.scss\n";
-        exit(1);
+    $written = [];
+    foreach ($outputDirs as $dir) {
+        $path = $dir . '/theme.scss';
+        if (file_put_contents($path, $scssContent) === false) {
+            echo "ERROR: Could not write to {$path}\n";
+            exit(1);
+        }
+        $written[] = $path;
     }
-    echo "WROTE: Aggregated SCSS to {$outputDir}/theme.scss\n\n";
+    echo "WROTE: Aggregated SCSS to " . implode(', ', $written) . "\n\n";
     echo "To compile locally:\n";
     echo "  # Install dart-sass (preferred):\n";
-    echo "  npx sass {$outputDir}/theme.scss {$outputDir}/theme.css --style=compressed\n\n";
+    echo "  npx sass {$themeBasePath}/dist/theme.scss {$themeBasePath}/dist/theme.css --style=compressed\n\n";
     echo "Or use Composer to install scssphp and re-run this script:\n";
     echo "  composer require scssphp/scssphp --no-interaction\n";
     echo "  php compile-css.php\n\n";

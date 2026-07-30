@@ -4,6 +4,16 @@ Purpose: Ensure changes in this module actually take effect in a HumHub installa
 
 Scope: Use this after editing files in /protected/modules/modern-theme-2026.
 
+## 0) One-Command Update
+
+Run from the HumHub protected directory after any code change:
+
+```bash
+php yii modern-theme-2026/update
+```
+
+This rebuilds CSS, compiles to all output locations, flushes cache, and republishes assets. No manual steps needed.
+
 ## 1) Fast Rule of Thumb
 
 If you changed module code by git pull or manual edits and behavior did not update:

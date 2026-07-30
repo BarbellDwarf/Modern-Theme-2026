@@ -441,6 +441,13 @@ rm -rf /var/www/humhub/runtime/cache/*
 rm -rf /var/www/humhub/assets/decca576
 ```
 
+**One-Command Update**:
+From the HumHub protected directory, run:
+```bash
+php yii modern-theme-2026/update
+```
+This rebuilds CSS via `ThemeHelper`, runs `compile-css.php`, flushes cache, and republishes theme assets. Use this after any code change (git pull, manual edit, etc.).
+
 ## ⚠️ CSS Specificity
 
 HumHub's base theme CSS is loaded FIRST (stylesheet index 0), and our module's CSS is loaded SECOND (stylesheet index 1). The base theme uses `!important` extensively, which means our rules need `!important` to override them in many cases.

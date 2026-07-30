@@ -6,9 +6,14 @@ The format follows Keep a Changelog and this project uses Semantic Versioning.
 
 ## [1.1.1] - 2026-07-30
 
+### Added
+- One-command update: `php yii modern-theme-2026/update` rebuilds CSS, flushes cache, and republishes assets.
+
 ### Fixed
 - Reaction summary link visibility: removed `!important` on `display` so JS `.show()`/`.hide()` can control visibility.
-- Removed all references to the removed Clean Theme module from comments and documentation.
+
+### Removed
+- All references to the removed Clean Theme module from comments and documentation.
 
 ## [1.1.0] - 2026-07-29
 

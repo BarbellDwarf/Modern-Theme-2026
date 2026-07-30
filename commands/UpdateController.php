@@ -49,17 +49,18 @@ class UpdateController extends Controller
             $theme = \humhub\helpers\ThemeHelper::getThemeByName(Module::THEME_NAME);
             if ($theme) {
                 $theme->publishResources(true);
-                // Force delete old published path so next request creates fresh
-                $oldPath = $theme->publishedResourcesPath;
-                $theme->publishResources(true);
 
-                // Clear the web assets directory too
+                // Clear stale files from the web assets directory
                 $webroot = dirname(__DIR__, 3);
                 foreach (glob($webroot . '/assets/*/resources/css/theme.css') as $f) {
                     $hashDir = dirname($f, 3);
                     $this->stdout("   Clearing published assets: {$hashDir}\n");
-                    array_map('unlink', glob($hashDir . '/resources/css/*'));
-                    array_map('unlink', glob($hashDir . '/resources/js/*'));
+                    foreach (['css', 'js'] as $type) {
+                        $files = glob($hashDir . '/resources/' . $type . '/*');
+                        if ($files) {
+                            array_map('unlink', $files);
+                        }
+                    }
                 }
 
                 $this->stdout("   Theme assets republished.\n", Console::FG_GREEN);

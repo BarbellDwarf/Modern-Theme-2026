@@ -35,11 +35,6 @@ class Module extends \humhub\components\Module
     {
         parent::init();
         $this->registerTranslations();
-
-        // Register console commands so `php yii modern-theme-2026/update` works
-        if (Yii::$app instanceof \yii\console\Application) {
-            $this->controllerMap['update'] = 'humhub\modules\modernTheme2026\commands\UpdateController';
-        }
     }
 
     /**

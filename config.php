@@ -6,6 +6,7 @@
  */
 
 use humhub\components\View;
+use humhub\modules\modernTheme2026\commands\UpdateController;
 use humhub\modules\modernTheme2026\Events;
 use humhub\widgets\TopMenu;
 use yii\base\Application;
@@ -35,5 +36,9 @@ return [
             'event' => TopMenu::EVENT_RUN,
             'callback' => [Events::class, 'onTopMenuRun'],
         ],
+    ],
+
+    'consoleControllerMap' => [
+        'theme2026-update' => 'humhub\modules\modernTheme2026\commands\UpdateController',
     ],
 ];

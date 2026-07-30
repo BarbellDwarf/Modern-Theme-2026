@@ -34,20 +34,33 @@ foreach (glob($webroot . '/assets/*/resources/css/theme.css') as $f) {
     }
     echo "   Published assets cleared: " . basename($hashDir) . "\n";
 }
-// Also clear published JS from our module asset bundle (goes to assets/*/js/).
-// Yii2's AssetManager hash is based on resources/ dir mtime so this dir
-// persists across file edits; deleting the JS files forces republish from source.
+// Also clear published module JS assets. Yii2's AssetManager hash uses the
+// resources/ directory mtime so the hash dir persists across file edits.
+// We must delete the ENTIRE hash dir (not just individual files) because
+// Yii2 checks dir existence, not file content, to decide whether to republish.
 $moduleJsFiles = [
     'reactionPicker.js', 'contextSwitcher.js', 'peopleFocusGuard.js',
     'paletteSwitcher.js', 'notifications.js', 'modalFocusFix.js',
     'mobileKeyboardFix.js', 'mobileSwipeFix.js', 'mailLayout.js',
     'mobileCommentCompose.js', 'mobileContentToggle.js', 'dropdownManager.js',
 ];
+$foundHashes = [];
 foreach (glob($webroot . '/assets/*/js/*.js') as $jsFile) {
     if (in_array(basename($jsFile), $moduleJsFiles, true)) {
-        unlink($jsFile);
-        echo "   Cleared: " . basename(dirname(dirname($jsFile))) . '/js/' . basename($jsFile) . "\n";
+        $hashDir = dirname(dirname($jsFile));
+        $foundHashes[$hashDir] = true;
     }
+}
+foreach (array_keys($foundHashes) as $hashDir) {
+    $it = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($hashDir, RecursiveDirectoryIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::CHILD_FIRST
+    );
+    foreach ($it as $f) {
+        $f->isDir() ? rmdir($f->getPathname()) : unlink($f->getPathname());
+    }
+    rmdir($hashDir);
+    echo "   Module JS assets cleared: " . basename($hashDir) . "\n";
 }
 // If Redis is available, flush it too (HumHub commonly uses Redis for cache).
 $redis = @fsockopen('127.0.0.1', 6379, $errno, $errstr, 1);

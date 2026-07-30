@@ -44,13 +44,10 @@ print_step() {
 }
 
 print_usage() {
-    echo "Usage: $0 [--compile-css|--skip-compile-css] /path/to/humhub"
+    echo "Usage: $0 /path/to/humhub"
     echo ""
-    echo "Options:"
-    echo "  --compile-css      Force CSS compilation after copy"
-    echo "  --skip-compile-css Skip CSS compilation"
-    echo ""
-    echo "Default behavior: auto-compile only when SCSS is newer than dist/theme.css"
+    echo "Example:"
+    echo "  $0 /var/www/humhub"
 }
 
 run_as_humhub_user() {
@@ -232,52 +229,16 @@ chown -R "$WWW_USER:$WWW_USER" "$MODULE_DEST" 2>/dev/null || print_warning "Coul
 chmod -R 755 "$MODULE_DEST"
 print_success "Permissions set"
 
-# Optional CSS compilation (auto by default when SCSS changed)
-DIST_CSS="$MODULE_DEST/themes/ModernTheme2026/dist/theme.css"
-SCSS_ROOT="$MODULE_DEST/themes/ModernTheme2026/scss"
-NEEDS_COMPILE="false"
-
-if [ "$COMPILE_MODE" = "force" ]; then
-    NEEDS_COMPILE="true"
-elif [ "$COMPILE_MODE" = "auto" ]; then
-    if [ ! -f "$DIST_CSS" ]; then
-        NEEDS_COMPILE="true"
-    elif [ -d "$SCSS_ROOT" ] && find "$SCSS_ROOT" -type f -name "*.scss" -newer "$DIST_CSS" -print -quit | grep -q .; then
-        NEEDS_COMPILE="true"
-    fi
-fi
-
-if [ "$COMPILE_MODE" = "skip" ]; then
-    print_info "Skipping CSS compile (--skip-compile-css provided)"
-elif [ "$NEEDS_COMPILE" = "true" ]; then
-    print_step "Compiling theme CSS..."
-    cd "$MODULE_DEST"
-    if run_as_humhub_user php compile-css.php >/dev/null 2>&1; then
-        print_success "Theme CSS compiled"
-    else
-        print_warning "CSS compile failed; continuing with existing dist/theme.css"
-    fi
+# Compile CSS to dist/ and resources/css/ via the standalone compiler
+print_step "Compiling theme CSS..."
+cd "$MODULE_DEST"
+if run_as_humhub_user php compile-css.php 2>&1; then
+    print_success "Theme CSS compiled"
 else
-    print_info "Skipping CSS compile (dist/theme.css is up to date)"
+    print_warning "CSS compile had warnings; dist/theme.css may already exist"
 fi
 
-# Clear caches
-print_step "Clearing HumHub cache..."
-cd "$HUMHUB_PROTECTED"
-run_as_humhub_user php yii cache/flush-all >/dev/null 2>&1 || print_warning "Could not run cache flush"
-print_success "Cache flushed"
-
-# Remove old published assets
-print_step "Clearing published assets..."
-ASSETS_DIR="$HUMHUB_PATH/assets"
-if [ -d "$ASSETS_DIR" ]; then
-    find "$ASSETS_DIR" -maxdepth 1 -type d \( -name "*modern*theme*" -o -name "*mt2026*" \) -print0 2>/dev/null | xargs -0 rm -rf 2>/dev/null || true
-    print_success "Old assets cleared"
-else
-    print_warning "Assets directory not found"
-fi
-
-# Display theme info
+# Show theme info
 print_step "Checking theme status..."
 echo ""
 cd "$HUMHUB_PROTECTED"
@@ -291,9 +252,14 @@ print_success "Modern Theme 2026 installation complete!"
 echo ""
 print_info "Next steps:"
 echo "  1. Log in to HumHub as administrator"
-echo "  2. Go to Administration → Design → Theme"
-echo "  3. Select 'Modern Theme 2026' and save"
-echo "  4. Clear your browser cache"
+echo "  2. Go to Administration → Modules → Enable 'Modern Theme 2026'"
+echo "  3. Go to Administration → Design → Theme → Select 'ModernTheme2026' and save"
+echo "  4. Run the one-command update to finish setup:"
+echo "     cd $HUMHUB_PROTECTED"
+echo "     php yii modern-theme-2026/update"
+echo "  5. Clear your browser cache"
 echo ""
-print_info "For more information, see the README.md in the module directory"
+print_info "For after any future code change (git pull, manual edit):"
+echo "  cd $HUMHUB_PROTECTED"
+echo "  php yii modern-theme-2026/update"
 echo ""
